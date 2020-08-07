@@ -37,7 +37,7 @@ namespace RevitCommand
             }
             catch (Exception exp)
             {
-                message = exp.Message;
+                message = exp.StackTrace;
                 return Result.Failed;
             }
         }

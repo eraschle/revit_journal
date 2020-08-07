@@ -45,15 +45,17 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="RevitAddInUtility">
-      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit 2017\RevitAddInUtility.dll</HintPath>
+    <Reference Include="RevitAddInUtility, Version=17.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit 2019\RevitAddInUtility.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2017\RevitAPI.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit 2019\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2017\RevitAPIUI.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit 2019\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -71,6 +73,21 @@
     <Compile Include="CommandReport\ReportJsonDataSource.cs" />
     <Compile Include="Families\AFamilyExternalCommand.cs" />
     <Compile Include="Families\ARevitExternalCommandData.cs" />
+    <Compile Include="Families\Translation\CreateTranslationDictCommand.cs" />
+    <Compile Include="Families\Translation\TranslateFamilyCommand.cs" />
+    <Compile Include="RevitUtils\Builder\Common\AModelBuilder.cs" />
+    <Compile Include="RevitUtils\Builder\AModelElementBuilder.cs" />
+    <Compile Include="RevitUtils\Builder\BuildManager.cs" />
+    <Compile Include="RevitUtils\Builder\Common\FamilyBuilder.cs" />
+    <Compile Include="RevitUtils\Builder\Common\SubCategoryBuilder.cs" />
+    <Compile Include="RevitUtils\Builder\Common\MaterialBuilder.cs" />
+    <Compile Include="RevitUtils\Builder\Common\DimensionBuilder.cs" />
+    <Compile Include="RevitUtils\Builder\Common\DatumPlaneBuilder.cs" />
+    <Compile Include="RevitUtils\Builder\Family\SketchPlaneBuilder.cs" />
+    <Compile Include="RevitUtils\Builder\Family\RevolutionBuilder.cs" />
+    <Compile Include="RevitUtils\Builder\Family\BlendBuilder.cs" />
+    <Compile Include="RevitUtils\Builder\Family\GenericFormBuilder.cs" />
+    <Compile Include="RevitUtils\Builder\Family\ExtrusionBuilder.cs" />
     <Compile Include="Families\ImageExport\AFamilyImageExportCommand.cs" />
     <Compile Include="Families\ImageExport\GeomCombinationCommand.cs" />
     <Compile Include="Families\ImageExport\ImageExportManager.cs" />
@@ -114,6 +131,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="RevitUtils\Repositories\CategoryRepo.cs" />
+    <Compile Include="RevitUtils\Repositories\ReferenceRepo.cs" />
+    <Compile Include="RevitUtils\Repositories\ElementRepo.cs" />
     <Compile Include="RevitData\RevitDataExportCommandData.cs" />
     <Compile Include="RevitData\RevitDataExportExternalCommand.cs" />
     <Compile Include="RevitEnumCreator.cs" />
