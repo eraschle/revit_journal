@@ -1,0 +1,132 @@
+﻿<Window x:Class="RevitJournalUI.JournalTaskUI.FamilyFilter.RevitFamilyFilterView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:RevitJournalUI.JournalTaskUI.FamilyFilter"
+        xmlns:models="clr-namespace:RevitJournalUI.Models"
+        mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800">
+    <Window.Resources>
+        <Style x:Key="GroupStyle" TargetType="{x:Type GroupBox}">
+            <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
+            <Setter Property="Margin" Value="{StaticResource DefaultMargin}"/>
+        </Style>
+
+        <DataTemplate x:Key="CheckedItemTemplate" 
+                      DataType="{x:Type models:CheckedDisplayViewModel}">
+            <ContentPresenter>
+                <ContentPresenter.Content>
+                    <CheckBox IsChecked="{Binding Checked}" 
+                              Content="{Binding DisplayName}"/>
+                </ContentPresenter.Content>
+            </ContentPresenter>
+        </DataTemplate>
+
+        <Style x:Key="ListStyle" TargetType="{x:Type ListBox}">
+            <Setter Property="ItemTemplate" Value="{StaticResource CheckedItemTemplate}"/>
+        </Style>
+    </Window.Resources>
+    <Window.DataContext>
+        <local:RevitFamilyFilterViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid Visibility="{Binding LoadingVisibility}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="500"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <ProgressBar Value="{Binding LoadingProgess}" 
+                         Minimum="0" Maximum="100"
+                         Grid.Column="1" Grid.Row="1"/>
+            <Label Content="{Binding LoadingProgessText}"
+                   HorizontalAlignment="Center"
+                   Grid.Column="1" Grid.Row="2"/>
+        </Grid>
+        <Grid Visibility="{Binding LoadedVisibility}"
+              ScrollViewer.CanContentScroll="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <GroupBox Header="Metadata"
+                      Style="{StaticResource GroupStyle}"
+                      Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
+                <Grid Margin="{StaticResource DefaultMargin}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Content="External file not exist" 
+                              IsChecked="{Binding MetadataFileNotExist}"
+                              Grid.Column="0"/>
+                    <CheckBox Content="Valid" 
+                              IsChecked="{Binding IsValid}"
+                              Grid.Column="1"/>
+                    <CheckBox Content="Repairable"
+                              IsChecked="{Binding IsRepairable}"
+                              Grid.Column="2"/>
+                    <CheckBox Content="Error"
+                              IsChecked="{Binding IsError}"
+                              Grid.Column="3"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="Revit Version" 
+                      Style="{StaticResource GroupStyle}"
+                      Grid.Column="0" Grid.Row="1">
+                <ListBox ItemsSource="{Binding RevitApps}"
+                         Style="{StaticResource ListStyle}">
+                </ListBox>
+            </GroupBox>
+            <GroupBox Header="Basis" 
+                      Style="{StaticResource GroupStyle}"
+                      Grid.Column="0" Grid.Row="2">
+                <ListBox ItemsSource="{Binding FamilyBasis}"
+                         Style="{StaticResource ListStyle}"/>
+            </GroupBox>
+            <GroupBox Header="Categories" 
+                      Style="{StaticResource GroupStyle}"
+                      Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
+                <ListBox ItemsSource="{Binding Categories}"
+                         Style="{StaticResource ListStyle}"/>
+            </GroupBox>
+            <GroupBox Header="Omni Class" 
+                      Style="{StaticResource GroupStyle}"
+                      Grid.Column="0" Grid.Row="3">
+                <ListBox ItemsSource="{Binding OmniClasses}"
+                         Style="{StaticResource ListStyle}"/>
+            </GroupBox>
+            <GroupBox Header="Family Parameters"
+                      Style="{StaticResource GroupStyle}"
+                      Grid.Column="1" Grid.Row="3">
+                <ListBox x:Name="lbxBoolParameters"
+                         ItemsSource="{Binding FamilyParameters}"
+                         Style="{StaticResource ListStyle}"/>
+            </GroupBox>
+            <WrapPanel HorizontalAlignment="Right"
+                       Margin="{StaticResource DefaultMargin}"
+                       Grid.Column="1" Grid.Row="4">
+                <Button x:Name="Ok" Content="_OK" IsDefault="True" 
+                        Click="Ok_Click"
+                        Style="{StaticResource DialogButton}"/>
+                <Button Content="_Cancel" IsCancel="True"
+                        Style="{StaticResource DialogButton}"/>
+            </WrapPanel>
+        </Grid>
+    </Grid>
+</Window>

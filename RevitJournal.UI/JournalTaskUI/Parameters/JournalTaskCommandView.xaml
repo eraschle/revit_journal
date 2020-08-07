@@ -1,0 +1,107 @@
+﻿<UserControl x:Class="RevitJournalUI.JournalTaskUI.Parameters.JournalTaskCommandView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RevitJournalUI.JournalTaskUI.Parameters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <local:JournalCommandParameterBooleanConverter x:Key="BooleanToString" />
+    </UserControl.Resources>
+    <Grid>
+        <ListBox ItemsSource="{Binding JournalCommandViewModels}"
+                 SelectionMode="Multiple"
+                 DockPanel.Dock="Top"
+                 HorizontalContentAlignment="Stretch">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:JournalTaskCommandViewModel}">
+                    <StackPanel>
+                        <CheckBox Content="{Binding CommandName}"
+                                  IsChecked="{Binding Checked, UpdateSourceTrigger=PropertyChanged}"
+                                  IsEnabled="{Binding Enabled, UpdateSourceTrigger=PropertyChanged}"
+                                  HorizontalAlignment="Stretch" 
+                                  VerticalAlignment="Stretch"
+                                  VerticalContentAlignment="Center">
+                        </CheckBox>
+                        <ListBox ItemsSource="{Binding Parameters}"
+                                 Visibility="{Binding ParameterVisibility, UpdateSourceTrigger=PropertyChanged}"
+                                 HorizontalContentAlignment="Stretch"
+                                 HorizontalAlignment="Stretch" 
+                                 VerticalAlignment="Stretch">
+                            <ListBox.Resources>
+                                <DataTemplate DataType="{x:Type local:JournalCommandParameterStringViewModel}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="140"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="{Binding ParameterName}" 
+                                               Grid.Column="0"
+                                               HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Stretch"
+                                               VerticalContentAlignment="Center"/>
+                                        <TextBox Text="{Binding ParameterValue}" 
+                                                 Grid.Column="1"
+                                                 HorizontalAlignment="Stretch" 
+                                                 VerticalAlignment="Stretch"
+                                                 VerticalContentAlignment="Center"/>
+                                    </Grid>
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type local:JournalCommandParameterFileViewModel}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="250"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="{Binding ParameterName}" 
+                                               Grid.Column="0"
+                                               HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Stretch"
+                                               VerticalContentAlignment="Center"/>
+                                        <TextBlock x:Name="FilePath"
+                                                   Text="{Binding ParameterValue, 
+                                                                  UpdateSourceTrigger=PropertyChanged}" 
+                                                   Grid.Column="1"
+                                                   HorizontalAlignment="Right"
+                                                   TextTrimming="WordEllipsis"
+                                                   TextAlignment="Right"
+                                                   VerticalAlignment="Center"/>
+                                        <Button Content="Choose"
+                                                Command="{Binding ChooseCommandFile}"
+                                                CommandParameter="{Binding ElementName=FilePath, Path=Text}"
+                                                Grid.Column="2"
+                                                HorizontalAlignment="Stretch" 
+                                                VerticalAlignment="Stretch"
+                                                VerticalContentAlignment="Center"/>
+                                    </Grid>
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type local:JournalCommandParameterBooleanViewModel}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="140"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="{Binding ParameterName}" 
+                                               Grid.Column="0"
+                                               HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Stretch"
+                                               VerticalContentAlignment="Center"/>
+                                        <CheckBox IsChecked="{Binding ParameterValue, Converter={StaticResource BooleanToString}}" 
+                                                  Grid.Column="1"
+                                                  HorizontalAlignment="Stretch" 
+                                                  HorizontalContentAlignment="Left" 
+                                                  VerticalAlignment="Stretch"
+                                                  VerticalContentAlignment="Center"/>
+                                    </Grid>
+                                </DataTemplate>
+
+                            </ListBox.Resources>
+                        </ListBox>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

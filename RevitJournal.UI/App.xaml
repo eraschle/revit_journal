@@ -1,0 +1,16 @@
+﻿<Application x:Class="RevitJournalUI.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:RevitJournalUI"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <Thickness x:Key="DefaultMargin" Left="3" Top="3" Right="3" Bottom="3" />
+        <SolidColorBrush x:Key="DefaultBackground" Color="WhiteSmoke"/>
+        <sys:Double x:Key="MinWidthButton">80</sys:Double>
+        <Style x:Key="DialogButton" TargetType="{x:Type Button}">
+            <Setter Property="MinWidth" Value="{StaticResource MinWidthButton}"/>
+            <Setter Property="Margin" Value="10, 3, 10, 3"/>
+        </Style>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,31 @@
+'Dim Jrn 
+Set Jrn = CrsJournalScript 
+Jrn.Command "StartupPage" , "Open this project , ID_FILE_MRU_FIRST"
+Jrn.Data "MRUFileName" , "C:\develop\workspace\amwa\familien\ALG\Aufhaengung_Schienensys_BT.rfa" 
+
+Jrn.Command "Ribbon" , " , ID_FAMILY_TYPE"
+
+Jrn.Grid "Control; Modal , Familientypen , Dialog_Family_FamilyType; Control_Family_TypeGrid" , "PartialEdit" , "Gr1 Ach Abs (Vorgabe)" , "ValueCol" , "2000" , "2" , "2"
+
+Jrn.PushButton "Modal , Familientypen , Dialog_Family_FamilyType" , " , Control_Family_Rename"
+Jrn.Edit "Modal , Name , Dialog_Revit_Name" , "Control_Revit_Name" , "ReplaceContents" , "holdrio_1"
+Jrn.PushButton "Modal , Name , Dialog_Revit_Name" , "OK, IDOK"
+Jrn.Data "Transaction Successful" , "Familientyp"
+
+Jrn.PushButton "Modal , Familientypen , Dialog_Family_FamilyType" , "OK, IDOK"
+Jrn.Data "Transaction Successful" , "Familientypen"
+
+Jrn.Command "Ribbon" , " , ID_FAMILY_TYPE"
+Jrn.PushButton "Modal , Familientypen , Dialog_Family_FamilyType" , " , Control_Family_New"
+Jrn.Edit "Modal , Name , Dialog_Revit_Name" , "Control_Revit_Name" , "ReplaceContents" , "3000"
+Jrn.PushButton "Modal , Name , Dialog_Revit_Name" , "OK, IDOK"
+Jrn.Data "Transaction Successful" , "Familientyp"
+
+Jrn.Grid "Control; Modal , Familientypen , Dialog_Family_FamilyType; Control_Family_TypeGrid" , "PartialEdit" , "Gr1 Ach Abs (Vorgabe)" , "ValueCol" , "3000" , "2" , "2"
+Jrn.PushButton "Modal , Familientypen , Dialog_Family_FamilyType" , "OK, IDOK"
+Jrn.Data "Transaction Successful" , "Familientypen"
+
+Jrn.Command "Ribbon" , " , ID_REVIT_SAVE_AS_FAMILY"
+Jrn.Data "File Name" , "IDOK", "C:\develop\workspace\amwa\JOurnal\Aufhaengung_Schienensys_BT_journal.rfa"
+
+Jrn.Command "SystemMenu" , " , ID_APP_EXIT"

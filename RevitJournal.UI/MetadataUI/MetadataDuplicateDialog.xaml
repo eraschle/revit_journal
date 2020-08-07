@@ -1,0 +1,1001 @@
+﻿<Window x:Class="RevitJournalUI.MetadataUI.MetadataDuplicateDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:RevitJournalUI.MetadataUI"
+        xmlns:model="clr-namespace:RevitJournalUI.MetadataUI.Models"
+        xmlns:converter="clr-namespace:RevitJournalUI.MetadataUI.Converter"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d" d:DesignWidth="1200" MinWidth="800"
+        Title="DublicatedManagerPageView">
+    <Window.Resources>
+        <Thickness x:Key="TitlePadding" Left="10" Top="0" Right="10" Bottom="0" />
+        <Thickness x:Key="MarginFamilyType" Left="0" Top="0" Right="10" Bottom="0" />
+        <Thickness x:Key="MarginListView" Left="3" Top="3" Right="3" Bottom="3" />
+        <Thickness x:Key="MarginListViewOriginal" Left="0" Top="0" Right="0" Bottom="0" />
+        <Thickness x:Key="PaddingListView" Left="3" Top="3" Right="13" Bottom="3" />
+        <Thickness x:Key="DistancePadding" Left="10" Top="0" Right="3" Bottom="0" />
+
+        <sys:Double x:Key="IdColWidth">20</sys:Double>
+        <sys:Double x:Key="NameColWidth">150</sys:Double>
+        <sys:Double x:Key="ValueColWidth">100</sys:Double>
+        <sys:Double x:Key="ValueTypeColWidth">80</sys:Double>
+        <sys:Double x:Key="IsInstanceColWidth">60</sys:Double>
+
+        <converter:OriginalFamilyColorConverter x:Key="BkgOriginalFamilyConverter" />
+        <Style x:Key="StyleTextBlockOriginal" TargetType="{x:Type TextBlock}">
+            <Setter Property="Margin" Value="{StaticResource DefaultMargin}"/>
+            <Setter Property="Padding" Value="{StaticResource DefaultMargin}"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <MultiBinding Converter="{StaticResource BkgOriginalFamilyConverter}">
+                        <Binding RelativeSource="{RelativeSource Mode=Self}" Path="Name"/>
+                        <Binding ElementName="lstRevitFiles" Path="SelectedItem" 
+                                 UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+
+        <converter:ListViewDistanceVisibiltyConverter x:Key="ListViewDistanceVisibility" />
+        <Style x:Key="StyleTextBlockDistance" TargetType="{x:Type TextBlock}">
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="Visibility">
+                <Setter.Value>
+                    <MultiBinding Converter="{StaticResource ListViewDistanceVisibility}">
+                        <Binding RelativeSource="{RelativeSource Mode=Self}" Path="Text"/>
+                    </MultiBinding>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="StyleTextBlockValue" TargetType="{x:Type TextBlock}"
+               BasedOn="{StaticResource StyleTextBlockDistance}">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+
+        <Style x:Key="StyleSourceListTextBlockValue" TargetType="{x:Type TextBlock}"
+               BasedOn="{StaticResource StyleTextBlockDistance}">
+            <Setter Property="Margin" Value="{StaticResource MarginListViewOriginal}"/>
+            <Setter Property="Padding" Value="{StaticResource PaddingListView}"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+
+        <Style x:Key="StyleLabelParameterName" TargetType="{x:Type Label}">
+            <!--<Setter Property="Margin" Value="{StaticResource DefaultMargin}"/>-->
+            <!--<Setter Property="Padding" Value="{StaticResource DefaultMargin}"/>-->
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="StyleLabelDistance" TargetType="{x:Type Label}">
+            <Setter Property="Padding" Value="{StaticResource DefaultMargin}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <converter:OriginalFamilyTypeParameterColorConverter x:Key="BkgOriginalFamilyTypeParameterConverter"/>
+        <Style x:Key="StyleOriginalFamilyTypeParameter" TargetType="{x:Type TextBlock}"
+               BasedOn="{StaticResource StyleTextBlockOriginal}">
+            <Setter Property="Margin" Value="{StaticResource MarginListViewOriginal}"/>
+            <Setter Property="Padding" Value="{StaticResource PaddingListView}"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <MultiBinding Converter="{StaticResource BkgOriginalFamilyTypeParameterConverter}">
+                        <Binding RelativeSource="{RelativeSource Mode=Self}" Path="Name"/>
+                        <Binding ElementName="lstRevitFiles" Path="SelectedItem" 
+                                 UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <converter:OriginalFamilyParameterColorConverter x:Key="BkgOriginalFamilyParameterConverter"/>
+        <Style x:Key="StyleOriginalFamilyParameter" TargetType="{x:Type TextBlock}"
+               BasedOn="{StaticResource StyleOriginalFamilyTypeParameter}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <MultiBinding Converter="{StaticResource BkgOriginalFamilyParameterConverter}">
+                        <Binding RelativeSource="{RelativeSource Mode=Self}" Path="Name"/>
+                        <Binding ElementName="lstRevitFiles" Path="SelectedItem" 
+                                 UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <converter:SourceFamilyTypeParameterColorConverter x:Key="BkgSourceFamilyTypeParameterConverter"/>
+        <Style x:Key="StyleFamilyTypeParameter" TargetType="{x:Type DockPanel}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <MultiBinding Converter="{StaticResource BkgSourceFamilyTypeParameterConverter}">
+                        <Binding ElementName="cbxSourceSelected" Path="SelectedItem"/>
+                        <Binding ElementName="cbxOriginalSelected" Path="SelectedItem"/>
+                        <Binding Path="Name"/>
+                        <Binding RelativeSource="{RelativeSource Mode=Self}" Path="Name"/>
+                    </MultiBinding>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <converter:SourceFamilyParameterColorConverter x:Key="BkgSourceFamilyParameterConverter"/>
+        <Style x:Key="StyleFamilyParameter" TargetType="{x:Type DockPanel}"
+               BasedOn="{StaticResource StyleFamilyTypeParameter}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <MultiBinding Converter="{StaticResource BkgSourceFamilyParameterConverter}">
+                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" 
+                                 Path="DataContext.Original"/>
+                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" 
+                                 Path="DataContext.Source"/>
+                        <Binding Path="Name"/>
+                        <Binding RelativeSource="{RelativeSource Mode=Self}" Path="Name"/>
+                    </MultiBinding>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <converter:SourceFamilyColorConverter x:Key="BkgSourceFamilyConverter" />
+        <Style x:Key="StyleLabelFamily" TargetType="{x:Type Label}"
+               BasedOn="{StaticResource StyleLabelDistance}">
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="{StaticResource DefaultMargin}"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <MultiBinding Converter="{StaticResource BkgSourceFamilyConverter}">
+                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" 
+                                 Path="DataContext.Original"/>
+                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" 
+                                 Path="DataContext.Source"/>
+                        <Binding RelativeSource="{RelativeSource Mode=Self}" Path="Name"/>
+                    </MultiBinding>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="StyleSourceCombobox" TargetType="{x:Type Grid}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <MultiBinding Converter="{StaticResource BkgSourceFamilyConverter}">
+                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" 
+                                 Path="DataContext.Original"/>
+                        <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" 
+                                 Path="DataContext.Source"/>
+                        <Binding RelativeSource="{RelativeSource Mode=Self}" Path="Name"/>
+                    </MultiBinding>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ICSourceListViewItem" TargetType="{x:Type ListViewItem}">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        </Style>
+
+        <Style x:Key="StyleListView" TargetType="{x:Type ListView}">
+            <Setter Property="Margin" Value="2, 6, 2, 2"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        </Style>
+    </Window.Resources>
+    <Window.DataContext>
+        <local:MetadataDuplicateDialogModel/>
+    </Window.DataContext>
+    <DockPanel>
+        <WrapPanel Margin="5" 
+                   DockPanel.Dock="Bottom"
+                   HorizontalAlignment="Right">
+            <Button IsDefault="True" 
+                    Style="{StaticResource DialogButton}"
+                    Click="Button_Click">_Ok</Button>
+        </WrapPanel>
+        <Expander IsExpanded="{Binding IsSearchOptionExpanded}"
+                  DockPanel.Dock="Top">
+            <Expander.Header>
+                <WrapPanel Margin="{StaticResource DefaultMargin}">
+                    <TextBlock Text="Dublicate search options"
+                               Margin="{StaticResource DefaultMargin}"
+                               VerticalAlignment="Center"/>
+                    <Button Content="Use Filter"
+                            Command="{Binding UseFilterCommand}"
+                            Click="Button_Use_Filter"
+                            Margin="115, 0, 0, 0" />
+                </WrapPanel>
+            </Expander.Header>
+            <Expander.Content>
+                <Grid MinHeight="200">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <GroupBox Header="Family Information"
+                              Grid.Column="0" Grid.Row="0">
+                        <DockPanel LastChildFill="True">
+                            <WrapPanel Orientation="Horizontal"
+                                       HorizontalAlignment="Right"
+                                       DockPanel.Dock="Bottom">
+                                <Button Content="Deselect all" 
+                                        Command="{Binding DeselectAllCommand}"
+                                        CommandParameter="{Binding FamilyInformations}"
+                                        MinWidth="80"
+                                        Margin="{StaticResource DefaultMargin}"/>
+                                <Button Content="Select all"
+                                        Command="{Binding SelectAllCommand}"
+                                        CommandParameter="{Binding FamilyInformations}"
+                                        MinWidth="80"
+                                        Margin="{StaticResource DefaultMargin}"/>
+                            </WrapPanel>
+                            <ListBox x:Name="lstFamilyInformations" 
+                                     ItemsSource="{Binding FamilyInformations}"
+                                     Margin="{StaticResource DefaultMargin}"
+                                     DockPanel.Dock="Top">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="MetadataComparerFamilyViewModel">
+                                        <ContentPresenter>
+                                            <ContentPresenter.Content>
+                                                <CheckBox IsChecked="{Binding Checked}"
+                                                          Content="{Binding PropertyName}"/>
+                                            </ContentPresenter.Content>
+                                        </ContentPresenter>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </DockPanel>
+                    </GroupBox>
+                    <GroupBox Header="Family Parameters"
+                              Grid.Column="1" Grid.Row="0">
+                        <DockPanel LastChildFill="True">
+                            <WrapPanel Orientation="Horizontal"
+                                       HorizontalAlignment="Right"
+                                       DockPanel.Dock="Bottom">
+                                <Button Content="Deselect all" 
+                                        Command="{Binding DeselectAllCommand}"
+                                        CommandParameter="{Binding FamilyParameters}"
+                                        MinWidth="80"
+                                        Margin="{StaticResource DefaultMargin}"/>
+                                <Button Content="Select all"
+                                        Command="{Binding SelectAllCommand}"
+                                        CommandParameter="{Binding FamilyParameters}"
+                                        MinWidth="80"
+                                        Margin="{StaticResource DefaultMargin}"/>
+                            </WrapPanel>
+                            <ListBox x:Name="lstFamilyParameters" 
+                                     ItemsSource="{Binding FamilyParameters}"
+                                     Margin="{StaticResource DefaultMargin}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="MetadataComparerParameterViewModel">
+                                        <ContentPresenter>
+                                            <ContentPresenter.Content>
+                                                <CheckBox IsChecked="{Binding Checked}"
+                                                          Content="{Binding PropertyName}"/>
+                                            </ContentPresenter.Content>
+                                        </ContentPresenter>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </DockPanel>
+                    </GroupBox>
+                    <GroupBox Header="Family Type"
+                              Grid.Column="2" Grid.Row="0">
+                        <DockPanel LastChildFill="True">
+                            <WrapPanel Orientation="Horizontal"
+                                       HorizontalAlignment="Right"
+                                       DockPanel.Dock="Bottom">
+                                <Button Content="Deselect all" 
+                                        Command="{Binding DeselectAllCommand}"
+                                        CommandParameter="{Binding FamilyTypes}"
+                                        MinWidth="80"
+                                        Margin="{StaticResource DefaultMargin}"/>
+                                <Button Content="Select all"
+                                        Command="{Binding SelectAllCommand}"
+                                        CommandParameter="{Binding FamilyTypes}"
+                                        MinWidth="80"
+                                        Margin="{StaticResource DefaultMargin}"/>
+                            </WrapPanel>
+                            <ListBox x:Name="lstFamilyTypes" 
+                                     ItemsSource="{Binding FamilyTypes}"
+                                     Margin="{StaticResource DefaultMargin}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="MetadataComparerFamilyTypeViewModel">
+                                        <ContentPresenter>
+                                            <ContentPresenter.Content>
+                                                <CheckBox IsChecked="{Binding Checked}"
+                                                          Content="{Binding PropertyName}"/>
+                                            </ContentPresenter.Content>
+                                        </ContentPresenter>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </DockPanel>
+                    </GroupBox>
+                    <GroupBox Header="Family Type Parameters"
+                              Grid.Column="3" Grid.Row="0">
+                        <DockPanel LastChildFill="True">
+                            <WrapPanel Orientation="Horizontal"
+                                       HorizontalAlignment="Right"
+                                       DockPanel.Dock="Bottom">
+                                <Button Content="Deselect all" 
+                                        Command="{Binding DeselectAllCommand}"
+                                        CommandParameter="{Binding FamilyTypeParameters}"
+                                        MinWidth="80"
+                                        Margin="{StaticResource DefaultMargin}"/>
+                                <Button Content="Select all"
+                                        Command="{Binding SelectAllCommand}"
+                                        CommandParameter="{Binding FamilyTypeParameters}"
+                                        MinWidth="80"
+                                        Margin="{StaticResource DefaultMargin}"/>
+                            </WrapPanel>
+                            <ListBox x:Name="lstFamilyTypeParameters" 
+                                     ItemsSource="{Binding FamilyTypeParameters}"
+                                     Margin="{StaticResource DefaultMargin}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="MetadataComparerParameterViewModel">
+                                        <ContentPresenter>
+                                            <ContentPresenter.Content>
+                                                <CheckBox IsChecked="{Binding Checked}"
+                                                          Content="{Binding PropertyName}"/>
+                                            </ContentPresenter.Content>
+                                        </ContentPresenter>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </DockPanel>
+                    </GroupBox>
+                </Grid>
+            </Expander.Content>
+        </Expander>
+        <ListBox x:Name="lstRevitFiles"
+                 ItemsSource="{Binding Models}"
+                 SelectedItem="{Binding SelectedModel}"
+                 Margin="{StaticResource DefaultMargin}"
+                 DockPanel.Dock="Left"
+                 HorizontalContentAlignment="Stretch"
+                 SelectionChanged="LstRevitFiles_SelectionChanged">
+            <ListBox.ItemTemplate >
+                <DataTemplate DataType="{x:Type model:OriginalFamilyViewModel}">
+                    <ContentPresenter>
+                        <ContentPresenter.Content>
+                            <Grid HorizontalAlignment="{Binding HorizontalAlignment,
+                                                                RelativeSource={RelativeSource FindAncestor, 
+                                                                AncestorType={x:Type ListBoxItem}},
+                                                                Mode=OneWay}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="25"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding ModelName}"
+                                           TextTrimming="CharacterEllipsis" 
+                                           Grid.Column="0" />
+                                <TextBlock Text="{Binding DublicateCount}" 
+                                           HorizontalAlignment="Right"
+                                           Padding="15, 0, 0, 0" 
+                                           Grid.Column="1" />
+                            </Grid>
+                        </ContentPresenter.Content>
+                    </ContentPresenter>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Grid x:Name="GridDublicate"
+              DockPanel.Dock="Right"
+              Margin="{StaticResource DefaultMargin}" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <ScrollViewer Margin="{StaticResource DefaultMargin}"
+                          Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"
+                          CanContentScroll="True" 
+                          VerticalContentAlignment="Stretch" 
+                          HorizontalContentAlignment="Stretch">
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Column="0" Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Original"
+                                   Padding="{StaticResource TitlePadding}"
+                                   Margin="{StaticResource DefaultMargin}"
+                                   Grid.Column="0"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock x:Name="OrigName"
+                                   Text="{Binding OriginalName}" 
+                                   Style="{StaticResource StyleTextBlockOriginal}"
+                                   Margin="{StaticResource TitlePadding}"
+                                   Grid.Column="1"/>
+                    </Grid>
+                    <GroupBox Header="Family Informations" 
+                              Margin="{StaticResource DefaultMargin}"
+                              Grid.Column="0" Grid.Row="1" >
+                        <GroupBox.Content>
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Label Content="Display Name"
+                                       Style="{StaticResource StyleLabelParameterName}"
+                                       Grid.Column="0" Grid.Row="0"/>
+                                <TextBlock x:Name="OrigDisplayName"
+                                           Text="{Binding OriginalDisplayName}" 
+                                           Style="{StaticResource StyleTextBlockOriginal}"
+                                           Grid.Column="1" Grid.Row="0"/>
+                                <Label Content="Category" 
+                                       Style="{StaticResource StyleLabelParameterName}"
+                                       Grid.Column="0" Grid.Row="1"/>
+                                <TextBlock x:Name="OrigCategory"
+                                           Text="{Binding OriginalCategory}" 
+                                           Style="{StaticResource StyleTextBlockOriginal}"
+                                           Grid.Column="1" Grid.Row="1"/>
+                                <Label Content="OmniClass" 
+                                       Style="{StaticResource StyleLabelParameterName}"
+                                       Grid.Column="0" Grid.Row="2"/>
+                                <TextBlock x:Name="OrigOmniClass"
+                                           Text="{Binding OriginalOmniClass}" 
+                                           Style="{StaticResource StyleTextBlockOriginal}"
+                                           Grid.Column="1" Grid.Row="2"/>
+                                <Label Content="Updated" 
+                                       Style="{StaticResource StyleLabelParameterName}"
+                                       Grid.Column="2" Grid.Row="0"/>
+                                <TextBlock x:Name="OrigUpdated"
+                                           Text="{Binding OriginalUpdated}" 
+                                           Style="{StaticResource StyleTextBlockOriginal}"
+                                           Grid.Column="3" Grid.Row="0"/>
+                                <Label Content="Product" 
+                                       Style="{StaticResource StyleLabelParameterName}"
+                                       Grid.Column="2" Grid.Row="1"/>
+                                <TextBlock x:Name="OrigProduct"
+                                           Text="{Binding OriginalProduct}" 
+                                           Style="{StaticResource StyleTextBlockOriginal}"
+                                           Grid.Column="3" Grid.Row="1"/>
+                                <Label Content="Library Path" 
+                                       Style="{StaticResource StyleLabelParameterName}"
+                                       Grid.Column="0" Grid.Row="4"/>
+                                <TextBlock x:Name="OrigLibraryPath"
+                                           Text="{Binding OriginalLibraryPath}" 
+                                           Style="{StaticResource StyleTextBlockOriginal}"
+                                           ToolTip="{Binding OriginalLibraryPath}"
+                                           Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="4" />
+                            </Grid>
+                        </GroupBox.Content>
+                    </GroupBox>
+                    <GroupBox Header="Family Parameter" 
+                              Margin="{StaticResource DefaultMargin}"
+                              Grid.Column="0" Grid.Row="2">
+                        <GroupBox.Content>
+                            <ListView x:Name="lstOrigFamPar"
+                                      ItemsSource="{Binding OriginalFamilyParameters}"
+                                      Style="{StaticResource StyleListView}"
+                                      ItemContainerStyle="{StaticResource ICSourceListViewItem}">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Id" Width="{StaticResource IdColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock x:Name="Id"
+                                                               Text="{Binding Id}"
+                                                               Style="{StaticResource StyleOriginalFamilyParameter}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Name" Width="{StaticResource NameColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock x:Name="Name"
+                                                               Text="{Binding Name}"
+                                                               Style="{StaticResource StyleOriginalFamilyParameter}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Value" Width="{StaticResource ValueColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock x:Name="Value"
+                                                               Text="{Binding Value}"
+                                                               Style="{StaticResource StyleOriginalFamilyParameter}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Value Type" Width="{StaticResource ValueTypeColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock x:Name="ValueType"
+                                                               Text="{Binding ValueType}"
+                                                               Style="{StaticResource StyleOriginalFamilyParameter}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </GroupBox.Content>
+                    </GroupBox>
+                    <GroupBox Margin="{StaticResource DefaultMargin}"
+                              Grid.Column="0" Grid.Row="3">
+                        <GroupBox.Header>
+                            <DockPanel LastChildFill="True">
+                                <TextBlock Text="Family Type" 
+                                           Margin="{StaticResource MarginFamilyType}"
+                                           DockPanel.Dock="Left"
+                                           VerticalAlignment="Center"/>
+                                <ComboBox x:Name="cbxOriginalSelected" 
+                                          ItemsSource="{Binding OriginalFamilyTypes}"
+                                          SelectedItem="{Binding OriginalSelectedFamilyType}"
+                                          MinWidth="200"
+                                          DisplayMemberPath="Name" 
+                                          VerticalContentAlignment="Center" 
+                                          SelectionChanged="CbxOriginalSelected_SelectionChanged"/>
+                            </DockPanel>
+                        </GroupBox.Header>
+                        <GroupBox.Content>
+                            <ListView x:Name="lstOrigFamTypePar"
+                                      ItemsSource="{Binding OriginalFamilyTypeParameters}"
+                                      Style="{StaticResource StyleListView}"
+                                      ItemContainerStyle="{StaticResource ICSourceListViewItem}">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Id" 
+                                                        Width="{StaticResource IdColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock x:Name="Id"
+                                                               Text="{Binding Id}"
+                                                               Style="{StaticResource StyleOriginalFamilyTypeParameter}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Name" 
+                                                        Width="{StaticResource NameColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock x:Name="Name"
+                                                               Text="{Binding Name}"
+                                                               Style="{StaticResource StyleOriginalFamilyTypeParameter}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Value" 
+                                                        Width="{StaticResource ValueColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock x:Name="Value"
+                                                               Text="{Binding Value}"
+                                                               Style="{StaticResource StyleOriginalFamilyTypeParameter}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Value Type"
+                                                        Width="{StaticResource ValueTypeColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock x:Name="ValueType"
+                                                               Text="{Binding ValueType}"
+                                                               Style="{StaticResource StyleOriginalFamilyTypeParameter}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Is Instance" 
+                                                        Width="{StaticResource IsInstanceColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock x:Name="IsInstance"
+                                                               Text="{Binding IsInstance}"
+                                                               Style="{StaticResource StyleOriginalFamilyTypeParameter}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </GroupBox.Content>
+                    </GroupBox>
+                    <Grid Grid.Column="1" Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Source" 
+                                   Padding="{StaticResource TitlePadding}"
+                                   Margin="{StaticResource DefaultMargin}"
+                                   VerticalAlignment="Center"/>
+                        <ComboBox x:Name="cbxDublicated"
+                                  ItemsSource="{Binding Duplicated}"
+                                  Grid.Column="1" Grid.Row="0" 
+                                  HorizontalContentAlignment="Stretch"
+                                  SelectionChanged="CbxDublicated_SelectionChanged">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type model:DuplicateFamilyViewModel}">
+                                    <Grid x:Name="SrcModel" 
+                                          VerticalAlignment="Center"
+                                          Style="{StaticResource StyleSourceCombobox}">
+                                        <Label x:Name="SrcName" 
+                                               Style="{StaticResource StyleLabelFamily}"
+                                               VerticalAlignment="Center"
+                                               Padding="1" Margin="1">
+                                            <Label.Content>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="{Binding DisplayName}"
+                                                               Style="{StaticResource StyleTextBlockValue}"
+                                                               Grid.Column="0"/>
+                                                    <TextBlock Text="{Binding DisplayeNameDistance}"
+                                                               Style="{StaticResource StyleTextBlockDistance}"
+                                                               Grid.Column="1"/>
+                                                </Grid>
+                                            </Label.Content>
+                                        </Label>
+                                        <ItemsPresenter/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Label Content="Model" 
+                               Style="{StaticResource StyleLabelParameterName}"
+                               Margin="10, 0, 3, 0"
+                               Grid.Column="2" Grid.Row="0"/>
+                        <Label Style="{StaticResource StyleLabelParameterName}"
+                               Background="Wheat"
+                               Margin="6,0"
+                               Grid.Column="3" Grid.Row="0">
+                            <Label.Content>
+                                <TextBlock Text="{Binding SourceLevenstein}"
+                                           Style="{StaticResource StyleTextBlockDistance}"/>
+                            </Label.Content>
+                        </Label>
+                    </Grid>
+                    <GroupBox Header="Family Informations" 
+                              Margin="{StaticResource DefaultMargin}"
+                              Grid.Column="1" Grid.Row="1" >
+                        <GroupBox.Content>
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Label Content="Display Name" 
+                                       Style="{StaticResource StyleLabelParameterName}"
+                                       Grid.Column="0" Grid.Row="0"/>
+                                <Label x:Name="SrcDisplayName" 
+                                       Style="{StaticResource StyleLabelFamily}"
+                                       Grid.Column="1" Grid.Row="0">
+                                    <Label.Content>
+                                        <DockPanel LastChildFill="True">
+                                            <TextBlock Text="{Binding SourceDisplayNameDistance}"
+                                                       Style="{StaticResource StyleTextBlockDistance}"
+                                                       DockPanel.Dock="Right"/>
+                                            <TextBlock Text="{Binding SourceDisplayName}"
+                                                       Style="{StaticResource StyleTextBlockValue}"/>
+                                        </DockPanel>
+                                    </Label.Content>
+                                </Label>
+                                <Label Content="Category" 
+                                       Style="{StaticResource StyleLabelParameterName}"
+                                       Grid.Column="0" Grid.Row="1"/>
+                                <Label x:Name="SrcCategory" 
+                                       Style="{StaticResource StyleLabelFamily}"
+                                       Grid.Column="1" Grid.Row="1">
+                                    <Label.Content>
+                                        <DockPanel LastChildFill="True">
+                                            <TextBlock Text="{Binding SourceCategoryDistance}"
+                                                       Style="{StaticResource StyleTextBlockDistance}"
+                                                       DockPanel.Dock="Right"/>
+                                            <TextBlock Text="{Binding SourceCategory}"
+                                                       Style="{StaticResource StyleTextBlockValue}"/>
+                                        </DockPanel>
+                                    </Label.Content>
+                                </Label>
+                                <Label Content="OmniClass" 
+                                       Style="{StaticResource StyleLabelParameterName}"
+                                       Grid.Column="0" Grid.Row="2"/>
+                                <Label x:Name="SrcOmniClass" 
+                                       Style="{StaticResource StyleLabelFamily}"
+                                       Grid.Column="1" Grid.Row="2">
+                                    <Label.Content>
+                                        <DockPanel LastChildFill="True">
+                                            <TextBlock Text="{Binding SourceOmniClassDistance}"
+                                                       Style="{StaticResource StyleTextBlockDistance}"
+                                                       DockPanel.Dock="Right"/>
+                                            <TextBlock Text="{Binding SourceOmniClass}"
+                                                       Style="{StaticResource StyleTextBlockValue}"/>
+                                        </DockPanel>
+                                    </Label.Content>
+                                </Label>
+                                <Label Content="Updated" 
+                                       Style="{StaticResource StyleLabelParameterName}"
+                                       Grid.Column="2" Grid.Row="0"/>
+                                <Label x:Name="SrcUpdated" 
+                                       Style="{StaticResource StyleLabelFamily}"
+                                       Grid.Column="3" Grid.Row="0">
+                                    <Label.Content>
+                                        <DockPanel LastChildFill="True">
+                                            <TextBlock Text="{Binding SourceUpdatedDistance}"
+                                           Style="{StaticResource StyleTextBlockDistance}"
+                                           DockPanel.Dock="Right"/>
+                                            <TextBlock Text="{Binding SourceUpdated}"
+                                                       Style="{StaticResource StyleTextBlockValue}"/>
+                                        </DockPanel>
+                                    </Label.Content>
+                                </Label>
+                                <Label Content="Product" 
+                                       Style="{StaticResource StyleLabelParameterName}"
+                                       Grid.Column="2" Grid.Row="1"/>
+                                <Label x:Name="SrcProduct" 
+                                       Style="{StaticResource StyleLabelFamily}"
+                                       Grid.Column="3" Grid.Row="1">
+                                    <Label.Content>
+                                        <DockPanel LastChildFill="True">
+                                            <TextBlock Text="{Binding SourceProductDistance}"
+                                                       Style="{StaticResource StyleTextBlockDistance}"
+                                                       DockPanel.Dock="Right"/>
+                                            <TextBlock Text="{Binding SourceProduct}"
+                                                       Style="{StaticResource StyleTextBlockValue}"/>
+                                        </DockPanel>
+                                    </Label.Content>
+                                </Label>
+                                <Label Content="Library Path" 
+                                       Style="{StaticResource StyleLabelParameterName}"
+                                       Grid.Column="0" Grid.Row="3"/>
+                                <Label x:Name="SrcLibraryPath" 
+                                       Style="{StaticResource StyleLabelFamily}"
+                                       Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3">
+                                    <Label.Content>
+                                        <DockPanel LastChildFill="True">
+                                            <TextBlock Text="{Binding SourceLibraryPathDistance}"
+                                                       Style="{StaticResource StyleTextBlockDistance}"
+                                                       DockPanel.Dock="Right"/>
+                                            <TextBlock Text="{Binding SourceLibraryPath}"
+                                                       ToolTip="{Binding SourceLibraryPath}"
+                                                       Style="{StaticResource StyleTextBlockValue}"/>
+                                        </DockPanel>
+                                    </Label.Content>
+                                </Label>
+                            </Grid>
+                        </GroupBox.Content>
+                    </GroupBox>
+                    <GroupBox Header="Family Parameter" 
+                              Margin="{StaticResource DefaultMargin}"
+                              Grid.Column="1" Grid.Row="2" 
+                              Grid.IsSharedSizeScope="True" >
+                        <GroupBox.Content>
+                            <ListView x:Name="lstSrcFamPar"
+                                      ItemsSource="{Binding SourceFamilyParameters}"
+                                      Style="{StaticResource StyleListView}"
+                                      ItemContainerStyle="{StaticResource ICSourceListViewItem}">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Id"
+                                                        Width="{StaticResource IdColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel x:Name="Id" LastChildFill="True"
+                                                               Style="{StaticResource StyleFamilyParameter}">
+                                                        <TextBlock Text="{Binding IdDistance}"
+                                                                   Style="{StaticResource StyleTextBlockDistance}"
+                                                                   DockPanel.Dock="Right"/>
+                                                        <TextBlock Text="{Binding Id}"
+                                                                   Style="{StaticResource StyleSourceListTextBlockValue}"/>
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Name" 
+                                                        Width="{StaticResource NameColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel x:Name="Name" LastChildFill="True"
+                                                               Style="{StaticResource StyleFamilyParameter}">
+                                                        <TextBlock Text="{Binding NameDistance}"
+                                                                   Style="{StaticResource StyleTextBlockDistance}"
+                                                                   DockPanel.Dock="Right"/>
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   Style="{StaticResource StyleSourceListTextBlockValue}"/>
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Value" 
+                                                        Width="{StaticResource ValueColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel x:Name="Value" LastChildFill="True"
+                                                               Style="{StaticResource StyleFamilyParameter}">
+                                                        <TextBlock Text="{Binding ValueDistance}"
+                                                                   Style="{StaticResource StyleTextBlockDistance}"
+                                                                   DockPanel.Dock="Right"/>
+                                                        <TextBlock Text="{Binding Value}"
+                                                                   Style="{StaticResource StyleSourceListTextBlockValue}"/>
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Value Type" 
+                                                        Width="{StaticResource ValueTypeColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel x:Name="ValueType" LastChildFill="True"
+                                                               Style="{StaticResource StyleFamilyParameter}">
+                                                        <TextBlock Text="{Binding ValueTypeDistance}"
+                                                                   Style="{StaticResource StyleTextBlockDistance}"
+                                                                   DockPanel.Dock="Right"/>
+                                                        <TextBlock Text="{Binding ValueType}"
+                                                                   Style="{StaticResource StyleSourceListTextBlockValue}"/>
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </GroupBox.Content>
+                    </GroupBox>
+                    <GroupBox Margin="{StaticResource DefaultMargin}"
+                              Grid.Column="1" Grid.Row="3"
+                              Grid.IsSharedSizeScope="True" >
+                        <GroupBox.Header>
+                            <DockPanel LastChildFill="True">
+                                <TextBlock Text="Family Type" 
+                                           Margin="{StaticResource MarginFamilyType}"
+                                           DockPanel.Dock="Left"
+                                           VerticalAlignment="Center"/>
+                                <ComboBox x:Name="cbxSourceSelected" 
+                                          ItemsSource="{Binding SourceFamilyTypes}"
+                                          SelectedItem="{Binding SourceSelectedFamilyType}"
+                                          MinWidth="200"
+                                          DisplayMemberPath="Name" 
+                                          VerticalContentAlignment="Center" 
+                                          SelectionChanged="CbxSourceSelected_SelectionChanged"/>
+                            </DockPanel>
+                        </GroupBox.Header>
+                        <GroupBox.Content>
+                            <ListView x:Name="lstSrcFamTypePar"
+                                      ItemsSource="{Binding SourceFamilyTypeParameters}"
+                                      Style="{StaticResource StyleListView}"
+                                      ItemContainerStyle="{StaticResource ICSourceListViewItem}">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Id" 
+                                                        Width="{StaticResource IdColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel x:Name="Id"
+                                                               Style="{StaticResource StyleFamilyTypeParameter}"
+                                                               LastChildFill="True">
+                                                        <TextBlock Text="{Binding IdDistance}"
+                                                                   Style="{StaticResource StyleTextBlockDistance}"
+                                                                   DockPanel.Dock="Right"/>
+                                                        <TextBlock Text="{Binding Id}"
+                                                                   Style="{StaticResource StyleSourceListTextBlockValue}"/>
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Name" 
+                                                        Width="{StaticResource NameColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel x:Name="Name"
+                                                               Style="{StaticResource StyleFamilyTypeParameter}"
+                                                               LastChildFill="True">
+                                                        <TextBlock Text="{Binding NameDistance}"
+                                                                   Style="{StaticResource StyleTextBlockDistance}"
+                                                                   DockPanel.Dock="Right"/>
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   Style="{StaticResource StyleSourceListTextBlockValue}"/>
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Value" 
+                                                        Width="{StaticResource ValueColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel x:Name="Value"
+                                                               Style="{StaticResource StyleFamilyTypeParameter}"
+                                                               LastChildFill="True">
+                                                        <TextBlock Text="{Binding ValueDistance}"
+                                                                   Style="{StaticResource StyleTextBlockDistance}"
+                                                                   DockPanel.Dock="Right"/>
+                                                        <TextBlock Text="{Binding Value}"
+                                                                   Style="{StaticResource StyleSourceListTextBlockValue}"/>
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Value Type" 
+                                                        Width="{StaticResource ValueTypeColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel x:Name="ValueType"
+                                                               Style="{StaticResource StyleFamilyTypeParameter}"
+                                                               LastChildFill="True">
+                                                        <TextBlock Text="{Binding ValueTypeDistance}"
+                                                                   Style="{StaticResource StyleTextBlockDistance}"
+                                                                   DockPanel.Dock="Right"/>
+                                                        <TextBlock Text="{Binding ValueType}"
+                                                                   Style="{StaticResource StyleSourceListTextBlockValue}"/>
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Is Instance" 
+                                                        Width="{StaticResource IsInstanceColWidth}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel x:Name="IsInstance"
+                                                               Style="{StaticResource StyleFamilyTypeParameter}"
+                                                               LastChildFill="True">
+                                                        <TextBlock Text="{Binding IsInstanceDistance}"
+                                                                   Style="{StaticResource StyleTextBlockDistance}"
+                                                                   DockPanel.Dock="Right"/>
+                                                        <TextBlock Text="{Binding IsInstance}"
+                                                                   Style="{StaticResource StyleSourceListTextBlockValue}"/>
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </GroupBox.Content>
+                    </GroupBox>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+    </DockPanel>
+</Window>

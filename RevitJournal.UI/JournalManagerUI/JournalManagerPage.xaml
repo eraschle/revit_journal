@@ -1,0 +1,227 @@
+﻿<Page x:Class="RevitJournalUI.JournalManagerUI.JournalManagerPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:RevitJournalUI.JournalManagerUI"
+      xmlns:task="clr-namespace:RevitJournalUI.JournalTaskUI"
+      xmlns:options="clr-namespace:RevitJournalUI.JournalTaskUI.Options"
+      xmlns:filter="clr-namespace:RevitJournalUI.JournalTaskUI.FamilyFilter"
+      mc:Ignorable="d" 
+      d:DesignHeight="700" d:DesignWidth="1000"
+      Title="JournalManagerPage" Loaded="Page_Loaded">
+    <Page.Resources>
+        <CollectionViewSource x:Key="FilterListBox" Source="{Binding FilterViewModels}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Group" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+    </Page.Resources>
+    <Page.DataContext>
+        <local:JournalManagerPageModel/>
+    </Page.DataContext>
+    <DockPanel LastChildFill="True">
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Grid x:Name="Directories"
+                  Margin="{StaticResource DefaultMargin}"
+                  Grid.Column="0" Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition MinWidth="120" Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Journal Directory" 
+                       Grid.Column="0" Grid.Row="0"/>
+                <TextBlock Text="{Binding JournalDirectory}"
+                           Margin="{StaticResource DefaultMargin}"
+                           Grid.Column="1" Grid.Row="0"
+                           VerticalAlignment="Center"/>
+                <Button Content="Choose" 
+                        Command="{Binding ChooseJournalDirectoryCommand}"
+                        CommandParameter="{Binding JournalDirectory}"
+                        Style="{StaticResource DialogButton}"
+                        Grid.Column="2" Grid.Row="0"/>
+                <Label Content="Family Directory" 
+                       Grid.Column="0" Grid.Row="1"/>
+                <TextBlock Text="{Binding FamilyDirectory}"
+                           Margin="{StaticResource DefaultMargin}"
+                           Grid.Column="1" Grid.Row="1"
+                           VerticalAlignment="Center"/>
+                <Button Content="Choose" 
+                        Command="{Binding ChooseFamilyDirectoryCommand}"
+                        CommandParameter="{Binding FamilyDirectory}"
+                        Style="{StaticResource DialogButton}"
+                        Grid.Column="2" Grid.Row="1"/>
+                <Grid Grid.Column="0" Grid.ColumnSpan="2"
+                      Grid.Row="2" Grid.RowSpan="4">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid x:Name="Progess" 
+                              Grid.Column="0" Grid.Row="0"
+                              Margin="{StaticResource DefaultMargin}" 
+                              Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition MinWidth="50" Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="{Binding LoadingProcessTitel}" 
+                                   Grid.Column="0"/>
+                            <ProgressBar Value="{Binding LoadingProcessPercent}"
+                                         Minimum="0" Maximum="100" 
+                                         Grid.Column="1"/>
+                        </Grid>
+                        <Grid x:Name="Setup" 
+                              Grid.Column="0" Grid.Row="0"
+                              Margin="{StaticResource DefaultMargin}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition MinWidth="{StaticResource MinWidthButton}" Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Filter" Grid.Column="0" 
+                                   Margin="0" Padding="0"
+                                   VerticalAlignment="Center"/>
+                            <Button Content="Setup"
+                                    Command="{Binding SetupFilterCommand}"
+                                    CommandParameter="{Binding FamilyOverviewViewModel.DirectoryViewModels}"
+                                    Visibility="{Binding SetupFilterVisibility}"
+                                    Margin="{StaticResource DefaultMargin}"
+                                    Grid.Column="1"/>
+                        </Grid>
+                        <ListBox ItemsSource="{Binding Source={StaticResource FilterListBox}}" 
+                                 Margin="{StaticResource DefaultMargin}"
+                                 Grid.Column="0" Grid.Row="1">
+                            <ListBox.GroupStyle>
+                                <GroupStyle>
+                                    <GroupStyle.Panel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel Orientation="Vertical" />
+                                        </ItemsPanelTemplate>
+                                    </GroupStyle.Panel>
+                                    <GroupStyle.ContainerStyle>
+                                        <Style TargetType="{x:Type GroupItem}">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate>
+                                                        <Expander Header="{Binding Name}"
+                                                                  IsExpanded="False">
+                                                            <ItemsPresenter/>
+                                                        </Expander>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </GroupStyle.ContainerStyle>
+                                </GroupStyle>
+                            </ListBox.GroupStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type filter:FilterViewModel}">
+                                    <Border BorderThickness="0">
+                                        <Grid>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Filter}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}">
+                                    <Setter Property="Padding" Value="0" />
+                                    <Setter Property="Margin" Value="25,0,0,0" />
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                        <Grid Grid.Column="1" Grid.Row="0"
+                              Margin="{StaticResource DefaultMargin}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition MinWidth="{StaticResource MinWidthButton}" 
+                                                  Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Journal Tasks" Grid.Column="0"
+                                   Margin="0" Padding="0"
+                                   VerticalAlignment="Center"/>
+                            <Button Content="Setup" 
+                                    Command="{Binding SetupJournalCommand}"
+                                    CommandParameter="{Binding JournalManager}"
+                                    Visibility="{Binding SetupJournalVisibility}"
+                                    Margin="{StaticResource DefaultMargin}"
+                                    Grid.Column="1"/>
+                        </Grid>
+                        <ListBox ItemsSource="{Binding JournalCommands}" 
+                                 DisplayMemberPath="Name"
+                                 Margin="{StaticResource DefaultMargin}"
+                                 Grid.Column="1" Grid.Row="1"/>
+                    </Grid>
+                </Grid>
+                <Button Content="{Binding DuplicateButtonName}"
+                        Grid.Column="2" Grid.Row="4" 
+                        Style="{StaticResource DialogButton}"
+                        Command="{Binding DuplicateCommand}"
+                        CommandParameter="{Binding FamilyOverviewViewModel}"/>
+                <Button Content="{Binding EditButtonName}"
+                        Grid.Column="2" Grid.Row="5" 
+                        Style="{StaticResource DialogButton}"
+                        Command="{Binding EditCommand}"
+                        CommandParameter="{Binding FamilyOverviewViewModel}"/>
+            </Grid>
+            <options:JournalTaskOptionView Grid.Column="1" Grid.Row="0"
+                                           Margin="{StaticResource DefaultMargin}"
+                                           DataContext="{Binding TaskOptionViewModel}"/>
+        </Grid>
+        <WrapPanel DockPanel.Dock="Bottom" 
+                   Margin="{StaticResource DefaultMargin}"
+                   HorizontalAlignment="Right">
+            <WrapPanel Visibility="{Binding JournalCommandVisibility}">
+                <Button Content="Cancel" 
+                        Visibility="{Binding CancelButtonVisibility}"
+                        IsEnabled="{Binding CancelButtonEnable}"
+                        Command="{Binding CancelJournalCommand}"
+                        Style="{StaticResource DialogButton}"/>
+                <Button Content="Back"  
+                        Visibility="{Binding BackButtonVisibility}"
+                        Command="{Binding BackJournalCommand}"
+                        Style="{StaticResource DialogButton}"/>
+                <Button Content="Run" 
+                        IsEnabled="{Binding RunButtonEnable}"
+                        Command="{Binding ExecuteJournalCommand}"
+                        Style="{StaticResource DialogButton}"/>
+            </WrapPanel>
+            <WrapPanel Visibility="{Binding RevitFilesVisibility}">
+                <Button Content="{Binding CreateButtonName}"
+                        Command="{Binding CreateJournalCommand}" 
+                        CommandParameter="{Binding FamilyOverviewViewModel}"
+                        Style="{StaticResource DialogButton}"/>
+            </WrapPanel>
+        </WrapPanel>
+        <Grid>
+            <Grid Visibility="{Binding RevitFilesVisibility}"
+                  Margin="{StaticResource DefaultMargin}">
+                <task:FamilyOverviewView DataContext="{Binding FamilyOverviewViewModel}"/>
+            </Grid>
+            <Grid Visibility="{Binding JournalCommandVisibility}"
+                  Margin="{StaticResource DefaultMargin}">
+                <task:JournalTaskOverviewView DataContext="{Binding JournalTaskOverviewViewModel }"/>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</Page>

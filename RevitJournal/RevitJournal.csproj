@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props')" />
+  <Import Project="..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props" Condition="Exists('..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.NetCore.Analyzers.2.9.8\build\Microsoft.NetCore.Analyzers.props" Condition="Exists('..\packages\Microsoft.NetCore.Analyzers.2.9.8\build\Microsoft.NetCore.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\build\Microsoft.CodeQuality.Analyzers.props" Condition="Exists('..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\build\Microsoft.CodeQuality.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props')" />
+  <Import Project="..\packages\Roslyn.Diagnostics.Analyzers.2.9.8\build\Roslyn.Diagnostics.Analyzers.props" Condition="Exists('..\packages\Roslyn.Diagnostics.Analyzers.2.9.8\build\Roslyn.Diagnostics.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.CodeAnalysis.PublicApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.PublicApiAnalyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.PublicApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.PublicApiAnalyzers.props')" />
+  <Import Project="..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.BannedApiAnalyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.BannedApiAnalyzers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3681F659-8BD6-4D3E-A008-8C0D64E95377}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RevitJournal</RootNamespace>
+    <AssemblyName>RevitJournal</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAddInUtility, Version=17.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit 2017\RevitAddInUtility.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPI">
+      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit 2017\RevitAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>..\..\..\..\..\Program Files\Autodesk\Revit 2017\RevitAPIUI.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Duplicate\Comparer\ADuplicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\ACollectionDuplicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\FamilyComparer\FamilyUpdatedDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\FamilyComparer\FamilyProductDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\FamilyComparer\FamilyOmniClassDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\FamilyComparer\FamilyLibraryPathDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\FamilyComparer\FamilyCategoryDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\FamilyComparer\FamilyDisplayNameDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\FamilyComparer\FamilyNameDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\FamilyTypeComparer\FamilyTypeParametersDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\FamilyTypeComparer\FamilyTypeNameDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\FamilyComparer\FamilyFamilyTypesDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\ILevenstheinComparer.cs" />
+    <Compile Include="Duplicate\Comparer\IDuplicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\FamilyComparer\FamilyParametersDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\IModelDuplicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\LevenstheinHelper.cs" />
+    <Compile Include="Duplicate\Comparer\ParameterComparer\ParameterInstanceDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\ParameterComparer\ParameterReadOnlyDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\ParameterComparer\ParameterParameterTypeDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\ParameterComparer\ParameterValueTypeDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\ParameterComparer\ParameterValueDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\ParameterComparer\ParameterIdDublicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\ParameterComparer\ParameterNameDublicateComparer.cs" />
+    <Compile Include="Duplicate\DuplicateManager.cs" />
+    <Compile Include="Journal\Command\CommandParameterExternalSelect.cs" />
+    <Compile Include="Journal\Command\CommandParameterInfo.cs" />
+    <Compile Include="Journal\Command\AJournalCommandExternal.cs" />
+    <Compile Include="Journal\Command\Document\DocumentSaveParameterBackup.cs" />
+    <Compile Include="Journal\Command\CommandParameterExternal.cs" />
+    <Compile Include="Journal\Command\CommandParameter.cs" />
+    <Compile Include="Journal\Command\AJournalCommand.cs" />
+    <Compile Include="Journal\Command\Document\DocumentOpenCommand.cs" />
+    <Compile Include="Journal\Command\Document\DocumentPurgeUnusedCommand.cs" />
+    <Compile Include="Journal\Command\Document\DocumentSaveAsParameterFolder.cs" />
+    <Compile Include="Journal\Command\Document\DocumentSaveAsParameterFile.cs" />
+    <Compile Include="Journal\Command\Document\DocumentSaveAsCommand.cs" />
+    <Compile Include="Journal\Command\Document\DocumentSaveCommand.cs" />
+    <Compile Include="Journal\Command\IJournalCommandExternal.cs" />
+    <Compile Include="Journal\Command\IJournalCommand.cs" />
+    <Compile Include="Journal\Command\ICommandParameter.cs" />
+    <Compile Include="Journal\Command\JournalCommandComparer.cs" />
+    <Compile Include="Journal\Command\ParameterListConverter.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Revit\Commands\FileCreationManager.cs" />
+    <Compile Include="Revit\Commands\ImageExport\ThreeDImageExportExternalJounralCommand.cs" />
+    <Compile Include="Revit\Commands\ImageExport\TwoDImageExportExternalJounralCommand.cs" />
+    <Compile Include="Journal\Command\JournalBuilder.cs" />
+    <Compile Include="Journal\Command\JournalCommandBuilder.cs" />
+    <Compile Include="Journal\Command\Revit\RevitCloseCommand.cs" />
+    <Compile Include="Journal\Command\Revit\RevitStartCommand.cs" />
+    <Compile Include="Journal\Execution\JournalProcessCreator.cs" />
+    <Compile Include="Journal\Execution\JournalRevitCreator.cs" />
+    <Compile Include="Journal\Execution\JournalRevitReader.cs" />
+    <Compile Include="Journal\Execution\RevitProcess.cs" />
+    <Compile Include="Journal\JournalTask.cs" />
+    <Compile Include="Journal\JournalError.cs" />
+    <Compile Include="Journal\JournalManager.cs" />
+    <Compile Include="Journal\Execution\JournalTaskRunner.cs" />
+    <Compile Include="Journal\JournalOption.cs" />
+    <Compile Include="Journal\JournalResult.cs" />
+    <Compile Include="Journal\Execution\JournalProcessFile.cs" />
+    <Compile Include="Journal\Execution\JournalProcessCommand.cs" />
+    <Compile Include="Journal\Execution\JournalRevitCommand.cs" />
+    <Compile Include="Journal\JournalResultFile.cs" />
+    <Compile Include="Journal\Execution\JournalRevitFile.cs" />
+    <None Include="Resources\AddinTemplate.addin" />
+    <Compile Include="Duplicate\Comparer\FamilyDuplicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\FamilyTypeDuplicateComparer.cs" />
+    <Compile Include="Duplicate\Comparer\ParameterDuplicateComparer.cs" />
+    <Compile Include="Revit\Commands\Metadata\MetadataEditJournalCommand.cs" />
+    <Compile Include="Revit\Commands\Metadata\MetadataCreateJournalCommand.cs" />
+    <Compile Include="Revit\Commands\Parameter\MergeSelectedParameterCommand.cs" />
+    <Compile Include="Revit\Commands\Parameter\AddIfNotCommandParameter.cs" />
+    <Compile Include="Revit\Commands\Parameter\SharedParameterCommandParameter.cs" />
+    <Compile Include="Revit\Commands\Parameter\SharedFileCommandParameter.cs" />
+    <Compile Include="Revit\Commands\Parameter\MergeAllParametersCommand.cs" />
+    <Compile Include="Revit\SharedParameters\SharedGroup.cs" />
+    <Compile Include="Revit\SharedParameters\SharedParameter.cs" />
+    <Compile Include="Revit\SharedParameters\SharedParameterNameReader.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeAnalysis.BannedApiAnalyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.BannedApiAnalyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.PublicApiAnalyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeAnalysis.PublicApiAnalyzers.resources.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.PublicApiAnalyzers.2.9.8\analyzers\dotnet\Microsoft.CodeAnalysis.PublicApiAnalyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.PublicApiAnalyzers.2.9.8\analyzers\dotnet\Microsoft.CodeAnalysis.PublicApiAnalyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\analyzers\dotnet\cs\Microsoft.CodeAnalysis.VersionCheckAnalyzer.resources.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\analyzers\dotnet\Microsoft.CodeAnalysis.VersionCheckAnalyzer.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\analyzers\dotnet\cs\Humanizer.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeQuality.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.CodeQuality.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetCore.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetCore.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetCore.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetCore.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetFramework.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetFramework.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.NetFramework.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetFramework.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\Roslyn.Diagnostics.Analyzers.2.9.8\analyzers\dotnet\cs\Roslyn.Diagnostics.Analyzers.dll" />
+    <Analyzer Include="..\packages\Roslyn.Diagnostics.Analyzers.2.9.8\analyzers\dotnet\cs\Roslyn.Diagnostics.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataSource\DataSource.csproj">
+      <Project>{241F97FA-369A-49FE-8D6A-BF61B2050AD9}</Project>
+      <Name>DataSource</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RevitCommand\RevitCommand.csproj">
+      <Project>{28C6C9A0-B934-4A59-B207-566027F6FA32}</Project>
+      <Name>RevitCommand</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.BannedApiAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.BannedApiAnalyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.PublicApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.PublicApiAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.PublicApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.PublicApiAnalyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Roslyn.Diagnostics.Analyzers.2.9.8\build\Roslyn.Diagnostics.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Roslyn.Diagnostics.Analyzers.2.9.8\build\Roslyn.Diagnostics.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.8\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\build\Microsoft.CodeQuality.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeQuality.Analyzers.2.9.8\build\Microsoft.CodeQuality.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.NetCore.Analyzers.2.9.8\build\Microsoft.NetCore.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NetCore.Analyzers.2.9.8\build\Microsoft.NetCore.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NetFramework.Analyzers.2.9.8\build\Microsoft.NetFramework.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props'))" />
+  </Target>
+</Project>

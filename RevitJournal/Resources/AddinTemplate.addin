@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Command">
+    <Assembly>Gim/GimRevitAddin.dll</Assembly>
+    <ClientId>5cd4edd6-51ef-46c3-9afe-3b9d5fced66e</ClientId>
+    <FullClassName>Gim.Revit.Addin.Docs.DocumentationCommand</FullClassName>
+    <Text>Documentation</Text>
+    <Description>Show how an external application can participate in the journaling mechanism.</Description>
+    <VisibilityMode>NotVisibleWhenNoActiveDocument</VisibilityMode>
+    <VisibilityMode>NotVisibleInProject</VisibilityMode>
+    <VendorId>RASCER</VendorId>
+    <VendorDescription>RASCER Dev</VendorDescription>
+  </AddIn>
+</RevitAddIns>
