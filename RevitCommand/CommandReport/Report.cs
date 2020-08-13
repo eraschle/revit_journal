@@ -12,7 +12,7 @@ namespace RevitCommand.Reports
 
         private readonly ReportJsonDataSource DataSource;
 
-        public Report(RevitFile revitFile)
+        public Report(RevitFamilyFile revitFile)
         {
             DataSource = new ReportJsonDataSource(revitFile);
         }

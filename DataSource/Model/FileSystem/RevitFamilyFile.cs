@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace DataSource.Model.FileSystem
 {
-    public class RevitFile : AFile
+    public class RevitFamilyFile : AFile
     {
         public const string FileExtension = "rfa";
 
@@ -20,7 +20,7 @@ namespace DataSource.Model.FileSystem
 
         protected override string GetTypeName()
         {
-            return nameof(RevitFile);
+            return nameof(RevitFamilyFile);
         }
 
 
@@ -38,13 +38,13 @@ namespace DataSource.Model.FileSystem
             return RevitFamilyBackup.IsMatch(backup);
         }
 
-        public IEnumerable<RevitFile> Backups
+        public IEnumerable<RevitFamilyFile> Backups
         {
             get
             {
                 var search = string.Concat(Name, Constant.Point, Constant.Star, Constant.Point, Extension);
                 return Directory.GetFiles(ParentFolder, search, SearchOption.TopDirectoryOnly)
-                    .Select(path => new RevitFile { FullPath = path })
+                    .Select(path => new RevitFamilyFile { FullPath = path })
                     .Where(rvt => rvt.IsBackup);
             }
         }

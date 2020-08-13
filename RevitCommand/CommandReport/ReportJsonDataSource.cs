@@ -8,7 +8,7 @@ namespace RevitCommand.CommandReport
     {
         public JsonDataSource<Report> JsonDataSource { get; private set; }
 
-        public ReportJsonDataSource(RevitFile revitFile)
+        public ReportJsonDataSource(RevitFamilyFile revitFile)
         {
             JsonDataSource = new JsonDataSource<Report>(revitFile);
         }

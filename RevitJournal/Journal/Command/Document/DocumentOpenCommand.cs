@@ -46,7 +46,7 @@ namespace RevitJournal.Journal.Command.Document
             }
         }
 
-        public RevitFile RevitFile { get; set; }
+        public RevitFamilyFile RevitFile { get; set; }
 
         public override void PreExecutionTask(RevitFamily family)
         {

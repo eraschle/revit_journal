@@ -32,7 +32,7 @@ namespace RevitJournal.Journal
 
         public bool LogError { get; set; } = true;
 
-        public RevitFile GetBackupFile(RevitFile revitFile)
+        public RevitFamilyFile GetBackupFile(RevitFamilyFile revitFile)
         {
             if (BackupRevitFile == false || revitFile is null)
             {
@@ -46,10 +46,10 @@ namespace RevitJournal.Journal
                 {
                     Directory.CreateDirectory(withSubFolder);
                 }
-                backupFile = revitFile.ChangeDirectory<RevitFile>(withSubFolder);
+                backupFile = revitFile.ChangeDirectory<RevitFamilyFile>(withSubFolder);
             }
             var backupFileName = revitFile.Name + BackupSuffix;
-            return backupFile.ChangeFileName<RevitFile>(backupFileName);
+            return backupFile.ChangeFileName<RevitFamilyFile>(backupFileName);
         }
 
         public bool BackupRevitFile { get; set; } = false;

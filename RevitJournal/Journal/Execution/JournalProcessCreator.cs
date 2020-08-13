@@ -26,13 +26,13 @@ namespace RevitJournal.Journal.Execution
         {
             var journalName = GetJournalFileName(family.RevitFile);
             var journalFile = family.RevitFile
-                .ChangeFileName<RevitFile>(journalName)
-                .ChangeDirectory<RevitFile>(journalDirectory)
+                .ChangeFileName<RevitFamilyFile>(journalName)
+                .ChangeDirectory<RevitFamilyFile>(journalDirectory)
                 .ChangeExtension<JournalProcessFile>(JournalProcessFile.JournalProcessExtension);
             return journalFile;
         }
 
-        private static string GetJournalFileName(RevitFile revitFile)
+        private static string GetJournalFileName(RevitFamilyFile revitFile)
         {
             var suffix = DateTime.Now.ToString(SuffixFormatString);
             var fileName = string.Concat(revitFile.Name, Constant.Underline, suffix);

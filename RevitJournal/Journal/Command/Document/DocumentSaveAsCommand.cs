@@ -45,7 +45,7 @@ namespace RevitJournal.Journal.Command.Document
             }
         }
 
-        private RevitFile RevitFile { get; set; }
+        private RevitFamilyFile RevitFile { get; set; }
 
         public override void PostExecutionTask(JournalResult result)
         {
@@ -85,11 +85,11 @@ namespace RevitJournal.Journal.Command.Document
             {
                 Directory.CreateDirectory(backupPath);
             }
-            RevitFile = revitFile.ChangeDirectory<RevitFile>(backupPath);
+            RevitFile = revitFile.ChangeDirectory<RevitFamilyFile>(backupPath);
             if (HasFileSuffix(out var suffix))
             {
                 var saveAsFileName = string.Concat(revitFile.Name, suffix);
-                RevitFile = revitFile.ChangeFileName<RevitFile>(saveAsFileName);
+                RevitFile = revitFile.ChangeFileName<RevitFamilyFile>(saveAsFileName);
             }
             RevitFile.Delete();
         }

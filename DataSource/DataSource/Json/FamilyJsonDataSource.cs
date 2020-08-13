@@ -9,7 +9,7 @@ namespace DataSource.Json
     {
         public JsonDataSource<Family> JsonDataSource { get; private set; }
 
-        public MetadataJsonDataSource(RevitFile revitFile) : base(revitFile)
+        public MetadataJsonDataSource(RevitFamilyFile revitFile) : base(revitFile)
         {
             JsonDataSource = new JsonDataSource<Family>(revitFile);
         }

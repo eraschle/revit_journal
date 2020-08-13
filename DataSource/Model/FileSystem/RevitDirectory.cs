@@ -48,22 +48,22 @@ namespace DataSource.Model.FileSystem
 
         private bool HasFiles(bool includeSubDirectories)
         {
-            return GetFiles(RevitFile.FileExtension, includeSubDirectories).Count > 0;
+            return GetFiles(RevitFamilyFile.FileExtension, includeSubDirectories).Count > 0;
         }
 
         public IList<RevitFamily> GetRevitFamilies(string libraryPath, bool includeSubDirectories)
         {
-            return GetFiles(RevitFile.FileExtension, includeSubDirectories)
+            return GetFiles(RevitFamilyFile.FileExtension, includeSubDirectories)
                 .Select(file => new RevitFamily(file, libraryPath))
                 .ToList();
         }
 
-        private IList<RevitFile> GetFiles(string extention, bool recursive)
+        private IList<RevitFamilyFile> GetFiles(string extention, bool recursive)
         {
             var search = string.Concat(string.Concat(Constant.Star, Constant.Point), extention);
             var options = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             var files = Directory.GetFiles(FullPath, search, options)
-                                 .Select(file => AFile.Create<RevitFile>(file))
+                                 .Select(file => AFile.Create<RevitFamilyFile>(file))
                                  .Where(file => file.IsBackup == false)
                                  .ToList();
             return files;

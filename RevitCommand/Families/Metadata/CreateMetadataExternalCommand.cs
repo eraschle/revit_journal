@@ -18,7 +18,7 @@ namespace RevitCommand.Families.Metadata
 
         protected override Result InternalExecute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            var revitFile = AFile.Create<RevitFile>(Document.PathName);
+            var revitFile = AFile.Create<RevitFamilyFile>(Document.PathName);
             var dataSource = new MetadataJsonDataSource(revitFile);
             var metaFamily = new DS.Family.Family();
             if (dataSource.Exist)

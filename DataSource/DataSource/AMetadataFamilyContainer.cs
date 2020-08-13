@@ -14,7 +14,7 @@ namespace DataSource.Metadata
             set { RevitDataSource.LibraryPath = value; }
         }
 
-        protected AMetadataFamilyContainer(RevitFile revitFile, TFileDataSource fileDataSource)
+        protected AMetadataFamilyContainer(RevitFamilyFile revitFile, TFileDataSource fileDataSource)
             : base(new FamilyXmlDataSource(revitFile), fileDataSource) { }
     }
 }

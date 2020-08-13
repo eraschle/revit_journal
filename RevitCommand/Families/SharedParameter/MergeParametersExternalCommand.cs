@@ -19,7 +19,7 @@ namespace RevitCommand.Families.SharedParameter
             var filePath = commandData.JournalData[MergeParametersCommandData.KeySharedFile];
             var reportManager = new RevitFamilyManagerReport(new RevitFamilyParameterManager(Document));
             var sharedManager = new SharedParameterManager(Application, filePath);
-            var report = new Report(AFile.Create<RevitFile>(Document.PathName));
+            var report = new Report(AFile.Create<RevitFamilyFile>(Document.PathName));
             foreach (var definition in sharedManager.GetSharedParameters())
             {
                 var reportLine = reportManager.MergeSharedParameter(definition);

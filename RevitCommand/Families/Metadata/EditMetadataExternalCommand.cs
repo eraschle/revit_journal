@@ -29,7 +29,7 @@ namespace RevitCommand.Families.Metadata
                 return Result.Failed;
             }
 
-            var revitFile = AFile.Create<RevitFile>(Document.PathName);
+            var revitFile = AFile.Create<RevitFamilyFile>(Document.PathName);
             var revitFamily = new RevitFamily(revitFile, library);
             var metaFamily = revitFamily.ReadEditedMetaData();
 

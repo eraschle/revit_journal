@@ -90,7 +90,7 @@
     <Compile Include="Model\Catalog\OmniClass.cs" />
     <Compile Include="Model\FileSystem\RevitDirectory.cs" />
     <Compile Include="Model\FileSystem\RevitFamily.cs" />
-    <Compile Include="Model\FileSystem\RevitFile.cs" />
+    <Compile Include="Model\FileSystem\RevitFamilyFile.cs" />
     <None Include="MetaDataManagerRepair.cs" />
     <Compile Include="Model\FileSystem\AFile.cs" />
     <Compile Include="Model\FileSystem\ANode.cs" />

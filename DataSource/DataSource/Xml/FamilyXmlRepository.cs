@@ -18,12 +18,12 @@ namespace DataSource.Xml
 
         private readonly FamilyXmlReader Reader;
 
-        public RevitXmlRepository(RevitFile revitFile)
+        public RevitXmlRepository(RevitFamilyFile revitFile)
         {
             Reader = new FamilyXmlReader(revitFile);
         }
 
-        internal void SetRevitFile(RevitFile revitFile)
+        internal void SetRevitFile(RevitFamilyFile revitFile)
         {
             if(revitFile is null) { return; }
 

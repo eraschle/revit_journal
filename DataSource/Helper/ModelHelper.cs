@@ -85,7 +85,7 @@ namespace DataSource.Helper
                 && value.Length == AmWaShortCategoryLength;
         }
 
-        public static string GetLibraryPath(RevitFile revitFile, string rootPath)
+        public static string GetLibraryPath(RevitFamilyFile revitFile, string rootPath)
         {
             if (revitFile is null || string.IsNullOrEmpty(rootPath)) { return null; }
 

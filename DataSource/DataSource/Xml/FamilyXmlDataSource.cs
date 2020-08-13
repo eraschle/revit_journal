@@ -16,7 +16,7 @@ namespace DataSource.Xml
 
         public string LibraryPath { get; set; }
 
-        public FamilyXmlDataSource(RevitFile revitFile) : base(revitFile)
+        public FamilyXmlDataSource(RevitFamilyFile revitFile) : base(revitFile)
         {
             Repository = new RevitXmlRepository(revitFile);
             FamilyBuilder = new FamilyBuilder();
@@ -25,7 +25,7 @@ namespace DataSource.Xml
 
         public override Family Read(AFile source = null)
         {
-            if (source != null && source is RevitFile rvtSource)
+            if (source != null && source is RevitFamilyFile rvtSource)
             {
                 RevitFile = rvtSource;
                 Repository.SetRevitFile(RevitFile);

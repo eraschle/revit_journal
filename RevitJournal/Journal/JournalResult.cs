@@ -52,15 +52,15 @@ namespace RevitJournal.Journal
         [JsonIgnore]
         public JournalTask JournalTask { get; private set; }
 
-        public RevitFile Original { get { return JournalTask.Family.RevitFile; } }
+        public RevitFamilyFile Original { get { return JournalTask.Family.RevitFile; } }
 
         public JournalProcessFile JournalProcess { get { return JournalTask.JournalProcess; } }
 
         public JournalRevitFile JournalRevit { get; set; }
 
-        public RevitFile Result { get; internal set; }
+        public RevitFamilyFile Result { get; internal set; }
 
-        public RevitFile Backup { get; internal set; }
+        public RevitFamilyFile Backup { get; internal set; }
 
         [JsonIgnore]
         public TimeSpan ProcessTimeout { get; private set; }

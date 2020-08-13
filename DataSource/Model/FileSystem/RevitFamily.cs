@@ -11,9 +11,9 @@ namespace DataSource.Model.FileSystem
 
         public JsonFile EditedMetadataFile { get; }
 
-        public RevitFile RevitFile { get; private set; }
+        public RevitFamilyFile RevitFile { get; private set; }
 
-        public RevitFamily(RevitFile revitFile, string libraryPath)
+        public RevitFamily(RevitFamilyFile revitFile, string libraryPath)
         {
             RevitFile = revitFile;
             var editedFileName = string.Join(Constant.Underline, revitFile.Name, EditedSuffix);

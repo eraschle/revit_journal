@@ -14,7 +14,7 @@ namespace DataSource.DataSource.Json
     {
         public JsonFile JsonFile { get; internal set; }
 
-        public JsonDataSource(RevitFile revitFile)
+        public JsonDataSource(RevitFamilyFile revitFile)
         {
             JsonFile = revitFile.ChangeExtension<JsonFile>(JsonFile.FileExtension);
         }

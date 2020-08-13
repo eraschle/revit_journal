@@ -4,9 +4,9 @@ namespace DataSource.Metadata
 {
     public abstract class AMetadataDataSource<TModel> : IMetadataDataSource<TModel>
     {
-        protected RevitFile RevitFile { get; set; }
+        protected RevitFamilyFile RevitFile { get; set; }
 
-        protected AMetadataDataSource(RevitFile revitFile)
+        protected AMetadataDataSource(RevitFamilyFile revitFile)
         {
             RevitFile = revitFile;
         }

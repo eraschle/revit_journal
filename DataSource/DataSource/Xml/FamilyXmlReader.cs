@@ -11,13 +11,13 @@ namespace DataSource.Xml
         private const string XmlDataStart = "<entry";
         private const string XmlDataEnd = "/entry>";
 
-        internal RevitFile RevitFile { get; set; }
+        internal RevitFamilyFile RevitFile { get; set; }
 
         private XDocument Document;
 
         public XElement Root { get { return Document.Root; } }
 
-        public FamilyXmlReader(RevitFile revitFile)
+        public FamilyXmlReader(RevitFamilyFile revitFile)
         {
             if (revitFile is null) { throw new ArgumentNullException(nameof(revitFile)); }
             if (revitFile.Exist == false) { throw new ArgumentException("File does not exist: " + revitFile); }

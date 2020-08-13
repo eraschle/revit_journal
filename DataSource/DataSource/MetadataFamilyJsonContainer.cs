@@ -5,7 +5,7 @@ namespace DataSource.Metadata
 {
     public class MetadataFamilyJsonContainer : AMetadataFamilyContainer<MetadataJsonDataSource>
     {
-        public MetadataFamilyJsonContainer(RevitFile revitFile)
+        public MetadataFamilyJsonContainer(RevitFamilyFile revitFile)
             : base(revitFile, new MetadataJsonDataSource(revitFile)) { }
     }
 }

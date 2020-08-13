@@ -11,7 +11,7 @@ namespace RevitJournal.Journal
     {
         public RevitFamily Family { get; private set; }
 
-        public RevitFile RevitFile { get { return Family.RevitFile; } }
+        public RevitFamilyFile RevitFile { get { return Family.RevitFile; } }
 
         public JournalOption TaskOption { get; private set; }
 
@@ -73,7 +73,7 @@ namespace RevitJournal.Journal
             if (option.BackupRevitFile)
             {
                 var revitFile = Family.RevitFile;
-                revitFile.CopyTo<RevitFile>(option.GetBackupFile(revitFile), true);
+                revitFile.CopyTo<RevitFamilyFile>(option.GetBackupFile(revitFile), true);
             }
 
             foreach (var command in Commands)
@@ -94,12 +94,12 @@ namespace RevitJournal.Journal
         public override bool Equals(object obj)
         {
             return obj is JournalTask task &&
-                   EqualityComparer<RevitFile>.Default.Equals(Family.RevitFile, task.Family.RevitFile);
+                   EqualityComparer<RevitFamilyFile>.Default.Equals(Family.RevitFile, task.Family.RevitFile);
         }
 
         public override int GetHashCode()
         {
-            return 1472110217 + EqualityComparer<RevitFile>.Default.GetHashCode(Family.RevitFile);
+            return 1472110217 + EqualityComparer<RevitFamilyFile>.Default.GetHashCode(Family.RevitFile);
         }
     }
 }

@@ -74,7 +74,7 @@ namespace RevitCommand.Families.SharedParameter
             var sharedManager = new SharedParameterManager(Application, filePath);
             var managerFamily = new RevitFamilyParameterManager(Document);
             var managerReport = new RevitFamilyManagerReport(managerFamily);
-            var report = new Report(AFile.Create<RevitFile>(Document.PathName));
+            var report = new Report(AFile.Create<RevitFamilyFile>(Document.PathName));
             foreach (var ifcParameter in ifcParameters)
             {
                 MessageReportLine line = null;
