@@ -21,26 +21,26 @@ namespace RevitJournal.Duplicate.Comparer
                 return 0;
             }
 
-            int originalLength = original.Length;
-            int otherLength = other.Length;
-            int[,] twoDArray = new int[originalLength + 1, otherLength + 1];
+            var originalLength = original.Length;
+            var otherLength = other.Length;
+            var twoDArray = new int[originalLength + 1, otherLength + 1];
 
             // Step 1
             if (originalLength == 0) { return otherLength; }
             if (otherLength == 0) { return originalLength; }
 
             // Step 2
-            for (int origIdx = 0; origIdx <= originalLength; twoDArray[origIdx, 0] = origIdx++) { }
-            for (int otherIdx = 0; otherIdx <= otherLength; twoDArray[0, otherIdx] = otherIdx++) { }
+            for (var origIdx = 0; origIdx <= originalLength; twoDArray[origIdx, 0] = origIdx++) { }
+            for (var otherIdx = 0; otherIdx <= otherLength; twoDArray[0, otherIdx] = otherIdx++) { }
 
             // Step 3
-            for (int origIdx = 1; origIdx <= originalLength; origIdx++)
+            for (var origIdx = 1; origIdx <= originalLength; origIdx++)
             {
                 //Step 4
-                for (int otherIdx = 1; otherIdx <= otherLength; otherIdx++)
+                for (var otherIdx = 1; otherIdx <= otherLength; otherIdx++)
                 {
                     // Step 5
-                    int cost = (other[otherIdx - 1] == original[origIdx - 1]) ? 0 : 1;
+                    var cost = (other[otherIdx - 1] == original[origIdx - 1]) ? 0 : 1;
 
                     // Step 6
                     twoDArray[origIdx, otherIdx] = Math.Min(

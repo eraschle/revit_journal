@@ -22,9 +22,9 @@ namespace RevitJournal.Journal.Command
 
         public static string GetLine(IEnumerable<string> values)
         {
-            if(values is null || values.Any() == false) { return string.Empty; }
-
-            return string.Join(Delimeter, values);
+            return values is null || values.Any() == false 
+                ? string.Empty 
+                : string.Join(Delimeter, values);
         }
     }
 }

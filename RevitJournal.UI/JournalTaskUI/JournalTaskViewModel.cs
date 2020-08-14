@@ -12,16 +12,16 @@ namespace RevitJournalUI.JournalTaskUI
         private const string NoJournalProcess = "No Journal created";
         private const string NoJournalRevit = "No Revit Journal";
 
-        private readonly RevitTask JournalTask;
+        private readonly RevitTask RevitTask;
 
         public JournalResult Result { get; private set; }
 
         public JournalTaskExecuteViewModel JournalTaskExecute { get; private set; }
         public JournalTaskResultViewModel JournalTaskResult { get; private set; }
 
-        public JournalTaskViewModel(RevitTask journalTask)
+        public JournalTaskViewModel(RevitTask task)
         {
-            JournalTask = journalTask;
+            RevitTask = task;
             JournalTaskExecute = new JournalTaskExecuteViewModel();
             JournalTaskResult = new JournalTaskResultViewModel();
             JournalTaskExecute.PropertyChanged += new PropertyChangedEventHandler(JournalTaskResult.OnRunTimeChanged);
@@ -29,7 +29,7 @@ namespace RevitJournalUI.JournalTaskUI
 
         public string JournalTaskName
         {
-            get { return JournalTask.Name; }
+            get { return RevitTask.Name; }
         }
 
         private string _JournalStatus = string.Empty;
@@ -87,7 +87,7 @@ namespace RevitJournalUI.JournalTaskUI
 
         internal bool IsJournalTask(JournalResult result)
         {
-            return JournalTask.Equals(result.JournalTask);
+            return RevitTask.Equals(result.JournalTask);
         }
 
         internal void SetResult(JournalResult result)
@@ -103,14 +103,15 @@ namespace RevitJournalUI.JournalTaskUI
 
         private void SetJournals()
         {
-            if (Result.HasJournalProcess)
-            {
-                JournalProcess = Result.JournalProcess.NameWithExtension;
-            }
-            if (Result.HasJournalRevit)
-            {
-                JournalRevit = Result.JournalRevit.NameWithExtension;
-            }
+            ///TODO
+            //if (Result.HasJournalProcess)
+            //{
+            //    JournalProcess = Result.JournalProcess.NameWithExtension;
+            //}
+            //if (Result.HasJournalRevit)
+            //{
+            //    JournalRevit = Result.JournalRevit.NameWithExtension;
+            //}
         }
         private void SetStatus()
         {

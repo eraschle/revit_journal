@@ -70,9 +70,7 @@ namespace RevitCommand.Families
         {
             var parameters = new List<ExternalDefinition>();
             var group = GetGroupDefinitionsByName(groupName);
-            if (group is null) { return parameters; }
-
-            return GetSharedParametersOfGroup(group);
+            return group is null ? parameters : GetSharedParametersOfGroup(group);
         }
 
         public static IList<ExternalDefinition> GetSharedParametersOfGroup(DefinitionGroup group)

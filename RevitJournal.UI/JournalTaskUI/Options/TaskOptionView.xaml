@@ -1,0 +1,132 @@
+﻿<UserControl x:Class="RevitJournalUI.JournalTaskUI.Options.TaskOptionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RevitJournalUI.JournalTaskUI.Options"
+             mc:Ignorable="d" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Label Content="Revit"
+               Grid.Column="0" Grid.Row="0" 
+               Margin="{StaticResource DefaultMargin}"
+               HorizontalAlignment="Stretch" 
+               VerticalAlignment="Stretch"/>
+        <ComboBox ItemsSource="{Binding RevitApps}"
+                  IsEnabled="{Binding OptionsEnabled}"
+                  SelectedItem="{Binding SelectedRevitApp}"
+                  DisplayMemberPath="ProductName"
+                  Grid.Column="1" Grid.Row="0"
+                  Margin="{StaticResource DefaultMargin}"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"/>
+        <Label Content="{Binding ParallelProcessTitle, UpdateSourceTrigger=PropertyChanged}"
+               Grid.Column="0" Grid.Row="1"
+               Margin="{StaticResource DefaultMargin}"
+               VerticalAlignment="Stretch"/>
+        <Slider Grid.Column="1" Grid.Row="1"
+                Value="{Binding ParallelProcess, UpdateSourceTrigger=PropertyChanged}"
+                IsEnabled="{Binding OptionsEnabled}"
+                Minimum="{Binding MinParallelProcess}" 
+                Maximum="{Binding MaxParallelProcess}"
+                Interval="1"
+                Margin="{StaticResource DefaultMargin}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center"/>
+        <Label Content="{Binding TimeoutTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, TargetNullValue=Timeout}"
+               Grid.Column="0" Grid.Row="2" 
+               Margin="{StaticResource DefaultMargin}"
+               HorizontalAlignment="Stretch" 
+               VerticalAlignment="Stretch"/>
+        <Slider Grid.Column="1" Grid.Row="2" 
+                IsEnabled="{Binding OptionsEnabled}"
+                Margin="{StaticResource DefaultMargin}"
+                Value="{Binding Timeout, UpdateSourceTrigger=PropertyChanged}"
+                Minimum="{Binding TimeoutMinimum}" 
+                Maximum="{Binding TimeoutMaximum}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center"/>
+        <Label Content="Logs"
+               Grid.Column="0" Grid.Row="3" 
+               Margin="{StaticResource DefaultMargin}"
+               HorizontalAlignment="Stretch" 
+               VerticalAlignment="Center"/>
+        <Grid Grid.Column="1" Grid.Row="3"
+              Margin="{StaticResource DefaultMargin}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <CheckBox x:Name="cbxLogResult"
+                      Content="Create?"
+                      IsChecked="{Binding LogResult}"
+                      IsEnabled="{Binding OptionsEnabled}"
+                      Grid.Column="0" 
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center"/>
+            <CheckBox Content="Success" 
+                      IsChecked="{Binding LogResultAll, UpdateSourceTrigger=PropertyChanged}"
+                      IsEnabled="{Binding LogOptionsEnabled}"
+                      Grid.Column="1"
+                      HorizontalAlignment="Stretch" 
+                      VerticalAlignment="Stretch"
+                      VerticalContentAlignment="Center"/>
+            <CheckBox Content="Error" 
+                      IsChecked="{Binding LogResultError, UpdateSourceTrigger=PropertyChanged}"
+                      IsEnabled="{Binding LogOptionsEnabled}"
+                      Grid.Column="2"
+                      HorizontalAlignment="Stretch" 
+                      VerticalAlignment="Stretch"
+                      VerticalContentAlignment="Center"/>
+        </Grid>
+        <Label Content="Create Backup"
+               Grid.Column="0" Grid.Row="4" 
+               Margin="{StaticResource DefaultMargin}"
+               HorizontalAlignment="Stretch" 
+               VerticalAlignment="Center"/>
+        <CheckBox x:Name="ckbBackup"
+                  Grid.Column="1" Grid.Row="4"
+                  Margin="{StaticResource DefaultMargin}"
+                  IsChecked="{Binding CreateBackup, UpdateSourceTrigger=PropertyChanged}"
+                  IsEnabled="{Binding OptionsEnabled}"
+                  HorizontalAlignment="Stretch" 
+                  VerticalAlignment="Center"/>
+        <Label Content="Subfolder"
+               Grid.Column="0" Grid.Row="5" 
+               Margin="{StaticResource DefaultMargin}"
+               HorizontalAlignment="Stretch" 
+               VerticalAlignment="Stretch"/>
+        <TextBox Text="{Binding BackupSubFolder, UpdateSourceTrigger=PropertyChanged}" 
+                 Grid.Column="1" Grid.Row="5"
+                 Margin="{StaticResource DefaultMargin}"
+                 IsEnabled="{Binding CreateBackup, UpdateSourceTrigger=PropertyChanged}"
+                 HorizontalAlignment="Stretch" 
+                 VerticalAlignment="Stretch"
+                 VerticalContentAlignment="Center"/>
+        <Label Content="File Suffix"
+               Grid.Column="0" Grid.Row="6" 
+               Margin="{StaticResource DefaultMargin}"
+               HorizontalAlignment="Stretch" 
+               VerticalAlignment="Stretch"/>
+        <TextBox Text="{Binding BackupSuffix, UpdateSourceTrigger=PropertyChanged}" 
+                 Grid.Column="1" Grid.Row="6"
+                 Margin="{StaticResource DefaultMargin}"
+                 IsEnabled="{Binding CreateBackup, UpdateSourceTrigger=PropertyChanged}"
+                 HorizontalAlignment="Stretch" 
+                 VerticalAlignment="Stretch"
+                 VerticalContentAlignment="Center"/>
+    </Grid>
+</UserControl>

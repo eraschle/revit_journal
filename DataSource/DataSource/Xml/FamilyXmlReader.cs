@@ -69,7 +69,7 @@ namespace DataSource.Xml
             }
             else
             {
-                int end = fileContent.IndexOf(XmlDataEnd, StringComparison.CurrentCulture);
+                var end = fileContent.IndexOf(XmlDataEnd, StringComparison.CurrentCulture);
                 if (end == -1)
                 {
                     //status = MetaDataStatus.Repairable;
@@ -78,7 +78,7 @@ namespace DataSource.Xml
                 else
                 {
                     end += 7;
-                    int length = end - start;
+                    var length = end - start;
                     if (length <= 0)
                     {
                         //status = MetaDataStatus.Repairable;

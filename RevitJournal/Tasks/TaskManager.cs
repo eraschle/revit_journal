@@ -1,18 +1,18 @@
 ﻿using DataSource.Model.FileSystem;
 using RevitAction.Action;
 using RevitJournal.Helper;
-using RevitCommand.Families;
 using RevitJournal.Journal.Execution;
-using RevitJournal.Revit.Commands;
-using RevitJournal.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
+using RevitJournal.Revit.Addin;
+using RevitJournal.Tasks.Options;
+using RevitJournal.Journal;
 
-namespace RevitJournal.Journal
+namespace RevitJournal.Tasks
 {
     public partial class TaskManager
     {
@@ -25,7 +25,7 @@ namespace RevitJournal.Journal
         }
         public static RevitDirectory CreateRootDirectory(string contentDirectory)
         {
-            if(RootDirectory is null || 
+            if (RootDirectory is null ||
                 RootDirectory.FullPath.Equals(contentDirectory, StringComparison.CurrentCulture) == false)
             {
                 RootDirectory = new RevitDirectory(null, contentDirectory);
@@ -33,18 +33,7 @@ namespace RevitJournal.Journal
             return RootDirectory;
         }
 
-        public static int MinParallelProcess { get; } = 1;
-
-        public static int MaxParallelProcess { get; } = Environment.ProcessorCount;
-
-        public string JournalDirectory { get; set; } = string.Empty;
-
-
-        private readonly object JournalTaskRunnersLock = new object();
-
-        public int ParallelProcess { get; set; } = MaxParallelProcess / 2;
-
-        private IList<JournalTaskRunner> JournalTaskRunners { get; } = new List<JournalTaskRunner>();
+        private IList<JournalTaskRunner> TaskRunners { get; } = new List<JournalTaskRunner>();
 
         public IList<RevitTask> RevitTasks { get; } = new List<RevitTask>();
 
@@ -98,73 +87,71 @@ namespace RevitJournal.Journal
         public void ClearTasks()
         {
             RevitTasks.Clear();
-            JournalTaskRunners.Clear();
+            TaskRunners.Clear();
         }
 
         public int JournalTaskCount { get { return RevitTasks.Count; } }
 
-        public int JournalTaskExecutedCount { get; private set; } = 0;
+        public int TaskExecutedCount { get; private set; } = 0;
 
-        public void CreateJournalTaskRunner(IProgress<JournalResult> progress)
+        public void CreateTaskRunner(IProgress<JournalResult> progress)
         {
             const int status = ResultStatus.Waiting;
             foreach (var journalTask in RevitTasks)
             {
                 var runner = new JournalTaskRunner(journalTask, progress);
                 runner.Report(status);
-                JournalTaskRunners.Add(runner);
+                TaskRunners.Add(runner);
             }
         }
 
-        public void CleanJournalTaskRunner()
+        public void CleanTaskRunner()
         {
-            JournalTaskRunners.Clear();
+            TaskRunners.Clear();
         }
 
-        private void CreateAddinFile()
+        private void CreateAddinFile(CommonOptions options)
         {
-            var commandDatas = new HashSet<IRevitExternalCommandData>();
+            var commands = new HashSet<ITaskActionCommand>();
 
-            foreach (var journalTask in RevitTasks)
+            foreach (var task in RevitTasks)
             {
-                if (journalTask.HasCommands(out var actionCommands) == false) { continue; }
+                if (task.HasCommands(out var actionCommands) == false) { continue; }
 
                 foreach (var command in actionCommands)
                 {
-                    //commandDatas.Add(command.CommandData);
+                    commands.Add(command);
                 }
             }
-            foreach (var commandData in commandDatas)
+
+            var journal = options.JournalDirectory;
+            foreach (var command in commands)
             {
-                FileCreationManager.CreateAddinFile(JournalDirectory, commandData);
+                AddinManager.CreateManifest(journal, command);
             }
         }
 
-        public async Task ExecuteAllTaskAsync(CancellationToken cancellation)
+        public Task ExecuteTasks(TaskOptions options, CancellationToken cancellation)
         {
-            if (JournalTaskRunners.Count == 0) { throw new ArgumentException("No Runner are created"); }
+            if (options is null) { throw new ArgumentNullException(nameof(options)); }
 
-            CreateAddinFile();
-            var creator = new JournalRevitCreator(JournalDirectory);
-            var creatorTask = creator.CreatorTask(TimeSpan.FromMilliseconds(1111));
-            var runnerTask = RunTasks(creator, cancellation);
-            await Task.WhenAny(runnerTask, creatorTask);
-            creator.WatchingJournals = false;
+            CreateAddinFile(options.Common);
+            return RunTasks(options, cancellation);
         }
 
         private void SetRunnerStatus(int status)
         {
-            foreach (var runner in JournalTaskRunners)
+            foreach (var runner in TaskRunners)
             {
                 runner.Report(status);
             }
         }
 
-        private Task RunTasks(JournalRevitCreator creator, CancellationToken cancellation)
+        private Task RunTasks(TaskOptions options, CancellationToken cancellation)
         {
             return Task.Run(() =>
             {
-                var runningTasks = CreateRunningTasks(creator, cancellation);
+                var runningTasks = CreateTasks(options, cancellation);
                 while (runningTasks.Count > 0)
                 {
                     var finished = Task.WhenAny(runningTasks.ToArray()).Result;
@@ -173,10 +160,10 @@ namespace RevitJournal.Journal
                         SetRunnerStatus(ResultStatus.Cancel);
                         break;
                     }
-                    JournalTaskExecutedCount++;
-                    if (JournalTaskRunners.Count > 0)
+                    TaskExecutedCount++;
+                    if (TaskRunners.Count > 0)
                     {
-                        var task = NextJournalTask(creator, cancellation);
+                        var task = NextTask(options, cancellation);
                         runningTasks.Add(task);
                     }
                     runningTasks.Remove(finished);
@@ -184,26 +171,26 @@ namespace RevitJournal.Journal
             });
         }
 
-        private IList<Task> CreateRunningTasks(JournalRevitCreator creator, CancellationToken cancellation)
+        private IList<Task> CreateTasks(TaskOptions options, CancellationToken cancellation)
         {
-            var max = Math.Min(ParallelProcess, JournalTaskRunners.Count);
+            var max = Math.Min(options.Parallel.ParallelProcesses, TaskRunners.Count);
             var runningTasks = new List<Task>();
 
-            int count = 0;
+            var count = 0;
             while (count < max)
             {
-                var task = NextJournalTask(creator, cancellation);
+                var task = NextTask(options, cancellation);
                 runningTasks.Add(task);
                 count++;
             }
             return runningTasks;
         }
 
-        private Task NextJournalTask(JournalRevitCreator creator, CancellationToken cancellation)
+        private Task NextTask(TaskOptions options, CancellationToken cancellation)
         {
-            var journalModel = JournalTaskRunners[0];
-            JournalTaskRunners.Remove(journalModel);
-            return journalModel.CreateTask(creator, cancellation);
+            var journalModel = TaskRunners[0];
+            TaskRunners.Remove(journalModel);
+            return journalModel.CreateTask(options, cancellation);
         }
     }
 }

@@ -305,9 +305,7 @@ namespace RevitCommand.Families.ImageExport
             if (element is null) { return false; }
 
             var category = element.Category;
-            if (category is null) { return false; }
-
-            return category.Id.Equals(Family.FamilyCategoryId);
+            return category != null && category.Id.Equals(Family.FamilyCategoryId);
         }
 
 

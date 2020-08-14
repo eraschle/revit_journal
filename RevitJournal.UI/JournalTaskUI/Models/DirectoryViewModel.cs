@@ -109,7 +109,7 @@ namespace RevitJournalUI.JournalTaskUI.Models
 
         private void UpdateFamilies(bool isChecked)
         {
-            for (int idx = RecursiveFamilies.Count - 1; idx >= 0; idx--)
+            for (var idx = RecursiveFamilies.Count - 1; idx >= 0; idx--)
             {
                 RecursiveFamilies[idx].Checked = isChecked;
             }

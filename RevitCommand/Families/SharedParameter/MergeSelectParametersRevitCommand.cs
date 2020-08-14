@@ -91,14 +91,9 @@ namespace RevitCommand.Families.SharedParameter
                 }
                 else if (addIfNotExist)
                 {
-                    if (addIfNotInstanceExist)
-                    {
-                        line = managerReport.AddSharedInstance(definition, addIfNotGroup);
-                    }
-                    else
-                    {
-                        line = managerReport.AddSharedType(definition, addIfNotGroup);
-                    }
+                    line = addIfNotInstanceExist
+                        ? managerReport.AddSharedInstance(definition, addIfNotGroup)
+                        : managerReport.AddSharedType(definition, addIfNotGroup);
                 }
                 report.AddLine(line);
             }

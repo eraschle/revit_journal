@@ -16,7 +16,7 @@ namespace RevitCommand.Families.Metadata
         public int GetHashCode(Family obj)
         {
             var hashCode = -992239906;
-            if (obj.HasCategory(out Category category))
+            if (obj.HasCategory(out var category))
             {
                 hashCode = hashCode * -1521134295 + EqualityComparer<Category>.Default.GetHashCode(category);
             }

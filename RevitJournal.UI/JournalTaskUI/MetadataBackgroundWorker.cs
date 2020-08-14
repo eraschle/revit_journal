@@ -46,7 +46,7 @@ namespace RevitJournalUI.JournalTaskUI
         private static void UpdateMetadata(BackgroundWorker worker, DirectoryViewModel model)
         {
             var familyViewModels = model.RecursiveFamilyViewModel;
-            int filesCount = familyViewModels.Count;
+            var filesCount = familyViewModels.Count;
             var currentCount = 0;
             Parallel.For(0, filesCount, (idx) =>
             {

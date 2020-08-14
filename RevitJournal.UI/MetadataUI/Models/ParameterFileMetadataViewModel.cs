@@ -2,7 +2,6 @@
 using Fam = DataSource.Model.Family;
 using System;
 using System.Text.RegularExpressions;
-using System.Windows;
 
 namespace RevitJournalUI.MetadataUI.Models
 {

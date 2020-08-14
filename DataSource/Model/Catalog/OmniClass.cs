@@ -13,7 +13,7 @@ namespace DataSource.Model.Catalog
 
             var splitedId = idAsString.Split(Constant.PointChar);
             var intIds = new int[splitedId.Length];
-            for (int idx = 0; idx < splitedId.Length; idx++)
+            for (var idx = 0; idx < splitedId.Length; idx++)
             {
                 var stringId = splitedId[idx];
                 if (int.TryParse(stringId, out var id) == false) { continue; }

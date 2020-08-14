@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace RevitJournalUI.Helper
 {
@@ -22,7 +17,7 @@ namespace RevitJournalUI.Helper
             var summeWidth = 0.0;
             var summeWidthAfter = 0.0;
 
-            for (int idx = 0; idx < columns.Count; idx++)
+            for (var idx = 0; idx < columns.Count; idx++)
             {
                 var column = columns[idx];
                 var width = column.ActualWidth;
@@ -30,13 +25,13 @@ namespace RevitJournalUI.Helper
                 summeWidth += width;
             }
 
-            for (int idx = 0; idx < currentWidth.Length; idx++)
+            for (var idx = 0; idx < currentWidth.Length; idx++)
             {
                 percentage[idx] = currentWidth[idx] * 100 / summeWidth;
             }
 
             var reducedActualWidth = actualViewWidth * ReduceFactor;
-            for (int idx = 0; idx < gridView.Columns.Count; idx++)
+            for (var idx = 0; idx < gridView.Columns.Count; idx++)
             {
                 var column = columns[idx];
                 var width = reducedActualWidth * percentage[idx] / 100;

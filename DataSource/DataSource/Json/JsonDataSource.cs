@@ -66,7 +66,7 @@ namespace DataSource.DataSource.Json
         {
             if (model is null) { return; }
 
-            string jsonData = JsonConvert.SerializeObject(model, GetSettings());
+            var jsonData = JsonConvert.SerializeObject(model, GetSettings());
             File.WriteAllText(destination.FullPath, jsonData);
         }
     }

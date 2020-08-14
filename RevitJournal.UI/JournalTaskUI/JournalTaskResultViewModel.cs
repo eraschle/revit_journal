@@ -35,11 +35,12 @@ namespace RevitJournalUI.JournalTaskUI
             {
                 ResultVisible = Visibility.Visible;
             }
-            if (result.HasError(out var error))
-            {
-                ErrorText = YesMessage;
-                ErrorTextToolTip = error.ErrorMessage;
-            }
+            ///TODO
+            //if (result.HasError(out var error))
+            //{
+            //    ErrorText = YesMessage;
+            //    ErrorTextToolTip = error.ErrorMessage;
+            //}
             if (result.IsTimeout)
             {
                 ExecutionTime = TimeoutMessage;

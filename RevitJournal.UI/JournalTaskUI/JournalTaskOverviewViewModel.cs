@@ -1,4 +1,5 @@
 ﻿using RevitJournal.Journal;
+using RevitJournal.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,54 +21,54 @@ namespace RevitJournalUI.JournalTaskUI
             get { return JournalTaskModels.Select(model => model.Result); }
         }
 
-        private int _MinTasks = 1;
+        private int minTasks = 1;
         public int MinTasks
         {
-            get { return _MinTasks; }
+            get { return minTasks; }
             set
             {
-                if (_MinTasks == value) { return; }
+                if (minTasks == value) { return; }
 
-                _MinTasks = value;
+                minTasks = value;
                 OnPropertyChanged(nameof(MinTasks));
             }
         }
 
-        private int _MaxTasks = 0;
+        private int maxTasks = 0;
         public int MaxTasks
         {
-            get { return _MaxTasks; }
+            get { return maxTasks; }
             set
             {
-                if (_MaxTasks == value) { return; }
+                if (maxTasks == value) { return; }
 
-                _MaxTasks = value;
+                maxTasks = value;
                 OnPropertyChanged(nameof(MaxTasks));
             }
         }
 
-        private int _ExecutedTasks = 0;
+        private int executedTasks = 0;
         public int ExecutedTasks
         {
-            get { return _ExecutedTasks; }
+            get { return executedTasks; }
             set
             {
-                if (_ExecutedTasks == value) { return; }
+                if (executedTasks == value) { return; }
 
-                _ExecutedTasks = value;
+                executedTasks = value;
                 OnPropertyChanged(nameof(ExecutedTasks));
             }
         }
 
-        private string _ExecutedTasksText = string.Empty;
+        private string executedTasksText = string.Empty;
         public string ExecutedTasksText
         {
-            get { return _ExecutedTasksText; }
+            get { return executedTasksText; }
             set
             {
-                if (_ExecutedTasksText.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (executedTasksText.Equals(value, StringComparison.CurrentCulture)) { return; }
 
-                _ExecutedTasksText = value;
+                executedTasksText = value;
                 OnPropertyChanged(nameof(ExecutedTasksText));
             }
         }
@@ -87,7 +88,7 @@ namespace RevitJournalUI.JournalTaskUI
         private void SetExecutedTasks(TaskManager manager)
         {
             MaxTasks = manager.JournalTaskCount;
-            ExecutedTasks = manager.JournalTaskExecutedCount;
+            ExecutedTasks = manager.TaskExecutedCount;
             var executed = ExecutedTasks + " / " + MaxTasks;
             ExecutedTasksText = PrefixExecutedTask + executed;
         }

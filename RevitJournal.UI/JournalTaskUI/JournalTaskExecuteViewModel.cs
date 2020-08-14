@@ -12,27 +12,27 @@ namespace RevitJournalUI.JournalTaskUI
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private TimeSpan RunTime = TimeSpan.Zero;
+        private TimeSpan runTime = TimeSpan.Zero;
 
-        private readonly DispatcherTimer Timer;
+        private readonly DispatcherTimer timer;
 
         public JournalTaskExecuteViewModel()
         {
-            Timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-            Timer.Tick += new EventHandler(DispatcherTimer_Tick);
+            timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+            timer.Tick += new EventHandler(DispatcherTimer_Tick);
         }
 
         private JournalResult Result;
 
-        private Visibility _ExecuteVisible = Visibility.Collapsed;
+        private Visibility executeVisible = Visibility.Collapsed;
         public Visibility ExecuteVisible
         {
-            get { return _ExecuteVisible; }
+            get { return executeVisible; }
             set
             {
-                if (_ExecuteVisible == value) { return; }
+                if (executeVisible == value) { return; }
 
-                _ExecuteVisible = value;
+                executeVisible = value;
                 OnPropertyChanged(nameof(ExecuteVisible));
             }
         }
@@ -42,34 +42,35 @@ namespace RevitJournalUI.JournalTaskUI
             if(result is null) { return; }
 
             Result = result;
-            if (Timer.IsEnabled == false && Result.IsStarted)
+            if (timer.IsEnabled == false && Result.IsStarted)
             {
-                RunTime = Timer.Interval;
+                runTime = timer.Interval;
                 SetRuning();
-                Timer.Start();
+                timer.Start();
                 ExecuteVisible = Visibility.Visible;
             }
             if (Result.Executed)
             {
-                Timer.Stop();
+                timer.Stop();
                 if (Result.IsTimeout)
                 {
-                    RunTime = Result.ProcessTimeout;
+                    ///TODO
+                    //runTime = Result.ProcessTimeout;
                 }
                 SetRuning();
                 ExecuteVisible = Visibility.Collapsed;
             }
         }
 
-        private string _TimeoutTime = string.Empty;
+        private string timeoutTime = string.Empty;
         public string TimeoutTime
         {
-            get { return _TimeoutTime; }
+            get { return timeoutTime; }
             set
             {
-                if (_TimeoutTime.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (timeoutTime.Equals(value, StringComparison.CurrentCulture)) { return; }
 
-                _TimeoutTime = value;
+                timeoutTime = value;
                 OnPropertyChanged(nameof(TimeoutTime));
             }
         }
@@ -114,7 +115,7 @@ namespace RevitJournalUI.JournalTaskUI
         {
             if (Result.IsStarted)
             {
-                RunTime += Timer.Interval;
+                runTime += timer.Interval;
                 SetRuning();
             }
         }
@@ -122,10 +123,11 @@ namespace RevitJournalUI.JournalTaskUI
         private void SetRuning()
         {
             if (Result is null) { return; }
-
-            TimeoutTime = TimeSpanHelper.GetMinuteAndSeconds(Result.ProcessTimeout);
-            RunningTime = TimeSpanHelper.GetMinuteAndSeconds(RunTime);
-            RunningPercent = RunTime.TotalSeconds * 100 / Result.ProcessTimeout.TotalSeconds;
+            ///TODO
+            //TimeoutTime = TimeSpanHelper.GetMinuteAndSeconds(Result.ProcessTimeout);
+            RunningTime = TimeSpanHelper.GetMinuteAndSeconds(runTime);
+            ///TODO
+            //RunningPercent = runTime.TotalSeconds * 100 / Result.ProcessTimeout.TotalSeconds;
             if (RunningPercent > 1)
             {
                 RunningPercentText = (RunningPercent / 100).ToString("#0.0 %", CultureInfo.CurrentCulture);

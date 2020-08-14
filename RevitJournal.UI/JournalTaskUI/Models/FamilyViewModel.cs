@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using DataSource.Metadata;
 using DataSource.Model.FileSystem;
+using Utilities.UI.Helper;
 
 namespace RevitJournalUI.JournalTaskUI.Models
 {

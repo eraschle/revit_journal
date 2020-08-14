@@ -14,7 +14,7 @@ namespace RevitJournal.Journal.Model
 
         protected override string GetTypeName()
         {
-            return nameof(JournalRevitFile);
+            return nameof(JournalResultFile);
         }
     }
 }

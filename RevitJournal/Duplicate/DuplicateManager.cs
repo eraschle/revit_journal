@@ -12,7 +12,7 @@ namespace RevitJournal.Duplicate
             var added = new HashSet<Family>();
 
             var duplicateMap = new Dictionary<Family, HashSet<Family>>(comparer);
-            for (int idx = 0; idx < families.Count; idx++)
+            for (var idx = 0; idx < families.Count; idx++)
             {
                 var family = families[idx];
                 var metadata = family.Metadata;
@@ -23,7 +23,7 @@ namespace RevitJournal.Duplicate
                     duplicateMap.Add(metadata, new HashSet<Family>());
                     added.Add(metadata);
                 }
-                for (int idxDuplicate = idx + 1; idxDuplicate < families.Count; idxDuplicate++)
+                for (var idxDuplicate = idx + 1; idxDuplicate < families.Count; idxDuplicate++)
                 {
                     var duplicateFamily = families[idxDuplicate];
                     var duplicateMetadata = duplicateFamily.Metadata;

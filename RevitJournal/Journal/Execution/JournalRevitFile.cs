@@ -30,22 +30,20 @@ namespace RevitJournal.Journal.Execution
             if (commands.Any() == false) { return -1; }
 
             var last = commands.LastOrDefault();
-            if (last is null) { return -1; }
-
-            return last.LineNumber;
+            return last is null ? -1 : last.LineNumber;
         }
 
-        public bool HasError(JournalProcessFile journalProcess)
+        public bool HasError(ProcessJournalFile journalProcess)
         {
             return HasBeenStarted() && HasStoppedBeforeLast(journalProcess);
         }
 
-        public bool AllCommandExecuted(JournalProcessFile process)
+        public bool AllCommandExecuted(ProcessJournalFile process)
         {
             return process != null && process.LastCommandLine == LastCommandLineNumber;
         }
 
-        public bool HasStoppedBeforeLast(JournalProcessFile process)
+        public bool HasStoppedBeforeLast(ProcessJournalFile process)
         {
             var commands = Commands.Where(cmd => cmd.IsJournalCommandStop);
             var lastCommandLine = LastCommandLine(commands);

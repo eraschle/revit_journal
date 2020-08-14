@@ -20,8 +20,8 @@ namespace RevitJournal.Journal.Execution
 
         internal static string Read(string filePath)
         {
-            using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (StreamReader reader = new StreamReader(fileStream, Encoding.Default))
+            using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var reader = new StreamReader(fileStream, Encoding.Default))
             {
                 return reader.ReadToEnd();
             }
@@ -43,7 +43,7 @@ namespace RevitJournal.Journal.Execution
                 {
                     revitJournal.Commands.Add(revitCommand);
                 }
-                else if (IsTaskJournal(line, out string processJournal))
+                else if (IsTaskJournal(line, out var processJournal))
                 {
                     revitJournal.JournalProcessPath = processJournal;
                 }
@@ -137,10 +137,10 @@ namespace RevitJournal.Journal.Execution
 
         private static int GetCommandLineIndex(Match match)
         {
-            int lineNumber = -1;
+            var lineNumber = -1;
             var numberRegex = JournalLineNumber;
             var result = numberRegex.Match(match.Value);
-            if (int.TryParse(result.Value, out int value))
+            if (int.TryParse(result.Value, out var value))
             {
                 lineNumber = value;
             }

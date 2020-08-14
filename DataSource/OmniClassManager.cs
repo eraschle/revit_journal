@@ -41,8 +41,8 @@ namespace DataSource
         private static bool HasNewerVersion(RevitApp revitApp, out IList<OmniClass> omniClasses)
         {
             omniClasses = null;
-            int newVersion = revitApp.Version;
-            foreach (int version in OmniClassVersions.Keys)
+            var newVersion = revitApp.Version;
+            foreach (var version in OmniClassVersions.Keys)
             {
                 if (version <= revitApp.Version) { continue; }
 

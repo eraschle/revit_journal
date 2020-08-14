@@ -6,6 +6,8 @@ namespace RevitAction.Action
     {
         Guid AddinId { get; }
 
+        string AssemblyPath { get; }
+
         string Namespace { get; }
 
         string FullClassName { get; }

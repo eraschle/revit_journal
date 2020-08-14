@@ -91,9 +91,7 @@ namespace DataSource.Model.FileSystem
 
         public TFile CopyTo<TFile>(AFile destination, bool overrideFile = false) where TFile : AFile, new()
         {
-            if (destination is null) { return null; }
-
-            return CopyTo<TFile>(destination.FullPath, overrideFile);
+            return destination is null ? null : CopyTo<TFile>(destination.FullPath, overrideFile);
         }
 
         public void Delete()

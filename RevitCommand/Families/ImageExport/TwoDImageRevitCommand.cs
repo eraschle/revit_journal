@@ -78,8 +78,7 @@ namespace RevitCommand.Families.ImageExport
             }
             collector.WherePasses(ExcludeHeads);
             HideOtherElements(collector);
-
-            if (AreAllElementsHidden(out var visible)
+            if (AreAllElementsHidden(out _)
                 && HasDetailElements(out var detailCollector))
             {
                 detailCollector.WhereElementIsElementType();

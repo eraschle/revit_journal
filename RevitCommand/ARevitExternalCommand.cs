@@ -57,13 +57,13 @@ namespace RevitCommand
 
         protected static bool HasJournal(ExternalCommandData commandData)
         {
-            var journal = commandData.JournalData;
+            var journal = commandData?.JournalData;
             return journal != null && journal.Count > 0;
         }
 
         protected static bool HasJournal(ExternalCommandData commandData, out IDictionary<string, string> journal)
         {
-            journal = commandData.JournalData;
+            journal = commandData?.JournalData;
             return HasJournal(commandData);
         }
 

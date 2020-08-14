@@ -101,7 +101,7 @@
                                    VerticalAlignment="Center"/>
                             <Button Content="Setup"
                                     Command="{Binding SetupFilterCommand}"
-                                    CommandParameter="{Binding FamilyOverviewViewModel.DirectoryViewModels}"
+                                    CommandParameter="{Binding FamiliesViewModel.DirectoryViewModels}"
                                     Visibility="{Binding SetupFilterVisibility}"
                                     Margin="{StaticResource DefaultMargin}"
                                     Grid.Column="1"/>
@@ -167,60 +167,60 @@
                                     Margin="{StaticResource DefaultMargin}"
                                     Grid.Column="1"/>
                         </Grid>
-                        <ListBox ItemsSource="{Binding JournalCommands}" 
+                        <ListBox ItemsSource="{Binding Actions}" 
                                  DisplayMemberPath="Name"
                                  Margin="{StaticResource DefaultMargin}"
                                  Grid.Column="1" Grid.Row="1"/>
                     </Grid>
                 </Grid>
-                <Button Content="{Binding DuplicateButtonName}"
+                <Button Content="{Binding DuplicateName}"
                         Grid.Column="2" Grid.Row="4" 
                         Style="{StaticResource DialogButton}"
                         Command="{Binding DuplicateCommand}"
-                        CommandParameter="{Binding FamilyOverviewViewModel}"/>
-                <Button Content="{Binding EditButtonName}"
+                        CommandParameter="{Binding FamiliesViewModel}"/>
+                <Button Content="{Binding EditName}"
                         Grid.Column="2" Grid.Row="5" 
                         Style="{StaticResource DialogButton}"
                         Command="{Binding EditCommand}"
-                        CommandParameter="{Binding FamilyOverviewViewModel}"/>
+                        CommandParameter="{Binding FamiliesViewModel}"/>
             </Grid>
-            <options:JournalTaskOptionView Grid.Column="1" Grid.Row="0"
+            <options:TaskOptionView Grid.Column="1" Grid.Row="0"
                                            Margin="{StaticResource DefaultMargin}"
                                            DataContext="{Binding TaskOptionViewModel}"/>
         </Grid>
         <WrapPanel DockPanel.Dock="Bottom" 
                    Margin="{StaticResource DefaultMargin}"
                    HorizontalAlignment="Right">
-            <WrapPanel Visibility="{Binding JournalCommandVisibility}">
+            <WrapPanel Visibility="{Binding TaskVisibility}">
                 <Button Content="Cancel" 
-                        Visibility="{Binding CancelButtonVisibility}"
-                        IsEnabled="{Binding CancelButtonEnable}"
-                        Command="{Binding CancelJournalCommand}"
+                        Visibility="{Binding CancelVisibility}"
+                        IsEnabled="{Binding CancelEnable}"
+                        Command="{Binding CancelCommand}"
                         Style="{StaticResource DialogButton}"/>
                 <Button Content="Back"  
-                        Visibility="{Binding BackButtonVisibility}"
-                        Command="{Binding BackJournalCommand}"
+                        Visibility="{Binding BackVisibility}"
+                        Command="{Binding BackCommand}"
                         Style="{StaticResource DialogButton}"/>
                 <Button Content="Run" 
-                        IsEnabled="{Binding RunButtonEnable}"
-                        Command="{Binding ExecuteJournalCommand}"
+                        IsEnabled="{Binding ExecuteEnable}"
+                        Command="{Binding ExecuteCommand}"
                         Style="{StaticResource DialogButton}"/>
             </WrapPanel>
-            <WrapPanel Visibility="{Binding RevitFilesVisibility}">
-                <Button Content="{Binding CreateButtonName}"
-                        Command="{Binding CreateJournalCommand}" 
-                        CommandParameter="{Binding FamilyOverviewViewModel}"
+            <WrapPanel Visibility="{Binding FamiliesVisibility}">
+                <Button Content="{Binding CreateName}"
+                        Command="{Binding CreateCommand}" 
+                        CommandParameter="{Binding FamiliesViewModel}"
                         Style="{StaticResource DialogButton}"/>
             </WrapPanel>
         </WrapPanel>
         <Grid>
-            <Grid Visibility="{Binding RevitFilesVisibility}"
+            <Grid Visibility="{Binding FamiliesVisibility}"
                   Margin="{StaticResource DefaultMargin}">
-                <task:FamilyOverviewView DataContext="{Binding FamilyOverviewViewModel}"/>
+                <task:FamilyOverviewView DataContext="{Binding FamiliesViewModel}"/>
             </Grid>
-            <Grid Visibility="{Binding JournalCommandVisibility}"
+            <Grid Visibility="{Binding TaskVisibility}"
                   Margin="{StaticResource DefaultMargin}">
-                <task:JournalTaskOverviewView DataContext="{Binding JournalTaskOverviewViewModel }"/>
+                <task:JournalTaskOverviewView DataContext="{Binding TasksViewModel }"/>
             </Grid>
         </Grid>
     </DockPanel>

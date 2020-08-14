@@ -65,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TaskExternalApp.cs" />
     <Compile Include="ARevitExternalCommand.cs" />
     <Compile Include="ATaskActionCommand.cs" />
     <Compile Include="CommandReport\ReportJsonDataSource.cs" />

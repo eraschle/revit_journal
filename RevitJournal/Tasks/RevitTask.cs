@@ -1,6 +1,7 @@
 ﻿using DataSource.Model.FileSystem;
 using RevitAction.Action;
 using RevitJournal.Journal.Execution;
+using RevitJournal.Tasks.Options;
 using System;
 using System.Collections.Generic;
 
@@ -12,19 +13,15 @@ namespace RevitJournal.Journal
 
         public RevitFamilyFile RevitFile { get { return Family.RevitFile; } }
 
-        public JournalOption TaskOption { get; private set; }
-
-        public JournalProcessFile JournalProcess { get; private set; }
+        public ProcessJournalFile JournalProcess { get; private set; }
 
         public IList<ITaskAction> Actions { get; private set; }
 
-        public RevitTask(RevitFamily family, JournalOption taskOption)
+        public RevitTask(RevitFamily family)
         {
             if (family is null) { throw new ArgumentNullException(nameof(family)); }
-            if (taskOption is null) { throw new ArgumentNullException(nameof(taskOption)); }
 
             Family = family;
-            TaskOption = taskOption;
             Actions = new List<ITaskAction>();
         }
 
@@ -54,9 +51,11 @@ namespace RevitJournal.Journal
             return actionCommands.Count > 0;
         }
 
-        public void CreateJournalProcess(string journalDirectory)
+        public void CreateJournalProcess(CommonOptions options)
         {
-            JournalProcess = JournalProcessCreator.Create(this, journalDirectory);
+            if(options is null) { throw new ArgumentNullException(nameof(options)); }
+
+            JournalProcess = ProcessJournalCreator.Create(this, options.JournalDirectory);
         }
 
         public void DeleteJournalProcess()
@@ -66,17 +65,18 @@ namespace RevitJournal.Journal
             JournalProcess.Delete();
         }
 
-        internal void PreExecution(JournalOption option)
+        internal void PreExecution(BackupOptions option)
         {
-            if (option.BackupRevitFile)
+            if (option.CreateBackup)
             {
                 var revitFile = Family.RevitFile;
-                revitFile.CopyTo<RevitFamilyFile>(option.GetBackupFile(revitFile), true);
+                var backupPath = option.CreateBackupFile(revitFile);
+                revitFile.CopyTo<RevitFamilyFile>(backupPath, true);
             }
 
             foreach (var command in Actions)
             {
-                command.PreTask(Family.RevitFile);
+                command.PreTask(Family);
             }
         }
 
@@ -84,7 +84,7 @@ namespace RevitJournal.Journal
         {
             foreach (var command in Actions)
             {
-                command.PostTask(Family.RevitFile);
+                command.PostTask(Family);
             }
             return result;
         }

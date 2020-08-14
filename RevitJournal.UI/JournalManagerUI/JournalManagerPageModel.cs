@@ -1,23 +1,23 @@
 ﻿using DataSource;
-using DataSource.Helper;
+using RevitAction.Action;
 using RevitJournal.Journal;
-using RevitJournal.Journal.Command;
-using RevitJournalUI.Helper;
+using RevitJournal.Tasks;
 using RevitJournalUI.JournalTaskUI;
 using RevitJournalUI.JournalTaskUI.FamilyFilter;
-using RevitJournalUI.JournalTaskUI.JournalCommands;
 using RevitJournalUI.JournalTaskUI.Models;
 using RevitJournalUI.JournalTaskUI.Options;
 using RevitJournalUI.MetadataUI;
+using RevitJournalUI.Tasks.Actions;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Utilities;
+using Utilities.UI.Helper;
 
 namespace RevitJournalUI.JournalManagerUI
 {
@@ -31,31 +31,33 @@ namespace RevitJournalUI.JournalManagerUI
 
         private readonly Progress<JournalResult> Progress;
 
-        public TaskManager JournalManager { get; private set; }
+        public TaskManager TaskManager { get; private set; }
+        private readonly TaskOptions taskOptions;
 
         public JournalManagerPageModel()
         {
-            JournalManager = new TaskManager();
+            TaskManager = new TaskManager();
+            taskOptions = new TaskOptions();
             ProductManager.UpdateVersions();
-            TaskOptionViewModel = new JournalTaskOptionViewModel(JournalManager);
-            FamilyOverviewViewModel = new FamilyOverviewViewModel { FilterManager = FilterManager };
-            PropertyChanged += new PropertyChangedEventHandler(FamilyOverviewViewModel.OnContentDirectoryChanged);
-            CreateJournalCommand = new RelayCommand<FamilyOverviewViewModel>(CreateJournalCommandAction, CreateJournalCommandPredicate);
-            BackJournalCommand = new RelayCommand<object>(BackJournalCommandAction);
+            TaskOptionViewModel = new TaskOptionViewModel { Options = taskOptions };
+            FamiliesViewModel = new FamilyOverviewViewModel { FilterManager = FilterManager };
+            PropertyChanged += new PropertyChangedEventHandler(FamiliesViewModel.OnContentDirectoryChanged);
+            CreateCommand = new RelayCommand<FamilyOverviewViewModel>(CreateCommandAction, CreateCommandPredicate);
+            BackCommand = new RelayCommand<object>(BackCommandAction);
             DuplicateCommand = new RelayCommand<FamilyOverviewViewModel>(DuplicateCommandAction, DuplicateCommandPredicate);
             EditCommand = new RelayCommand<FamilyOverviewViewModel>(EditCommandAction, EditCommandPredicate);
-            ExecuteJournalCommand = new RelayCommand<object>(ExecuteJournalCommandAction, ExecuteJournalCommandPredicate);
-            CancelJournalCommand = new RelayCommand<object>(CancelJournalCommandAction, CancelJournalCommandPredicate);
+            ExecuteCommand = new RelayCommand<object>(ExecuteCommandAction, ExecuteCommandPredicate);
+            CancelCommand = new RelayCommand<object>(CancelCommandAction, CancelCommandPredicate);
 
             Progress = new Progress<JournalResult>();
-            FamilyOverviewViewModel.PropertyChanged += new PropertyChangedEventHandler(OnCheckedChanged);
+            FamiliesViewModel.PropertyChanged += new PropertyChangedEventHandler(OnCheckedChanged);
 
             SetupFilterCommand = new RelayCommand<ObservableCollection<DirectoryViewModel>>(SetupFilterCommandAction);
             SetupJournalCommand = new RelayCommand<TaskManager>(SetupJournalCommandAction);
 
 #if DEBUG
-            FamilyDirectory = @"C:\develop\workspace\_my-work\RevitJournal\data\test files";
-            JournalDirectory = @"C:\develop\workspace\_my-work\RevitJournal\data\meta_data";
+            FamilyDirectory = @"C:\develop\workspace\test_data\families";
+            JournalDirectory = @"C:\develop\workspace\test_data\journals";
 #else
             var myDocument = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             FamilyDirectory = myDocument;
@@ -67,17 +69,17 @@ namespace RevitJournalUI.JournalManagerUI
 
         #region Common Settings
 
-        public JournalTaskOptionViewModel TaskOptionViewModel { get; }
+        public TaskOptionViewModel TaskOptionViewModel { get; }
 
-        private string _FamilyDirectory = string.Empty;
+        private string familyDirectory = string.Empty;
         public string FamilyDirectory
         {
-            get { return _FamilyDirectory; }
+            get { return familyDirectory; }
             set
             {
-                if (_FamilyDirectory.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(familyDirectory, value)) { return; }
 
-                _FamilyDirectory = value;
+                familyDirectory = value;
                 OnPropertyChanged(nameof(FamilyDirectory));
             }
         }
@@ -94,12 +96,12 @@ namespace RevitJournalUI.JournalManagerUI
 
         public string JournalDirectory
         {
-            get { return JournalManager.JournalDirectory; }
+            get { return taskOptions.Common.JournalDirectory; }
             set
             {
-                if (JournalManager.JournalDirectory.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(taskOptions.Common.JournalDirectory, value)) { return; }
 
-                JournalManager.JournalDirectory = value;
+                taskOptions.Common.JournalDirectory = value;
                 OnPropertyChanged(nameof(JournalDirectory));
             }
         }
@@ -137,28 +139,28 @@ namespace RevitJournalUI.JournalManagerUI
             LoadingProcessTitel = $"Loading [{percent}%]";
         }
 
-        private string _LoadingProcessTitel;
+        private string loadingProcessTitel;
         public string LoadingProcessTitel
         {
-            get { return _LoadingProcessTitel; }
+            get { return loadingProcessTitel; }
             set
             {
-                if (_LoadingProcessTitel == value) { return; }
+                if (loadingProcessTitel == value) { return; }
 
-                _LoadingProcessTitel = value;
+                loadingProcessTitel = value;
                 OnPropertyChanged(nameof(LoadingProcessTitel));
             }
         }
 
-        private int _LoadingProcessPercent;
+        private int loadingProcessPercent;
         public int LoadingProcessPercent
         {
-            get { return _LoadingProcessPercent; }
+            get { return loadingProcessPercent; }
             set
             {
-                if (_LoadingProcessPercent == value) { return; }
+                if (loadingProcessPercent == value) { return; }
 
-                _LoadingProcessPercent = value;
+                loadingProcessPercent = value;
                 OnPropertyChanged(nameof(LoadingProcessPercent));
             }
         }
@@ -191,7 +193,7 @@ namespace RevitJournalUI.JournalManagerUI
             {
                 FilterManager.UpdateFilter(dialog.ViewModel);
                 UpdateCheckedFilters();
-                FamilyOverviewViewModel.FilterUpdated(FilterManager);
+                FamiliesViewModel.FilterUpdated(FilterManager);
             }
         }
 
@@ -209,112 +211,111 @@ namespace RevitJournalUI.JournalManagerUI
 
         #endregion
 
-        private Visibility _SetupJournalVisibility = Visibility.Visible;
+        private Visibility setupJournalVisibility = Visibility.Visible;
         public Visibility SetupJournalVisibility
         {
-            get { return _SetupJournalVisibility; }
+            get { return setupJournalVisibility; }
             set
             {
-                if (_SetupJournalVisibility == value) { return; }
+                if (setupJournalVisibility == value) { return; }
 
-                _SetupJournalVisibility = value;
+                setupJournalVisibility = value;
                 OnPropertyChanged(nameof(SetupJournalVisibility));
             }
         }
 
         public ICommand SetupJournalCommand { get; }
 
-        private JournalManagerViewModel JournalCommandManagerModel;
+        private TaskActionsViewModel actionManagerModel;
 
         private void SetupJournalCommandAction(TaskManager manager)
         {
-            var dialog = new JournalManagerView(manager);
-            JournalCommandManagerModel = dialog.ViewModel;
+            var dialog = new TaskActionsView(manager);
+            actionManagerModel = dialog.ViewModel;
             var result = dialog.ShowDialog();
             if (result == true)
             {
                 UpdateJournalCommands();
             }
         }
-        public ObservableCollection<IJournalCommand> JournalCommands { get; }
-            = new ObservableCollection<IJournalCommand>();
+        public ObservableCollection<ITaskAction> Actions { get; }
+            = new ObservableCollection<ITaskAction>();
 
         private void UpdateJournalCommands()
         {
-            JournalCommands.Clear();
-            foreach (var commands in JournalCommandManagerModel.CheckedCommands)
+            Actions.Clear();
+            foreach (var commands in actionManagerModel.CheckedActions)
             {
-                JournalCommands.Add(commands);
+                Actions.Add(commands);
             }
         }
 
         #region Revit Content Overview
 
-        public FamilyOverviewViewModel FamilyOverviewViewModel { get; }
+        public FamilyOverviewViewModel FamiliesViewModel { get; }
 
-        private Visibility _RevitFilesVisibility = Visibility.Visible;
-        public Visibility RevitFilesVisibility
+        private Visibility familiesVisibility = Visibility.Visible;
+        public Visibility FamiliesVisibility
         {
-            get { return _RevitFilesVisibility; }
+            get { return familiesVisibility; }
             set
             {
-                if (_RevitFilesVisibility == value) { return; }
+                if (familiesVisibility == value) { return; }
 
-                _RevitFilesVisibility = value;
-                OnPropertyChanged(nameof(RevitFilesVisibility));
+                familiesVisibility = value;
+                OnPropertyChanged(nameof(FamiliesVisibility));
             }
         }
 
-        private string _CreateButtonName = PrefixCreateButton;
-        public string CreateButtonName
+        private string createName = PrefixCreateButton;
+        public string CreateName
         {
-            get { return _CreateButtonName; }
+            get { return createName; }
             set
             {
-                if (_CreateButtonName.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (createName.Equals(value, StringComparison.CurrentCulture)) { return; }
 
-                _CreateButtonName = value;
-                OnPropertyChanged(nameof(CreateButtonName));
+                createName = value;
+                OnPropertyChanged(nameof(CreateName));
             }
         }
 
         private void OnCheckedChanged(object sender, PropertyChangedEventArgs args)
         {
             if (args is null) { return; }
-            if (args.PropertyName.Equals(nameof(FamilyOverviewViewModel.CheckedRevitFilesCount), StringComparison.CurrentCulture) == false
-                && args.PropertyName.Equals(nameof(FamilyOverviewViewModel.ValidCheckedRevitFilesCount), StringComparison.CurrentCulture) == false) { return; }
+            if (StringUtils.Equals(args.PropertyName, nameof(FamiliesViewModel.CheckedRevitFilesCount)) == false
+                && StringUtils.Equals(args.PropertyName, nameof(FamiliesViewModel.ValidCheckedRevitFilesCount)) == false) { return; }
 
-            CreateButtonName = $"{PrefixCreateButton} [{FamilyOverviewViewModel.CheckedRevitFilesCount}]";
+            CreateName = $"{PrefixCreateButton} [{FamiliesViewModel.CheckedRevitFilesCount}]";
             UpdateDuplicateButtonName();
             UpdateEditButtonName();
         }
 
         public void UpdateDuplicateButtonName()
         {
-            DuplicateButtonName = $"{PrefixDuplicateButton} [{FamilyOverviewViewModel.ValidCheckedRevitFilesCount}]";
+            DuplicateName = $"{PrefixDuplicateButton} [{FamiliesViewModel.ValidCheckedRevitFilesCount}]";
         }
 
         public void UpdateEditButtonName()
         {
-            EditButtonName = $"{PrefixEditButton} [{FamilyOverviewViewModel.EditableRevitFilesCount}]";
+            EditName = $"{PrefixEditButton} [{FamiliesViewModel.EditableRevitFilesCount}]";
         }
 
-        public ICommand CreateJournalCommand { get; private set; }
+        public ICommand CreateCommand { get; private set; }
 
-        private bool CreateJournalCommandPredicate(FamilyOverviewViewModel model)
+        private bool CreateCommandPredicate(FamilyOverviewViewModel model)
         {
             return model != null
                 && model.HasCheckedRevitFiles
-                && JournalCommandManagerModel != null
-                && JournalCommandManagerModel.HasCheckedCommands;
+                && actionManagerModel != null
+                && actionManagerModel.HasCheckedCommands;
         }
 
-        private void CreateJournalCommandAction(FamilyOverviewViewModel model)
+        private void CreateCommandAction(FamilyOverviewViewModel model)
         {
-            JournalManager.ClearTasks();
-            var taskOptions = TaskOptionViewModel.TaskOption;
-            var useMetadataRevitVersion = taskOptions.RevitApp.UseMetadata;
-            var journalCommands = JournalCommandManagerModel.CheckedCommands;
+            TaskManager.ClearTasks();
+            var arguments = taskOptions.Arguments;
+            var useMetadataRevitVersion = arguments.RevitApp.UseMetadata;
 
             const bool runnungApps = true;
             foreach (var family in model.RecursiveRevitFamilies)
@@ -333,65 +334,65 @@ namespace RevitJournalUI.JournalManagerUI
                     }
 
                     var revitApp = ProductManager.GetVersionOrNewer(product.Version, runnungApps);
-                    taskOptions.RevitApp = revitApp;
+                    arguments.RevitApp = revitApp;
                 }
-                var journalTask = new RevitTask(family, taskOptions);
-                foreach (var command in journalCommands)
+                var task = new RevitTask(family);
+                foreach (var action in actionManagerModel.CheckedActions)
                 {
-                    journalTask.AddCommand(command);
+                    task.AddAction(action);
                 }
 
-                JournalManager.AddTask(journalTask);
+                TaskManager.AddTask(task);
             }
 
-            JournalManager.CreateJournalTaskRunner(Progress);
-            JournalTaskOverviewViewModel.Update(JournalManager);
+            TaskManager.CreateTaskRunner(Progress);
+            TasksViewModel.Update(TaskManager);
 
-            RevitFilesVisibility = Visibility.Collapsed;
-            BackButtonVisibility = Visibility.Visible;
-            JournalCommandVisibility = Visibility.Visible;
+            FamiliesVisibility = Visibility.Collapsed;
+            BackVisibility = Visibility.Visible;
+            TaskVisibility = Visibility.Visible;
             SetupJournalVisibility = Visibility.Collapsed;
             SetupFilterVisibility = Visibility.Collapsed;
             TaskOptionViewModel.OptionsEnabled = false;
         }
 
-        public ICommand BackJournalCommand { get; private set; }
+        public ICommand BackCommand { get; private set; }
 
-        private void BackJournalCommandAction(object parameter)
+        private void BackCommandAction(object parameter)
         {
-            JournalManager.CleanJournalTaskRunner();
-            RevitFilesVisibility = Visibility.Visible;
-            JournalCommandVisibility = Visibility.Collapsed;
-            BackButtonVisibility = Visibility.Collapsed;
+            TaskManager.CleanTaskRunner();
+            FamiliesVisibility = Visibility.Visible;
+            TaskVisibility = Visibility.Collapsed;
+            BackVisibility = Visibility.Collapsed;
 
             SetupJournalVisibility = Visibility.Visible;
             SetupFilterVisibility = Visibility.Visible;
             TaskOptionViewModel.OptionsEnabled = true;
         }
 
-        private Visibility _BackButtonVisibility = Visibility.Collapsed;
-        public Visibility BackButtonVisibility
+        private Visibility backVisibility = Visibility.Collapsed;
+        public Visibility BackVisibility
         {
-            get { return _BackButtonVisibility; }
+            get { return backVisibility; }
             set
             {
-                if (_BackButtonVisibility == value) { return; }
+                if (backVisibility == value) { return; }
 
-                _BackButtonVisibility = value;
-                OnPropertyChanged(nameof(BackButtonVisibility));
+                backVisibility = value;
+                OnPropertyChanged(nameof(BackVisibility));
             }
         }
 
-        private string _DuplicateButtonName = PrefixDuplicateButton;
-        public string DuplicateButtonName
+        private string duplicateName = PrefixDuplicateButton;
+        public string DuplicateName
         {
-            get { return _DuplicateButtonName; }
+            get { return duplicateName; }
             set
             {
-                if (_DuplicateButtonName.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (duplicateName.Equals(value, StringComparison.CurrentCulture)) { return; }
 
-                _DuplicateButtonName = value;
-                OnPropertyChanged(nameof(DuplicateButtonName));
+                duplicateName = value;
+                OnPropertyChanged(nameof(DuplicateName));
             }
         }
 
@@ -412,16 +413,16 @@ namespace RevitJournalUI.JournalManagerUI
             dialog.ShowDialog();
         }
 
-        private string _EditButtonName = PrefixEditButton;
-        public string EditButtonName
+        private string editName = PrefixEditButton;
+        public string EditName
         {
-            get { return _EditButtonName; }
+            get { return editName; }
             set
             {
-                if (_EditButtonName.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (editName.Equals(value, StringComparison.CurrentCulture)) { return; }
 
-                _EditButtonName = value;
-                OnPropertyChanged(nameof(EditButtonName));
+                editName = value;
+                OnPropertyChanged(nameof(EditName));
             }
         }
 
@@ -446,18 +447,18 @@ namespace RevitJournalUI.JournalManagerUI
 
         #region Journal Tasks Overview
 
-        public JournalTaskOverviewViewModel JournalTaskOverviewViewModel { get; } = new JournalTaskOverviewViewModel();
+        public JournalTaskOverviewViewModel TasksViewModel { get; } = new JournalTaskOverviewViewModel();
 
-        private Visibility _JournalTaskVisibility = Visibility.Collapsed;
-        public Visibility JournalCommandVisibility
+        private Visibility taskVisibility = Visibility.Collapsed;
+        public Visibility TaskVisibility
         {
-            get { return _JournalTaskVisibility; }
+            get { return taskVisibility; }
             set
             {
-                if (_JournalTaskVisibility == value) { return; }
+                if (taskVisibility == value) { return; }
 
-                _JournalTaskVisibility = value;
-                OnPropertyChanged(nameof(JournalCommandVisibility));
+                taskVisibility = value;
+                OnPropertyChanged(nameof(TaskVisibility));
             }
         }
 
@@ -465,48 +466,48 @@ namespace RevitJournalUI.JournalManagerUI
 
         #region Execute Tasks
 
-        public ICommand ExecuteJournalCommand { get; private set; }
+        public ICommand ExecuteCommand { get; private set; }
 
-        private async void ExecuteJournalCommandAction(object parameter)
+        private async void ExecuteCommandAction(object parameter)
         {
-            RunButtonEnable = false;
-            CancelButtonVisibility = Visibility.Visible;
-            BackButtonVisibility = Visibility.Collapsed;
+            ExecuteEnable = false;
+            CancelVisibility = Visibility.Visible;
+            BackVisibility = Visibility.Collapsed;
 
             Progress.ProgressChanged += new EventHandler<JournalResult>(OnReport);
             using (var cancel = new CancellationTokenSource())
             {
                 Cancellation = cancel;
-                await JournalManager.ExecuteAllTaskAsync(Cancellation.Token)
-                                    .ConfigureAwait(false);
+                await TaskManager.ExecuteTasks(taskOptions, Cancellation.Token)
+                                 .ConfigureAwait(false);
                 Cancellation = null;
             }
             Progress.ProgressChanged -= OnReport;
-            RunButtonEnable = true;
+            ExecuteEnable = true;
         }
 
-        private bool ExecuteJournalCommandPredicate(object parameter)
+        private bool ExecuteCommandPredicate(object parameter)
         {
-            return JournalManager.HasRevitTasks;
+            return TaskManager.HasRevitTasks;
         }
 
         private void OnReport(object sender, JournalResult result)
         {
             if (result is null) { return; }
 
-            JournalTaskOverviewViewModel.SetResult(JournalManager, result);
+            TasksViewModel.SetResult(TaskManager, result);
         }
 
-        private bool _RunButtonEnable = true;
-        public bool RunButtonEnable
+        private bool executeEnable = true;
+        public bool ExecuteEnable
         {
-            get { return _RunButtonEnable; }
+            get { return executeEnable; }
             set
             {
-                if (_RunButtonEnable == value) { return; }
+                if (executeEnable == value) { return; }
 
-                _RunButtonEnable = value;
-                OnPropertyChanged(nameof(RunButtonEnable));
+                executeEnable = value;
+                OnPropertyChanged(nameof(ExecuteEnable));
             }
         }
 
@@ -514,34 +515,34 @@ namespace RevitJournalUI.JournalManagerUI
 
         #region Cancel Task Execution
 
-        private CancellationTokenSource _Cancellation;
+        private CancellationTokenSource cancellation;
         public CancellationTokenSource Cancellation
         {
-            get { return _Cancellation; }
+            get { return cancellation; }
             set
             {
-                _Cancellation = value;
+                cancellation = value;
                 OnPropertyChanged(nameof(Cancellation));
-                CancelButtonEnable = _Cancellation != null;
+                CancelEnable = cancellation != null;
             }
         }
 
-        private bool _CancelButtonEnable = false;
-        public bool CancelButtonEnable
+        private bool cancelEnable = false;
+        public bool CancelEnable
         {
-            get { return _CancelButtonEnable; }
+            get { return cancelEnable; }
             set
             {
-                if (_CancelButtonEnable == value) { return; }
+                if (cancelEnable == value) { return; }
 
-                _CancelButtonEnable = value;
-                OnPropertyChanged(nameof(CancelButtonEnable));
+                cancelEnable = value;
+                OnPropertyChanged(nameof(CancelEnable));
             }
         }
 
-        public ICommand CancelJournalCommand { get; private set; }
+        public ICommand CancelCommand { get; private set; }
 
-        private void CancelJournalCommandAction(object parameter)
+        private void CancelCommandAction(object parameter)
         {
             try
             {
@@ -555,22 +556,22 @@ namespace RevitJournalUI.JournalManagerUI
             }
         }
 
-        private bool CancelJournalCommandPredicate(object parameter)
+        private bool CancelCommandPredicate(object parameter)
         {
             return Cancellation != null;
         }
 
 
-        private Visibility _CancelButtonVisibility = Visibility.Collapsed;
-        public Visibility CancelButtonVisibility
+        private Visibility cancelVisibility = Visibility.Collapsed;
+        public Visibility CancelVisibility
         {
-            get { return _CancelButtonVisibility; }
+            get { return cancelVisibility; }
             set
             {
-                if (_CancelButtonVisibility == value) { return; }
+                if (cancelVisibility == value) { return; }
 
-                _CancelButtonVisibility = value;
-                OnPropertyChanged(nameof(CancelButtonVisibility));
+                cancelVisibility = value;
+                OnPropertyChanged(nameof(CancelVisibility));
             }
         }
 

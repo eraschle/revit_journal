@@ -54,16 +54,16 @@ namespace RevitJournal.Journal
 
         public RevitFamilyFile Original { get { return JournalTask.Family.RevitFile; } }
 
-        public JournalProcessFile JournalProcess { get { return JournalTask.JournalProcess; } }
+        public ProcessJournalFile JournalProcess { get { return JournalTask.JournalProcess; } }
 
-        public JournalRevitFile JournalRevit { get; set; }
+        //public JournalRevitFile JournalRevit { get; set; }
 
         public RevitFamilyFile Result { get; internal set; }
 
         public RevitFamilyFile Backup { get; internal set; }
 
-        [JsonIgnore]
-        public TimeSpan ProcessTimeout { get; private set; }
+        //[JsonIgnore]
+        //public TimeSpan ProcessTimeout { get; private set; }
 
         [JsonIgnore]
         public int Status { get; private set; } = ResultStatus.Initial;
@@ -71,17 +71,17 @@ namespace RevitJournal.Journal
         public JournalResult(RevitTask journalTask)
         {
             JournalTask = journalTask;
-            ProcessTimeout = journalTask.TaskOption.TaskTimeout;
+            //ProcessTimeout = journalTask.TaskOption.TaskTimeout;
             Result = journalTask.RevitFile;
         }
 
-        private bool HasJournals { get { return HasJournalRevit && HasJournalProcess; } }
+        //private bool HasJournals { get { return HasJournalRevit && HasJournalProcess; } }
 
-        [JsonIgnore]
-        public bool HasJournalRevit { get { return JournalRevit != null; } }
+        //[JsonIgnore]
+        //public bool HasJournalRevit { get { return JournalRevit != null; } }
 
-        [JsonIgnore]
-        public bool HasJournalProcess { get { return JournalProcess != null; } }
+        //[JsonIgnore]
+        //public bool HasJournalProcess { get { return JournalProcess != null; } }
 
         [JsonIgnore]
         public bool Executed
@@ -125,20 +125,20 @@ namespace RevitJournal.Journal
 
         private bool IsStatus(int status) { return (Status & status) == status; }
 
-        public bool HasError()
-        {
-            return IsTimeout || (HasJournals && JournalRevit.HasError(JournalProcess));
-        }
+        //public bool HasError()
+        //{
+        //    return IsTimeout || (HasJournals && JournalRevit.HasError(JournalProcess));
+        //}
 
-        public bool HasError(out JournalError taskError)
-        {
-            taskError = null;
-            if (HasError())
-            {
-                taskError = new JournalError(this);
-            }
-            return taskError != null;
-        }
+        //public bool HasError(out JournalError taskError)
+        //{
+        //    taskError = null;
+        //    if (HasError())
+        //    {
+        //        taskError = new JournalError(this);
+        //    }
+        //    return taskError != null;
+        //}
 
         public override bool Equals(object obj)
         {

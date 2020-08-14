@@ -235,9 +235,7 @@ namespace RevitCommand
 
         public static string GetBuiltInEnum<TEnum>(TEnum builtInEnum, TEnum notValid)
         {
-            if (builtInEnum.Equals(notValid)) { return null; }
-
-            return GetBuiltInEnum(builtInEnum);
+            return builtInEnum.Equals(notValid) ? null : GetBuiltInEnum(builtInEnum);
         }
     }
 }

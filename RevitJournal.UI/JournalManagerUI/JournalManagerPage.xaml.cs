@@ -26,7 +26,7 @@ namespace RevitJournalUI.JournalManagerUI
             {
                 worker.ProgressChanged += new ProgressChangedEventHandler(OnProgressChanged);
                 worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(OnCompleted);
-                worker.RunWorkerAsync(ViewModel.FamilyOverviewViewModel.DirectoryViewModels);
+                worker.RunWorkerAsync(ViewModel.FamiliesViewModel.DirectoryViewModels);
             }
         }
 

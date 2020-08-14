@@ -68,14 +68,7 @@ namespace RevitCommand.Families.ImageExport
 
         protected bool HasFamilyInstancesOfSymbol(FamilySymbol familySymbol, bool onlyVisible, out FilteredElementCollector collector)
         {
-            if (onlyVisible)
-            {
-                collector = GetViewCollector();
-            }
-            else
-            {
-                collector = new FilteredElementCollector(Document);
-            }
+            collector = onlyVisible ? GetViewCollector() : new FilteredElementCollector(Document);
             var filter = new FamilyInstanceFilter(Document, familySymbol.Id);
             return collector.WherePasses(filter).GetElementCount() > 0;
         }
@@ -126,7 +119,7 @@ namespace RevitCommand.Families.ImageExport
 
         protected static bool HaveModelTextSameLocation(FilteredElementCollector collector)
         {
-            bool similar = false;
+            var similar = false;
             LocationPoint location = null;
             foreach (var element in collector.ToElements())
             {

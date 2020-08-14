@@ -19,5 +19,10 @@ namespace RevitCommand
         protected abstract string ExternalCommandName { get; }
 
         public string VendorId { get; } = "RascerDev";
+
+        public string AssemblyPath
+        {
+            get { return typeof(ATaskActionCommand).Assembly.Location; }
+        }
     }
 }

@@ -54,12 +54,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files\Autodesk\Revit 2019\RevitAddInUtility.dll</HintPath>
     </Reference>
-    <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\Program Files\Autodesk\Revit 2019\RevitAPI.dll</HintPath>
-    </Reference>
-    <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\Program Files\Autodesk\Revit 2019\RevitAPIUI.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -100,34 +94,38 @@
     <Compile Include="Duplicate\DuplicateManager.cs" />
     <Compile Include="Helper\PathCreator.cs" />
     <Compile Include="Helper\TypeLoaderExtensions.cs" />
-    <Compile Include="Journal\Command\DocumentOpenAction.cs" />
-    <Compile Include="Journal\Command\DocumentSaveAsAction.cs" />
-    <Compile Include="Journal\Command\DocumentSaveAction.cs" />
+    <Compile Include="Revit\Journal\Command\DocumentOpenAction.cs" />
+    <Compile Include="Revit\Journal\Command\DocumentSaveAsAction.cs" />
+    <Compile Include="Revit\Journal\Command\DocumentSaveAction.cs" />
+    <Compile Include="Revit\RevitArguments.cs" />
+    <Compile Include="Tasks\Options\BackupOptions.cs" />
+    <Compile Include="Tasks\Options\ParallelOptions.cs" />
+    <Compile Include="Tasks\Options\ReportOptions.cs" />
+    <Compile Include="Tasks\Options\CommonOptions.cs" />
     <Compile Include="Tasks\TaskActionComparer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Revit\Commands\FileCreationManager.cs" />
-    <Compile Include="Journal\JournalBuilder.cs" />
-    <Compile Include="Journal\Command\RevitCloseCommand.cs" />
-    <Compile Include="Journal\Command\RevitStartCommand.cs" />
-    <Compile Include="Journal\Execution\JournalProcessCreator.cs" />
-    <Compile Include="Journal\Execution\JournalRevitCreator.cs" />
-    <Compile Include="Journal\Execution\JournalRevitReader.cs" />
-    <Compile Include="Journal\Execution\RevitProcess.cs" />
+    <Compile Include="Revit\Addin\AddinManager.cs" />
+    <Compile Include="Revit\Journal\JournalBuilder.cs" />
+    <Compile Include="Revit\Journal\Command\RevitCloseCommand.cs" />
+    <Compile Include="Revit\Journal\Command\RevitStartCommand.cs" />
+    <Compile Include="Revit\Journal\ProcessJournalCreator.cs" />
+    <Compile Include="Tasks\TaskOptions.cs" />
+    <None Include="Journal\Execution\JournalRevitCreator.cs" />
+    <None Include="Journal\Execution\JournalRevitReader.cs" />
+    <Compile Include="Revit\RevitProcess.cs" />
     <Compile Include="Tasks\RevitTask.cs" />
-    <Compile Include="Journal\JournalError.cs" />
+    <None Include="Journal\JournalError.cs" />
     <Compile Include="Tasks\TaskManager.cs" />
     <Compile Include="Journal\Execution\JournalTaskRunner.cs" />
-    <Compile Include="Journal\JournalOption.cs" />
     <Compile Include="Journal\JournalResult.cs" />
-    <Compile Include="Journal\Execution\JournalProcessFile.cs" />
-    <Compile Include="Journal\Execution\JournalProcessCommand.cs" />
-    <Compile Include="Journal\Execution\JournalRevitCommand.cs" />
+    <Compile Include="Revit\Journal\ProcessJournalFile.cs" />
+    <None Include="Journal\Execution\JournalRevitCommand.cs" />
     <Compile Include="Journal\JournalResultFile.cs" />
-    <Compile Include="Journal\Execution\JournalRevitFile.cs" />
+    <None Include="Journal\Execution\JournalRevitFile.cs" />
     <None Include="Resources\AddinTemplate.addin" />
     <Compile Include="Duplicate\Comparer\FamilyDuplicateComparer.cs" />
     <Compile Include="Duplicate\Comparer\FamilyTypeDuplicateComparer.cs" />

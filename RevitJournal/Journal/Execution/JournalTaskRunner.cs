@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RevitJournal.Revit;
+using RevitJournal.Tasks;
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,9 +13,9 @@ namespace RevitJournal.Journal.Execution
 
         private readonly JournalResult Result;
 
-        private JournalProcessFile JournalProcess { get { return Result.JournalProcess; } }
+        private ProcessJournalFile JournalProcess { get { return Result.JournalProcess; } }
+
         private RevitTask JournalTask { get { return Result.JournalTask; } }
-        private JournalOption TaskOption { get { return JournalTask.TaskOption; } }
 
         private readonly IProgress<JournalResult> Progress;
 
@@ -23,28 +25,28 @@ namespace RevitJournal.Journal.Execution
             Result = new JournalResult(journalTask);
         }
 
-        private void SetupEvents(JournalRevitCreator creator)
-        {
-            creator.JournalCreated += new JournalRevitCreatorHandler(OnJournalRevitCreated);
-        }
+        //private void SetupEvents(JournalRevitCreator creator)
+        //{
+        //    creator.JournalCreated += new JournalRevitCreatorHandler(OnJournalRevitCreated);
+        //}
 
-        private void CleanEvents(JournalRevitCreator creator)
-        {
-            creator.JournalCreated -= OnJournalRevitCreated;
-        }
+        //private void CleanEvents(JournalRevitCreator creator)
+        //{
+        //    creator.JournalCreated -= OnJournalRevitCreated;
+        //}
 
-        internal async Task CreateTask(JournalRevitCreator creator, CancellationToken cancellation)
+        internal async Task CreateTask(TaskOptions options, CancellationToken cancellation)
         {
-            JournalTask.PreExecution(TaskOption);
-            JournalTask.CreateJournalProcess(creator.JournalDirectory);
-            SetupEvents(creator);
+            JournalTask.PreExecution(options.Backup);
+            JournalTask.CreateJournalProcess(options.Common);
+            //SetupEvents(creator);
             using (var taskCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellation))
             {
                 taskCancellation.Token.Register(CancelAction);
                 Report(ResultStatus.Started);
-                using (Process = new RevitProcess(TaskOption.RevitApp))
+                using (Process = new RevitProcess(options.Arguments))
                 {
-                    var processTask = await Process.RunTaskAsync(JournalProcess, TaskOption.TaskTimeout, taskCancellation.Token);
+                    var processTask = await Process.RunTaskAsync(JournalProcess, taskCancellation.Token);
                     if (processTask == false)
                     {
                         Report(ResultStatus.Timeout);
@@ -53,20 +55,20 @@ namespace RevitJournal.Journal.Execution
                 Process = null;
                 JournalTask.PostExecution(Result);
             }
-            CleanEvents(creator);
+            //CleanEvents(creator);
             Report(ResultStatus.Finish);
-            if (TaskOption.LogResults)
+            var reportOptions = options.Report;
+            if (reportOptions.LogResults)
             {
-                if (TaskOption.LogError && Result.HasError(out var error))
-                {
-                    JournalError.Write(error);
-                }
-                if (TaskOption.LogSuccess)
+                //if (TaskOption.LogError && Result.HasError(out var error))
+                //{
+                //    JournalError.Write(error);
+                //}
+                if (reportOptions.LogSuccess)
                 {
                     JournalResult.Write(Result);
                 }
             }
-            creator.AddFinishedTask(Result.JournalRevit);
         }
 
         private void CancelAction()
@@ -78,22 +80,22 @@ namespace RevitJournal.Journal.Execution
             Debug.WriteLine(JournalProcess.Name + ": Killed Process [CancelAction]");
         }
 
-        private void OnJournalRevitCreated(object sender, JournalRevitCreatedEventArgs args)
-        {
-            if (JournalProcess is null
-                || JournalProcess.IsSame(args.JournalProcessPath) == false) { return; }
+        //private void OnJournalRevitCreated(object sender, JournalRevitCreatedEventArgs args)
+        //{
+        //    if (JournalProcess is null
+        //        || JournalProcess.IsSame(args.JournalProcessPath) == false) { return; }
 
-            Result.JournalRevit = args.JournalRevit;
-            Report(ResultStatus.Running);
-            if (Result.HasError())
-            {
-                Report(ResultStatus.Error);
-                if (Process is null) { return; }
+        //    Result.JournalRevit = args.JournalRevit;
+        //    Report(ResultStatus.Running);
+        //    if (Result.HasError())
+        //    {
+        //        Report(ResultStatus.Error);
+        //        if (Process is null) { return; }
 
-                Process.KillProcess();
-                Debug.WriteLine(JournalProcess.Name + ": Killed Process [OnJournalRevitCreated]");
-            }
-        }
+        //        Process.KillProcess();
+        //        Debug.WriteLine(JournalProcess.Name + ": Killed Process [OnJournalRevitCreated]");
+        //    }
+        //}
 
         internal void Report(int status)
         {

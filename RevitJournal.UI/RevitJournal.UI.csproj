@@ -91,11 +91,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="JournalTaskUI\JournalCommands\CmdParameterListItemsView.xaml">
+    <None Include="Tasks\Actions\Parameter\CmdParameterListItemsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="JournalTaskUI\JournalCommands\JournalManagerView.xaml">
+    </None>
+    <Page Include="Tasks\Actions\TaskActionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -140,7 +140,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Helper\ListViewHelper.cs" />
-    <Compile Include="Helper\RelayCommand.cs" />
     <Compile Include="Helper\TimeSpanHelper.cs" />
     <Compile Include="JournalTaskUI\Converter\FamilyStatusVisibilityMetadataConverter.cs" />
     <Compile Include="JournalTaskUI\Converter\FamilyStatusToolTipMetadataConverter.cs" />
@@ -148,23 +147,23 @@
     <Compile Include="JournalTaskUI\Converter\FamilyIsEnabledMetadataConverter.cs" />
     <Compile Include="JournalTaskUI\FamilyFilter\FilterManager.cs" />
     <Compile Include="JournalTaskUI\FamilyFilter\FilterViewModel.cs" />
-    <Compile Include="JournalTaskUI\JournalCommands\CmdParameterFolderViewModel.cs" />
-    <Compile Include="JournalTaskUI\JournalCommands\CmdParameterListItemsView.xaml.cs">
+    <Compile Include="Tasks\Actions\Parameter\BoolParameterConverter.cs" />
+    <Compile Include="Tasks\Actions\Parameter\FolderParameterViewModel.cs" />
+    <None Include="Tasks\Actions\Parameter\CmdParameterListItemsView.xaml.cs">
       <DependentUpon>CmdParameterListItemsView.xaml</DependentUpon>
+    </None>
+    <None Include="Tasks\Actions\Parameter\CmdParameterListItemsViewModel.cs" />
+    <None Include="Tasks\Actions\Parameter\CmdParameterSelectViewModel.cs" />
+    <None Include="Tasks\Actions\Parameter\CmdParameterListViewModel.cs" />
+    <Compile Include="Tasks\Actions\Parameter\InfoParameterViewModel.cs" />
+    <Compile Include="Tasks\Actions\TaskActionsView.xaml.cs">
+      <DependentUpon>TaskActionsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="JournalTaskUI\JournalCommands\CmdParameterListItemsViewModel.cs" />
-    <Compile Include="JournalTaskUI\JournalCommands\CmdParameterSelectViewModel.cs" />
-    <Compile Include="JournalTaskUI\JournalCommands\CmdParameterListViewModel.cs" />
-    <Compile Include="JournalTaskUI\JournalCommands\CmdParameterInfoViewModel.cs" />
-    <Compile Include="JournalTaskUI\JournalCommands\JournalManagerView.xaml.cs">
-      <DependentUpon>JournalManagerView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="JournalTaskUI\JournalCommands\JournalManagerViewModel.cs" />
-    <Compile Include="JournalTaskUI\JournalCommands\CmdParameterBooleanConverter.cs" />
-    <Compile Include="JournalTaskUI\JournalCommands\CmdParameterBooleanViewModel.cs" />
-    <Compile Include="JournalTaskUI\JournalCommands\CmdParameterFileViewModel.cs" />
-    <Compile Include="JournalTaskUI\JournalCommands\CmdParameterStringViewModel.cs" />
-    <Compile Include="JournalTaskUI\JournalCommands\JournalCommandViewModel.cs" />
+    <Compile Include="Tasks\Actions\TaskActionsViewModel.cs" />
+    <Compile Include="Tasks\Actions\Parameter\BoolParameterViewModel.cs" />
+    <Compile Include="Tasks\Actions\Parameter\FileParameterViewModel.cs" />
+    <None Include="Tasks\Actions\Parameter\CmdParameterStringViewModel.cs" />
+    <Compile Include="Tasks\Actions\ActionViewModel.cs" />
     <Compile Include="JournalTaskUI\Converter\AMetadataConverter.cs" />
     <Compile Include="MetadataUI\Converter\AColorConverter.cs" />
     <Compile Include="MetadataUI\Converter\ListViewDistanceVisibiltyConverter.cs" />
@@ -218,7 +217,9 @@
       <DependentUpon>FamilyOverviewView.xaml</DependentUpon>
     </Compile>
     <Compile Include="JournalTaskUI\FamilyOverviewViewModel.cs" />
-    <Compile Include="JournalTaskUI\JournalCommands\ACmdParameterViewModel.cs" />
+    <Compile Include="Tasks\Actions\Parameter\IParameterViewModel.cs" />
+    <Compile Include="Tasks\Actions\Parameter\ParameterVmBuilder.cs" />
+    <Compile Include="Tasks\Actions\Parameter\ParameterViewModel.cs" />
     <Compile Include="JournalTaskUI\JournalTaskView.xaml.cs">
       <DependentUpon>JournalTaskView.xaml</DependentUpon>
     </Compile>
@@ -292,12 +293,22 @@
       <Project>{241F97FA-369A-49FE-8D6A-BF61B2050AD9}</Project>
       <Name>DataSource</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RevitAction\RevitAction.csproj">
+      <Project>{E89E17ED-9AD7-4562-B5F6-8D0121FBDA10}</Project>
+      <Name>RevitAction</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RevitJournal\RevitJournal.csproj">
       <Project>{3681f659-8bd6-4d3e-a008-8c0d64e95377}</Project>
       <Name>RevitJournal</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{C32F0DC7-ACBA-4802-90D1-BD7641CA851E}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="JournalTaskUI\JournalCommands\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
