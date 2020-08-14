@@ -178,7 +178,7 @@ namespace RevitJournalUI.JournalTaskUI
         public void UpdateDirectoryViewModels(string contentDirectory)
         {
             DirectoryViewModels.Clear();
-            var rootDirectory = JournalManager.CreateRootDirectory(contentDirectory);
+            var rootDirectory = TaskManager.CreateRootDirectory(contentDirectory);
             RootModel = new DirectoryViewModel(rootDirectory, null, FilterManager);
             RootModel.CreateRecursiveChildren();
             UpdateCheckedFamilyCount();

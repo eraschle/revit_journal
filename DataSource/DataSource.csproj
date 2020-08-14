@@ -54,6 +54,9 @@
   <ItemGroup>
     <Compile Include="DataSource\Json\ProductDataJsonDataSource.cs" />
     <Compile Include="Model\Catalog\RevitEnumModels.cs" />
+    <Compile Include="Model\SharedParameters\SharedGroup.cs" />
+    <Compile Include="Model\SharedParameters\SharedParameter.cs" />
+    <Compile Include="Model\SharedParameters\SharedParameterNameReader.cs" />
     <Compile Include="ProductDataManager.cs" />
     <Compile Include="Comparer\FamilyTypeEditedComparer.cs" />
     <Compile Include="Comparer\ParameterEditedComparer.cs" />

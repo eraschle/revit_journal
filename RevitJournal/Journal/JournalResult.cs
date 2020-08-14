@@ -50,7 +50,7 @@ namespace RevitJournal.Journal
         }
 
         [JsonIgnore]
-        public JournalTask JournalTask { get; private set; }
+        public RevitTask JournalTask { get; private set; }
 
         public RevitFamilyFile Original { get { return JournalTask.Family.RevitFile; } }
 
@@ -68,7 +68,7 @@ namespace RevitJournal.Journal
         [JsonIgnore]
         public int Status { get; private set; } = ResultStatus.Initial;
 
-        public JournalResult(JournalTask journalTask)
+        public JournalResult(RevitTask journalTask)
         {
             JournalTask = journalTask;
             ProcessTimeout = journalTask.TaskOption.TaskTimeout;
@@ -143,12 +143,12 @@ namespace RevitJournal.Journal
         public override bool Equals(object obj)
         {
             return obj is JournalResult result &&
-                   EqualityComparer<JournalTask>.Default.Equals(JournalTask, result.JournalTask);
+                   EqualityComparer<RevitTask>.Default.Equals(JournalTask, result.JournalTask);
         }
 
         public override int GetHashCode()
         {
-            return -174109371 + EqualityComparer<JournalTask>.Default.GetHashCode(JournalTask);
+            return -174109371 + EqualityComparer<RevitTask>.Default.GetHashCode(JournalTask);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace RevitJournalUI.JournalTaskUI.JournalCommands
             }
         }
 
-        public void UpdateCommands(JournalManager manager)
+        public void UpdateCommands(TaskManager manager)
         {
             if (manager is null) { return; }
 
@@ -42,7 +42,7 @@ namespace RevitJournalUI.JournalTaskUI.JournalCommands
                 model.PropertyChanged += new PropertyChangedEventHandler(OnJournalCommandChecked);
                 model.UpdateJournalCommandParameters();
 
-                if (command is DocumentOpenCommand)
+                if (command is OpenJournalCommand)
                 {
                     model.Checked = true;
                     model.Enabled = false;

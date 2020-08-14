@@ -72,7 +72,7 @@ namespace RevitJournalUI.JournalTaskUI
             }
         }
 
-        internal void SetResult(JournalManager manager, JournalResult result)
+        internal void SetResult(TaskManager manager, JournalResult result)
         {
             SetExecutedTasks(manager);
             foreach (var viewModel in JournalTaskModels)
@@ -84,7 +84,7 @@ namespace RevitJournalUI.JournalTaskUI
             }
         }
 
-        private void SetExecutedTasks(JournalManager manager)
+        private void SetExecutedTasks(TaskManager manager)
         {
             MaxTasks = manager.JournalTaskCount;
             ExecutedTasks = manager.JournalTaskExecutedCount;
@@ -92,14 +92,14 @@ namespace RevitJournalUI.JournalTaskUI
             ExecutedTasksText = PrefixExecutedTask + executed;
         }
 
-        public void Update(JournalManager manager)
+        public void Update(TaskManager manager)
         {
             if (manager is null) { return; }
 
-            if (manager.HasJournalTasks == false) { return; }
+            if (manager.HasRevitTasks == false) { return; }
 
             JournalTaskModels.Clear();
-            foreach (var task in manager.JournalTasks)
+            foreach (var task in manager.RevitTasks)
             {
                 JournalTaskModels.Add(new JournalTaskViewModel(task));
             }

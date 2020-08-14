@@ -16,9 +16,9 @@ namespace RevitJournalUI.JournalTaskUI.Options
         private const string PrefixParallelProcess = "Parallel Processes";
         private const string PrefixTimeoutTitle = "Timeout";
 
-        private readonly JournalManager TaskManager;
+        private readonly TaskManager TaskManager;
 
-        public JournalTaskOptionViewModel(JournalManager manager)
+        public JournalTaskOptionViewModel(TaskManager manager)
         {
             TaskOption = new JournalOption();
             TaskManager = manager;
@@ -145,7 +145,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
 
         public static int MinParallelProcess
         {
-            get { return JournalManager.MinParallelProcess; }
+            get { return TaskManager.MinParallelProcess; }
         }
 
         public int ParallelProcess
@@ -203,7 +203,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
 
         public static int MaxParallelProcess
         {
-            get { return JournalManager.MaxParallelProcess; }
+            get { return TaskManager.MaxParallelProcess; }
         }
 
         public bool CreateBackup

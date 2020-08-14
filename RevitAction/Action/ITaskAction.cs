@@ -1,5 +1,4 @@
 ﻿using DataSource.Model.FileSystem;
-using RevitAction.Action.Revit;
 using System.Collections.Generic;
 
 namespace RevitAction.Action
@@ -18,12 +17,12 @@ namespace RevitAction.Action
 
         bool MakeChanges { get; }
 
-        bool SaveAction { get; }
+        bool IsSaveAction { get; }
 
-        void PreTask(RevitFamily revit);
+        void SetLibraryRoot(string libraryRoot);
 
-        IRevitTaskAction GetRevitAction();
+        void PreTask(RevitFamily family);
 
-        void SetRootDirectory(string rootDirectory);
+        void PostTask(RevitFamily family);
     }
 }

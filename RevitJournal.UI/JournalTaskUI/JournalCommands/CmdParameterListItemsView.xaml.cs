@@ -1,4 +1,5 @@
-﻿using RevitJournal.Revit.SharedParameters;
+﻿using DataSource.Model.SharedParameters;
+using RevitJournal.Revit.SharedParameters;
 using RevitJournalUI.Models;
 using System.Collections.Generic;
 using System.ComponentModel;

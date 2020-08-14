@@ -12,14 +12,14 @@ namespace RevitJournalUI.JournalTaskUI
         private const string NoJournalProcess = "No Journal created";
         private const string NoJournalRevit = "No Revit Journal";
 
-        private readonly JournalTask JournalTask;
+        private readonly RevitTask JournalTask;
 
         public JournalResult Result { get; private set; }
 
         public JournalTaskExecuteViewModel JournalTaskExecute { get; private set; }
         public JournalTaskResultViewModel JournalTaskResult { get; private set; }
 
-        public JournalTaskViewModel(JournalTask journalTask)
+        public JournalTaskViewModel(RevitTask journalTask)
         {
             JournalTask = journalTask;
             JournalTaskExecute = new JournalTaskExecuteViewModel();

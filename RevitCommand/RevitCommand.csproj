@@ -72,29 +72,32 @@
     <Compile Include="Families\ImageExport\AFamilyImageExportCommand.cs" />
     <Compile Include="Families\ImageExport\GeomCombinationCommand.cs" />
     <Compile Include="Families\ImageExport\ImageExportManager.cs" />
+    <Compile Include="Families\ImageExport\ThreeDImageAction.cs" />
+    <Compile Include="Families\ImageExport\TwoDImageAction.cs" />
     <Compile Include="Families\IRevitExternalCommandData.cs" />
-    <Compile Include="Families\ImageExport\ThreeDImageExportExternalCommand.cs" />
-    <Compile Include="Families\ImageExport\ThreeDImageExportCommandData.cs" />
-    <Compile Include="Families\ImageExport\TwoDImageExportExternalCommand.cs" />
-    <Compile Include="Families\ImageExport\TwoDImageExportCommandData.cs" />
-    <Compile Include="Families\Metadata\EditMetadataExternalCommand.cs" />
-    <Compile Include="Families\Metadata\EditMetadataCommandData.cs" />
-    <Compile Include="Families\Metadata\CreateMetadataCommandData.cs" />
-    <Compile Include="Families\Metadata\CreateMetadataExternalCommand.cs" />
+    <Compile Include="Families\ImageExport\ThreeDImageCommand.cs" />
+    <Compile Include="Families\ImageExport\TwoDImageCommand.cs" />
+    <Compile Include="Families\Metadata\EditMetadataCommand.cs" />
+    <Compile Include="Families\Metadata\CreateMetadataCommand.cs" />
     <Compile Include="CommandReport\ParameterSharedAddReportLine.cs" />
     <Compile Include="CommandReport\Report.cs" />
+    <Compile Include="Families\Metadata\CreateMetadataAction.cs" />
+    <Compile Include="Families\Metadata\EditMetadataAction.cs" />
     <Compile Include="Families\Metadata\MetadataParameterComparer.cs" />
     <Compile Include="Families\Metadata\MetadataFamilyComparer.cs" />
     <Compile Include="Families\Metadata\RevitMetadataManager.cs" />
     <Compile Include="Families\RevitFamilyParameterUpdater.cs" />
-    <Compile Include="Families\SharedParameter\AParameterExternalCommand.cs" />
-    <Compile Include="Families\SharedParameter\MergeParameterCommandData.cs" />
-    <Compile Include="Families\SharedParameter\MergeParameterExternalCommand.cs" />
-    <Compile Include="Families\SharedParameter\MergeParametersExternalCommand.cs" />
-    <Compile Include="Families\SharedParameter\MergeParametersCommandData.cs" />
+    <Compile Include="Families\SharedParameter\AParameterCommand.cs" />
+    <Compile Include="Families\SharedParameter\MergeAllParametersAction.cs" />
+    <Compile Include="Families\SharedParameter\MergeSelectParametersCommand.cs" />
+    <Compile Include="Families\SharedParameter\MergeAllParametersCommand.cs" />
     <Compile Include="Families\RevitFamilyManagerReport.cs" />
     <Compile Include="Families\SharedParameterManager.cs" />
     <Compile Include="Families\RevitFamilyParameterManager.cs" />
+    <None Include="JournalCommand\DocumentPurgeUnusedCommand.cs" />
+    <Compile Include="Families\SharedParameter\MergeSelectParameterAction.cs" />
+    <Compile Include="Families\SharedParameter\SharedFileActionParameter.cs" />
+    <Compile Include="Families\SharedParameter\SharedParameterActionParameter.cs" />
     <Compile Include="ParameterListConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -137,6 +140,10 @@
     <ProjectReference Include="..\DataSource\DataSource.csproj">
       <Project>{241f97fa-369a-49fe-8d6a-bf61b2050ad9}</Project>
       <Name>DataSource</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RevitAction\RevitAction.csproj">
+      <Project>{e89e17ed-9ad7-4562-b5f6-8d0121fbda10}</Project>
+      <Name>RevitAction</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,11 +1,6 @@
 ﻿using DataSource.Model.Catalog;
 using DataSource.Model.Family;
-using DataSource.Model.ProductData;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RevitCommand.Families.Metadata
 {

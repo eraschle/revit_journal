@@ -98,43 +98,28 @@
     <Compile Include="Duplicate\Comparer\ParameterComparer\ParameterIdDublicateComparer.cs" />
     <Compile Include="Duplicate\Comparer\ParameterComparer\ParameterNameDublicateComparer.cs" />
     <Compile Include="Duplicate\DuplicateManager.cs" />
-    <Compile Include="Journal\Command\CommandParameterExternalSelect.cs" />
-    <Compile Include="Journal\Command\CommandParameterInfo.cs" />
-    <Compile Include="Journal\Command\AJournalCommandExternal.cs" />
-    <Compile Include="Journal\Command\Document\DocumentSaveParameterBackup.cs" />
-    <Compile Include="Journal\Command\CommandParameterExternal.cs" />
-    <Compile Include="Journal\Command\CommandParameter.cs" />
-    <Compile Include="Journal\Command\AJournalCommand.cs" />
-    <Compile Include="Journal\Command\Document\DocumentOpenCommand.cs" />
-    <Compile Include="Journal\Command\Document\DocumentPurgeUnusedCommand.cs" />
-    <Compile Include="Journal\Command\Document\DocumentSaveAsParameterFolder.cs" />
-    <Compile Include="Journal\Command\Document\DocumentSaveAsParameterFile.cs" />
-    <Compile Include="Journal\Command\Document\DocumentSaveAsCommand.cs" />
-    <Compile Include="Journal\Command\Document\DocumentSaveCommand.cs" />
-    <Compile Include="Journal\Command\IJournalCommandExternal.cs" />
-    <Compile Include="Journal\Command\IJournalCommand.cs" />
-    <Compile Include="Journal\Command\ICommandParameter.cs" />
-    <Compile Include="Journal\Command\JournalCommandComparer.cs" />
-    <Compile Include="Journal\Command\ParameterListConverter.cs" />
+    <Compile Include="Helper\PathCreator.cs" />
+    <Compile Include="Helper\TypeLoaderExtensions.cs" />
+    <Compile Include="Journal\Command\DocumentOpenAction.cs" />
+    <Compile Include="Journal\Command\DocumentSaveAsAction.cs" />
+    <Compile Include="Journal\Command\DocumentSaveAction.cs" />
+    <Compile Include="Tasks\TaskActionComparer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Revit\Commands\FileCreationManager.cs" />
-    <Compile Include="Revit\Commands\ImageExport\ThreeDImageExportExternalJounralCommand.cs" />
-    <Compile Include="Revit\Commands\ImageExport\TwoDImageExportExternalJounralCommand.cs" />
-    <Compile Include="Journal\Command\JournalBuilder.cs" />
-    <Compile Include="Journal\Command\JournalCommandBuilder.cs" />
-    <Compile Include="Journal\Command\Revit\RevitCloseCommand.cs" />
-    <Compile Include="Journal\Command\Revit\RevitStartCommand.cs" />
+    <Compile Include="Journal\JournalBuilder.cs" />
+    <Compile Include="Journal\Command\RevitCloseCommand.cs" />
+    <Compile Include="Journal\Command\RevitStartCommand.cs" />
     <Compile Include="Journal\Execution\JournalProcessCreator.cs" />
     <Compile Include="Journal\Execution\JournalRevitCreator.cs" />
     <Compile Include="Journal\Execution\JournalRevitReader.cs" />
     <Compile Include="Journal\Execution\RevitProcess.cs" />
-    <Compile Include="Journal\JournalTask.cs" />
+    <Compile Include="Tasks\RevitTask.cs" />
     <Compile Include="Journal\JournalError.cs" />
-    <Compile Include="Journal\JournalManager.cs" />
+    <Compile Include="Tasks\TaskManager.cs" />
     <Compile Include="Journal\Execution\JournalTaskRunner.cs" />
     <Compile Include="Journal\JournalOption.cs" />
     <Compile Include="Journal\JournalResult.cs" />
@@ -147,16 +132,6 @@
     <Compile Include="Duplicate\Comparer\FamilyDuplicateComparer.cs" />
     <Compile Include="Duplicate\Comparer\FamilyTypeDuplicateComparer.cs" />
     <Compile Include="Duplicate\Comparer\ParameterDuplicateComparer.cs" />
-    <Compile Include="Revit\Commands\Metadata\MetadataEditJournalCommand.cs" />
-    <Compile Include="Revit\Commands\Metadata\MetadataCreateJournalCommand.cs" />
-    <Compile Include="Revit\Commands\Parameter\MergeSelectedParameterCommand.cs" />
-    <Compile Include="Revit\Commands\Parameter\AddIfNotCommandParameter.cs" />
-    <Compile Include="Revit\Commands\Parameter\SharedParameterCommandParameter.cs" />
-    <Compile Include="Revit\Commands\Parameter\SharedFileCommandParameter.cs" />
-    <Compile Include="Revit\Commands\Parameter\MergeAllParametersCommand.cs" />
-    <Compile Include="Revit\SharedParameters\SharedGroup.cs" />
-    <Compile Include="Revit\SharedParameters\SharedParameter.cs" />
-    <Compile Include="Revit\SharedParameters\SharedParameterNameReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -183,9 +158,17 @@
       <Project>{241F97FA-369A-49FE-8D6A-BF61B2050AD9}</Project>
       <Name>DataSource</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RevitAction\RevitAction.csproj">
+      <Project>{e89e17ed-9ad7-4562-b5f6-8d0121fbda10}</Project>
+      <Name>RevitAction</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RevitCommand\RevitCommand.csproj">
       <Project>{28C6C9A0-B934-4A59-B207-566027F6FA32}</Project>
       <Name>RevitCommand</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{c32f0dc7-acba-4802-90d1-bd7641ca851e}</Project>
+      <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -194,6 +177,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -11,7 +11,7 @@ namespace RevitJournal.Journal.Execution
     {
         private const string SuffixFormatString = "HHmmssfff";
 
-        internal static JournalProcessFile Create(JournalTask journalTask, string journalDirectory)
+        internal static JournalProcessFile Create(RevitTask journalTask, string journalDirectory)
         {
             var journalFile = GetJournalFile(journalTask.Family, journalDirectory);
             var content = JournalBuilder.Build(journalTask, out var journalCommands);

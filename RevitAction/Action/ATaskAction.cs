@@ -1,5 +1,4 @@
 ﻿using DataSource.Model.FileSystem;
-using RevitAction.Action.Revit;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,11 +27,9 @@ namespace RevitAction.Action
             get { return Parameters != null && Parameters.Count > 0; }
         }
 
+        public bool IsSaveAction { get; protected set; } = false;
+
         public bool MakeChanges { get; protected set; } = false;
-
-        public abstract IRevitTaskAction GetRevitAction();
-
-        public bool SaveAction { get; protected set; } = false;
 
         public bool HasParameter(string name, out IActionParameter parameter)
         {
@@ -49,20 +46,10 @@ namespace RevitAction.Action
             return HasParameter(name, out _);
         }
 
-        public void ChangeParameter(string name, IActionParameter parameter)
-        {
-            if (HasParameter(name, out var oldParameter) == false) { return; }
+        public virtual void PreTask(RevitFamily family) { }
 
-            var index = Parameters.IndexOf(oldParameter);
-            Parameters.RemoveAt(index);
-            Parameters.Insert(index, parameter);
-        }
+        public virtual void PostTask(RevitFamily family) { }
 
-
-        public virtual void PreTask(RevitFamily revit) { }
-
-        public virtual void PostTask(object result) { }
-
-        public virtual void SetRootDirectory(string rootDirectory) { }
+        public virtual void SetLibraryRoot(string libraryRoot) { }
     }
 }

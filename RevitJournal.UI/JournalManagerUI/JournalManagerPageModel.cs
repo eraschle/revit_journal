@@ -31,11 +31,11 @@ namespace RevitJournalUI.JournalManagerUI
 
         private readonly Progress<JournalResult> Progress;
 
-        public JournalManager JournalManager { get; private set; }
+        public TaskManager JournalManager { get; private set; }
 
         public JournalManagerPageModel()
         {
-            JournalManager = new JournalManager();
+            JournalManager = new TaskManager();
             ProductManager.UpdateVersions();
             TaskOptionViewModel = new JournalTaskOptionViewModel(JournalManager);
             FamilyOverviewViewModel = new FamilyOverviewViewModel { FilterManager = FilterManager };
@@ -51,7 +51,7 @@ namespace RevitJournalUI.JournalManagerUI
             FamilyOverviewViewModel.PropertyChanged += new PropertyChangedEventHandler(OnCheckedChanged);
 
             SetupFilterCommand = new RelayCommand<ObservableCollection<DirectoryViewModel>>(SetupFilterCommandAction);
-            SetupJournalCommand = new RelayCommand<JournalManager>(SetupJournalCommandAction);
+            SetupJournalCommand = new RelayCommand<TaskManager>(SetupJournalCommandAction);
 
 #if DEBUG
             FamilyDirectory = @"C:\develop\workspace\_my-work\RevitJournal\data\test files";
@@ -226,7 +226,7 @@ namespace RevitJournalUI.JournalManagerUI
 
         private JournalManagerViewModel JournalCommandManagerModel;
 
-        private void SetupJournalCommandAction(JournalManager manager)
+        private void SetupJournalCommandAction(TaskManager manager)
         {
             var dialog = new JournalManagerView(manager);
             JournalCommandManagerModel = dialog.ViewModel;
@@ -335,7 +335,7 @@ namespace RevitJournalUI.JournalManagerUI
                     var revitApp = ProductManager.GetVersionOrNewer(product.Version, runnungApps);
                     taskOptions.RevitApp = revitApp;
                 }
-                var journalTask = new JournalTask(family, taskOptions);
+                var journalTask = new RevitTask(family, taskOptions);
                 foreach (var command in journalCommands)
                 {
                     journalTask.AddCommand(command);
@@ -487,7 +487,7 @@ namespace RevitJournalUI.JournalManagerUI
 
         private bool ExecuteJournalCommandPredicate(object parameter)
         {
-            return JournalManager.HasJournalTasks;
+            return JournalManager.HasRevitTasks;
         }
 
         private void OnReport(object sender, JournalResult result)

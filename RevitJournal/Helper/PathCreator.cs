@@ -1,7 +1,7 @@
-﻿using DataSource.Helper;
+﻿using Autodesk.Revit.DB;
+using DataSource.Helper;
 using DataSource.Model.FileSystem;
 using System;
-using System.Drawing;
 using System.IO;
 using Utilities;
 
@@ -9,37 +9,31 @@ namespace RevitJournal.Helper
 {
     public class PathCreator
     {
+        public const string LIBRARYROOTNAME = "[Library Folder]";
+        public const string NEWLIBRARYROOTNAME = "[New Library Folder]";
+        public const string LIBRARYPATHNAME = "[Library Path]";
+        public const string BACKUPFOLDERNAME = "[Save As Folder]";
+        public const string REVITFILENAME = "[File Name]";
+        public const string SUFFIXNAME = "[Save As Suffix]";
 
-        public const string LibraryRootName = "[Library Folder]";
-        public const string NewLibraryRootName = "[New Library Folder]";
-        public const string LibraryPathName = "[Library Path]";
-        public const string BackupFolderName = "[Save As Folder]";
-        public const string RevitFileName = "[File Name]";
-        public const string SuffixName = "[Save As Suffix]";
-
-        private string RootPath { get; set; }
-
-        private RevitFamilyFile RevitFile { get; set; }
-
-        private string LibraryPath { get; set; }
+        public string RootPath { get; private set; }
 
         public string FileSuffix { get; set; } = string.Empty;
 
-        public string NewRootPath { get; set; } = string.Empty;
+        public string NewRootPath { get; private set; } = string.Empty;
 
         public string BackupFolder { get; set; } = string.Empty;
 
         public bool AddBackupAtEnd { get; set; } = true;
 
-        public void SetFile(RevitFamilyFile revitFile)
+        public void SetRoot(string path)
         {
-            if (revitFile is null)
-            {
-                throw new ArgumentNullException(nameof(revitFile));
-            }
-            RevitFile = revitFile;
-            RootPath = RemoveSlases(revitFile.LibraryRoot);
-            LibraryPath = RemoveSlases(revitFile.LibraryPath);
+            RootPath = RemoveSlases(path is null ? string.Empty : path);
+        }
+
+        public void SetNewRoot(string path)
+        {
+            NewRootPath = RemoveSlases(path is null ? string.Empty : path);
         }
 
         private string RemoveSlases(string path)
@@ -56,26 +50,27 @@ namespace RevitJournal.Helper
             return path;
         }
 
-        public string CreatePath()
+        public string CreatePath(AFile file)
         {
             var rootPath = RootPath;
             if (HasNewRootFolder())
             {
                 rootPath = NewRootPath;
             }
+            var library = GetLibraryPath(file);
             if (string.IsNullOrWhiteSpace(BackupFolder))
             {
-                rootPath = Path.Combine(rootPath, LibraryPath);
+                rootPath = Path.Combine(rootPath, library);
             }
             else
             {
                 if (AddBackupAtEnd)
                 {
-                    rootPath = Path.Combine(rootPath, LibraryPath, BackupFolder);
+                    rootPath = Path.Combine(rootPath, library, BackupFolder);
                 }
                 else
                 {
-                    rootPath = Path.Combine(rootPath, BackupFolder, LibraryPath);
+                    rootPath = Path.Combine(rootPath, BackupFolder, library);
                 }
             }
             if (Directory.Exists(rootPath) == false)
@@ -83,42 +78,48 @@ namespace RevitJournal.Helper
                 Directory.CreateDirectory(rootPath);
             }
 
-            var fileName = string.Concat(RevitFile.Name, Constant.Point, RevitFile.Extension);
+            var fileName = string.Concat(file.Name, Constant.Point, file.Extension);
             if (string.IsNullOrWhiteSpace(FileSuffix) == false)
             {
-                fileName = string.Concat(RevitFile.Name, Constant.Underline, FileSuffix, Constant.Point, RevitFile.Extension);
+                fileName = string.Concat(file.Name, Constant.Underline, FileSuffix, Constant.Point, file.Extension);
             }
             rootPath = Path.Combine(rootPath, fileName);
             return rootPath;
         }
 
+        private string GetLibraryPath(AFile file)
+        {
+            var library = file.ParentFolder.Replace(RootPath, string.Empty);
+            return RemoveSlases(library);
+        }
+
         public string CreateSymbolic()
         {
-            var symbolicPath = LibraryRootName;
+            var symbolicPath = LIBRARYROOTNAME;
             if (HasNewRootFolder())
             {
-                symbolicPath = NewLibraryRootName;
+                symbolicPath = NEWLIBRARYROOTNAME;
             }
             if (string.IsNullOrWhiteSpace(BackupFolder))
             {
-                symbolicPath = string.Join(Constant.BackSlash, symbolicPath, LibraryPathName);
+                symbolicPath = string.Join(Constant.BackSlash, symbolicPath, LIBRARYPATHNAME);
             }
             else
             {
                 if (AddBackupAtEnd)
                 {
-                    symbolicPath = string.Join(Constant.BackSlash, symbolicPath, LibraryPathName, BackupFolderName);
+                    symbolicPath = string.Join(Constant.BackSlash, symbolicPath, LIBRARYPATHNAME, BACKUPFOLDERNAME);
                 }
                 else
                 {
-                    symbolicPath = string.Join(Constant.BackSlash, symbolicPath, BackupFolderName, LibraryPathName);
+                    symbolicPath = string.Join(Constant.BackSlash, symbolicPath, BACKUPFOLDERNAME, LIBRARYPATHNAME);
                 }
             }
 
-            var fileName = RevitFileName;
+            var fileName = REVITFILENAME;
             if (string.IsNullOrWhiteSpace(FileSuffix) == false)
             {
-                fileName = string.Join(Constant.Underline, RevitFileName, SuffixName);
+                fileName = string.Join(Constant.Underline, REVITFILENAME, SUFFIXNAME);
             }
             symbolicPath = string.Join(Constant.BackSlash, symbolicPath, fileName);
             return symbolicPath;

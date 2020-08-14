@@ -12,12 +12,12 @@ namespace RevitJournal.Journal.Execution
         private readonly JournalResult Result;
 
         private JournalProcessFile JournalProcess { get { return Result.JournalProcess; } }
-        private JournalTask JournalTask { get { return Result.JournalTask; } }
+        private RevitTask JournalTask { get { return Result.JournalTask; } }
         private JournalOption TaskOption { get { return JournalTask.TaskOption; } }
 
         private readonly IProgress<JournalResult> Progress;
 
-        public JournalTaskRunner(JournalTask journalTask, IProgress<JournalResult> progress)
+        public JournalTaskRunner(RevitTask journalTask, IProgress<JournalResult> progress)
         {
             Progress = progress;
             Result = new JournalResult(journalTask);

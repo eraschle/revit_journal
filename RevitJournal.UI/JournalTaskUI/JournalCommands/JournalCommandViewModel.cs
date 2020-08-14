@@ -38,7 +38,7 @@ namespace RevitJournalUI.JournalTaskUI.JournalCommands
             if (Command.HasParameters == false) { return; }
 
             var rootDirectory = string.Empty;
-            if (JournalManager.HasRootDirectory(out var root))
+            if (TaskManager.HasRootDirectory(out var root))
             {
                 rootDirectory = root.FullPath;
             }

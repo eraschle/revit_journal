@@ -10,7 +10,7 @@ namespace RevitJournalUI.JournalTaskUI.JournalCommands
     {
         public JournalManagerViewModel ViewModel { get { return DataContext as JournalManagerViewModel; } }
 
-        public JournalManagerView(JournalManager manager)
+        public JournalManagerView(TaskManager manager)
         {
             InitializeComponent();
             ViewModel.UpdateCommands(manager);

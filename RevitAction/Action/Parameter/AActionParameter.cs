@@ -20,12 +20,15 @@
             }
         }
 
-        public ParameterAction Action { get; }
+        public ParameterKind Kind { get; }
 
-        protected AActionParameter(string name, ParameterAction action)
+        public string JournalKey { get; private set; }
+
+        protected AActionParameter(string name, string journalKey, ParameterKind kind)
         {
             Name = name;
-            Action = action;
+            JournalKey = journalKey;
+            Kind = kind;
         }
     }
 }

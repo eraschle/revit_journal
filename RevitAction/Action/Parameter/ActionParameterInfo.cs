@@ -4,17 +4,17 @@ namespace RevitAction.Action
 {
     public class ActionParameterInfo : ActionParameter
     {
-        private readonly Func<string> ValuFunc;
+        private readonly Func<string> valuFunc;
 
         public ActionParameterInfo(string name, Func<string> value)
-            : base(name, ParameterAction.InfoDynamic)
+            : base(name, string.Empty, ParameterKind.InfoDynamic)
         {
-            ValuFunc = value;
+            valuFunc = value;
         }
 
         public override string Value
         {
-            get { return ValuFunc.Invoke(); }
+            get { return valuFunc.Invoke(); }
             set { }
         }
     }

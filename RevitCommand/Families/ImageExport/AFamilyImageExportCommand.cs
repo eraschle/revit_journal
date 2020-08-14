@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace RevitCommand.Families.ImageExport
 {
-    public abstract class AFamilyImageExportCommand : AFamilyExternalCommand
+    public abstract class AFamilyImageExportCommand : AFamilyRevitCommand
     {
         protected ImageExportManager Manager;
         protected readonly ElementFilter ExcludeHeads;
