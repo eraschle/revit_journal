@@ -8,7 +8,7 @@ namespace RevitCommand.Families.ImageExport
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
-    public class TwoDImageRevitCommand : AFamilyImageExportCommand
+    public class TwoDImageRevitCommand : AFamilyImageExportCommand<TwoDImageAction>
     {
         public const string ClassName = "TwoDImageExportExternalCommand";
         private const string ImageSuffix = "Symbol";

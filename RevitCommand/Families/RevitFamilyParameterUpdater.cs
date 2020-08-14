@@ -4,7 +4,6 @@ using Cat = DataSource.Model.Catalog;
 using System;
 using System.Collections.Generic;
 using RevitCommand.Families.Metadata;
-using DataSource.Helper;
 
 namespace RevitCommand.Families
 {

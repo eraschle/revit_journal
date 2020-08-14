@@ -4,7 +4,6 @@ using Autodesk.Revit.UI;
 using DataSource.Helper;
 using DataSource.Json;
 using DataSource.Model.FileSystem;
-using RevitJournal.Revit.Commands.Parameter;
 using System;
 using System.Diagnostics;
 using DS = DataSource.Model;
@@ -14,10 +13,8 @@ namespace RevitCommand.Families.Metadata
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
-    public class CreateMetadataRevitCommand : AFamilyRevitCommand
+    public class CreateMetadataRevitCommand : AFamilyRevitCommand<CreateMetadataAction>
     {
-        private readonly CreateMetadataAction action = new CreateMetadataAction();
-
         protected override Result InternalExecute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             var revitFile = AFile.Create<RevitFamilyFile>(Document.PathName);
@@ -28,7 +25,7 @@ namespace RevitCommand.Families.Metadata
                 metaFamily = dataSource.Read();
             }
 
-            if (JournalKeyExist(commandData, action.Library.JournalKey, out var libraryPath))
+            if (JournalKeyExist(commandData, Action.Library.JournalKey, out var libraryPath))
             {
                 metaFamily.LibraryPath = ModelHelper.GetLibraryPath(revitFile, libraryPath);
             }

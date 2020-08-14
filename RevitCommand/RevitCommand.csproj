@@ -87,6 +87,7 @@
     <Compile Include="Families\Metadata\RevitMetadataManager.cs" />
     <Compile Include="Families\RevitFamilyParameterUpdater.cs" />
     <Compile Include="Families\SharedParameter\AParameterRevitCommand.cs" />
+    <Compile Include="Families\SharedParameter\AParametersAction.cs" />
     <Compile Include="Families\SharedParameter\MergeAllParametersAction.cs" />
     <Compile Include="Families\SharedParameter\MergeSelectParametersRevitCommand.cs" />
     <Compile Include="Families\SharedParameter\MergeAllParametersRevitCommand.cs" />

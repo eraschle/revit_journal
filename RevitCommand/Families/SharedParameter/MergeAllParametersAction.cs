@@ -1,15 +1,11 @@
-﻿using RevitJournal.Revit.Commands.Parameter;
-using System;
+﻿using System;
 
 namespace RevitCommand.Families.SharedParameter
 {
-    public class MergeAllParametersAction : ATaskActionCommand
+    public class MergeAllParametersAction : AParametersAction
     {
-        public MergeAllParametersAction() : base("Merge Shared [ALL]")
-        {
-            Parameters.Add(new SharedFileActionParameter("File"));
-            MakeChanges = true;
-        }
+        public MergeAllParametersAction() : base("Merge Shared [ALL]") { }
+
         public override Guid AddinId
         {
             get { return new Guid("af072261-088e-42d3-bf5e-39fc99ea5736"); }

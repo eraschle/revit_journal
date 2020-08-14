@@ -68,11 +68,11 @@ namespace RevitJournal.Journal.Command
             return pathCreator.CreateSymbolic();
         }
 
-        public override void PreTask(RevitFamilyFile family)
+        public override void PreTask(RevitFamily family)
         {
             if (family is null) { return; }
 
-            familyFile = family;
+            familyFile = family.RevitFile;
         }
 
         public override void SetLibraryRoot(string libraryRoot)

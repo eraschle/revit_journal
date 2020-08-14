@@ -3,6 +3,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using DataSource.Model.FileSystem;
 using RevitCommand.Reports;
+using RevitJournal.Journal.Command;
 using System;
 
 namespace RevitCommand.Families.SharedParameter
@@ -11,18 +12,17 @@ namespace RevitCommand.Families.SharedParameter
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
-    public class MergeSelectParametersRevitCommand : AParameterRevitCommand
+    public class MergeSelectParametersRevitCommand : AParameterRevitCommand<MergeSelectParameterAction>
     {
         private const string NoSharedJournalKey = "No Key for Shared Parameters found";
         private const string NoSharedParanmeter = "No Shared Parameter File found";
         private const string SearchSharedParanmeter = "Search Shared Parameters";
 
-        public MergeSelectParametersRevitCommand()
-            : base(MergeParameterCommandData.KeySharedFile) { }
+        public MergeSelectParametersRevitCommand() : base() { }
 
         protected override Result ManageSharedParameter(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            var parametersKey = MergeParameterCommandData.KeySharedParameters;
+            var parametersKey = Action.SharedParameters.JournalKey;
             if (JournalKeyExist(commandData, parametersKey, out var parameterValue) == false)
             {
                 message = NoSharedJournalKey;
@@ -37,7 +37,7 @@ namespace RevitCommand.Families.SharedParameter
             }
 
             var addIfNotExist = false;
-            var addIfNotKey = MergeParameterCommandData.KeyAddifNot;
+            var addIfNotKey = Action.AddIfNotExists.JournalKey;
             if (JournalKeyExist(commandData, addIfNotKey, out var addIfNotValue))
             {
                 if (bool.TryParse(addIfNotValue, out var addIfNot))
@@ -47,7 +47,7 @@ namespace RevitCommand.Families.SharedParameter
             }
 
             var addIfNotInstanceExist = false;
-            var addIfNotInstanceKey = MergeParameterCommandData.KeyAddifNotIsInstance;
+            var addIfNotInstanceKey = Action.IsInstance.JournalKey;
             if (JournalKeyExist(commandData, addIfNotInstanceKey, out var addIfNotInstanceValue))
             {
                 if (bool.TryParse(addIfNotInstanceValue, out var addIfNotInstance))
@@ -57,7 +57,7 @@ namespace RevitCommand.Families.SharedParameter
             }
 
             var addIfNotGroup = BuiltInParameterGroup.PG_DATA;
-            var addIfNotGroupKey = MergeParameterCommandData.KeyAddifNotParameterGroup;
+            var addIfNotGroupKey = Action.ParameterGroups.JournalKey;
             if (JournalKeyExist(commandData, addIfNotGroupKey, out var addIfNotGroupValue))
             {
                 foreach (BuiltInParameterGroup parameterGroup in Enum.GetValues(typeof(BuiltInParameterGroup)))
@@ -70,7 +70,7 @@ namespace RevitCommand.Families.SharedParameter
                 }
             }
 
-            var filePath = commandData.JournalData[MergeParameterCommandData.KeySharedFile];
+            var filePath = commandData.JournalData[SharedFileJournalKey];
             var sharedManager = new SharedParameterManager(Application, filePath);
             var managerFamily = new RevitFamilyParameterManager(Document);
             var managerReport = new RevitFamilyManagerReport(managerFamily);

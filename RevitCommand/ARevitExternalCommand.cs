@@ -1,20 +1,33 @@
 ﻿using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using RevitAction.Action;
 using System;
 using System.Collections.Generic;
 
 namespace RevitCommand
 {
-    public abstract class ARevitExternalCommand : IExternalCommand
+    public abstract class ARevitExternalCommand<TAction> : IExternalCommand where TAction : ITaskActionCommand, new()
     {
         protected UIApplication UiApplication { get; private set; }
         protected Application Application { get; private set; }
         protected UIDocument UIDocument { get; private set; }
         protected Document Document { get; private set; }
+        protected TAction Action { get; private set; }
+
+        protected ARevitExternalCommand()
+        {
+            Action = new TAction();
+        }
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            if (commandData is null)
+            {
+                message = "No command data";
+                return Result.Failed;
+            }
+
             UiApplication = commandData.Application;
             Application = UiApplication.Application;
             UIDocument = commandData.Application.ActiveUIDocument;

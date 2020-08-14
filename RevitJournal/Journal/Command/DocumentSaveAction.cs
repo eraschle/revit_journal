@@ -19,11 +19,11 @@ namespace RevitJournal.Journal.Command
             get { return new string[] { JournalBuilder.Build("Ribbon", "ID_REVIT_FILE_SAVE") }; }
         }
 
-        public override void PostTask(RevitFamilyFile family)
+        public override void PostTask(RevitFamily family)
         {
             if (family is null) { return; }
 
-            foreach (var backup in family.Backups)
+            foreach (var backup in family.RevitFile.Backups)
             {
                 backup.Delete();
             }

@@ -1,8 +1,6 @@
-﻿using RevitCommand;
-using RevitCommand.Families.ImageExport;
-using System;
+﻿using System;
 
-namespace RevitJournal.Revit.Commands.ImageExport
+namespace RevitCommand.Families.ImageExport
 {
     public class TwoDImageAction : ATaskActionCommand
     {

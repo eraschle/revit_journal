@@ -9,18 +9,16 @@ namespace RevitCommand.Families.Metadata
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
-    public class EditMetadataRevitCommand : AFamilyRevitCommand
+    public class EditMetadataRevitCommand : AFamilyRevitCommand<EditMetadataAction>
     {
         private const string debugLibraryPath = @"C:\develop\workspace\TEMP\JournalData\test files\";
-
-        private readonly EditMetadataAction action = new EditMetadataAction();
 
         protected override Result InternalExecute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
 #if DEBUG
-            commandData.JournalData.Add(action.Library.JournalKey, debugLibraryPath);
+            commandData.JournalData.Add(Action.Library.JournalKey, debugLibraryPath);
 #endif
-            if (JournalKeyExist(commandData, action.Library.JournalKey, out var library) == false)
+            if (JournalKeyExist(commandData, Action.Library.JournalKey, out var library) == false)
             {
                 message = "Journal Key for Library Path does not exist";
                 return Result.Failed;

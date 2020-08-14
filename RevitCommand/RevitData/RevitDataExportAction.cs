@@ -5,9 +5,12 @@ namespace RevitCommand.RevitData
 {
     public class RevitDataExportAction : ATaskActionCommand
     {
+        public ActionParameter ExportDirectory { get; private set; }
+
         public RevitDataExportAction() : base("Revit Data Export")
         {
-            Parameters.Add(ParameterBuilder.CreateJournal("Export Directory", "DataDir", ParameterKind.SelectFolder));
+            ExportDirectory = ParameterBuilder.CreateJournal("Export Directory", "DataDir", ParameterKind.SelectFolder);
+            Parameters.Add(ExportDirectory);
         }
 
         public override Guid AddinId

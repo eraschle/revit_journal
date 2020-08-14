@@ -1,9 +1,10 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using RevitAction.Action;
 
 namespace RevitCommand.Families
 {
-    public abstract class AFamilyRevitCommand : ARevitExternalCommand
+    public abstract class AFamilyRevitCommand<TAction> : ARevitExternalCommand<TAction> where TAction : ITaskActionCommand, new()
     {
         protected Family Family { get; private set; }
 

@@ -1,10 +1,8 @@
 ﻿using DataSource.Model.FileSystem;
 using RevitAction.Action;
-using RevitCommand;
-using RevitCommand.Families.Metadata;
 using System;
 
-namespace RevitJournal.Revit.Commands.Parameter
+namespace RevitCommand.Families.Metadata
 {
     public class CreateMetadataAction : ATaskActionCommand
     {
@@ -33,7 +31,7 @@ namespace RevitJournal.Revit.Commands.Parameter
 
         public override void PreTask(RevitFamily family)
         {
-            if(family is null) { return; }
+            if (family is null) { return; }
 
             family.WriteMetaData();
             Library.Value = family.LibraryPath;

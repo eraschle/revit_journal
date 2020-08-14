@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Autodesk.RevitAddIns;
+using RevitAction.Action;
 using RevitCommand.Families;
 using RevitJournal.Properties;
 
@@ -16,7 +17,7 @@ namespace RevitJournal.Revit.Commands
             return File.Exists(GetAddinManifestPath(outputPath));
         }
 
-        public static void CreateAddinFile(string outputPath, IRevitExternalCommandData commandData)
+        public static void CreateAddinFile(string outputPath, ITaskActionCommand action)
         {
             var manifest = GetCurrentManifest(outputPath);
             if (HasCommand(manifest, DummyAddinGuid))
@@ -36,9 +37,9 @@ namespace RevitJournal.Revit.Commands
                     manifest.Save();
                 }
             }
-            if (HasCommand(manifest, commandData.AddinId) == false)
+            if (HasCommand(manifest, action.AddinId) == false)
             {
-                var newCommand = CreateNewAddinCommand(commandData);
+                var newCommand = CreateNewAddinCommand(action);
                 manifest.AddInCommands.Add(newCommand);
                 manifest.Save();
             }
@@ -67,10 +68,10 @@ namespace RevitJournal.Revit.Commands
             return AddInManifestUtility.GetRevitAddInManifest(addinPath);
         }
 
-        private static RevitAddInCommand CreateNewAddinCommand(IRevitExternalCommandData commandData)
+        private static RevitAddInCommand CreateNewAddinCommand(ITaskActionCommand action)
         {
             var newCommand = new RevitAddInCommand(
-                AssemblyFilePath(), commandData.AddinId, commandData.FullClassName, commandData.VendorId);
+                AssemblyFilePath(), action.AddinId, action.FullClassName, action.VendorId);
 
             return newCommand;
 

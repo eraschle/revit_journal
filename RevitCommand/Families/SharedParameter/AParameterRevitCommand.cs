@@ -1,17 +1,14 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using RevitAction.Action;
 using System.IO;
 
 namespace RevitCommand.Families.SharedParameter
 {
-    public abstract class AParameterRevitCommand : AFamilyRevitCommand
+    public abstract class AParameterRevitCommand<TAction> : AFamilyRevitCommand<TAction> where TAction : AParametersAction, new()
     {
-        private readonly ActionParameter sharedFile;
-
-        protected AParameterRevitCommand(ActionParameter sharedParameterFile)
+        protected string SharedFileJournalKey
         {
-            sharedFile = sharedParameterFile;
+            get { return Action.SharedFile.JournalKey; }
         }
 
         protected override Result InternalExecute(ExternalCommandData commandData, ref string message, ElementSet elements)
@@ -22,17 +19,17 @@ namespace RevitCommand.Families.SharedParameter
                 return Result.Failed;
             }
 
-            if (JournalKeyExist(commandData, sharedFile.JournalKey, out var journalValue) == false)
+            if (JournalKeyExist(commandData, SharedFileJournalKey, out var journalValue) == false)
             {
 #if DEBUG
-                journalData.Add(sharedFile.JournalKey, @"C:\Users\rasc\OneDrive - Amstein + Walthert AG\workspace\amwa\Shared Parameter\AWH_Shared_Parameter.txt");
+                journalData.Add(SharedFileJournalKey, @"C:\Users\rasc\OneDrive - Amstein + Walthert AG\workspace\amwa\Shared Parameter\AWH_Shared_Parameter.txt");
 #else
                 message = $"Journal Key NOT found: {SharedJournalKey}";
                 return Result.Failed;
 #endif
             }
 
-            var filePath = journalData[sharedFile.JournalKey];
+            var filePath = journalData[SharedFileJournalKey];
             if (File.Exists(filePath) == false)
             {
                 message = $"Shared Parameter file does NOT exist: {filePath}";

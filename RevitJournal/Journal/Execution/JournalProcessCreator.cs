@@ -14,12 +14,10 @@ namespace RevitJournal.Journal.Execution
         internal static JournalProcessFile Create(RevitTask journalTask, string journalDirectory)
         {
             var journalFile = GetJournalFile(journalTask.Family, journalDirectory);
-            var content = JournalBuilder.Build(journalTask, out var journalCommands);
+            var content = JournalBuilder.Build(journalTask);
             File.WriteAllText(journalFile.FullPath, content, Encoding.Default);
-            journalFile.CommandLines = journalCommands;
             return journalFile;
         }
-
      
 
         private static JournalProcessFile GetJournalFile(RevitFamily family, string journalDirectory)

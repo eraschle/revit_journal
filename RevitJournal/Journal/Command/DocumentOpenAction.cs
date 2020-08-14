@@ -50,11 +50,11 @@ namespace RevitJournal.Journal.Command
 
         public RevitFamilyFile FamilyFile { get; set; }
 
-        public override void PreTask(RevitFamilyFile family)
+        public override void PreTask(RevitFamily family)
         {
             if (family is null) { return; }
 
-            FamilyFile = family;
+            FamilyFile = family.RevitFile;
         }
     }
 }

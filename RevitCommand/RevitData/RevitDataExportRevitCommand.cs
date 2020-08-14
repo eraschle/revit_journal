@@ -1,18 +1,15 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Cat = DataSource.Model.Catalog;
 using DataSource.Model.ProductData;
-using System;
 using Autodesk.Revit.Attributes;
 using DataSource.Json;
-using DataSource.Model.FileSystem;
 
 namespace RevitCommand.RevitData
 {
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
-    public class RevitDataExportRevitCommand : ARevitExternalCommand
+    public class RevitDataExportRevitCommand : ARevitExternalCommand<RevitDataExportAction>
     {
         private readonly RevitEnumCreator Creator = new RevitEnumCreator();
         private const string ProductDataDirectory = @"C:\workspace\TEMP\RevitJournal\ProductData";
@@ -25,7 +22,7 @@ namespace RevitCommand.RevitData
                 return Result.Failed;
             }
 
-            var journalKey = RevitDataExportAction.ProductDataDir;
+            var journalKey = Action.ExportDirectory.JournalKey;
 #if DEBUG
             commandData.JournalData.Add(journalKey, ProductDataDirectory);
 #endif

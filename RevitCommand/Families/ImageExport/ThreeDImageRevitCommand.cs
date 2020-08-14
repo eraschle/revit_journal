@@ -9,13 +9,13 @@ namespace RevitCommand.Families.ImageExport
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
-    public class ThreeDImageRevitCommand : AFamilyImageExportCommand
+    public class ThreeDImageRevitCommand : AFamilyImageExportCommand<ThreeDImageAction>
     {
         private const string ImageSuffix = "3D";
 
         private readonly ElementFilter Not3dCategoriesFilter;
 
-        public ThreeDImageRevitCommand()
+        public ThreeDImageRevitCommand() : base()
         {
             var categories = new List<BuiltInCategory>
             {
@@ -40,7 +40,7 @@ namespace RevitCommand.Families.ImageExport
             }
 
             var imageFilePath = string.Empty;
-            var keyBackground = ThreeDImageExportCommandData.KeyBackground;
+            var keyBackground = Action.Background.JournalKey;
             if (JournalKeyExist(commandData, keyBackground, out var backgroundPath))
             {
                 imageFilePath = backgroundPath;

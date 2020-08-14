@@ -1,12 +1,14 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using RevitAction.Action;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace RevitCommand.Families.ImageExport
 {
-    public abstract class AFamilyImageExportCommand : AFamilyRevitCommand
+    public abstract class AFamilyImageExportCommand<TAction>
+        : AFamilyRevitCommand<TAction> where TAction : ITaskActionCommand, new()
     {
         protected ImageExportManager Manager;
         protected readonly ElementFilter ExcludeHeads;
