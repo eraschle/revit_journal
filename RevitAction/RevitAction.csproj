@@ -52,7 +52,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Action\ATaskActionCommand.cs" />
     <Compile Include="Action\ITaskActionJournal.cs" />
     <Compile Include="Action\ITaskActionCommand.cs" />
     <Compile Include="Action\Parameter\ActionParameterSelect.cs" />
@@ -62,7 +61,7 @@
     <Compile Include="Action\Parameter\AActionParameter.cs" />
     <Compile Include="Action\ATaskAction.cs" />
     <Compile Include="Action\Parameter\ParameterKind.cs" />
-    <None Include="Action\Parameter\ParameterListConverter.cs" />
+    <Compile Include="Action\Parameter\ParameterListConverter.cs" />
     <Compile Include="Report\InfoReport.cs" />
     <Compile Include="Report\ErrorReport.cs" />
     <Compile Include="Report\SuccessReport.cs" />

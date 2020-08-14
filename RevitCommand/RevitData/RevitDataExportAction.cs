@@ -22,7 +22,7 @@ namespace RevitCommand.RevitData
 
         protected override string ExternalCommandName
         {
-            get { return nameof(RevitDataExportCommand); }
+            get { return nameof(RevitDataExportRevitCommand); }
         }
     }
 }

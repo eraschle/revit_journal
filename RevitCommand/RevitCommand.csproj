@@ -66,19 +66,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ARevitExternalCommand.cs" />
+    <Compile Include="ATaskActionCommand.cs" />
     <Compile Include="CommandReport\ReportJsonDataSource.cs" />
-    <Compile Include="Families\AFamilyExternalCommand.cs" />
-    <Compile Include="Families\ARevitExternalCommandData.cs" />
+    <Compile Include="Families\AFamilyRevitCommand.cs" />
     <Compile Include="Families\ImageExport\AFamilyImageExportCommand.cs" />
     <Compile Include="Families\ImageExport\GeomCombinationCommand.cs" />
     <Compile Include="Families\ImageExport\ImageExportManager.cs" />
     <Compile Include="Families\ImageExport\ThreeDImageAction.cs" />
     <Compile Include="Families\ImageExport\TwoDImageAction.cs" />
-    <Compile Include="Families\IRevitExternalCommandData.cs" />
-    <Compile Include="Families\ImageExport\ThreeDImageCommand.cs" />
-    <Compile Include="Families\ImageExport\TwoDImageCommand.cs" />
-    <Compile Include="Families\Metadata\EditMetadataCommand.cs" />
-    <Compile Include="Families\Metadata\CreateMetadataCommand.cs" />
+    <Compile Include="Families\ImageExport\ThreeDImageRevitCommand.cs" />
+    <Compile Include="Families\ImageExport\TwoDImageRevitCommand.cs" />
+    <Compile Include="Families\Metadata\EditMetadataRevitCommand.cs" />
+    <Compile Include="Families\Metadata\CreateMetadataRevitCommand.cs" />
     <Compile Include="CommandReport\ParameterSharedAddReportLine.cs" />
     <Compile Include="CommandReport\Report.cs" />
     <Compile Include="Families\Metadata\CreateMetadataAction.cs" />
@@ -87,10 +86,10 @@
     <Compile Include="Families\Metadata\MetadataFamilyComparer.cs" />
     <Compile Include="Families\Metadata\RevitMetadataManager.cs" />
     <Compile Include="Families\RevitFamilyParameterUpdater.cs" />
-    <Compile Include="Families\SharedParameter\AParameterCommand.cs" />
+    <Compile Include="Families\SharedParameter\AParameterRevitCommand.cs" />
     <Compile Include="Families\SharedParameter\MergeAllParametersAction.cs" />
-    <Compile Include="Families\SharedParameter\MergeSelectParametersCommand.cs" />
-    <Compile Include="Families\SharedParameter\MergeAllParametersCommand.cs" />
+    <Compile Include="Families\SharedParameter\MergeSelectParametersRevitCommand.cs" />
+    <Compile Include="Families\SharedParameter\MergeAllParametersRevitCommand.cs" />
     <Compile Include="Families\RevitFamilyManagerReport.cs" />
     <Compile Include="Families\SharedParameterManager.cs" />
     <Compile Include="Families\RevitFamilyParameterManager.cs" />
@@ -98,7 +97,6 @@
     <Compile Include="Families\SharedParameter\MergeSelectParameterAction.cs" />
     <Compile Include="Families\SharedParameter\SharedFileActionParameter.cs" />
     <Compile Include="Families\SharedParameter\SharedParameterActionParameter.cs" />
-    <Compile Include="ParameterListConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -115,8 +113,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="RevitData\RevitDataExportCommandData.cs" />
-    <Compile Include="RevitData\RevitDataExportExternalCommand.cs" />
+    <Compile Include="RevitData\RevitDataExportAction.cs" />
+    <Compile Include="RevitData\RevitDataExportRevitCommand.cs" />
     <Compile Include="RevitEnumCreator.cs" />
   </ItemGroup>
   <ItemGroup>

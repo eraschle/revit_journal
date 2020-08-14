@@ -12,7 +12,7 @@ namespace RevitCommand.RevitData
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
-    public class RevitDataExportCommand : ARevitExternalCommand
+    public class RevitDataExportRevitCommand : ARevitExternalCommand
     {
         private readonly RevitEnumCreator Creator = new RevitEnumCreator();
         private const string ProductDataDirectory = @"C:\workspace\TEMP\RevitJournal\ProductData";
