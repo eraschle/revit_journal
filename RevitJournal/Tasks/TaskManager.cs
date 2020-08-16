@@ -11,6 +11,7 @@ using System.Reflection;
 using RevitJournal.Revit.Addin;
 using RevitJournal.Tasks.Options;
 using RevitJournal.Journal;
+using System.IO;
 
 namespace RevitJournal.Tasks
 {
@@ -47,13 +48,26 @@ namespace RevitJournal.Tasks
         private List<ITaskAction> CreateTaskActions()
         {
             var taskActions = new List<ITaskAction>();
-            foreach (var assemby in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (var assemby in GetAssemblies(AppDomain.CurrentDomain))
             {
+                if(assemby.FullName.Contains("Revit") == false) { continue; }
+
                 var actions = GetActions(assemby);
                 taskActions.AddRange(actions);
             }
             taskActions.Sort(new TaskActionComparer());
             return taskActions;
+        }
+
+        private List<Assembly> GetAssemblies(AppDomain domain)
+        {
+            var assemblies = new List<Assembly>(domain.GetAssemblies());
+            var directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            foreach (var dll in Directory.GetFiles(directory, "*Command.dll"))
+            {
+                 assemblies.Add( Assembly.LoadFile(dll));
+            }
+            return assemblies;
         }
 
         private IEnumerable<ITaskAction> GetActions(Assembly assemby)
@@ -72,7 +86,8 @@ namespace RevitJournal.Tasks
         private bool IsTaskAction(Type other)
         {
             var actionType = typeof(ITaskAction);
-            return actionType.IsAssignableFrom(other)
+            var commandType = typeof(ITaskActionCommand);
+            return (actionType.IsAssignableFrom(other) || commandType.IsAssignableFrom(other))
                 && other.IsInterface == false
                 && other.IsAbstract == false;
         }

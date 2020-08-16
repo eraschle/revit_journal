@@ -30,7 +30,7 @@ namespace DataSource
         public static ProductDataManager Get()
         {
 #if DEBUG
-            var directory = @"C:\develop\workspace\_my-work\RevitJournal\data\productData";
+            var directory = @"C:\develop\workspace\revit_journal_test_data\productData";
             Create(directory);
 #endif
             if (Instance is null)

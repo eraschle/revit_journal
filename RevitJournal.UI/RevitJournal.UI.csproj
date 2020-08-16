@@ -123,7 +123,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="JournalTaskUI\Options\JournalTaskOptionView.xaml">
+    <Page Include="JournalTaskUI\Options\TaskOptionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -223,10 +223,10 @@
     <Compile Include="JournalTaskUI\JournalTaskView.xaml.cs">
       <DependentUpon>JournalTaskView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="JournalTaskUI\Options\JournalTaskOptionView.xaml.cs">
-      <DependentUpon>JournalTaskOptionView.xaml</DependentUpon>
+    <Compile Include="JournalTaskUI\Options\TaskOptionView.xaml.cs">
+      <DependentUpon>TaskOptionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="JournalTaskUI\Options\JournalTaskOptionViewModel.cs" />
+    <Compile Include="JournalTaskUI\Options\TaskOptionViewModel.cs" />
     <Compile Include="JournalTaskUI\JournalTaskExecuteViewModel.cs" />
     <Compile Include="JournalTaskUI\JournalTaskViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\FamilyViewModel.cs" />
@@ -297,6 +297,10 @@
       <Project>{E89E17ED-9AD7-4562-B5F6-8D0121FBDA10}</Project>
       <Name>RevitAction</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RevitCommand\RevitCommand.csproj">
+      <Project>{28c6c9a0-b934-4a59-b207-566027f6fa32}</Project>
+      <Name>RevitCommand</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RevitJournal\RevitJournal.csproj">
       <Project>{3681f659-8bd6-4d3e-a008-8c0d64e95377}</Project>
       <Name>RevitJournal</Name>
@@ -306,9 +310,7 @@
       <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="JournalTaskUI\JournalCommands\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

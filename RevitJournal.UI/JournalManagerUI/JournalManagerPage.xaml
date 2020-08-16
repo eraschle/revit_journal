@@ -162,7 +162,7 @@
                                    VerticalAlignment="Center"/>
                             <Button Content="Setup" 
                                     Command="{Binding SetupJournalCommand}"
-                                    CommandParameter="{Binding JournalManager}"
+                                    CommandParameter="{Binding TaskManager}"
                                     Visibility="{Binding SetupJournalVisibility}"
                                     Margin="{StaticResource DefaultMargin}"
                                     Grid.Column="1"/>

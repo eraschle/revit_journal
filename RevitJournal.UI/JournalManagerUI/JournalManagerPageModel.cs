@@ -56,8 +56,8 @@ namespace RevitJournalUI.JournalManagerUI
             SetupJournalCommand = new RelayCommand<TaskManager>(SetupJournalCommandAction);
 
 #if DEBUG
-            FamilyDirectory = @"C:\develop\workspace\test_data\families";
-            JournalDirectory = @"C:\develop\workspace\test_data\journals";
+            FamilyDirectory = @"C:\develop\workspace\revit_journal_test_data\families";
+            JournalDirectory = @"C:\develop\workspace\revit_journal_test_data\journals";
 #else
             var myDocument = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             FamilyDirectory = myDocument;
