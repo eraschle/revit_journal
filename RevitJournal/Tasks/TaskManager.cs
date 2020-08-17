@@ -9,87 +9,47 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
 using RevitJournal.Revit.Addin;
-using RevitJournal.Tasks.Options;
 using RevitJournal.Journal;
 using System.IO;
+using RevitJournal.Tasks.External;
+using RevitJournal.Revit.Journal.Command;
 
 namespace RevitJournal.Tasks
 {
     public partial class TaskManager
     {
-        private static RevitDirectory RootDirectory;
-
-        public static bool HasRootDirectory(out RevitDirectory directory)
-        {
-            directory = RootDirectory;
-            return directory != null;
-        }
-        public static RevitDirectory CreateRootDirectory(string contentDirectory)
-        {
-            if (RootDirectory is null ||
-                RootDirectory.FullPath.Equals(contentDirectory, StringComparison.CurrentCulture) == false)
-            {
-                RootDirectory = new RevitDirectory(null, contentDirectory);
-            }
-            return RootDirectory;
-        }
-
         private IList<JournalTaskRunner> TaskRunners { get; } = new List<JournalTaskRunner>();
 
         public IList<RevitTask> RevitTasks { get; } = new List<RevitTask>();
 
         public bool HasRevitTasks { get { return RevitTasks.Count > 0; } }
 
-        public IEnumerable<ITaskAction> AllTaskActions
+        public IEnumerable<ITaskAction> GetTaskActions(string directory)
         {
-            get { return CreateTaskActions(); }
-        }
-
-        private List<ITaskAction> CreateTaskActions()
-        {
-            var taskActions = new List<ITaskAction>();
-            foreach (var assemby in GetAssemblies(AppDomain.CurrentDomain))
+            var externalActions = new List<ITaskAction>();
+            foreach (var extneral in GetExternalActions(directory))
             {
-                if(assemby.FullName.Contains("Revit") == false) { continue; }
-
-                var actions = GetActions(assemby);
-                taskActions.AddRange(actions);
+                externalActions.AddRange(extneral.GetTaskActions());
             }
-            taskActions.Sort(new TaskActionComparer());
-            return taskActions;
+            externalActions.Sort(new TaskActionComparer());
+            externalActions.Insert(0, new DocumentOpenAction());
+            externalActions.Add(new DocumentSaveAction());
+            externalActions.Add(new DocumentSaveAsAction());
+            return externalActions;
         }
 
-        private List<Assembly> GetAssemblies(AppDomain domain)
-        {
-            var assemblies = new List<Assembly>(domain.GetAssemblies());
-            var directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            foreach (var dll in Directory.GetFiles(directory, "*Command.dll"))
-            {
-                 assemblies.Add( Assembly.LoadFile(dll));
-            }
-            return assemblies;
-        }
+        private readonly ExternalActionDataSource dataSource = new ExternalActionDataSource();
 
-        private IEnumerable<ITaskAction> GetActions(Assembly assemby)
+        private IEnumerable<ExternalAction> GetExternalActions(string directory)
         {
-            return assemby.GetLoadableTypes()
-                          .Where(IsTaskAction)
-                          .Select(action => CreateAction(action))
-                          .Where(action => action != null);
-        }
+            var files = Directory.GetFiles(directory, $"*.{ExternalActionFile.FileExtension}")
+                                .Select(path => new ExternalActionFile { FullPath = path });
+            var externalActions = files.Select(path => dataSource.Read(path));
 
-        private ITaskAction CreateAction(Type actionType)
-        {
-            return Activator.CreateInstance(actionType, false) as ITaskAction;
-        }
-
-        private bool IsTaskAction(Type other)
-        {
-            var actionType = typeof(ITaskAction);
-            var commandType = typeof(ITaskActionCommand);
-            return (actionType.IsAssignableFrom(other) || commandType.IsAssignableFrom(other))
-                && other.IsInterface == false
-                && other.IsAbstract == false;
+#if DEBUG
+            externalActions = ExternalAction.GetDebugFiles();
+#endif
+            return externalActions;
         }
 
         public void AddTask(RevitTask task)
@@ -105,9 +65,9 @@ namespace RevitJournal.Tasks
             TaskRunners.Clear();
         }
 
-        public int JournalTaskCount { get { return RevitTasks.Count; } }
+        public int TaskCount { get { return RevitTasks.Count; } }
 
-        public int TaskExecutedCount { get; private set; } = 0;
+        public int ExecutedCount { get; private set; } = 0;
 
         public void CreateTaskRunner(IProgress<JournalResult> progress)
         {
@@ -125,7 +85,7 @@ namespace RevitJournal.Tasks
             TaskRunners.Clear();
         }
 
-        private void CreateAddinFile(CommonOptions options)
+        private void CreateAddinFile(TaskOptions options)
         {
             var commands = new HashSet<ITaskActionCommand>();
 
@@ -150,7 +110,7 @@ namespace RevitJournal.Tasks
         {
             if (options is null) { throw new ArgumentNullException(nameof(options)); }
 
-            CreateAddinFile(options.Common);
+            CreateAddinFile(options);
             return RunTasks(options, cancellation);
         }
 
@@ -175,7 +135,7 @@ namespace RevitJournal.Tasks
                         SetRunnerStatus(ResultStatus.Cancel);
                         break;
                     }
-                    TaskExecutedCount++;
+                    ExecutedCount++;
                     if (TaskRunners.Count > 0)
                     {
                         var task = NextTask(options, cancellation);

@@ -297,10 +297,6 @@
       <Project>{E89E17ED-9AD7-4562-B5F6-8D0121FBDA10}</Project>
       <Name>RevitAction</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RevitCommand\RevitCommand.csproj">
-      <Project>{28c6c9a0-b934-4a59-b207-566027f6fa32}</Project>
-      <Name>RevitCommand</Name>
-    </ProjectReference>
     <ProjectReference Include="..\RevitJournal\RevitJournal.csproj">
       <Project>{3681f659-8bd6-4d3e-a008-8c0d64e95377}</Project>
       <Name>RevitJournal</Name>

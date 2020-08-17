@@ -28,19 +28,20 @@ namespace RevitJournalUI.Tasks.Actions
             }
         }
 
-        public void UpdateAction(TaskManager manager)
+        public void UpdateAction(IEnumerable<ITaskAction> taskActions)
         {
-            if (manager is null) { return; }
+            if (taskActions is null) { return; }
 
             ActionViewModels.Clear();
-            foreach (var command in manager.AllTaskActions)
+
+            foreach (var command in taskActions)
             {
                 var model = new ActionViewModel
                 {
                     Action = command
                 };
                 model.PropertyChanged += new PropertyChangedEventHandler(OnActionChecked);
-                model.UpdateJournalCommandParameters();
+                model.UpdateParameters();
 
                 if (command is DocumentOpenAction)
                 {
@@ -81,22 +82,32 @@ namespace RevitJournalUI.Tasks.Actions
 
         private bool AreChangeActionsChecked()
         {
-            return ActionViewModels.Any(action => action.Action.MakeChanges && action.Checked);
+            return ActionViewModels.Any(model => model.Action.MakeChanges && model.Checked);
         }
 
         private bool IsSaveActionChecked()
         {
-            return ActionViewModels.Any(action => action.Action.IsSaveAction && action.Checked);
-        }
-
-        private ActionViewModel GetSaveAction()
-        {
-            return ActionViewModels.FirstOrDefault(action => action.Action is DocumentSaveAction);
+            return GetSaveActions().Any(model => model.Checked);
         }
 
         private IEnumerable<ActionViewModel> GetSaveActions()
         {
-            return ActionViewModels.Where(action => action.Action.IsSaveAction);
+            return ActionViewModels.Where(model => IsSaveOrSaveAs(model));
+        }
+
+        private ActionViewModel GetSaveAction()
+        {
+            return GetSaveActions().FirstOrDefault(model => IsSave(model));
+        }
+
+        private bool IsSave(ActionViewModel model)
+        {
+            return model != null && model.Action is DocumentSaveAction;
+        }
+
+        private bool IsSaveOrSaveAs(ActionViewModel model)
+        {
+            return IsSave(model) || (model != null && model.Action is DocumentSaveAsAction);
         }
 
         protected void OnPropertyChanged(string name)

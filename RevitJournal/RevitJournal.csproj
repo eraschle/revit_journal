@@ -54,6 +54,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files\Autodesk\Revit 2019\RevitAddInUtility.dll</HintPath>
     </Reference>
+    <Reference Include="RevitAPI">
+      <HintPath>..\..\..\..\Program Files\Autodesk\Revit 2019\RevitAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>..\..\..\..\Program Files\Autodesk\Revit 2019\RevitAPIUI.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -94,14 +100,17 @@
     <Compile Include="Duplicate\DuplicateManager.cs" />
     <Compile Include="Helper\PathCreator.cs" />
     <Compile Include="Helper\TypeLoaderExtensions.cs" />
+    <Compile Include="Revit\Addin\TaskExternalApp.cs" />
     <Compile Include="Revit\Journal\Command\DocumentOpenAction.cs" />
     <Compile Include="Revit\Journal\Command\DocumentSaveAsAction.cs" />
     <Compile Include="Revit\Journal\Command\DocumentSaveAction.cs" />
     <Compile Include="Revit\RevitArguments.cs" />
+    <Compile Include="Tasks\External\ExternalAction.cs" />
+    <Compile Include="Tasks\External\ExternalActionDataSource.cs" />
+    <Compile Include="Tasks\External\ExternalActionFile.cs" />
     <Compile Include="Tasks\Options\BackupOptions.cs" />
     <Compile Include="Tasks\Options\ParallelOptions.cs" />
     <Compile Include="Tasks\Options\ReportOptions.cs" />
-    <Compile Include="Tasks\Options\CommonOptions.cs" />
     <Compile Include="Tasks\TaskActionComparer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

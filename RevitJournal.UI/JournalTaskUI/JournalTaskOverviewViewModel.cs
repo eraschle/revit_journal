@@ -87,8 +87,8 @@ namespace RevitJournalUI.JournalTaskUI
 
         private void SetExecutedTasks(TaskManager manager)
         {
-            MaxTasks = manager.JournalTaskCount;
-            ExecutedTasks = manager.TaskExecutedCount;
+            MaxTasks = manager.TaskCount;
+            ExecutedTasks = manager.ExecutedCount;
             var executed = ExecutedTasks + " / " + MaxTasks;
             ExecutedTasksText = PrefixExecutedTask + executed;
         }

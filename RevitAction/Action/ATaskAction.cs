@@ -1,4 +1,5 @@
 ﻿using DataSource.Model.FileSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,8 +28,6 @@ namespace RevitAction.Action
             get { return Parameters != null && Parameters.Count > 0; }
         }
 
-        public bool IsSaveAction { get; protected set; } = false;
-
         public bool MakeChanges { get; protected set; } = false;
 
         public bool HasParameter(string name, out IActionParameter parameter)
@@ -46,10 +45,26 @@ namespace RevitAction.Action
             return HasParameter(name, out _);
         }
 
+        public virtual bool DependsOn(ITaskAction action)
+        {
+            return false;
+        }
+
         public virtual void PreTask(RevitFamily family) { }
 
         public virtual void PostTask(RevitFamily family) { }
 
         public virtual void SetLibraryRoot(string libraryRoot) { }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ITaskAction action &&
+                   Name == action.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            return 539060726 + EqualityComparer<string>.Default.GetHashCode(Name);
+        }
     }
 }

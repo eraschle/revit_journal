@@ -39,7 +39,6 @@ namespace RevitJournal.Revit.Journal.Command
 
             newRoot = ParameterBuilder.Create("Library Folder [New]", ParameterKind.SelectFolder);
             AddParameter(newRoot);
-            IsSaveAction = true;
         }
 
         private string GetDate()

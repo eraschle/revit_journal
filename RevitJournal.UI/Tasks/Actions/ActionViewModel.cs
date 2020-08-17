@@ -30,7 +30,7 @@ namespace RevitJournalUI.Tasks.Actions
         public ObservableCollection<IParameterViewModel> Parameters { get; }
             = new ObservableCollection<IParameterViewModel>();
 
-        public virtual void UpdateJournalCommandParameters()
+        public virtual void UpdateParameters()
         {
             if (Action.HasParameters == false) { return; }
 
@@ -75,7 +75,7 @@ namespace RevitJournalUI.Tasks.Actions
 
         private void SetParameterVisibility()
         {
-            ParameterVisibility = Action.HasParameters && Checked ? Visibility.Visible : Visibility.Collapsed;
+            ParameterVisibility = Parameters.Count > 0 && Checked ? Visibility.Visible : Visibility.Collapsed;
         }
 
         protected void OnPropertyChanged(string name)

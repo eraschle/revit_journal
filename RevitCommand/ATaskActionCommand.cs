@@ -20,9 +20,6 @@ namespace RevitCommand
 
         public string VendorId { get; } = "RascerDev";
 
-        public string AssemblyPath
-        {
-            get { return typeof(ATaskActionCommand).Assembly.Location; }
-        }
+        public string AssemblyPath { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using Utilities;
 
 namespace RevitJournalUI.JournalTaskUI
 {
@@ -20,47 +21,56 @@ namespace RevitJournalUI.JournalTaskUI
 
         #region Revit Files
 
-        public bool HasCheckedRevitFiles { get { return CheckedRevitFilesCount > 0; } }
+        public bool HasCheckedRevitFiles
+        {
+            get { return CheckedRevitFilesCount > 0; }
+        }
 
-        private int _CheckedRevitFilesCount = 0;
+        private int checkedRevitFilesCount = 0;
         public int CheckedRevitFilesCount
         {
-            get { return _CheckedRevitFilesCount; }
+            get { return checkedRevitFilesCount; }
             set
             {
-                if (_CheckedRevitFilesCount == value) { return; }
+                if (checkedRevitFilesCount == value) { return; }
 
-                _CheckedRevitFilesCount = value;
+                checkedRevitFilesCount = value;
                 OnPropertyChanged(nameof(CheckedRevitFilesCount));
             }
         }
 
-        public bool HasCheckedAndValidRevitFiles { get { return ValidCheckedRevitFilesCount > 0; } }
+        public bool HasCheckedAndValidRevitFiles
+        {
+            get { return ValidCheckedRevitFilesCount > 0; }
+        }
 
-        private int _ValidCheckedRevitFilesCount = 0;
+        private int validCheckedRevitFilesCount = 0;
         public int ValidCheckedRevitFilesCount
         {
-            get { return _ValidCheckedRevitFilesCount; }
+            get { return validCheckedRevitFilesCount; }
             set
             {
-                if (_ValidCheckedRevitFilesCount == value) { return; }
+                if (validCheckedRevitFilesCount == value) { return; }
 
-                _ValidCheckedRevitFilesCount = value;
+                validCheckedRevitFilesCount = value;
                 OnPropertyChanged(nameof(ValidCheckedRevitFilesCount));
             }
         }
 
-        public bool HasEditableRevitFiles { get { return EditableRevitFilesCount > 0; } }
+        public bool HasEditableRevitFiles
+        {
+            get { return EditableRevitFilesCount > 0; }
+        }
 
-        private int _EditableRevitFilesCount = 0;
+        private int editableRevitFilesCount = 0;
         public int EditableRevitFilesCount
         {
-            get { return _EditableRevitFilesCount; }
+            get { return editableRevitFilesCount; }
             set
             {
-                if (_EditableRevitFilesCount == value) { return; }
+                if (editableRevitFilesCount == value) { return; }
 
-                _EditableRevitFilesCount = value;
+                editableRevitFilesCount = value;
                 OnPropertyChanged(nameof(EditableRevitFilesCount));
             }
         }
@@ -108,9 +118,9 @@ namespace RevitJournalUI.JournalTaskUI
         public void OnContentDirectoryChanged(object sender, PropertyChangedEventArgs args)
         {
             if (args is null || !(sender is JournalManagerPageModel model)
-                || args.PropertyName.Equals(nameof(model.FamilyDirectory), StringComparison.CurrentCulture) == false) { return; }
+                || StringUtils.Equals(args.PropertyName, nameof(model.FamilyDirectory)) == false) { return; }
 
-            UpdateDirectoryViewModels(model.FamilyDirectory);
+            UpdateDirectoryViewModels(model);
         }
 
         private void OnAllCheckedChanged(object sender, PropertyChangedEventArgs args)
@@ -123,7 +133,7 @@ namespace RevitJournalUI.JournalTaskUI
 
         private void UpdateCheckedFamilyCount()
         {
-            if(RootModel is null) { return; }
+            if (RootModel is null) { return; }
 
             CheckedRevitFilesCount = RecursiveRevitFamilies.Count;
             ValidCheckedRevitFilesCount = ValidRecursiveRevitFamilies.Count;
@@ -175,11 +185,12 @@ namespace RevitJournalUI.JournalTaskUI
 
         private DirectoryViewModel RootModel;
 
-        public void UpdateDirectoryViewModels(string contentDirectory)
+        public void UpdateDirectoryViewModels(JournalManagerPageModel model)
         {
+            if (model is null) { return; }
+
             DirectoryViewModels.Clear();
-            var rootDirectory = TaskManager.CreateRootDirectory(contentDirectory);
-            RootModel = new DirectoryViewModel(rootDirectory, null, FilterManager);
+            RootModel = new DirectoryViewModel(model.TaskOptions.RootDirectory, null, FilterManager);
             RootModel.CreateRecursiveChildren();
             UpdateCheckedFamilyCount();
             RootModel.PropertyChanged += new PropertyChangedEventHandler(OnAllCheckedChanged);

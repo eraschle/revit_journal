@@ -1,7 +1,7 @@
 ﻿using Autodesk.Revit.UI;
 using System;
 
-namespace RevitCommand
+namespace RevitJournal.Revit.Addin
 {
     public class TaskExternalApp : IExternalApplication
     {

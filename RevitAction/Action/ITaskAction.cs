@@ -18,7 +18,7 @@ namespace RevitAction.Action
 
         bool MakeChanges { get; }
 
-        bool IsSaveAction { get; }
+        bool DependsOn(ITaskAction action);
 
         void SetLibraryRoot(string libraryRoot);
 

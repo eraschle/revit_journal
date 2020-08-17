@@ -12,6 +12,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
@@ -32,14 +33,14 @@ namespace RevitJournalUI.JournalManagerUI
         private readonly Progress<JournalResult> Progress;
 
         public TaskManager TaskManager { get; private set; }
-        private readonly TaskOptions taskOptions;
+        public TaskOptions TaskOptions { get; private set; }
 
         public JournalManagerPageModel()
         {
             TaskManager = new TaskManager();
-            taskOptions = new TaskOptions();
+            TaskOptions = new TaskOptions();
             ProductManager.UpdateVersions();
-            TaskOptionViewModel = new TaskOptionViewModel { Options = taskOptions };
+            TaskOptionViewModel = new TaskOptionViewModel { Options = TaskOptions };
             FamiliesViewModel = new FamilyOverviewViewModel { FilterManager = FilterManager };
             PropertyChanged += new PropertyChangedEventHandler(FamiliesViewModel.OnContentDirectoryChanged);
             CreateCommand = new RelayCommand<FamilyOverviewViewModel>(CreateCommandAction, CreateCommandPredicate);
@@ -53,7 +54,7 @@ namespace RevitJournalUI.JournalManagerUI
             FamiliesViewModel.PropertyChanged += new PropertyChangedEventHandler(OnCheckedChanged);
 
             SetupFilterCommand = new RelayCommand<ObservableCollection<DirectoryViewModel>>(SetupFilterCommandAction);
-            SetupJournalCommand = new RelayCommand<TaskManager>(SetupJournalCommandAction);
+            SetupJournalCommand = new RelayCommand<object>(SetupJournalCommandAction, SetupJournalCommandPredicate);
 
 #if DEBUG
             FamilyDirectory = @"C:\develop\workspace\revit_journal_test_data\families";
@@ -62,6 +63,7 @@ namespace RevitJournalUI.JournalManagerUI
             var myDocument = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             FamilyDirectory = myDocument;
             JournalDirectory = myDocument;
+            ActionDirectory = myDocument;
 #endif
             TaskOptionViewModel.SelectedRevitApp = ProductManager.UseMetadata;
         }
@@ -71,15 +73,14 @@ namespace RevitJournalUI.JournalManagerUI
 
         public TaskOptionViewModel TaskOptionViewModel { get; }
 
-        private string familyDirectory = string.Empty;
         public string FamilyDirectory
         {
-            get { return familyDirectory; }
+            get { return TaskOptions.RootDirectory.FullPath; }
             set
             {
-                if (StringUtils.Equals(familyDirectory, value)) { return; }
+                if (TaskOptions.IsRootDirectory(value)) { return; }
 
-                familyDirectory = value;
+                TaskOptions.SetRootDirectory(value);
                 OnPropertyChanged(nameof(FamilyDirectory));
             }
         }
@@ -96,12 +97,12 @@ namespace RevitJournalUI.JournalManagerUI
 
         public string JournalDirectory
         {
-            get { return taskOptions.Common.JournalDirectory; }
+            get { return TaskOptions.JournalDirectory; }
             set
             {
-                if (StringUtils.Equals(taskOptions.Common.JournalDirectory, value)) { return; }
+                if (StringUtils.Equals(TaskOptions.JournalDirectory, value)) { return; }
 
-                taskOptions.Common.JournalDirectory = value;
+                TaskOptions.JournalDirectory = value;
                 OnPropertyChanged(nameof(JournalDirectory));
             }
         }
@@ -114,6 +115,28 @@ namespace RevitJournalUI.JournalManagerUI
         private void ChooseJournalDirectoryAction(string selectedPath)
         {
             JournalDirectory = ChooseDirectory(selectedPath);
+        }
+
+        public string ActionDirectory
+        {
+            get { return TaskOptions.ActionDirectory; }
+            set
+            {
+                if (StringUtils.Equals(TaskOptions.ActionDirectory, value)) { return; }
+
+                TaskOptions.ActionDirectory = value;
+                OnPropertyChanged(nameof(ActionDirectory));
+            }
+        }
+
+        public ICommand ChooseActionDirectoryCommand
+        {
+            get { return new RelayCommand<string>(ChooseActionDirectoryAction); }
+        }
+
+        private void ChooseActionDirectoryAction(string selectedPath)
+        {
+            ActionDirectory = ChooseDirectory(selectedPath);
         }
 
         private static string ChooseDirectory(string selectedPath)
@@ -226,25 +249,30 @@ namespace RevitJournalUI.JournalManagerUI
 
         public ICommand SetupJournalCommand { get; }
 
-        private TaskActionsViewModel actionManagerModel;
-
-        private void SetupJournalCommandAction(TaskManager manager)
+        private void SetupJournalCommandAction(object parameter)
         {
-            var dialog = new TaskActionsView(manager);
-            actionManagerModel = dialog.ViewModel;
+            var actions = TaskManager.GetTaskActions(ActionDirectory);
+            var dialog = new TaskActionsView(actions);
             var result = dialog.ShowDialog();
             if (result == true)
             {
-                UpdateJournalCommands();
+                UpdateActions(dialog.ViewModel);
             }
         }
+
+        private bool SetupJournalCommandPredicate(object parameter)
+        {
+            return string.IsNullOrEmpty(TaskOptions.ActionDirectory) == false
+                && Directory.Exists(TaskOptions.ActionDirectory);
+        }
+
         public ObservableCollection<ITaskAction> Actions { get; }
             = new ObservableCollection<ITaskAction>();
 
-        private void UpdateJournalCommands()
+        private void UpdateActions(TaskActionsViewModel viewModel)
         {
             Actions.Clear();
-            foreach (var commands in actionManagerModel.CheckedActions)
+            foreach (var commands in viewModel.CheckedActions)
             {
                 Actions.Add(commands);
             }
@@ -287,18 +315,8 @@ namespace RevitJournalUI.JournalManagerUI
                 && StringUtils.Equals(args.PropertyName, nameof(FamiliesViewModel.ValidCheckedRevitFilesCount)) == false) { return; }
 
             CreateName = $"{PrefixCreateButton} [{FamiliesViewModel.CheckedRevitFilesCount}]";
-            UpdateDuplicateButtonName();
-            UpdateEditButtonName();
-        }
-
-        public void UpdateDuplicateButtonName()
-        {
-            DuplicateName = $"{PrefixDuplicateButton} [{FamiliesViewModel.ValidCheckedRevitFilesCount}]";
-        }
-
-        public void UpdateEditButtonName()
-        {
-            EditName = $"{PrefixEditButton} [{FamiliesViewModel.EditableRevitFilesCount}]";
+            UpdateDuplicateName();
+            UpdateEditName();
         }
 
         public ICommand CreateCommand { get; private set; }
@@ -307,14 +325,13 @@ namespace RevitJournalUI.JournalManagerUI
         {
             return model != null
                 && model.HasCheckedRevitFiles
-                && actionManagerModel != null
-                && actionManagerModel.HasCheckedCommands;
+                && Actions.Count > 0;
         }
 
         private void CreateCommandAction(FamilyOverviewViewModel model)
         {
             TaskManager.ClearTasks();
-            var arguments = taskOptions.Arguments;
+            var arguments = TaskOptions.Arguments;
             var useMetadataRevitVersion = arguments.RevitApp.UseMetadata;
 
             const bool runnungApps = true;
@@ -337,7 +354,7 @@ namespace RevitJournalUI.JournalManagerUI
                     arguments.RevitApp = revitApp;
                 }
                 var task = new RevitTask(family);
-                foreach (var action in actionManagerModel.CheckedActions)
+                foreach (var action in Actions)
                 {
                     task.AddAction(action);
                 }
@@ -383,6 +400,10 @@ namespace RevitJournalUI.JournalManagerUI
             }
         }
 
+        #endregion
+
+        #region Duplicated families
+
         private string duplicateName = PrefixDuplicateButton;
         public string DuplicateName
         {
@@ -394,6 +415,11 @@ namespace RevitJournalUI.JournalManagerUI
                 duplicateName = value;
                 OnPropertyChanged(nameof(DuplicateName));
             }
+        }
+
+        public void UpdateDuplicateName()
+        {
+            DuplicateName = $"{PrefixDuplicateButton} [{FamiliesViewModel.ValidCheckedRevitFilesCount}]";
         }
 
         public ICommand DuplicateCommand { get; private set; }
@@ -413,6 +439,10 @@ namespace RevitJournalUI.JournalManagerUI
             dialog.ShowDialog();
         }
 
+        #endregion
+
+        #region Edit metadata 
+
         private string editName = PrefixEditButton;
         public string EditName
         {
@@ -424,6 +454,11 @@ namespace RevitJournalUI.JournalManagerUI
                 editName = value;
                 OnPropertyChanged(nameof(EditName));
             }
+        }
+
+        public void UpdateEditName()
+        {
+            EditName = $"{PrefixEditButton} [{FamiliesViewModel.EditableRevitFilesCount}]";
         }
 
         public ICommand EditCommand { get; private set; }
@@ -445,7 +480,7 @@ namespace RevitJournalUI.JournalManagerUI
 
         #endregion
 
-        #region Journal Tasks Overview
+        #region Tasks Overview
 
         public JournalTaskOverviewViewModel TasksViewModel { get; } = new JournalTaskOverviewViewModel();
 
@@ -478,7 +513,7 @@ namespace RevitJournalUI.JournalManagerUI
             using (var cancel = new CancellationTokenSource())
             {
                 Cancellation = cancel;
-                await TaskManager.ExecuteTasks(taskOptions, Cancellation.Token)
+                await TaskManager.ExecuteTasks(TaskOptions, Cancellation.Token)
                                  .ConfigureAwait(false);
                 Cancellation = null;
             }
@@ -576,7 +611,6 @@ namespace RevitJournalUI.JournalManagerUI
         }
 
         #endregion
-
 
         protected void OnPropertyChanged(string name)
         {

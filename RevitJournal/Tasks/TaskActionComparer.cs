@@ -9,19 +9,20 @@ namespace RevitJournal.Tasks
     {
         public int Compare(ITaskAction command, ITaskAction other)
         {
-            if (command is null && other is null) { return 0; }
-            if (command is null && other != null) { return 1; }
-            if (command != null && other is null) { return -1; }
-
-            if (command is DocumentOpenAction ) { return int.MinValue; }
-            if (other is DocumentOpenAction ) { return int.MaxValue; }
-
-            if (command is DocumentSaveAction) { return int.MaxValue - 1; }
-            if (other is DocumentSaveAction) { return int.MinValue + 1; }
-            if (command is DocumentSaveAsAction ) { return int.MaxValue; }
-            if (other is DocumentSaveAsAction) { return int.MinValue; }
-
-            return StringUtils.Compare(command.Name, other.Name);
+            var compareTo = 0;
+            if (command != null && command.DependsOn(other))
+            {
+                compareTo = -1;
+            }
+            if (other != null && other.DependsOn(command))
+            {
+                compareTo = 1;
+            }
+            if (compareTo == 0 && command != null && other != null)
+            {
+                compareTo = StringUtils.Compare(command.Name, other.Name);
+            }
+            return compareTo;
         }
     }
 }

@@ -32,6 +32,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -64,8 +65,19 @@
                         CommandParameter="{Binding FamilyDirectory}"
                         Style="{StaticResource DialogButton}"
                         Grid.Column="2" Grid.Row="1"/>
+                <Label Content="Actions Directory" 
+                       Grid.Column="0" Grid.Row="2"/>
+                <TextBlock Text="{Binding ActionDirectory}"
+                           Margin="{StaticResource DefaultMargin}"
+                           Grid.Column="1" Grid.Row="2"
+                           VerticalAlignment="Center"/>
+                <Button Content="Choose" 
+                        Command="{Binding ChooseActionDirectoryCommand}"
+                        CommandParameter="{Binding ActionDirectory}"
+                        Style="{StaticResource DialogButton}"
+                        Grid.Column="2" Grid.Row="2"/>
                 <Grid Grid.Column="0" Grid.ColumnSpan="2"
-                      Grid.Row="2" Grid.RowSpan="4">
+                      Grid.Row="3" Grid.RowSpan="4">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
@@ -162,7 +174,6 @@
                                    VerticalAlignment="Center"/>
                             <Button Content="Setup" 
                                     Command="{Binding SetupJournalCommand}"
-                                    CommandParameter="{Binding TaskManager}"
                                     Visibility="{Binding SetupJournalVisibility}"
                                     Margin="{StaticResource DefaultMargin}"
                                     Grid.Column="1"/>

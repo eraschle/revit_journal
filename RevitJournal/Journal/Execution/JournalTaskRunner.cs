@@ -38,7 +38,7 @@ namespace RevitJournal.Journal.Execution
         internal async Task CreateTask(TaskOptions options, CancellationToken cancellation)
         {
             JournalTask.PreExecution(options.Backup);
-            JournalTask.CreateJournalProcess(options.Common);
+            JournalTask.CreateJournalProcess(options);
             //SetupEvents(creator);
             using (var taskCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellation))
             {

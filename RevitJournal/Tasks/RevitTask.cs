@@ -1,6 +1,7 @@
 ﻿using DataSource.Model.FileSystem;
 using RevitAction.Action;
 using RevitJournal.Journal.Execution;
+using RevitJournal.Tasks;
 using RevitJournal.Tasks.Options;
 using System;
 using System.Collections.Generic;
@@ -51,7 +52,7 @@ namespace RevitJournal.Journal
             return actionCommands.Count > 0;
         }
 
-        public void CreateJournalProcess(CommonOptions options)
+        public void CreateJournalProcess(TaskOptions options)
         {
             if(options is null) { throw new ArgumentNullException(nameof(options)); }
 
