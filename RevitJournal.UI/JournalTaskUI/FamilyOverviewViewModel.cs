@@ -190,7 +190,8 @@ namespace RevitJournalUI.JournalTaskUI
             if (model is null) { return; }
 
             DirectoryViewModels.Clear();
-            RootModel = new DirectoryViewModel(model.TaskOptions.RootDirectory, null, FilterManager);
+            var root = new RevitDirectory(null, model.TaskOptions.RootDirectory);
+            RootModel = new DirectoryViewModel(root, null, FilterManager);
             RootModel.CreateRecursiveChildren();
             UpdateCheckedFamilyCount();
             RootModel.PropertyChanged += new PropertyChangedEventHandler(OnAllCheckedChanged);

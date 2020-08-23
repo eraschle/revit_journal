@@ -56,14 +56,14 @@ namespace RevitJournalUI.JournalManagerUI
             SetupFilterCommand = new RelayCommand<ObservableCollection<DirectoryViewModel>>(SetupFilterCommandAction);
             SetupJournalCommand = new RelayCommand<object>(SetupJournalCommandAction, SetupJournalCommandPredicate);
 
-#if DEBUG
-            FamilyDirectory = @"C:\develop\workspace\revit_journal_test_data\families";
-            JournalDirectory = @"C:\develop\workspace\revit_journal_test_data\journals";
-#else
             var myDocument = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             FamilyDirectory = myDocument;
             JournalDirectory = myDocument;
             ActionDirectory = myDocument;
+
+#if DEBUG
+            FamilyDirectory = @"C:\develop\workspace\revit_journal_test_data\families";
+            JournalDirectory = @"C:\develop\workspace\revit_journal_test_data\journals";
 #endif
             TaskOptionViewModel.SelectedRevitApp = ProductManager.UseMetadata;
         }
@@ -75,12 +75,12 @@ namespace RevitJournalUI.JournalManagerUI
 
         public string FamilyDirectory
         {
-            get { return TaskOptions.RootDirectory.FullPath; }
+            get { return TaskOptions.RootDirectory; }
             set
             {
-                if (TaskOptions.IsRootDirectory(value)) { return; }
+                if (StringUtils.Equals(TaskOptions.RootDirectory ,value)) { return; }
 
-                TaskOptions.SetRootDirectory(value);
+                TaskOptions.RootDirectory = value;
                 OnPropertyChanged(nameof(FamilyDirectory));
             }
         }
