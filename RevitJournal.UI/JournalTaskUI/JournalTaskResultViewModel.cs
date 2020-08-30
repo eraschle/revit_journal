@@ -1,4 +1,4 @@
-﻿using RevitJournal.Journal;
+﻿using RevitJournal.Tasks;
 using System;
 using System.ComponentModel;
 using System.Windows;
@@ -27,11 +27,11 @@ namespace RevitJournalUI.JournalTaskUI
             }
         }
 
-        public void UpdateResult(JournalResult result)
+        public void UpdateResult(TaskReport result)
         {
             if(result is null) { return; }
 
-            if (result.Executed)
+            if (result.Status.Executed)
             {
                 ResultVisible = Visibility.Visible;
             }
@@ -41,7 +41,7 @@ namespace RevitJournalUI.JournalTaskUI
             //    ErrorText = YesMessage;
             //    ErrorTextToolTip = error.ErrorMessage;
             //}
-            if (result.IsTimeout)
+            if (result.Status.IsTimeout)
             {
                 ExecutionTime = TimeoutMessage;
             }

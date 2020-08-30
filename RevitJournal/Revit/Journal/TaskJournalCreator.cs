@@ -7,11 +7,11 @@ using System.Text;
 
 namespace RevitJournal.Journal.Execution
 {
-    internal static class ProcessJournalCreator
+    internal static class TaskJournalCreator
     {
         private const string SuffixFormatString = "HHmmssfff";
 
-        internal static ProcessJournalFile Create(RevitTask journalTask, string journalDirectory)
+        internal static TaskJournalFile Create(RevitTask journalTask, string journalDirectory)
         {
             var journalFile = GetJournalFile(journalTask.Family, journalDirectory);
             var content = JournalBuilder.Build(journalTask);
@@ -20,13 +20,13 @@ namespace RevitJournal.Journal.Execution
         }
      
 
-        private static ProcessJournalFile GetJournalFile(RevitFamily family, string journalDirectory)
+        private static TaskJournalFile GetJournalFile(RevitFamily family, string journalDirectory)
         {
             var journalName = GetJournalFileName(family.RevitFile);
             var journalFile = family.RevitFile
                 .ChangeFileName<RevitFamilyFile>(journalName)
                 .ChangeDirectory<RevitFamilyFile>(journalDirectory)
-                .ChangeExtension<ProcessJournalFile>(ProcessJournalFile.JournalProcessExtension);
+                .ChangeExtension<TaskJournalFile>(TaskJournalFile.JournalProcessExtension);
             return journalFile;
         }
 

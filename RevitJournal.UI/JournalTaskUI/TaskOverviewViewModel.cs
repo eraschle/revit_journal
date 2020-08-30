@@ -1,5 +1,4 @@
-﻿using RevitJournal.Journal;
-using RevitJournal.Tasks;
+﻿using RevitJournal.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,7 +7,7 @@ using System.Linq;
 
 namespace RevitJournalUI.JournalTaskUI
 {
-    public class JournalTaskOverviewViewModel : INotifyPropertyChanged
+    public class TaskOverviewViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -16,7 +15,7 @@ namespace RevitJournalUI.JournalTaskUI
 
         public ObservableCollection<JournalTaskViewModel> JournalTaskModels { get; } = new ObservableCollection<JournalTaskViewModel>();
 
-        public IEnumerable<JournalResult> JournalTaskResults
+        public IEnumerable<TaskReport> JournalTaskResults
         {
             get { return JournalTaskModels.Select(model => model.Result); }
         }
@@ -73,12 +72,12 @@ namespace RevitJournalUI.JournalTaskUI
             }
         }
 
-        internal void SetResult(TaskManager manager, JournalResult result)
+        internal void SetResult(TaskManager manager, TaskReport result)
         {
             SetExecutedTasks(manager);
             foreach (var viewModel in JournalTaskModels)
             {
-                if (viewModel.IsJournalTask(result) == false) { continue; }
+                if (viewModel.IsTask(result) == false) { continue; }
 
                 viewModel.SetResult(result);
                 break;
@@ -95,9 +94,7 @@ namespace RevitJournalUI.JournalTaskUI
 
         public void Update(TaskManager manager)
         {
-            if (manager is null) { return; }
-
-            if (manager.HasRevitTasks == false) { return; }
+            if (manager is null || manager.HasRevitTasks == false) { return; }
 
             JournalTaskModels.Clear();
             foreach (var task in manager.RevitTasks)

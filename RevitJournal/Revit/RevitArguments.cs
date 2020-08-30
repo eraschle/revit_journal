@@ -5,14 +5,6 @@ namespace RevitJournal.Tasks
 {
     public class RevitArguments
     {
-        public static TimeSpan MinimumTimeout { get { return TimeSpan.FromMinutes(1); } }
-
-        public static TimeSpan DefaultTimeout { get { return MinimumTimeout; } }
-
-        public static TimeSpan MaximumTimeout { get { return TimeSpan.FromMinutes(20); } }
-
-        public TimeSpan Timeout { get; set; }
-
         public RevitApp RevitApp { get; set; }
 
         public bool ShowSplash
@@ -45,5 +37,13 @@ namespace RevitJournal.Tasks
         {
             get { return RevitApp.AppFile.ParentFolder; }
         }
+
+        public static TimeSpan MinimumTimeout { get { return TimeSpan.FromMinutes(1); } }
+
+        public static TimeSpan DefaultTimeout { get { return TimeSpan.FromMinutes(2); } }
+
+        public static TimeSpan MaximumTimeout { get { return TimeSpan.FromMinutes(20); } }
+
+        public TimeSpan Timeout { get; set; }
     }
 }

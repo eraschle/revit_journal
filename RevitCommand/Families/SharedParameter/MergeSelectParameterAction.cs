@@ -35,7 +35,7 @@ namespace RevitCommand.Families.SharedParameter
             MakeChanges = true;
         }
 
-        public override Guid AddinId
+        public override Guid Id
         {
             get { return new Guid("2c0ddb9f-ec48-4c34-bc96-1105eb3a1637"); }
         }

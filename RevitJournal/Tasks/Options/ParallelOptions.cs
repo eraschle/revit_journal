@@ -13,6 +13,6 @@ namespace RevitJournal.Tasks.Options
 
         public static int MaxProcesses { get; } = Environment.ProcessorCount;
 
-        public int ParallelProcesses { get; set; } 
+        public int ParallelProcesses { get; set; }
     }
 }

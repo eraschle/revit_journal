@@ -1,5 +1,6 @@
 ﻿using DataSource.Model.FileSystem;
 using RevitAction.Action;
+using RevitAction.Reports;
 using RevitJournal.Helper;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,6 @@ namespace RevitJournal.Revit.Journal.Command
         private RevitFamilyFile familyFile;
 
         private readonly PathCreator pathCreator = new PathCreator();
-
 
         public DocumentSaveAsAction() : base("Save As")
         {
@@ -56,6 +56,12 @@ namespace RevitJournal.Revit.Journal.Command
                     string.Concat("Jrn.Data \"File Name\" , \"IDOK\", \"", pathCreator.CreatePath(familyFile), "\"") };
             }
         }
+
+        public override Guid Id
+        {
+            get { return ReportManager.SaveAsActionId; }
+        }
+
 
         private string CreateSymbolicPath()
         {

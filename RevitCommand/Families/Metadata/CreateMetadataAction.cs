@@ -14,7 +14,7 @@ namespace RevitCommand.Families.Metadata
             Parameters.Add(Library);
         }
 
-        public override Guid AddinId
+        public override Guid Id
         {
             get { return new Guid("7d3a1639-4384-4488-b34c-08f29aebac2f"); }
         }

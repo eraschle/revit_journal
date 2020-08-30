@@ -7,8 +7,6 @@ namespace RevitCommand
     {
         protected ATaskActionCommand(string name) : base(name) { }
 
-        public abstract Guid AddinId { get; }
-
         public abstract string Namespace { get; }
 
         public string FullClassName

@@ -1,10 +1,14 @@
 ﻿using DataSource.Model.FileSystem;
 using RevitAction.Action;
 using RevitJournal.Journal.Execution;
+using RevitJournal.Revit;
+using RevitJournal.Revit.Journal;
+using RevitJournal.Revit.Report;
 using RevitJournal.Tasks;
 using RevitJournal.Tasks.Options;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace RevitJournal.Journal
 {
@@ -12,9 +16,16 @@ namespace RevitJournal.Journal
     {
         public RevitFamily Family { get; private set; }
 
-        public RevitFamilyFile RevitFile { get { return Family.RevitFile; } }
+        public RevitFamilyFile SourceFile
+        {
+            get { return Family.RevitFile; }
+        }
 
-        public ProcessJournalFile JournalProcess { get; private set; }
+        public RevitProcess Process { get; internal set; }
+
+        public TaskJournalFile JournalTask { get; private set; }
+
+        public TaskReport Report { get; private set; }
 
         public IList<ITaskAction> Actions { get; private set; }
 
@@ -24,9 +35,13 @@ namespace RevitJournal.Journal
 
             Family = family;
             Actions = new List<ITaskAction>();
+            Report = new TaskReport(this);
         }
 
-        public string Name { get { return Family.RevitFile.Name; } }
+        public string Name
+        {
+            get { return Family.RevitFile.Name; }
+        }
 
         public void ClearActions()
         {
@@ -54,25 +69,24 @@ namespace RevitJournal.Journal
 
         public void CreateJournalProcess(TaskOptions options)
         {
-            if(options is null) { throw new ArgumentNullException(nameof(options)); }
+            if (options is null) { throw new ArgumentNullException(nameof(options)); }
 
-            JournalProcess = ProcessJournalCreator.Create(this, options.JournalDirectory);
+            JournalTask = TaskJournalCreator.Create(this, options.JournalDirectory);
         }
 
         public void DeleteJournalProcess()
         {
-            if (JournalProcess is null) { return; }
+            if (JournalTask is null) { return; }
 
-            JournalProcess.Delete();
+            JournalTask.Delete();
         }
 
         internal void PreExecution(BackupOptions option)
         {
             if (option.CreateBackup)
             {
-                var revitFile = Family.RevitFile;
-                var backupPath = option.CreateBackupFile(revitFile);
-                revitFile.CopyTo<RevitFamilyFile>(backupPath, true);
+                var backupPath = option.CreateBackupFile(Family.RevitFile);
+                Report.BackupFile = Family.RevitFile.CopyTo<RevitFamilyFile>(backupPath, true);
             }
 
             foreach (var command in Actions)
@@ -81,13 +95,21 @@ namespace RevitJournal.Journal
             }
         }
 
-        internal JournalResult PostExecution(JournalResult result)
+        public void KillProcess()
+        {
+            if (Process is null) { return; }
+
+            Process.KillProcess();
+            Process.Dispose();
+            Debug.WriteLine(Name + ": Killed Process [CancelAction]");
+        }
+
+        internal void PostExecution()
         {
             foreach (var command in Actions)
             {
                 command.PostTask(Family);
             }
-            return result;
         }
 
         public override bool Equals(object obj)

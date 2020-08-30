@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using RevitAction;
 using RevitAction.Action;
 
 namespace RevitCommand.Families
@@ -13,6 +14,7 @@ namespace RevitCommand.Families
             if (Document.IsFamilyDocument == false)
             {
                 message = "Is NOT a Revit Family file";
+                TaskApp.Reporter.Error(message);
                 return Result.Failed;
             }
             Family = Document.OwnerFamily;

@@ -13,7 +13,7 @@ namespace RevitCommand.Families.ImageExport
             Parameters.Add(Background);
         }
 
-        public override Guid AddinId
+        public override Guid Id
         {
             get { return new Guid("d62ba092-cf93-4906-90d8-1948d2dd67c5"); }
         }

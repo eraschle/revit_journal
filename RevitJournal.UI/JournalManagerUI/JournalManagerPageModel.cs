@@ -30,9 +30,10 @@ namespace RevitJournalUI.JournalManagerUI
         public const string PrefixDuplicateButton = "Duplicate";
         public const string PrefixEditButton = "Edit";
 
-        private readonly Progress<JournalResult> Progress;
+        private readonly Progress<TaskReport> Progress;
 
         public TaskManager TaskManager { get; private set; }
+        
         public TaskOptions TaskOptions { get; private set; }
 
         public JournalManagerPageModel()
@@ -50,7 +51,7 @@ namespace RevitJournalUI.JournalManagerUI
             ExecuteCommand = new RelayCommand<object>(ExecuteCommandAction, ExecuteCommandPredicate);
             CancelCommand = new RelayCommand<object>(CancelCommandAction, CancelCommandPredicate);
 
-            Progress = new Progress<JournalResult>();
+            Progress = new Progress<TaskReport>();
             FamiliesViewModel.PropertyChanged += new PropertyChangedEventHandler(OnCheckedChanged);
 
             SetupFilterCommand = new RelayCommand<ObservableCollection<DirectoryViewModel>>(SetupFilterCommandAction);
@@ -251,7 +252,7 @@ namespace RevitJournalUI.JournalManagerUI
 
         private void SetupJournalCommandAction(object parameter)
         {
-            var actions = TaskManager.GetTaskActions(ActionDirectory);
+            var actions = TaskActionHelper.GetTaskActions(ActionDirectory);
             var dialog = new TaskActionsView(actions);
             var result = dialog.ShowDialog();
             if (result == true)
@@ -482,7 +483,7 @@ namespace RevitJournalUI.JournalManagerUI
 
         #region Tasks Overview
 
-        public JournalTaskOverviewViewModel TasksViewModel { get; } = new JournalTaskOverviewViewModel();
+        public TaskOverviewViewModel TasksViewModel { get; } = new TaskOverviewViewModel();
 
         private Visibility taskVisibility = Visibility.Collapsed;
         public Visibility TaskVisibility
@@ -509,7 +510,7 @@ namespace RevitJournalUI.JournalManagerUI
             CancelVisibility = Visibility.Visible;
             BackVisibility = Visibility.Collapsed;
 
-            Progress.ProgressChanged += new EventHandler<JournalResult>(OnReport);
+            Progress.ProgressChanged += new EventHandler<TaskReport>(OnReport);
             using (var cancel = new CancellationTokenSource())
             {
                 Cancellation = cancel;
@@ -526,7 +527,7 @@ namespace RevitJournalUI.JournalManagerUI
             return TaskManager.HasRevitTasks;
         }
 
-        private void OnReport(object sender, JournalResult result)
+        private void OnReport(object sender, TaskReport result)
         {
             if (result is null) { return; }
 

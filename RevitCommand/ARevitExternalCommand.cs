@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using RevitAction;
 using RevitAction.Action;
 using System;
 using System.Collections.Generic;
@@ -22,9 +23,12 @@ namespace RevitCommand
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            var reporter = TaskApp.Reporter;
+            reporter.ActionId = Action.Id;
             if (commandData is null)
             {
                 message = "No command data";
+                reporter.Error(message);
                 return Result.Failed;
             }
 
@@ -34,6 +38,7 @@ namespace RevitCommand
             if (UIDocument is null)
             {
                 message = "UIDocument is NULL";
+                reporter.Error(message);
                 return Result.Failed;
             }
 
@@ -41,16 +46,20 @@ namespace RevitCommand
             if (Document is null)
             {
                 message = "Document is NULL";
+                reporter.Error(message);
                 return Result.Failed;
             }
 
             try
             {
-                return ExecuteRevitCommand(commandData, ref message, elements);
+                var result = ExecuteRevitCommand(commandData, ref message, elements);
+                reporter.Success(Action.Name);
+                return result;
             }
             catch (Exception exp)
             {
-                message = exp.Message;
+                message = "Main of actions";
+                reporter.Error(message, exp);
                 return Result.Failed;
             }
         }

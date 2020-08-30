@@ -30,6 +30,8 @@ namespace RevitAction.Action
 
         public bool MakeChanges { get; protected set; } = false;
 
+        public abstract Guid Id { get; }
+
         public bool HasParameter(string name, out IActionParameter parameter)
         {
             parameter = null;

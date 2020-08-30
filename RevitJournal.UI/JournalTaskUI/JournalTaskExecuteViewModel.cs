@@ -1,4 +1,4 @@
-﻿using RevitJournal.Journal;
+﻿using RevitJournal.Tasks;
 using RevitJournalUI.Helper;
 using System;
 using System.ComponentModel;
@@ -22,7 +22,7 @@ namespace RevitJournalUI.JournalTaskUI
             timer.Tick += new EventHandler(DispatcherTimer_Tick);
         }
 
-        private JournalResult Result;
+        private TaskReport Result;
 
         private Visibility executeVisible = Visibility.Collapsed;
         public Visibility ExecuteVisible
@@ -37,22 +37,22 @@ namespace RevitJournalUI.JournalTaskUI
             }
         }
 
-        public void UpdateResult(JournalResult result)
+        public void UpdateResult(TaskReport result)
         {
             if(result is null) { return; }
 
             Result = result;
-            if (timer.IsEnabled == false && Result.IsStarted)
+            if (timer.IsEnabled == false && Result.Status.IsStarted)
             {
                 runTime = timer.Interval;
                 SetRuning();
                 timer.Start();
                 ExecuteVisible = Visibility.Visible;
             }
-            if (Result.Executed)
+            if (Result.Status.Executed)
             {
                 timer.Stop();
-                if (Result.IsTimeout)
+                if (Result.Status.IsTimeout)
                 {
                     ///TODO
                     //runTime = Result.ProcessTimeout;
@@ -113,7 +113,7 @@ namespace RevitJournalUI.JournalTaskUI
         }
         private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (Result.IsStarted)
+            if (Result.Status.IsStarted)
             {
                 runTime += timer.Interval;
                 SetRuning();

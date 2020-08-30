@@ -1,11 +1,14 @@
 ﻿using DataSource.Model.FileSystem;
 using RevitAction.Action;
+using RevitAction.Reports;
+using System;
 using System.Collections.Generic;
 
 namespace RevitJournal.Revit.Journal.Command
 {
     public class DocumentOpenAction : ATaskAction, ITaskActionJournal
     {
+
         public ActionParameter Audit { get; private set; }
 
         public DocumentOpenAction() : base("Open File")
@@ -47,6 +50,11 @@ namespace RevitJournal.Revit.Journal.Command
         }
 
         public RevitFamilyFile FamilyFile { get; set; }
+
+        public override Guid Id
+        {
+            get { return ReportManager.OpenActionId; }
+        }
 
         public override void PreTask(RevitFamily family)
         {

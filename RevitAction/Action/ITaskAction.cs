@@ -6,6 +6,8 @@ namespace RevitAction.Action
 {
     public interface ITaskAction
     {
+        Guid Id { get; }
+
         string Name { get; }
 
         IList<IActionParameter> Parameters { get; }

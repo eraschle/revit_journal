@@ -1,5 +1,7 @@
 ﻿using DataSource.Model.FileSystem;
 using RevitAction.Action;
+using RevitAction.Reports;
+using System;
 using System.Collections.Generic;
 
 namespace RevitJournal.Revit.Journal.Command
@@ -17,6 +19,10 @@ namespace RevitJournal.Revit.Journal.Command
         public IEnumerable<string> Commands
         {
             get { return new string[] { JournalBuilder.Build("Ribbon", "ID_REVIT_FILE_SAVE") }; }
+        }
+        public override Guid Id
+        {
+            get { return ReportManager.SaveActionId; }
         }
 
         public override void PostTask(RevitFamily family)

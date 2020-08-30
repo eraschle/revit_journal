@@ -210,7 +210,7 @@
     <Compile Include="JournalTaskUI\JournalTaskOverviewView.xaml.cs">
       <DependentUpon>JournalTaskOverviewView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="JournalTaskUI\JournalTaskOverviewViewModel.cs" />
+    <Compile Include="JournalTaskUI\TaskOverviewViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\ParameterViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\DirectoryViewModel.cs" />
     <Compile Include="JournalTaskUI\FamilyOverviewView.xaml.cs">

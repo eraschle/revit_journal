@@ -6,7 +6,7 @@ namespace RevitCommand.Families.ImageExport
     {
         public TwoDImageAction() : base("2D Image Export") { }
 
-        public override Guid AddinId
+        public override Guid Id
         {
             get { return new Guid("52f427dd-6db4-43bd-b4d2-c7327ae274fa"); }
         }

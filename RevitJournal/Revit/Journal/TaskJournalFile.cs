@@ -2,7 +2,7 @@
 
 namespace RevitJournal.Journal.Execution
 {
-    public class ProcessJournalFile : AFile
+    public class TaskJournalFile : AFile
     {
         public const string JournalProcessExtension = "txt";
 
@@ -20,7 +20,7 @@ namespace RevitJournal.Journal.Execution
 
         protected override string GetTypeName()
         {
-            return nameof(ProcessJournalFile);
+            return nameof(TaskJournalFile);
         }
     }
 }

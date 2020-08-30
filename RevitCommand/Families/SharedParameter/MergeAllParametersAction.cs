@@ -6,7 +6,7 @@ namespace RevitCommand.Families.SharedParameter
     {
         public MergeAllParametersAction() : base("Merge Shared [ALL]") { }
 
-        public override Guid AddinId
+        public override Guid Id
         {
             get { return new Guid("af072261-088e-42d3-bf5e-39fc99ea5736"); }
         }

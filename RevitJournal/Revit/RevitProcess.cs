@@ -21,12 +21,12 @@ namespace RevitJournal.Revit
             Arguments = arguments;
         }
 
-        public Task<bool> RunTaskAsync(ProcessJournalFile journalProcess, CancellationToken cancellation)
+        public Task<bool> RunTaskAsync(TaskJournalFile journalProcess, CancellationToken cancellation)
         {
             return Task.Run(() => Run(journalProcess), cancellation);
         }
 
-        public bool Run(ProcessJournalFile journalProcess)
+        public bool Run(TaskJournalFile journalProcess)
         {
             var exited = false;
             using (Process = CreateProccess(journalProcess))
@@ -103,7 +103,7 @@ namespace RevitJournal.Revit
 
         #region Create Process and Arguments
 
-        internal Process CreateProccess(ProcessJournalFile journalProcess)
+        internal Process CreateProccess(TaskJournalFile journalProcess)
         {
             var process = new Process();
             process.StartInfo.FileName = Arguments.RevitExecutable;
@@ -118,7 +118,7 @@ namespace RevitJournal.Revit
             return process;
         }
 
-        internal string StartArguments(ProcessJournalFile journalProcess)
+        internal string StartArguments(TaskJournalFile journalProcess)
         {
             var argument = CreateStartArgument(journalProcess);
             argument = CreateLanguageArgument(argument);
@@ -127,7 +127,7 @@ namespace RevitJournal.Revit
             return argument.ToString();
         }
 
-        private StringBuilder CreateStartArgument(ProcessJournalFile journalProcess)
+        private StringBuilder CreateStartArgument(TaskJournalFile journalProcess)
         {
             var args = new StringBuilder();
             args.Append(journalProcess.FullPath);

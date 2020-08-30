@@ -1,4 +1,5 @@
 ﻿using RevitJournal.Journal;
+using RevitJournal.Tasks;
 using System;
 using System.ComponentModel;
 using System.Windows.Media;
@@ -14,7 +15,7 @@ namespace RevitJournalUI.JournalTaskUI
 
         private readonly RevitTask RevitTask;
 
-        public JournalResult Result { get; private set; }
+        public TaskReport Result { get; private set; }
 
         public JournalTaskExecuteViewModel JournalTaskExecute { get; private set; }
         public JournalTaskResultViewModel JournalTaskResult { get; private set; }
@@ -59,38 +60,38 @@ namespace RevitJournalUI.JournalTaskUI
         }
 
 
-        private string _JournalProcess = NoJournalProcess;
-        public string JournalProcess
+        private string _JournalTask = NoJournalProcess;
+        public string JournalTask
         {
-            get { return _JournalProcess; }
+            get { return _JournalTask; }
             set
             {
-                if (_JournalProcess.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (_JournalTask.Equals(value, StringComparison.CurrentCulture)) { return; }
 
-                _JournalProcess = value;
-                OnPropertyChanged(nameof(JournalProcess));
+                _JournalTask = value;
+                OnPropertyChanged(nameof(JournalTask));
             }
         }
 
-        private string _JournalRevit = NoJournalRevit;
-        public string JournalRevit
+        private string _JournalRecorde = NoJournalRevit;
+        public string JournalRecorde
         {
-            get { return _JournalRevit; }
+            get { return _JournalRecorde; }
             set
             {
-                if (_JournalRevit.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (_JournalRecorde.Equals(value, StringComparison.CurrentCulture)) { return; }
 
-                _JournalRevit = value;
-                OnPropertyChanged(nameof(JournalRevit));
+                _JournalRecorde = value;
+                OnPropertyChanged(nameof(JournalRecorde));
             }
         }
 
-        internal bool IsJournalTask(JournalResult result)
+        internal bool IsTask(TaskReport result)
         {
-            return RevitTask.Equals(result.JournalTask);
+            return result != null && result.IsTask(RevitTask);
         }
 
-        internal void SetResult(JournalResult result)
+        internal void SetResult(TaskReport result)
         {
             if (result is null) { return; }
 
@@ -103,41 +104,40 @@ namespace RevitJournalUI.JournalTaskUI
 
         private void SetJournals()
         {
-            ///TODO
-            //if (Result.HasJournalProcess)
-            //{
-            //    JournalProcess = Result.JournalProcess.NameWithExtension;
-            //}
-            //if (Result.HasJournalRevit)
-            //{
-            //    JournalRevit = Result.JournalRevit.NameWithExtension;
-            //}
+            if (Result.HasTaskJournal)
+            {
+                JournalTask = Result.TaskJournal.NameWithExtension;
+            }
+            if (Result.HasRecordeJournal)
+            {
+                JournalRecorde = Result.RecordeJournal.NameWithExtension;
+            }
         }
         private void SetStatus()
         {
-            if (Result.IsWaiting)
+            if (Result.Status.IsWaiting)
             {
                 JournalStatus = "Wait";
                 JournalStatusColor = new SolidColorBrush(Colors.Yellow);
             }
-            else if (Result.IsStarted)
+            else if (Result.Status.IsStarted)
             {
                 JournalStatus = "Run";
                 JournalStatusColor = new SolidColorBrush(Colors.GreenYellow);
             }
-            else if (Result.Executed)
+            else if (Result.Status.Executed)
             {
                 JournalStatus = "Finish";
                 JournalStatusColor = new SolidColorBrush(Colors.Green);
-                if (Result.IsCancel)
+                if (Result.Status.IsCancel)
                 {
                     JournalStatusColor = new SolidColorBrush(Colors.OrangeRed);
                 }
-                if (Result.IsError)
+                if (Result.Status.IsError)
                 {
                     JournalStatusColor = new SolidColorBrush(Colors.Red);
                 }
-                else if (Result.IsTimeout)
+                else if (Result.Status.IsTimeout)
                 {
                     JournalStatusColor = new SolidColorBrush(Colors.DarkRed);
                 }

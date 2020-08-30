@@ -30,10 +30,10 @@ namespace RevitJournal.Revit.Addin
                     manifest.Save();
                 }
             }
-            if (HasCommand(commands, action.AddinId) == false)
+            if (HasCommand(commands, action.Id) == false)
             {
                 var newCommand = new RevitAddInCommand(action.AssemblyPath,
-                                                       action.AddinId,
+                                                       action.Id,
                                                        action.FullClassName,
                                                        action.VendorId);
                 commands.Add(newCommand);
