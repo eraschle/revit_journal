@@ -1,6 +1,6 @@
 ﻿using DataSource.Model.FileSystem;
 using RevitAction.Action;
-using RevitAction.Reports;
+using RevitAction.Report;
 using System;
 using System.Collections.Generic;
 
@@ -8,7 +8,6 @@ namespace RevitJournal.Revit.Journal.Command
 {
     public class DocumentOpenAction : ATaskAction, ITaskActionJournal
     {
-
         public ActionParameter Audit { get; private set; }
 
         public DocumentOpenAction() : base("Open File")

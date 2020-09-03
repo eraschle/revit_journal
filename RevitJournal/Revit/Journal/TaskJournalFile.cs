@@ -1,6 +1,6 @@
 ﻿using DataSource.Model.FileSystem;
 
-namespace RevitJournal.Journal.Execution
+namespace RevitJournal.Revit.Journal
 {
     public class TaskJournalFile : AFile
     {

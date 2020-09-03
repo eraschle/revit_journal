@@ -1,7 +1,7 @@
 ﻿using DataSource.Model.Product;
 using System;
 
-namespace RevitJournal.Tasks
+namespace RevitJournal.Revit
 {
     public class RevitArguments
     {
@@ -44,6 +44,6 @@ namespace RevitJournal.Tasks
 
         public static TimeSpan MaximumTimeout { get { return TimeSpan.FromMinutes(20); } }
 
-        public TimeSpan Timeout { get; set; }
+        public TimeSpan Timeout { get; set; } = DefaultTimeout;
     }
 }

@@ -1,5 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RevitAddIns>
+  <AddIn Type="Application">
+    <Name>ExampleName</Name>
+    <Assembly>examplepath</Assembly>
+    <FullClassName>example.full.name</FullClassName>
+    <ClientId>5aa93805-8e2a-4b8a-8087-94556cebe3b7</ClientId>
+    <VendorDescription>CompanyName, www.CompanyName.com</VendorDescription>
+  </AddIn>
   <AddIn Type="Command">
     <Assembly>Gim/GimRevitAddin.dll</Assembly>
     <ClientId>5cd4edd6-51ef-46c3-9afe-3b9d5fced66e</ClientId>

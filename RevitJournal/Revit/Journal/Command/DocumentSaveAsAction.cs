@@ -1,6 +1,6 @@
 ﻿using DataSource.Model.FileSystem;
 using RevitAction.Action;
-using RevitAction.Reports;
+using RevitAction.Report;
 using RevitJournal.Helper;
 using System;
 using System.Collections.Generic;
@@ -51,9 +51,10 @@ namespace RevitJournal.Revit.Journal.Command
         {
             get
             {
+                var saveAsPath = pathCreator.CreatePath(familyFile);
                 return new string[] {
                     JournalBuilder.Build("Ribbon", "ID_REVIT_SAVE_AS_FAMILY"),
-                    string.Concat("Jrn.Data \"File Name\" , \"IDOK\", \"", pathCreator.CreatePath(familyFile), "\"") };
+                    string.Concat("Jrn.Data \"File Name\" , \"IDOK\", \"", saveAsPath, "\"") };
             }
         }
 
@@ -84,6 +85,18 @@ namespace RevitJournal.Revit.Journal.Command
         {
             currentRoot.Value = libraryRoot;
             newRoot.DefaultValue = libraryRoot;
+        }
+
+        public override void PostTask(ITaskReport report)
+        {
+            base.PostTask(report);
+            if(report is null) { return; }
+
+            var saveAsFile = new RevitFamilyFile
+            {
+                FullPath = pathCreator.CreatePath(familyFile)
+            };
+            report.ResultFile = saveAsFile;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Autodesk.RevitAddIns;
+using RevitAction;
 using RevitAction.Action;
 using RevitJournal.Properties;
 
@@ -10,9 +11,21 @@ namespace RevitJournal.Revit.Addin
 {
     public static class AddinManager
     {
-        public static Guid DummyGuid
+        public static Guid DummyGuid { get; } = new Guid("5cd4edd6-51ef-46c3-9afe-3b9d5fced66e");
+
+        public static Guid AppAddinId { get; } = new Guid("5aa93805-8e2a-4b8a-8087-94556cebe3b7");
+
+        public const string VendorId = "RascerDev";
+
+        public static void CreateAppManifest(string outputPath, ITaskAppInfo appInfo)
         {
-            get { return new Guid("5cd4edd6-51ef-46c3-9afe-3b9d5fced66e"); }
+            var manifest = GetManifest(outputPath);
+            var addinApps = manifest.AddInApplications;
+            var addinApp = addinApps.FirstOrDefault(app => app.AddInId == AppAddinId);
+            addinApp.VendorId = appInfo.VendorId;
+            addinApp.Assembly = appInfo.AssemblyPath;
+            addinApp.FullClassName = appInfo.FullClassName;
+            manifest.Save();
         }
 
         public static void CreateManifest(string outputPath, ITaskActionCommand action)

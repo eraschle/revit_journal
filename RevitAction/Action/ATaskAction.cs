@@ -1,4 +1,5 @@
 ﻿using DataSource.Model.FileSystem;
+using RevitAction.Report;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +55,7 @@ namespace RevitAction.Action
 
         public virtual void PreTask(RevitFamily family) { }
 
-        public virtual void PostTask(RevitFamily family) { }
+        public virtual void PostTask(ITaskReport report) { }
 
         public virtual void SetLibraryRoot(string libraryRoot) { }
 

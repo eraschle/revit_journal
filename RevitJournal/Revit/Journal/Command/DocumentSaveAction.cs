@@ -1,6 +1,6 @@
 ﻿using DataSource.Model.FileSystem;
 using RevitAction.Action;
-using RevitAction.Reports;
+using RevitAction.Report;
 using System;
 using System.Collections.Generic;
 
@@ -25,11 +25,11 @@ namespace RevitJournal.Revit.Journal.Command
             get { return ReportManager.SaveActionId; }
         }
 
-        public override void PostTask(RevitFamily family)
+        public override void PostTask(ITaskReport report)
         {
-            if (family is null) { return; }
+            if (report is null) { return; }
 
-            foreach (var backup in family.RevitFile.Backups)
+            foreach (var backup in report.SourceFile.Backups)
             {
                 backup.Delete();
             }

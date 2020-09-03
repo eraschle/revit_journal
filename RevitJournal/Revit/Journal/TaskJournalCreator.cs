@@ -1,11 +1,11 @@
 ﻿using DataSource.Helper;
 using DataSource.Model.FileSystem;
-using RevitJournal.Revit.Journal;
+using RevitJournal.Tasks;
 using System;
 using System.IO;
 using System.Text;
 
-namespace RevitJournal.Journal.Execution
+namespace RevitJournal.Revit.Journal
 {
     internal static class TaskJournalCreator
     {
@@ -18,7 +18,7 @@ namespace RevitJournal.Journal.Execution
             File.WriteAllText(journalFile.FullPath, content, Encoding.Default);
             return journalFile;
         }
-     
+
 
         private static TaskJournalFile GetJournalFile(RevitFamily family, string journalDirectory)
         {

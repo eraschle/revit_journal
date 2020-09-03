@@ -32,12 +32,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\RevitJournal.UI\bin\Debug\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="RevitAPI">
       <HintPath>..\..\..\..\Program Files\Autodesk\Revit 2019\RevitAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
       <HintPath>..\..\..\..\Program Files\Autodesk\Revit 2019\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -60,22 +66,27 @@
     <Compile Include="Action\ATaskAction.cs" />
     <Compile Include="Action\Parameter\ParameterKind.cs" />
     <Compile Include="Action\Parameter\ParameterListConverter.cs" />
-    <Compile Include="Reports\IReportReceiver.cs" />
-    <Compile Include="Reports\IReportPublisher.cs" />
-    <Compile Include="Reports\Messages\TasMessage.cs" />
-    <Compile Include="Reports\Messages\SuccessMessage.cs" />
-    <Compile Include="Reports\Messages\ErrorMessage.cs" />
-    <Compile Include="Reports\Messages\InfoMessage.cs" />
-    <Compile Include="Reports\ReceivePacket.cs" />
-    <Compile Include="Reports\ReportData.cs" />
-    <Compile Include="Reports\ReportManager.cs" />
-    <Compile Include="Reports\ReportPublisher.cs" />
-    <Compile Include="Reports\Messages\AReportMessage.cs" />
-    <Compile Include="Reports\Messages\IReportMessage.cs" />
+    <Compile Include="ITaskAppInfo.cs" />
+    <Compile Include="ITaskInfo.cs" />
+    <Compile Include="Report\Message\SuccessMessage.cs" />
+    <Compile Include="Report\Message\MessageUtils.cs" />
+    <Compile Include="Report\Network\ClientController.cs" />
+    <Compile Include="Report\IReportReceiver.cs" />
+    <Compile Include="Report\IReportPublisher.cs" />
+    <Compile Include="Report\Message\ReportMessage.cs" />
+    <Compile Include="Report\Message\ErrorMessage.cs" />
+    <Compile Include="Report\Network\ReceivePacket.cs" />
+    <Compile Include="Report\Network\ReportClient.cs" />
+    <Compile Include="Report\ReportManager.cs" />
+    <Compile Include="Report\ReportPublisher.cs" />
+    <Compile Include="Report\Message\ReportKind.cs" />
     <Compile Include="Action\Parameter\IActionParameter.cs" />
     <Compile Include="Action\ITaskAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reports\SendPacket.cs" />
+    <Compile Include="Report\Network\SendPacket.cs" />
+    <Compile Include="Report\ReportStatus.cs" />
+    <Compile Include="Report\ITaskReport.cs" />
+    <Compile Include="TaskAppInfo.cs" />
     <Compile Include="TaskApp.cs" />
   </ItemGroup>
   <ItemGroup>

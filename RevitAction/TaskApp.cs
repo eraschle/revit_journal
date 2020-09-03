@@ -1,8 +1,8 @@
 ﻿using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
-using RevitAction.Reports;
-using RevitAction.Reports.Messages;
-using System.Net;
+using RevitAction.Report;
+using System;
+using System.Threading.Tasks;
 
 namespace RevitAction
 {
@@ -41,10 +41,10 @@ namespace RevitAction
 
         private void ControlledApplication_DocumentOpened(object sender, DocumentOpenedEventArgs args)
         {
-            Reporter.OpenAction(args.Document.PathName);
+            Reporter.StartAction();
 
-            var journal = args.Document.Application.RecordingJournalFilename;
-            Reporter.JournalAction(journal);
+            Reporter.Journal = args.Document.Application.RecordingJournalFilename;
+            Reporter.OpenAction(args.Document.PathName);
         }
 
         public Result OnShutdown(UIControlledApplication application)

@@ -1,0 +1,46 @@
+﻿using RevitAction.Report;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Sockets;
+
+namespace RevitJournal.Tasks.Report
+{
+    public static class ClientController
+    {
+        private static readonly List<ReportClient> Clients = new List<ReportClient>();
+
+        private static readonly object lockObject = new object();
+
+        public static ReportClient Add(Socket socket, Func<string, IReportReceiver> func)
+        {
+            var client = new ReportClient(socket, func);
+            lock (lockObject)
+            {
+                Clients.Add(client);
+            }
+            return client;
+        }
+
+        public static void RemoveClient(string filePath)
+        {
+            var client = Clients.FirstOrDefault(clt => clt.HasTaskId && clt.TaskId == filePath);
+            if (client is null) { return; }
+            lock (lockObject)
+            {
+                Clients.Remove(client);
+            }
+            client.StopReceiving();
+        }
+
+        public static void RemoveClients()
+        {
+            var clientIds = Clients.Where(client => client.HasTaskId)
+                                   .Select(client => client.TaskId);
+            foreach (var clientId in clientIds)
+            {
+                RemoveClient(clientId);
+            }
+        }
+    }
+}

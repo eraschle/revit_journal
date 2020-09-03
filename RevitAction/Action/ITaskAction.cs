@@ -1,4 +1,5 @@
 ﻿using DataSource.Model.FileSystem;
+using RevitAction.Report;
 using System;
 using System.Collections.Generic;
 
@@ -26,6 +27,6 @@ namespace RevitAction.Action
 
         void PreTask(RevitFamily family);
 
-        void PostTask(RevitFamily family);
+        void PostTask(ITaskReport report);
     }
 }

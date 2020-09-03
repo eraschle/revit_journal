@@ -39,7 +39,7 @@ namespace RevitJournal.Helper
         {
             if (path.StartsWith(Constant.BackSlash, StringComparison.CurrentCulture))
             {
-                path = path.Substring(0, 1);
+                path = path.Substring(1);
             }
 
             if (path.EndsWith(Constant.BackSlash, StringComparison.CurrentCulture))

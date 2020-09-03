@@ -1,16 +1,16 @@
 ﻿using DataSource.Model.FileSystem;
 using RevitAction.Action;
-using RevitJournal.Journal.Execution;
+using RevitAction.Report;
+using RevitAction.Report.Message;
 using RevitJournal.Revit;
 using RevitJournal.Revit.Journal;
-using RevitJournal.Revit.Report;
-using RevitJournal.Tasks;
 using RevitJournal.Tasks.Options;
+using RevitJournal.Tasks.Report;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace RevitJournal.Journal
+namespace RevitJournal.Tasks
 {
     public class RevitTask
     {
@@ -21,11 +21,7 @@ namespace RevitJournal.Journal
             get { return Family.RevitFile; }
         }
 
-        public RevitProcess Process { get; internal set; }
-
-        public TaskJournalFile JournalTask { get; private set; }
-
-        public TaskReport Report { get; private set; }
+        public TaskOptions Options { get; internal set; }
 
         public IList<ITaskAction> Actions { get; private set; }
 
@@ -35,7 +31,6 @@ namespace RevitJournal.Journal
 
             Family = family;
             Actions = new List<ITaskAction>();
-            Report = new TaskReport(this);
         }
 
         public string Name
@@ -65,51 +60,6 @@ namespace RevitJournal.Journal
                 actionCommands.Add(actionCommand);
             }
             return actionCommands.Count > 0;
-        }
-
-        public void CreateJournalProcess(TaskOptions options)
-        {
-            if (options is null) { throw new ArgumentNullException(nameof(options)); }
-
-            JournalTask = TaskJournalCreator.Create(this, options.JournalDirectory);
-        }
-
-        public void DeleteJournalProcess()
-        {
-            if (JournalTask is null) { return; }
-
-            JournalTask.Delete();
-        }
-
-        internal void PreExecution(BackupOptions option)
-        {
-            if (option.CreateBackup)
-            {
-                var backupPath = option.CreateBackupFile(Family.RevitFile);
-                Report.BackupFile = Family.RevitFile.CopyTo<RevitFamilyFile>(backupPath, true);
-            }
-
-            foreach (var command in Actions)
-            {
-                command.PreTask(Family);
-            }
-        }
-
-        public void KillProcess()
-        {
-            if (Process is null) { return; }
-
-            Process.KillProcess();
-            Process.Dispose();
-            Debug.WriteLine(Name + ": Killed Process [CancelAction]");
-        }
-
-        internal void PostExecution()
-        {
-            foreach (var command in Actions)
-            {
-                command.PostTask(Family);
-            }
         }
 
         public override bool Equals(object obj)
