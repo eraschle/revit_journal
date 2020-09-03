@@ -1,8 +1,6 @@
 ﻿using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
 using RevitAction.Report;
-using System;
-using System.Threading.Tasks;
 
 namespace RevitAction
 {

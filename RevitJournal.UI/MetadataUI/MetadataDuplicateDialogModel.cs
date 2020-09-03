@@ -5,7 +5,6 @@ using RevitJournal.Duplicate;
 using RevitJournal.Duplicate.Comparer;
 using RevitJournal.Duplicate.Comparer.FamilyComparer;
 using RevitJournal.Duplicate.Comparer.FamilyTypeComparer;
-using RevitJournalUI.Helper;
 using RevitJournalUI.MetadataUI.Comparer;
 using RevitJournalUI.MetadataUI.Models;
 using RevitJournalUI.Models;

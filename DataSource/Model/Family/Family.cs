@@ -1,7 +1,5 @@
-﻿using DataSource.Helper;
-using DataSource.Model.Catalog;
+﻿using DataSource.Model.Catalog;
 using DataSource.Model.Product;
-using DataSource.Model.ProductData;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

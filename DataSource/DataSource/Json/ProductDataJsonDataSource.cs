@@ -1,9 +1,6 @@
 ﻿using DataSource.DataSource.Json;
 using DataSource.Helper;
-using DataSource.Metadata;
-using DataSource.Model.Family;
 using DataSource.Model.FileSystem;
-using DataSource.Model.Product;
 using DataSource.Model.ProductData;
 using System.IO;
 

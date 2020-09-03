@@ -1,5 +1,4 @@
 ﻿using DataSource.Model.FileSystem;
-using RevitJournal.Tasks;
 using RevitJournalUI.JournalManagerUI;
 using RevitJournalUI.JournalTaskUI.FamilyFilter;
 using RevitJournalUI.JournalTaskUI.Models;

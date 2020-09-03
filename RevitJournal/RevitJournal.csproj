@@ -129,7 +129,6 @@
     <None Include="Journal\Execution\JournalRevitCreator.cs" />
     <None Include="Journal\Execution\JournalRevitReader.cs" />
     <Compile Include="Revit\RevitProcess.cs" />
-    <Compile Include="Tasks\TaskUOW.cs" />
     <Compile Include="Tasks\RevitTask.cs" />
     <None Include="Journal\JournalError.cs" />
     <Compile Include="Tasks\TaskManager.cs" />

@@ -1,5 +1,5 @@
-﻿using RevitJournal.Journal;
-using RevitJournal.Tasks;
+﻿using RevitJournal.Tasks;
+using RevitJournal.Tasks.Report;
 using System;
 using System.ComponentModel;
 using System.Windows.Media;
@@ -93,6 +93,7 @@ namespace RevitJournalUI.JournalTaskUI
 
         internal void SetResult(TaskReport result)
         {
+            ///TODO refactor Progress
             if (result is null) { return; }
 
             Result = result;
@@ -104,6 +105,7 @@ namespace RevitJournalUI.JournalTaskUI
 
         private void SetJournals()
         {
+            ///TODO refactor Progress
             if (Result.HasTaskJournal)
             {
                 JournalTask = Result.TaskJournal.NameWithExtension;

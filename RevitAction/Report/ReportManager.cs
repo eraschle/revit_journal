@@ -84,7 +84,7 @@ namespace RevitAction.Report
             {
                 message = string.Join(Environment.NewLine, message, exception.Message, exception.StackTrace);
             }
-            var report = new ErrorMessage(message);
+            var report = new ErrorMessage { Message = message };
             Send(report);
         }
 

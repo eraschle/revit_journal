@@ -1,6 +1,4 @@
-﻿using RevitAction;
-using RevitAction.Action;
-using System;
+﻿using RevitAction.Action;
 
 namespace RevitCommand
 {

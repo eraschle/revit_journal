@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.IO;
 using DataSource.Model.FileSystem;
 using RevitAction.Report;
+using RevitJournal.Revit.Journal;
 
 namespace RevitJournal.Tasks.Report
 {
@@ -32,14 +33,35 @@ namespace RevitJournal.Tasks.Report
             get { return Task.Family.RevitFile; }
         }
 
+        public TaskJournalFile TaskJournal
+        {
+            get { return Task.JournalTask; }
+        }
+
+        public bool HasTaskJournal
+        {
+            get { return TaskJournal != null; }
+        }
+
+        public RecordeJournalFile RecordeJournal { get; set; }
+
+        public bool HasRecordeJournal
+        {
+            get { return RecordeJournal != null; }
+        }
+
+
         public RevitFamilyFile ResultFile { get; set; }
 
         public RevitFamilyFile BackupFile { get; set; }
+
+        public ReportStatus Status { get; private set; }
 
         public TaskReport(RevitTask task)
         {
             Task = task ?? throw new ArgumentNullException(nameof(task));
             ResultFile = Task.SourceFile;
+            Status = new ReportStatus();
         }
 
         public bool IsTask(RevitTask revitTask)

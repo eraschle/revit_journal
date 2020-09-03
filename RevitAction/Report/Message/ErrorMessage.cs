@@ -2,7 +2,9 @@
 {
     public class ErrorMessage : ReportMessage
     {
-        public ErrorMessage() : base(ReportKind.Error) { }
-        public ErrorMessage(string message) : base(ReportKind.Error, message) { }
+        public ErrorMessage() : base()
+        {
+            Kind = ReportKind.Error;
+        }
     }
 }

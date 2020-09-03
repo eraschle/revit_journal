@@ -1,7 +1,9 @@
 ﻿using DataSource;
 using RevitAction.Action;
-using RevitJournal.Journal;
 using RevitJournal.Tasks;
+using RevitJournal.Tasks.Actions;
+using RevitJournal.Tasks.Options;
+using RevitJournal.Tasks.Report;
 using RevitJournalUI.JournalTaskUI;
 using RevitJournalUI.JournalTaskUI.FamilyFilter;
 using RevitJournalUI.JournalTaskUI.Models;
@@ -252,7 +254,7 @@ namespace RevitJournalUI.JournalManagerUI
 
         private void SetupJournalCommandAction(object parameter)
         {
-            var actions = TaskActionHelper.GetTaskActions(ActionDirectory);
+            var actions = ExternalAction.GetTaskActions(ActionDirectory);
             var dialog = new TaskActionsView(actions);
             var result = dialog.ShowDialog();
             if (result == true)
@@ -363,7 +365,7 @@ namespace RevitJournalUI.JournalManagerUI
                 TaskManager.AddTask(task);
             }
 
-            TaskManager.CreateTaskRunner(Progress);
+            TaskManager.CreateTaskQueue(Progress);
             TasksViewModel.Update(TaskManager);
 
             FamiliesVisibility = Visibility.Collapsed;

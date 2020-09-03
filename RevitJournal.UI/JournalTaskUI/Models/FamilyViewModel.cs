@@ -1,5 +1,4 @@
-﻿using RevitJournalUI.Helper;
-using RevitJournalUI.MetadataUI;
+﻿using RevitJournalUI.MetadataUI;
 using System;
 using System.ComponentModel;
 using System.Windows.Input;

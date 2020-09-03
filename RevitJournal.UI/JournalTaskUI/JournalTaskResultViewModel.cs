@@ -1,4 +1,4 @@
-﻿using RevitJournal.Tasks;
+﻿using RevitJournal.Tasks.Report;
 using System;
 using System.ComponentModel;
 using System.Windows;
@@ -29,7 +29,8 @@ namespace RevitJournalUI.JournalTaskUI
 
         public void UpdateResult(TaskReport result)
         {
-            if(result is null) { return; }
+            ///TODO refactor Progress
+            if (result is null) { return; }
 
             if (result.Status.Executed)
             {

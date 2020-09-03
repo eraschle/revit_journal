@@ -1,4 +1,5 @@
 ﻿using RevitJournal.Tasks;
+using RevitJournal.Tasks.Report;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -87,13 +88,15 @@ namespace RevitJournalUI.JournalTaskUI
         private void SetExecutedTasks(TaskManager manager)
         {
             MaxTasks = manager.TaskCount;
-            ExecutedTasks = manager.ExecutedCount;
+            ///TODO refactor Progress
+            ExecutedTasks = MaxTasks - manager.TaskQueue.Count;
             var executed = ExecutedTasks + " / " + MaxTasks;
             ExecutedTasksText = PrefixExecutedTask + executed;
         }
 
         public void Update(TaskManager manager)
         {
+            ///TODO refactor Progress
             if (manager is null || manager.HasRevitTasks == false) { return; }
 
             JournalTaskModels.Clear();

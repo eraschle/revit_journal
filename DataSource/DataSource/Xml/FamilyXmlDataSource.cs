@@ -2,8 +2,6 @@
 using DataSource.Metadata;
 using DataSource.Model.Family;
 using DataSource.Model.FileSystem;
-using System;
-using System.IO;
 
 namespace DataSource.Xml
 {

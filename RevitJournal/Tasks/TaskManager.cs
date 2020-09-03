@@ -5,11 +5,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using RevitJournal.Revit.Addin;
-using RevitJournal.Revit;
 using RevitJournal.Tasks.Report;
 using RevitAction.Report;
 using RevitJournal.Tasks.Options;
 using RevitJournal.Tasks.Actions;
+using RevitJournal.Revit;
 
 namespace RevitJournal.Tasks
 {
@@ -17,11 +17,9 @@ namespace RevitJournal.Tasks
     {
         private ReportServer ReportServer { get; set; } = new ReportServer();
 
-        private Queue<TaskUOW> TaskQueue { get; } = new Queue<TaskUOW>();
+        public Queue<RevitTask> TaskQueue { get; } = new Queue<RevitTask>();
 
         public IList<RevitTask> RevitTasks { get; } = new List<RevitTask>();
-
-        public IList<TaskUOW> UnitsOfWork { get; } = new List<TaskUOW>();
 
         public bool HasRevitTasks
         {
@@ -47,15 +45,14 @@ namespace RevitJournal.Tasks
         }
 
 
-        public void CreateTaskQueue()
+        public void CreateTaskQueue(Progress<TaskReport> progress)
         {
             const int status = ReportStatus.Waiting;
             foreach (var task in RevitTasks)
             {
-                var uow = new TaskUOW(task);
-                uow.SetStatus(status);
-                UnitsOfWork.Add(uow);
-                TaskQueue.Enqueue(uow);
+                task.SetStatus(status);
+                task.Progress = progress;
+                TaskQueue.Enqueue(task);
             }
         }
 
@@ -85,9 +82,9 @@ namespace RevitJournal.Tasks
             }
         }
 
-        internal TaskUOW ByFamilyPath(string familyPath)
+        internal RevitTask ByFamilyPath(string familyPath)
         {
-            return UnitsOfWork.FirstOrDefault(task => task.TaskId == familyPath);
+            return RevitTasks.FirstOrDefault(task => task.TaskId == familyPath);
         }
 
         public async Task ExecuteTasks(TaskOptions options, CancellationToken cancellation)
@@ -152,8 +149,26 @@ namespace RevitJournal.Tasks
 
         private Task GetNextTask(TaskOptions options, CancellationToken cancellation)
         {
-            var unitOfWork = TaskQueue.Dequeue();
-            return unitOfWork.CreateTask(options, cancellation);
+            var revitTask = TaskQueue.Dequeue();
+            revitTask.CreateJournalProcess(options);
+            revitTask.PreExecution(options.Backup);
+            return CreateTask(revitTask, options, cancellation);
+        }
+
+        private async Task<bool> CreateTask(RevitTask task, TaskOptions options, CancellationToken cancellation)
+        {
+            var normalExit = false;
+            using (var taskCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellation))
+            {
+                taskCancellation.Token.Register(task.KillProcess);
+                using (task.Process = new RevitProcess(options.Arguments))
+                {
+                    var journal = task.JournalTask;
+                    normalExit = await task.Process.RunTaskAsync(journal, taskCancellation.Token)
+                                                   .ConfigureAwait(false);
+                }
+            }
+            return normalExit;
         }
 
     }
