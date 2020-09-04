@@ -12,7 +12,7 @@ namespace RevitJournalUI.JournalTaskUI
 
         private const string PrefixExecutedTask = "Executed Tasks ";
 
-        public ObservableCollection<TasksViewModel> TaskModels { get; } = new ObservableCollection<TasksViewModel>();
+        public ObservableCollection<TaskViewModel> TaskModels { get; } = new ObservableCollection<TaskViewModel>();
 
         private int minTasks = 1;
         public int MinTasks
@@ -94,7 +94,7 @@ namespace RevitJournalUI.JournalTaskUI
             foreach (var unitOfWork in manager.UnitOfWorks)
             {
                 MaxTasks += 1;
-                var viewModel = new TasksViewModel { TaskUoW = unitOfWork };
+                var viewModel = new TaskViewModel { TaskUoW = unitOfWork };
                 TaskModels.Add(viewModel);
             }
         }

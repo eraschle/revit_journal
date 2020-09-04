@@ -5,9 +5,9 @@ namespace RevitJournalUI.Tasks
     /// <summary>
     /// Interaction logic for JournalTaskListBoxItem.xaml
     /// </summary>
-    public partial class TasksView : UserControl
+    public partial class TaskView : UserControl
     {
-        public TasksView()
+        public TaskView()
         {
             InitializeComponent();
         }

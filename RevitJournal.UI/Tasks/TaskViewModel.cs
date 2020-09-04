@@ -6,7 +6,7 @@ using System.Windows.Media;
 
 namespace RevitJournalUI.Tasks
 {
-    public class TasksViewModel : INotifyPropertyChanged
+    public class TaskViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -18,7 +18,7 @@ namespace RevitJournalUI.Tasks
         public JournalTaskExecuteViewModel JournalTaskExecute { get; private set; }
         public JournalTaskResultViewModel JournalTaskResult { get; private set; }
 
-        public TasksViewModel()
+        public TaskViewModel()
         {
             JournalTaskExecute = new JournalTaskExecuteViewModel();
             JournalTaskResult = new JournalTaskResultViewModel();
