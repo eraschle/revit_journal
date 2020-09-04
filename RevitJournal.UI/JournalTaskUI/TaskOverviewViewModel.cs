@@ -1,10 +1,8 @@
 ﻿using RevitJournal.Tasks;
-using RevitJournal.Tasks.Report;
+using RevitJournalUI.Tasks;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 
 namespace RevitJournalUI.JournalTaskUI
 {
@@ -14,12 +12,7 @@ namespace RevitJournalUI.JournalTaskUI
 
         private const string PrefixExecutedTask = "Executed Tasks ";
 
-        public ObservableCollection<JournalTaskViewModel> JournalTaskModels { get; } = new ObservableCollection<JournalTaskViewModel>();
-
-        public IEnumerable<TaskReport> JournalTaskResults
-        {
-            get { return JournalTaskModels.Select(model => model.Result); }
-        }
+        public ObservableCollection<TasksViewModel> TaskModels { get; } = new ObservableCollection<TasksViewModel>();
 
         private int minTasks = 1;
         public int MinTasks
@@ -73,38 +66,46 @@ namespace RevitJournalUI.JournalTaskUI
             }
         }
 
-        internal void SetResult(TaskManager manager, TaskReport result)
+        internal void AddProgessEvent()
         {
-            SetExecutedTasks(manager);
-            foreach (var viewModel in JournalTaskModels)
+            foreach (var viewModel in TaskModels)
             {
-                if (viewModel.IsTask(result) == false) { continue; }
-
-                viewModel.SetResult(result);
-                break;
+                viewModel.TaskUoW.Progress.ProgressChanged += Progress_ProgressChanged;
+                viewModel.AddProgessEvent();
             }
         }
 
-        private void SetExecutedTasks(TaskManager manager)
+        internal void RemoveProgessEvent()
         {
-            MaxTasks = manager.TaskCount;
+            foreach (var viewModel in TaskModels)
+            {
+                viewModel.TaskUoW.Progress.ProgressChanged += Progress_ProgressChanged;
+                viewModel.RemoveProgessEvent();
+            }
+        }
+
+        internal void Update(TaskManager manager)
+        {
             ///TODO refactor Progress
-            ExecutedTasks = MaxTasks - manager.TaskQueue.Count;
+            if (manager is null || manager.HasTasks == false) { return; }
+
+            TaskModels.Clear();
+            MaxTasks = 0;
+            foreach (var unitOfWork in manager.UnitOfWorks)
+            {
+                MaxTasks += 1;
+                var viewModel = new TasksViewModel { TaskUoW = unitOfWork };
+                TaskModels.Add(viewModel);
+            }
+        }
+
+        private void Progress_ProgressChanged(object sender, TaskUnitOfWork task)
+        {
+            if (task.Status.Executed == false) { return; }
+
+            //if finished count plus 1 
             var executed = ExecutedTasks + " / " + MaxTasks;
             ExecutedTasksText = PrefixExecutedTask + executed;
-        }
-
-        public void Update(TaskManager manager)
-        {
-            ///TODO refactor Progress
-            if (manager is null || manager.HasRevitTasks == false) { return; }
-
-            JournalTaskModels.Clear();
-            foreach (var task in manager.RevitTasks)
-            {
-                JournalTaskModels.Add(new JournalTaskViewModel(task));
-            }
-            SetExecutedTasks(manager);
         }
 
         protected void OnPropertyChanged(string name)

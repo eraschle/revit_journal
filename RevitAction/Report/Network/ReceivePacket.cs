@@ -32,6 +32,21 @@ namespace RevitAction.Report.Network
             }
         }
 
+        public string ReceiveTaskFound()
+        {
+            try
+            {
+                _buffer = new byte[4];
+                _socket.Receive(_buffer, _buffer.Length, SocketFlags.None);
+                _buffer = new byte[BitConverter.ToInt32(_buffer, 0)];
+                _socket.Receive(_buffer, _buffer.Length, SocketFlags.None);
+                return Encoding.Default.GetString(_buffer);
+            }
+            finally
+            {
+            }
+        }
+
         private void ReceiveCallback(IAsyncResult result)
         {
             if (_socket.Connected == false) { return; }
@@ -52,9 +67,12 @@ namespace RevitAction.Report.Network
                     // Convert the bytes to object
                     string data = Encoding.Default.GetString(_buffer);
                     var report = MessageUtils.Read(data);
-                    if (Report is null)
+                    
+                    if (report.Kind == ReportKind.Open)
                     {
-                        Report = FindReport.Invoke(report.FilePath);
+                        Report = FindReport.Invoke(report.Message);
+                        var response = Report is null ? string.Empty : Report.TaskId;
+                        _socket.Send(Encoding.Default.GetBytes(response));
                     }
                     if (Report != null)
                     {

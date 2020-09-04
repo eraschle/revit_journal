@@ -32,8 +32,6 @@ namespace RevitJournalUI.JournalManagerUI
         public const string PrefixDuplicateButton = "Duplicate";
         public const string PrefixEditButton = "Edit";
 
-        private readonly Progress<TaskReport> Progress;
-
         public TaskManager TaskManager { get; private set; }
         
         public TaskOptions TaskOptions { get; private set; }
@@ -53,7 +51,6 @@ namespace RevitJournalUI.JournalManagerUI
             ExecuteCommand = new RelayCommand<object>(ExecuteCommandAction, ExecuteCommandPredicate);
             CancelCommand = new RelayCommand<object>(CancelCommandAction, CancelCommandPredicate);
 
-            Progress = new Progress<TaskReport>();
             FamiliesViewModel.PropertyChanged += new PropertyChangedEventHandler(OnCheckedChanged);
 
             SetupFilterCommand = new RelayCommand<ObservableCollection<DirectoryViewModel>>(SetupFilterCommandAction);
@@ -362,10 +359,9 @@ namespace RevitJournalUI.JournalManagerUI
                     task.AddAction(action);
                 }
 
-                TaskManager.AddTask(task);
+                TaskManager.AddTask(task, TaskOptions);
             }
 
-            TaskManager.CreateTaskQueue(Progress);
             TasksViewModel.Update(TaskManager);
 
             FamiliesVisibility = Visibility.Collapsed;
@@ -512,7 +508,8 @@ namespace RevitJournalUI.JournalManagerUI
             CancelVisibility = Visibility.Visible;
             BackVisibility = Visibility.Collapsed;
 
-            Progress.ProgressChanged += new EventHandler<TaskReport>(OnReport);
+            TaskManager.StartServer(TaskOptions);
+            TasksViewModel.AddProgessEvent();
             using (var cancel = new CancellationTokenSource())
             {
                 Cancellation = cancel;
@@ -520,20 +517,14 @@ namespace RevitJournalUI.JournalManagerUI
                                  .ConfigureAwait(false);
                 Cancellation = null;
             }
-            Progress.ProgressChanged -= OnReport;
+            TasksViewModel.RemoveProgessEvent();
+            TaskManager.StopServer();
             ExecuteEnable = true;
         }
 
         private bool ExecuteCommandPredicate(object parameter)
         {
-            return TaskManager.HasRevitTasks;
-        }
-
-        private void OnReport(object sender, TaskReport result)
-        {
-            if (result is null) { return; }
-
-            TasksViewModel.SetResult(TaskManager, result);
+            return TaskManager.HasTasks;
         }
 
         private bool executeEnable = true;

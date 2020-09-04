@@ -1,4 +1,5 @@
-﻿using RevitJournal.Tasks.Report;
+﻿using RevitJournal.Tasks;
+using RevitJournal.Tasks.Report;
 using RevitJournalUI.Helper;
 using System;
 using System.ComponentModel;
@@ -19,10 +20,8 @@ namespace RevitJournalUI.JournalTaskUI
         public JournalTaskExecuteViewModel()
         {
             timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-            timer.Tick += new EventHandler(DispatcherTimer_Tick);
         }
 
-        private TaskReport Result;
 
         private Visibility executeVisible = Visibility.Collapsed;
         public Visibility ExecuteVisible
@@ -37,23 +36,34 @@ namespace RevitJournalUI.JournalTaskUI
             }
         }
 
-        public void UpdateResult(TaskReport result)
+        public void AddProgessEvent(TaskUnitOfWork task)
         {
-            ///TODO refactor Progress
-            if (result is null) { return; }
+            if(task is null) { return; }
 
-            Result = result;
-            if (timer.IsEnabled == false && Result.Status.IsStarted)
+            task.Progress.ProgressChanged += Progress_ProgressChanged;
+        }
+
+        public void RemoveProgessEvent(TaskUnitOfWork task)
+        {
+            if (task is null) { return; }
+
+            task.Progress.ProgressChanged -= Progress_ProgressChanged;
+        }
+
+        private void Progress_ProgressChanged(object sender, TaskUnitOfWork task)
+        {
+            if (timer.IsEnabled == false && task.Status.IsStarted)
             {
                 runTime = timer.Interval;
+                timer.Tick += new EventHandler(DispatcherTimer_Tick);
                 SetRuning();
                 timer.Start();
                 ExecuteVisible = Visibility.Visible;
             }
-            if (Result.Status.Executed)
+            if (task.Status.Executed)
             {
                 timer.Stop();
-                if (Result.Status.IsTimeout)
+                if (task.Status.IsTimeout)
                 {
                     ///TODO
                     //runTime = Result.ProcessTimeout;
@@ -114,16 +124,12 @@ namespace RevitJournalUI.JournalTaskUI
         }
         private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (Result.Status.IsStarted)
-            {
-                runTime += timer.Interval;
-                SetRuning();
-            }
+            runTime += timer.Interval;
+            SetRuning();
         }
 
         private void SetRuning()
         {
-            if (Result is null) { return; }
             ///TODO
             //TimeoutTime = TimeSpanHelper.GetMinuteAndSeconds(Result.ProcessTimeout);
             RunningTime = TimeSpanHelper.GetMinuteAndSeconds(runTime);

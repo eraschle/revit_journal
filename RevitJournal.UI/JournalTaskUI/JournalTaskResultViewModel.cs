@@ -1,4 +1,5 @@
-﻿using RevitJournal.Tasks.Report;
+﻿using RevitJournal.Tasks;
+using RevitJournal.Tasks.Report;
 using System;
 using System.ComponentModel;
 using System.Windows;
@@ -27,12 +28,23 @@ namespace RevitJournalUI.JournalTaskUI
             }
         }
 
-        public void UpdateResult(TaskReport result)
+        internal void AddProgessEvent(TaskUnitOfWork task)
         {
-            ///TODO refactor Progress
-            if (result is null) { return; }
+            if (task is null) { return; }
 
-            if (result.Status.Executed)
+            task.Progress.ProgressChanged += Progress_ProgressChanged;
+        }
+
+        internal void RemoveProgessEvent(TaskUnitOfWork task)
+        {
+            if (task is null) { return; }
+
+            task.Progress.ProgressChanged -= Progress_ProgressChanged;
+        }
+
+        private void Progress_ProgressChanged(object sender, TaskUnitOfWork task)
+        {
+            if (task.Status.Executed)
             {
                 ResultVisible = Visibility.Visible;
             }
@@ -42,7 +54,7 @@ namespace RevitJournalUI.JournalTaskUI
             //    ErrorText = YesMessage;
             //    ErrorTextToolTip = error.ErrorMessage;
             //}
-            if (result.Status.IsTimeout)
+            if (task.Status.IsTimeout)
             {
                 ExecutionTime = TimeoutMessage;
             }

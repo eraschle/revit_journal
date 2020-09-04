@@ -4,10 +4,6 @@ namespace RevitAction.Report.Message
 {
     public class ReportMessage
     {
-        public string FilePath { get; set; }
-
-        public string Journal { get; set; }
-
         public Guid ActionId { get; set; }
 
         public ReportKind Kind { get; set; }
@@ -16,9 +12,24 @@ namespace RevitAction.Report.Message
 
         public int GetStatus()
         {
-            return IsError
-                ? ReportStatus.Error
-                : ReportStatus.Running;
+            switch (Kind)
+            {
+                case ReportKind.Open:
+                    return ReportStatus.Open;
+                case ReportKind.Journal:
+                case ReportKind.Status:
+                case ReportKind.Success:
+                case ReportKind.Save:
+                case ReportKind.SaveAs:
+                    return ReportStatus.Running;
+                case ReportKind.Error:
+                    return ReportStatus.Error;
+                case ReportKind.Close:
+                    return ReportStatus.Finish;
+                case ReportKind.Unknown:
+                default:
+                    return ReportStatus.Unknown;
+            }
         }
 
         public bool IsError

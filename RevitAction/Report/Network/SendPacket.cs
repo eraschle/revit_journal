@@ -17,12 +17,17 @@ namespace RevitAction.Report.Network
 
         public void Send(ReportMessage report)
         {
+            var reportData = MessageUtils.Write(report);
+            Send(reportData);
+        }
+
+        public void Send(string message)
+        {
             try
             {
-                var reportData = MessageUtils.Write(report);
                 var fullPacket = new List<byte>();
-                fullPacket.AddRange(BitConverter.GetBytes(reportData.Length));
-                fullPacket.AddRange(Encoding.Default.GetBytes(reportData));
+                fullPacket.AddRange(BitConverter.GetBytes(message.Length));
+                fullPacket.AddRange(Encoding.Default.GetBytes(message));
                 _socket.Send(fullPacket.ToArray());
             }
             catch (Exception ex)

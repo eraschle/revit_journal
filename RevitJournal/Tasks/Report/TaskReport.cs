@@ -26,58 +26,26 @@ namespace RevitJournal.Tasks.Report
                 .ChangeFileName<TaskReportFile>(result.SourceFile.Name + "_Result");
         }
 
-        private RevitTask Task { get; set; }
+        public RevitFamilyFile SourceFile { get; set; }
 
-        public RevitFamilyFile SourceFile
-        {
-            get { return Task.Family.RevitFile; }
-        }
-
-        public TaskJournalFile TaskJournal
-        {
-            get { return Task.JournalTask; }
-        }
-
-        public bool HasTaskJournal
-        {
-            get { return TaskJournal != null; }
-        }
+        public TaskJournalFile TaskJournal { get; set; }
 
         public RecordeJournalFile RecordeJournal { get; set; }
-
-        public bool HasRecordeJournal
-        {
-            get { return RecordeJournal != null; }
-        }
-
 
         public RevitFamilyFile ResultFile { get; set; }
 
         public RevitFamilyFile BackupFile { get; set; }
 
-        public ReportStatus Status { get; private set; }
-
-        public TaskReport(RevitTask task)
-        {
-            Task = task ?? throw new ArgumentNullException(nameof(task));
-            ResultFile = Task.SourceFile;
-            Status = new ReportStatus();
-        }
-
-        public bool IsTask(RevitTask revitTask)
-        {
-            return Task.Equals(revitTask);
-        }
 
         public override bool Equals(object obj)
         {
             return obj is TaskReport result &&
-                   EqualityComparer<RevitTask>.Default.Equals(Task, result.Task);
+                   EqualityComparer<RevitFamilyFile>.Default.Equals(SourceFile, result.SourceFile);
         }
 
         public override int GetHashCode()
         {
-            return -174109371 + EqualityComparer<RevitTask>.Default.GetHashCode(Task);
+            return -174109371 + EqualityComparer<RevitFamilyFile>.Default.GetHashCode(SourceFile);
         }
     }
 }

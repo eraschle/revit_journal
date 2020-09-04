@@ -26,7 +26,5 @@ namespace RevitAction.Action
         void SetLibraryRoot(string libraryRoot);
 
         void PreTask(RevitFamily family);
-
-        void PostTask(ITaskReport report);
     }
 }

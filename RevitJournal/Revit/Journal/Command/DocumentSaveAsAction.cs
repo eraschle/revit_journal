@@ -86,17 +86,5 @@ namespace RevitJournal.Revit.Journal.Command
             currentRoot.Value = libraryRoot;
             newRoot.DefaultValue = libraryRoot;
         }
-
-        public override void PostTask(ITaskReport report)
-        {
-            base.PostTask(report);
-            if(report is null) { return; }
-
-            var saveAsFile = new RevitFamilyFile
-            {
-                FullPath = pathCreator.CreatePath(familyFile)
-            };
-            report.ResultFile = saveAsFile;
-        }
     }
 }

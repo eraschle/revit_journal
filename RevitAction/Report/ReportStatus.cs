@@ -5,14 +5,16 @@ namespace RevitAction.Report
 {
     public class ReportStatus
     {
-        public const int Initial = 0;
-        public const int Waiting = 2;
-        public const int Started = 4;
-        public const int Running = 8;
-        public const int Finish = 16;
-        public const int Timeout = 32;
-        public const int Cancel = 64;
-        public const int Error = 128;
+        public const int Unknown    = 0;
+        public const int Initial    = 2;
+        public const int Waiting    = 4;
+        public const int Started    = 8;
+        public const int Open       = 16;
+        public const int Running    = 32;
+        public const int Cancel     = 64;
+        public const int Error      = 128;
+        public const int Timeout    = 256;
+        public const int Finish     = 512;
 
         private static IList<int> allStatus;
         public static IList<int> All
@@ -100,5 +102,12 @@ namespace RevitAction.Report
             return (Status & status) == status;
         }
 
+        public string GetStatusText()
+        {
+            return IsWaiting ? "Wait" 
+                : IsStarted ? "Run" 
+                : Executed ? "Finish" 
+                : "Unknown";
+        }
     }
 }

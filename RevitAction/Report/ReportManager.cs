@@ -1,4 +1,7 @@
-﻿using RevitAction.Report.Message;
+﻿using Autodesk.Revit.ApplicationServices;
+using Autodesk.Revit.DB;
+using RevitAction.Action;
+using RevitAction.Report.Message;
 using System;
 using System.Net;
 
@@ -25,56 +28,88 @@ namespace RevitAction.Report
 
         public ReportPublisher Publisher { get; private set; }
 
-        public string FilePath { get; set; }
-
-        public string Journal { get; set; }
-
         public Guid ActionId { get; set; }
 
         public void StartAction()
         {
-            ActionId = OpenActionId;
-            var report = new ReportMessage { Kind = ReportKind.Start };
+            var report = new ReportMessage { Kind = ReportKind.Unknown };
             Send(report);
         }
 
-        public void OpenAction(string message)
+        public bool OpenReport(Document document)
         {
-            ActionId = OpenActionId;
-            var report = new ReportMessage { Message = message };
+            var report = new ReportMessage
+            {
+                Kind = ReportKind.Open,
+                Message = document.PathName
+            };
+            Send(report);
+            return Publisher.TaskFound(document.PathName);
+        }
+
+        public void JournalReport(Document document)
+        {
+            var report = new ReportMessage
+            {
+                Kind = ReportKind.Journal,
+                Message = document.Application.RecordingJournalFilename
+            };
             Send(report);
         }
 
-        public void SaveAction(string message)
+        public void SaveReport(Document document)
         {
-            ActionId = SaveActionId;
-            var report = new ReportMessage { Message = message };
+            var report = new ReportMessage
+            {
+                Kind = ReportKind.Save,
+                Message = document.PathName
+            };
             Send(report);
         }
 
-        public void SaveAsAction(string message)
+        public void SaveAsReport(Document document)
         {
-            ActionId = SaveAsActionId;
+            var report = new ReportMessage
+            {
+                Kind = ReportKind.SaveAs,
+                Message = document.PathName
+            };
+            Send(report);
+        }
+
+        public void CloseReport()
+        {
+            var report = new ReportMessage
+            {
+                Kind = ReportKind.Close,
+                Message = "Closed"
+            };
+            Send(report);
+        }
+
+        public void SuccessReport(string message)
+        {
             var report = new SuccessMessage { Message = message };
             Send(report);
         }
 
-        public void CloseAction(string message)
+        public void ActionStartReport()
         {
-            ActionId = CloseActionId;
-            var report = new SuccessMessage { Message = message };
-            Send(report);
+            StatusReport("Started");
         }
 
-        public void Success(string message)
+        public void ActionFinishReport()
         {
-            var report = new SuccessMessage { Message = message };
-            Send(report);
+            StatusReport("Finished");
         }
 
-        public void Info(string message)
+        public void StatusReport(string message)
         {
-            var report = new ReportMessage { Kind = ReportKind.Success, Message = message };
+            var report = new ReportMessage
+            {
+                Kind = ReportKind.Status,
+                Message = message
+            };
             Send(report);
         }
 
@@ -84,7 +119,11 @@ namespace RevitAction.Report
             {
                 message = string.Join(Environment.NewLine, message, exception.Message, exception.StackTrace);
             }
-            var report = new ErrorMessage { Message = message };
+            var report = new ErrorMessage
+            {
+                Kind = ReportKind.Error,
+                Message = message
+            };
             Send(report);
         }
 
@@ -92,15 +131,7 @@ namespace RevitAction.Report
         {
             if (report is null) { throw new ArgumentNullException(nameof(report)); }
 
-            if (ActionId == OpenActionId)
-            {
-                FilePath = report.Message;
-            }
-            report.FilePath = FilePath;
             report.ActionId = ActionId;
-            report.Journal = Journal;
-
-            Console.WriteLine($"Send data: {report}");
             Publisher.SendReport(report);
         }
 

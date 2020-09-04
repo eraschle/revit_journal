@@ -11,9 +11,13 @@ namespace RevitCommand
     public abstract class ARevitExternalCommand<TAction> : IExternalCommand where TAction : ITaskActionCommand, new()
     {
         protected UIApplication UiApplication { get; private set; }
+        
         protected Application Application { get; private set; }
+        
         protected UIDocument UIDocument { get; private set; }
+        
         protected Document Document { get; private set; }
+
         protected TAction Action { get; private set; }
 
         protected ARevitExternalCommand()
@@ -52,14 +56,14 @@ namespace RevitCommand
 
             try
             {
+                reporter.ActionStartReport();
                 var result = ExecuteRevitCommand(commandData, ref message, elements);
-                reporter.Success(Action.Name);
+                reporter.ActionFinishReport();
                 return result;
             }
             catch (Exception exp)
             {
-                message = "Main of actions";
-                reporter.Error(message, exp);
+                reporter.Error(Action.Name, exp);
                 return Result.Failed;
             }
         }

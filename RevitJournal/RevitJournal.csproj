@@ -125,10 +125,11 @@
     <Compile Include="Revit\Journal\Command\RevitStartCommand.cs" />
     <Compile Include="Revit\Journal\TaskJournalCreator.cs" />
     <Compile Include="Tasks\Options\TaskOptions.cs" />
-    <Compile Include="Tasks\Report\TaskActionReports.cs" />
+    <Compile Include="Tasks\Report\TaskActionReport.cs" />
     <None Include="Journal\Execution\JournalRevitCreator.cs" />
     <None Include="Journal\Execution\JournalRevitReader.cs" />
     <Compile Include="Revit\RevitProcess.cs" />
+    <Compile Include="Tasks\TaskUnitOfWork.cs" />
     <Compile Include="Tasks\RevitTask.cs" />
     <None Include="Journal\JournalError.cs" />
     <Compile Include="Tasks\TaskManager.cs" />

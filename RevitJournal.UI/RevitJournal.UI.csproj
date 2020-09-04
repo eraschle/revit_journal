@@ -119,7 +119,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="JournalTaskUI\JournalTaskView.xaml">
+    <Page Include="Tasks\TasksView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -147,6 +147,7 @@
     <Compile Include="JournalTaskUI\Converter\FamilyIsEnabledMetadataConverter.cs" />
     <Compile Include="JournalTaskUI\FamilyFilter\FilterManager.cs" />
     <Compile Include="JournalTaskUI\FamilyFilter\FilterViewModel.cs" />
+    <Compile Include="Tasks\TasksViewModel.cs" />
     <Compile Include="Tasks\Actions\Parameter\BoolParameterConverter.cs" />
     <Compile Include="Tasks\Actions\Parameter\FolderParameterViewModel.cs" />
     <None Include="Tasks\Actions\Parameter\CmdParameterListItemsView.xaml.cs">
@@ -220,15 +221,14 @@
     <Compile Include="Tasks\Actions\Parameter\IParameterViewModel.cs" />
     <Compile Include="Tasks\Actions\Parameter\ParameterVmBuilder.cs" />
     <Compile Include="Tasks\Actions\Parameter\ParameterViewModel.cs" />
-    <Compile Include="JournalTaskUI\JournalTaskView.xaml.cs">
-      <DependentUpon>JournalTaskView.xaml</DependentUpon>
+    <Compile Include="Tasks\TasksView.xaml.cs">
+      <DependentUpon>TasksView.xaml</DependentUpon>
     </Compile>
     <Compile Include="JournalTaskUI\Options\TaskOptionView.xaml.cs">
       <DependentUpon>TaskOptionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="JournalTaskUI\Options\TaskOptionViewModel.cs" />
     <Compile Include="JournalTaskUI\JournalTaskExecuteViewModel.cs" />
-    <Compile Include="JournalTaskUI\JournalTaskViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\FamilyViewModel.cs" />
     <Compile Include="MetadataUI\MetadataDialogView.xaml.cs">
       <DependentUpon>MetadataDialogView.xaml</DependentUpon>

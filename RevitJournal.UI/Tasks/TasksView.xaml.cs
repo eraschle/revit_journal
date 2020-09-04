@@ -1,13 +1,13 @@
 ﻿using System.Windows.Controls;
 
-namespace RevitJournalUI.JournalTaskUI
+namespace RevitJournalUI.Tasks
 {
     /// <summary>
     /// Interaction logic for JournalTaskListBoxItem.xaml
     /// </summary>
-    public partial class JournalTaskView : UserControl
+    public partial class TasksView : UserControl
     {
-        public JournalTaskView()
+        public TasksView()
         {
             InitializeComponent();
         }

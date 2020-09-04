@@ -55,8 +55,6 @@ namespace RevitAction.Action
 
         public virtual void PreTask(RevitFamily family) { }
 
-        public virtual void PostTask(ITaskReport report) { }
-
         public virtual void SetLibraryRoot(string libraryRoot) { }
 
         public override bool Equals(object obj)
