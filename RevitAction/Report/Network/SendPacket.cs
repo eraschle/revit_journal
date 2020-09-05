@@ -23,6 +23,7 @@ namespace RevitAction.Report.Network
 
         public void Send(string message)
         {
+            if (string.IsNullOrEmpty(message)) { return; }
             try
             {
                 var fullPacket = new List<byte>();

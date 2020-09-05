@@ -44,7 +44,7 @@ namespace RevitAction.Report
                 Message = document.PathName
             };
             Send(report);
-            return Publisher.TaskFound(document.PathName);
+            return Publisher.HasResponsed(report);
         }
 
         public void JournalReport(Document document)
@@ -77,7 +77,7 @@ namespace RevitAction.Report
             Send(report);
         }
 
-        public void CloseReport()
+        public bool CloseReport()
         {
             var report = new ReportMessage
             {
@@ -85,6 +85,7 @@ namespace RevitAction.Report
                 Message = "Closed"
             };
             Send(report);
+            return Publisher.HasResponsed(report);
         }
 
         public void SuccessReport(string message)
@@ -93,22 +94,12 @@ namespace RevitAction.Report
             Send(report);
         }
 
-        public void ActionStartReport()
-        {
-            StatusReport("Started");
-        }
-
-        public void ActionFinishReport()
-        {
-            StatusReport("Finished");
-        }
-
-        public void StatusReport(string message)
+        public void ActionStatusReport(ActionStatus status)
         {
             var report = new ReportMessage
             {
                 Kind = ReportKind.Status,
-                Message = message
+                Message = status.ToString()
             };
             Send(report);
         }

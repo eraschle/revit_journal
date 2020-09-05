@@ -20,7 +20,7 @@
                          Maximum="{Binding MaxTasks, UpdateSourceTrigger=PropertyChanged}"
                          Grid.Column="1"/>
         </Grid>
-        <ListBox ItemsSource="{Binding JournalTaskModels, UpdateSourceTrigger=PropertyChanged}"
+        <ListBox ItemsSource="{Binding TaskModels, UpdateSourceTrigger=PropertyChanged}"
                  HorizontalContentAlignment="Stretch"
                  HorizontalAlignment="Stretch">
             <ListBox.ItemTemplate>

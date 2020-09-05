@@ -40,7 +40,7 @@ namespace RevitAction.Report.Network
             _receive.StartReceiving();
         }
 
-        public void StopReceiving()
+        public void Disconnect()
         {
             _receive.StopReceiving();
         }

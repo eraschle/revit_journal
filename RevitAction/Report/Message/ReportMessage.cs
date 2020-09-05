@@ -10,7 +10,7 @@ namespace RevitAction.Report.Message
 
         public string Message { get; set; }
 
-        public int GetStatus()
+        public int GetTaskStatus()
         {
             switch (Kind)
             {
@@ -35,6 +35,11 @@ namespace RevitAction.Report.Message
         public bool IsError
         {
             get { return Kind == ReportKind.Error; }
+        }
+
+        public bool IsFinished
+        {
+            get { return Kind == ReportKind.Close; }
         }
     }
 }

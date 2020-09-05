@@ -2,6 +2,7 @@
 using RevitAction.Report.Network;
 using RevitJournal.Tasks.Options;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 
@@ -46,7 +47,7 @@ namespace RevitJournal.Tasks.Report
             }
             catch (Exception ex)
             {
-                throw new Exception("Base Accept error" + ex);
+                Debug.WriteLine("Base Accept error" + ex);
             }
         }
 
@@ -59,7 +60,7 @@ namespace RevitJournal.Tasks.Report
             }
             catch (Exception ex)
             {
-                throw new Exception("stop listening error" + ex);
+                Debug.WriteLine("stop listening error" + ex);
             }
             finally
             {

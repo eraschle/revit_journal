@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using RevitAction.Report;
 using RevitAction.Report.Message;
 
 namespace RevitJournal.Tasks.Report
@@ -8,7 +9,12 @@ namespace RevitJournal.Tasks.Report
         private readonly Dictionary<ReportKind, List<string>> messages
             = new Dictionary<ReportKind, List<string>>();
 
-        public string Status { get; set; }
+        public ActionStatus Status { get; set; }
+
+        public bool IsExecuted
+        {
+            get { return Status == ActionStatus.Finished || Status == ActionStatus.Error; }
+        }
 
         public void Add(ReportMessage report)
         {

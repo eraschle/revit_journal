@@ -1,4 +1,5 @@
 ﻿using RevitAction.Action;
+using RevitJournal.Tasks.Options;
 using System.Collections.Generic;
 using System.Windows;
 
@@ -11,10 +12,10 @@ namespace RevitJournalUI.Tasks.Actions
     {
         public TaskActionsViewModel ViewModel { get { return DataContext as TaskActionsViewModel; } }
 
-        public TaskActionsView(IEnumerable<ITaskAction> taskActions)
+        public TaskActionsView(IEnumerable<ITaskAction> taskActions, TaskOptions options)
         {
             InitializeComponent();
-            ViewModel.UpdateAction(taskActions);
+            ViewModel.UpdateAction(taskActions, options);
         }
 
         private void OK_Click(object sender, RoutedEventArgs e)

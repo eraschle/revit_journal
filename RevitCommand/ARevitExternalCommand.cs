@@ -3,6 +3,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using RevitAction;
 using RevitAction.Action;
+using RevitAction.Report;
 using System;
 using System.Collections.Generic;
 
@@ -56,13 +57,14 @@ namespace RevitCommand
 
             try
             {
-                reporter.ActionStartReport();
+                reporter.ActionStatusReport(ActionStatus.Started);
                 var result = ExecuteRevitCommand(commandData, ref message, elements);
-                reporter.ActionFinishReport();
+                reporter.ActionStatusReport(ActionStatus.Finished);
                 return result;
             }
             catch (Exception exp)
             {
+                reporter.ActionStatusReport(ActionStatus.Error);
                 reporter.Error(Action.Name, exp);
                 return Result.Failed;
             }

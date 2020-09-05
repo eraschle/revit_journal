@@ -21,30 +21,30 @@ namespace RevitAction.Report.Network
             return client;
         }
 
-        public static void Remove(string filePath)
+        private static void Remove(ReportClient client)
         {
-            var client = Clients.FirstOrDefault(clt => clt.HasTaskId && clt.TaskId == filePath);
             if (client is null) { return; }
-
             lock (lockObject)
             {
                 Clients.Remove(client);
+                client.Disconnect();
             }
-            client.StopReceiving();
         }
 
         public static void Remove(IReportReceiver report)
         {
-            if(report is null) { return; }
+            if (report is null) { return; }
 
-            Remove(report.TaskId);
+            var client = Clients.FirstOrDefault(clt => clt.HasTaskId && clt.TaskId == report.TaskId);
+            lock (lockObject)
+            {
+                Remove(client);
+            }
         }
 
         public static void RemoveClients()
         {
-            var clientIds = Clients.Where(client => client.HasTaskId)
-                                   .Select(client => client.TaskId);
-            foreach (var clientId in clientIds)
+            foreach (var clientId in new List<ReportClient>(Clients))
             {
                 Remove(clientId);
             }

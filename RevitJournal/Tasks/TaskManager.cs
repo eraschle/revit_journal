@@ -82,13 +82,13 @@ namespace RevitJournal.Tasks
             }
         }
 
-        public async Task ExecuteTasks(TaskOptions options, CancellationToken cancellation)
+        public Task ExecuteTasks(TaskOptions options, CancellationToken cancellation)
         {
             if (options is null) { throw new ArgumentNullException(nameof(options)); }
 
             CreateAddinFile(options);
             SetWaitingStatus();
-            await RunTasks(options, cancellation).ConfigureAwait(false);
+            return Task.Run(()=> { RunTasks(options, cancellation); });
         }
 
         public void StartServer(TaskOptions options)
@@ -102,15 +102,12 @@ namespace RevitJournal.Tasks
             ReportServer.StopListening();
         }
 
-        private async Task RunTasks(TaskOptions options, CancellationToken cancellation)
+        private void RunTasks(TaskOptions options, CancellationToken cancellation)
         {
-            //return Task.Run(() =>
-            //{
             var runningTasks = CreateTasks(options, cancellation);
             while (runningTasks.Count > 0)
             {
-                var finished = await Task.WhenAny(runningTasks.ToArray())
-                                         .ConfigureAwait(false);
+                var finished = Task.WhenAny(runningTasks.ToArray()).Result;
                 if (cancellation.IsCancellationRequested)
                 {
                     foreach (var nextTask in TaskQueue)
@@ -126,7 +123,6 @@ namespace RevitJournal.Tasks
                 }
                 runningTasks.Remove(finished);
             }
-            //});
         }
 
         private ICollection<Task> CreateTasks(TaskOptions options, CancellationToken cancellation)

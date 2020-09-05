@@ -252,7 +252,7 @@ namespace RevitJournalUI.JournalManagerUI
         private void SetupJournalCommandAction(object parameter)
         {
             var actions = ExternalAction.GetTaskActions(ActionDirectory);
-            var dialog = new TaskActionsView(actions);
+            var dialog = new TaskActionsView(actions, TaskOptions);
             var result = dialog.ShowDialog();
             if (result == true)
             {

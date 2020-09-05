@@ -1,13 +1,16 @@
 ﻿using DataSource.Model.FileSystem;
+using RevitAction.Action;
 using RevitAction.Report;
 using RevitAction.Report.Message;
 using RevitJournal.Revit;
 using RevitJournal.Revit.Journal;
+using RevitJournal.Tasks.Actions;
 using RevitJournal.Tasks.Options;
 using RevitJournal.Tasks.Report;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,27 +18,31 @@ namespace RevitJournal.Tasks
 {
     public class TaskUnitOfWork : IReportReceiver
     {
+        private static readonly NullRecordeJournalFile nullRecorde = new NullRecordeJournalFile();
+        private static readonly NullTaskJournalFile nullTask = new NullTaskJournalFile();
+        private static readonly ITaskAction nullAction = new NullTaskAction();
+
         public RevitTask Task { get; private set; }
 
         public TaskOptions Options { get; private set; }
 
-        public ReportStatus Status { get; private set; }
+        public ReportStatus Status { get; private set; } = new ReportStatus();
 
-        public TaskJournalFile TaskJournal { get; set; }
+        public TaskJournalFile TaskJournal { get; set; } = nullTask;
 
         public bool HasTaskJournal
         {
-            get { return TaskJournal != null; }
+            get { return TaskJournal != nullTask; }
         }
 
-        public RecordeJournalFile RecordeJournal { get; set; }
+        public RecordeJournalFile RecordeJournal { get; set; } = nullRecorde;
 
         public bool HasRecordeJournal
         {
-            get { return RecordeJournal != null; }
+            get { return RecordeJournal != nullRecorde; }
         }
 
-        public TaskReport Report { get; set; } = new TaskReport();
+        //public TaskReport Report { get; set; } = new TaskReport();
 
         public RevitProcess Process { get; set; }
 
@@ -45,8 +52,6 @@ namespace RevitJournal.Tasks
         {
             get { return Progress; }
         }
-
-        public Guid CurrentActionId { get; set; } = Guid.Empty;
 
         public IDictionary<Guid, TaskActionReport> ActionReports { get; } = new Dictionary<Guid, TaskActionReport>();
 
@@ -74,16 +79,13 @@ namespace RevitJournal.Tasks
             TaskJournal.Delete();
         }
 
+        public ITaskAction CurrentAction { get; private set; } = nullAction;
+
+        public int ExecutedActions { get; private set; }
+
         public void SetStatus(int status)
         {
-            SetStatus(status, true);
-        }
-
-        private void SetStatus(int status, bool doReport)
-        {
             Status.SetStatus(status);
-            if (doReport == false) { return; }
-
             ProgressReport.Report(this);
         }
 
@@ -96,52 +98,83 @@ namespace RevitJournal.Tasks
             {
                 case ReportKind.Open:
                     var openFile = CreateFile<RevitFamilyFile>(report);
-                    if(Task.SourceFile.Equals(openFile) == false)
+                    Task.ResultFile = openFile;
+                    if (Task.SourceFile.Equals(openFile) == false)
                     {
                         var message = "Source and opened file are not equals";
-                        throw new ArgumentException(message);
+                        Debug.WriteLine(message);
                     }
-                    Report.SourceFile = openFile;
-                    Report.ResultFile = openFile;
                     break;
                 case ReportKind.Journal:
-                    RecordeJournal = CreateFile<RecordeJournalFile>(report);
+                    var journalFile = CreateFile<RecordeJournalFile>(report);
+                    RecordeJournal = journalFile;
                     break;
                 case ReportKind.Status:
-                    actionReport.Status = report.Message;
+                    var actionStatus = ActionStatusUtil.ToEnum(report);
+                    actionReport.Status = actionStatus;
+                    if (actionReport.IsExecuted)
+                    {
+                        ExecutedActions += 1;
+                    }
                     break;
-                case ReportKind.Error:
                 case ReportKind.Success:
                     actionReport.Add(report);
                     break;
+                case ReportKind.Error:
+                    actionReport.Add(report);
+                    KillProcess();
+                    break;
                 case ReportKind.Save:
                 case ReportKind.SaveAs:
-                    Report.ResultFile = CreateFile<RevitFamilyFile>(report);
+                    var saveFile = CreateFile<RevitFamilyFile>(report);
+                    Task.ResultFile = saveFile;
                     break;
                 case ReportKind.Close:
-                    if (Options.DeleteRevitBackup)
-                    {
-                        DeleteBackups(Task.SourceFile);
-                        DeleteBackups(Report.ResultFile);
-                    }
+                    KillProcess();
+                    DeleteBackups(Task);
                     break;
                 case ReportKind.Unknown:
                 default:
                     break;
             }
-            if (report.IsError)
-            {
-                KillProcess();
-            }
 
-            SetStatus(report.GetStatus(), false);
-            CurrentActionId = report.ActionId;
+            Status.SetStatus(report.GetTaskStatus());
+            CurrentAction = GetCurrentAction(report);
             ProgressReport.Report(this);
+        }
+
+        private ITaskAction GetCurrentAction(ReportMessage report)
+        {
+            if (CurrentAction.Id == report.ActionId || report.IsFinished)
+            {
+                return CurrentAction;
+            }
+            else if (Task.HasActionById(report.ActionId, out var action))
+            {
+                return action;
+            }
+            return nullAction;
         }
 
         private TFile CreateFile<TFile>(ReportMessage report) where TFile : AFile, new()
         {
             return new TFile { FullPath = report.Message };
+        }
+
+        private void DeleteBackups(RevitTask task)
+        {
+            if (Options.DeleteRevitBackup == false) { return; }
+
+            DeleteBackups(task.SourceFile);
+            if (task.HasResultFile)
+            {
+                DeleteBackups(task.ResultFile);
+            }
+
+            if (task.HasBackupFile)
+            {
+                DeleteBackups(task.BackupFile);
+            }
         }
 
         private void DeleteBackups(RevitFamilyFile familyFile)
@@ -174,7 +207,6 @@ namespace RevitJournal.Tasks
             if (Process is null) { return; }
 
             Process.KillProcess();
-            Process.Dispose();
         }
 
         #endregion
@@ -203,11 +235,10 @@ namespace RevitJournal.Tasks
 
         private void PreExecution()
         {
-            var option = Options.Backup;
-            if (option.CreateBackup)
+            if (Options.Backup.CreateBackup)
             {
-                var backupPath = option.CreateBackupFile(Task.SourceFile);
-                Report.BackupFile = Task.SourceFile.CopyTo<RevitFamilyFile>(backupPath, true);
+                var backupPath = Options.Backup.CreateBackupFile(Task.SourceFile);
+                Task.BackupFile = Task.SourceFile.CopyTo<RevitFamilyFile>(backupPath, true);
             }
 
             foreach (var command in Task.Actions)

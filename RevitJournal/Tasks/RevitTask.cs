@@ -1,14 +1,8 @@
 ﻿using DataSource.Model.FileSystem;
 using RevitAction.Action;
-using RevitAction.Report;
-using RevitAction.Report.Message;
-using RevitJournal.Revit;
-using RevitJournal.Revit.Journal;
-using RevitJournal.Tasks.Options;
-using RevitJournal.Tasks.Report;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
 
 namespace RevitJournal.Tasks
 {
@@ -19,6 +13,20 @@ namespace RevitJournal.Tasks
         public RevitFamilyFile SourceFile
         {
             get { return Family.RevitFile; }
+        }
+
+        public RevitFamilyFile ResultFile { get; set; }
+
+        public bool HasResultFile
+        {
+            get { return ResultFile != null; }
+        }
+
+        public RevitFamilyFile BackupFile { get; set; }
+
+        public bool HasBackupFile
+        {
+            get { return BackupFile != null; }
         }
 
         public IList<ITaskAction> Actions { get; private set; }
@@ -58,6 +66,12 @@ namespace RevitJournal.Tasks
                 actionCommands.Add(actionCommand);
             }
             return actionCommands.Count > 0;
+        }
+
+        internal bool HasActionById(Guid actionId, out ITaskAction action)
+        {
+            action = Actions.FirstOrDefault(act => act.Id == actionId);
+            return action != null;
         }
 
         public override bool Equals(object obj)

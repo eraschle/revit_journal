@@ -23,7 +23,7 @@ namespace RevitAction.Report
             {
                 if (allStatus is null)
                 {
-                    allStatus = new List<int> { Initial, Waiting, Started, Running, Finish, Timeout, Cancel, Error };
+                    allStatus = new List<int> { Unknown, Initial, Waiting, Started, Open, Running, Cancel, Error, Timeout, Finish };
                 }
                 return allStatus;
             }

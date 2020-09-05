@@ -1,8 +1,11 @@
-﻿using RevitJournal.Tasks;
-using RevitJournalUI.JournalTaskUI;
+﻿using RevitAction.Report;
+using RevitJournal.Tasks;
+using RevitJournalUI.Helper;
 using System;
 using System.ComponentModel;
-using System.Windows.Media;
+using System.Windows;
+using System.Windows.Threading;
+using Utilities;
 
 namespace RevitJournalUI.Tasks
 {
@@ -10,144 +13,194 @@ namespace RevitJournalUI.Tasks
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private const string NoJournalProcess = "No Journal created";
-        private const string NoJournalRevit = "No Revit Journal";
+        private TimeSpan timerInterval;
+
+        private TimeSpan executionTime = TimeSpan.Zero;
 
         internal TaskUnitOfWork TaskUoW { get; set; }
 
-        public JournalTaskExecuteViewModel JournalTaskExecute { get; private set; }
-        public JournalTaskResultViewModel JournalTaskResult { get; private set; }
-
-        public TaskViewModel()
-        {
-            JournalTaskExecute = new JournalTaskExecuteViewModel();
-            JournalTaskResult = new JournalTaskResultViewModel();
-            JournalTaskExecute.PropertyChanged += new PropertyChangedEventHandler(JournalTaskResult.OnRunTimeChanged);
-        }
+        #region Task
 
         public string TaskName
         {
             get { return TaskUoW.Task.Name; }
         }
 
-        private string taskStatus = string.Empty;
-        public string TaskStatus
+        public ReportStatus TaskStatus
         {
-            get { return taskStatus; }
-            set
-            {
-                if (taskStatus.Equals(value, StringComparison.CurrentCulture)) { return; }
-
-                taskStatus = value;
-                OnPropertyChanged(nameof(TaskStatus));
-            }
+            get { return TaskUoW.Status; }
+            set { OnPropertyChanged(nameof(TaskStatus)); }
         }
 
-        private SolidColorBrush taskStatusColor = new SolidColorBrush(Colors.Transparent);
-        public SolidColorBrush TaskStatusColor
-        {
-            get { return taskStatusColor; }
-            set
-            {
-                if (taskStatusColor.Equals(value)) { return; }
-
-                taskStatusColor = value;
-                OnPropertyChanged(nameof(TaskStatusColor));
-            }
-        }
-
-
-        private string _JournalTask = NoJournalProcess;
+        private string journalTask = string.Empty;
         public string JournalTask
         {
-            get { return _JournalTask; }
+            get { return journalTask; }
             set
             {
-                if (_JournalTask.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(journalTask, value)) { return; }
 
-                _JournalTask = value;
+                journalTask = value;
                 OnPropertyChanged(nameof(JournalTask));
             }
         }
 
-        private string _JournalRecorde = NoJournalRevit;
+        private string journalRecorde = string.Empty;
         public string JournalRecorde
         {
-            get { return _JournalRecorde; }
+            get { return journalRecorde; }
             set
             {
-                if (_JournalRecorde.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(journalRecorde, value)) { return; }
 
-                _JournalRecorde = value;
+                journalRecorde = value;
                 OnPropertyChanged(nameof(JournalRecorde));
             }
+        }
+
+        internal void AddTimer(DispatcherTimer timer)
+        {
+            timerInterval = timer.Interval;
+            timer.Tick += DispatcherTimer_Tick;
+        }
+
+        internal void RemoveTimer(DispatcherTimer timer)
+        {
+            timer.Tick -= DispatcherTimer_Tick;
         }
 
         internal void AddProgessEvent()
         {
             TaskUoW.Progress.ProgressChanged += Progress_ProgressChanged;
-            JournalTaskExecute.AddProgessEvent(TaskUoW);
-            JournalTaskResult.AddProgessEvent(TaskUoW);
         }
 
         internal void RemoveProgessEvent()
         {
             TaskUoW.Progress.ProgressChanged -= Progress_ProgressChanged;
-            JournalTaskExecute.RemoveProgessEvent(TaskUoW);
-            JournalTaskResult.RemoveProgessEvent(TaskUoW);
         }
 
         private void Progress_ProgressChanged(object sender, TaskUnitOfWork task)
         {
-            TaskStatusColor = GetStatusColor();
-            TaskStatus = task.Status.GetStatusText();
-            SetJournals();
-        }
+            TaskStatus = task.Status;
 
-        private void SetJournals()
-        {
             if (TaskUoW.HasTaskJournal)
             {
-                JournalTask = TaskUoW.TaskJournal.NameWithExtension;
+                JournalTask = TaskUoW.TaskJournal.Name;
             }
             if (TaskUoW.HasRecordeJournal)
             {
-                JournalRecorde = TaskUoW.RecordeJournal.NameWithExtension;
+                JournalRecorde = TaskUoW.RecordeJournal.Name;
+            }
+
+            CurrentAction = task.CurrentAction.Name;
+            ExecutedActions = TaskUoW.ExecutedActions;
+            ExecutedActionsText = $"{executedActions} / {ActionsCount}";
+            if (TaskUoW.Status.IsError)
+            {
+
             }
         }
 
-        private SolidColorBrush GetStatusColor()
+        private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (TaskUoW.Status.IsWaiting)
+            if (TaskUoW.Status.IsStarted == false || TaskUoW.Status.Executed) { return; }
+
+            executionTime += timerInterval;
+            TaskTime = $"{TimeSpanHelper.GetMinuteAndSeconds(executionTime)} / {TimeSpanHelper.GetMinuteAndSeconds(TaskUoW.Options.Arguments.Timeout)}";
+        }
+
+        #endregion
+
+        #region Execute
+
+        private double executedActions = 0;
+        public double ExecutedActions
+        {
+            get { return executedActions; }
+            set
             {
-                return new SolidColorBrush(Colors.Yellow);
-            }
-            else if (TaskUoW.Status.IsStarted)
-            {
-                return new SolidColorBrush(Colors.GreenYellow);
-            }
-            else if (TaskUoW.Status.Executed)
-            {
-                var color = new SolidColorBrush(Colors.Green);
-                if (TaskUoW.Status.IsCancel)
-                {
-                    color = new SolidColorBrush(Colors.OrangeRed);
-                }
-                if (TaskUoW.Status.IsError)
-                {
-                    color = new SolidColorBrush(Colors.Red);
-                }
-                else if (TaskUoW.Status.IsTimeout)
-                {
-                    color = new SolidColorBrush(Colors.DarkRed);
-                }
-                return color;
-            }
-            else
-            {
-                return new SolidColorBrush(Colors.Cyan);
+                if (executedActions == value) { return; }
+
+                executedActions = value;
+                OnPropertyChanged(nameof(ExecutedActions));
             }
         }
+
+        private string executedActionsText = string.Empty;
+        public string ExecutedActionsText
+        {
+            get { return executedActionsText; }
+            set
+            {
+                if (StringUtils.Equals(executedActionsText, value)) { return; }
+
+                executedActionsText = value;
+                OnPropertyChanged(nameof(ExecutedActionsText));
+            }
+        }
+
+        public double ActionsCount
+        {
+            get { return TaskUoW.Task.Actions.Count; }
+        }
+
+        private string taskTime = string.Empty;
+        public string TaskTime
+        {
+            get { return taskTime; }
+            set
+            {
+                if (StringUtils.Equals(taskTime, value)) { return; }
+
+                taskTime = value;
+                OnPropertyChanged(nameof(TaskTime));
+            }
+        }
+
+        private string currentAction = string.Empty;
+        public string CurrentAction
+        {
+            get { return currentAction; }
+            set
+            {
+                if (StringUtils.Equals(currentAction, value)) { return; }
+
+                currentAction = value;
+                OnPropertyChanged(nameof(CurrentAction));
+            }
+        }
+
+        #endregion
+
+        #region Result
+
+        private string errorText = string.Empty;
+        public string ErrorText
+        {
+            get { return errorText; }
+            set
+            {
+                if (StringUtils.Equals(errorText, value)) { return; }
+
+                errorText = value;
+                OnPropertyChanged(nameof(ErrorText));
+            }
+        }
+
+        private string errorTextToolTip = string.Empty;
+        public string ErrorTextToolTip
+        {
+            get { return errorTextToolTip; }
+            set
+            {
+                if (StringUtils.Equals(errorTextToolTip, value)) { return; }
+
+                errorTextToolTip = value;
+                OnPropertyChanged(nameof(ErrorTextToolTip));
+            }
+        }
+
+        #endregion
 
         protected void OnPropertyChanged(string name)
         {

@@ -11,8 +11,6 @@ namespace DataSource.Model.FileSystem
     {
         public const string FileExtension = "rfa";
 
-        private static readonly Regex RevitFamilyBackup = new Regex(@"\\(\d{4})\\");
-
         protected override string GetExtension()
         {
             return FileExtension;
@@ -35,7 +33,7 @@ namespace DataSource.Model.FileSystem
             var backup = backupSplit.LastOrDefault();
             if (string.IsNullOrWhiteSpace(backup)) { return false; }
 
-            return RevitFamilyBackup.IsMatch(backup);
+            return int.TryParse(backup, out _);
         }
 
         public IEnumerable<RevitFamilyFile> Backups

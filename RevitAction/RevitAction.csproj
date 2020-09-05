@@ -86,6 +86,7 @@
     <Compile Include="Report\Network\SendPacket.cs" />
     <Compile Include="Report\ReportStatus.cs" />
     <Compile Include="Report\ITaskReport.cs" />
+    <Compile Include="Report\ActionStatus.cs" />
     <Compile Include="TaskAppInfo.cs" />
     <Compile Include="TaskApp.cs" />
   </ItemGroup>

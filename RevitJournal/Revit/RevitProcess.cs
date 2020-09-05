@@ -10,7 +10,11 @@ namespace RevitJournal.Revit
 {
     public class RevitProcess : IDisposable
     {
+        private bool disposedValue;
+
         internal Process Process { get; private set; }
+
+        private int ProcessId { get; set; }
 
         internal RevitArguments Arguments { get; private set; }
 
@@ -26,7 +30,6 @@ namespace RevitJournal.Revit
 
         public bool Run(TaskJournalFile journalProcess)
         {
-            var exited = false;
             using (Process = CreateProccess(journalProcess))
             {
                 if (Process.Start() == false)
@@ -37,33 +40,16 @@ namespace RevitJournal.Revit
                         "Arguments : " + Process.StartInfo.Arguments);
                     return false;
                 }
-                var pid = Process.Id;
-                exited = Process.WaitForExit((int)Arguments.Timeout.TotalMilliseconds);
-                if (exited)
-                {
-                    KillChildren(pid);
-                }
-                else
-                {
-                    Debug.WriteLine($"WaitForExit False");
-                    KillProcess();
-                }
+                ProcessId = Process.Id;
+                return Process.WaitForExit((int)Arguments.Timeout.TotalMilliseconds);
             }
-            return exited;
         }
 
         internal void KillProcess()
         {
             if (Process is null) { return; }
 
-
-            try { Process.CloseMainWindow(); }
-            catch (Exception e)
-            {
-                Debug.WriteLine($"Process.CloseMainWindow Exception: {e.Message}");
-            }
-
-            KillChildren(Process.Id);
+            KillChildren();
             try { Process.Kill(); }
             catch (Exception e)
             {
@@ -75,26 +61,28 @@ namespace RevitJournal.Revit
             {
                 Debug.WriteLine($"Process.Close Exception: {e.Message}");
             }
+            Process = null;
         }
 
-        private void KillChildren(int pid)
+        private void KillChildren()
         {
-            var searcher = new ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" + pid);
-            foreach (var managmentObject in searcher.Get())
+            using (var searcher = new ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" + ProcessId))
             {
-                var subPid = Convert.ToInt32(managmentObject["ProcessID"]);
-                //KillChildren(subPid);
-                try
+                foreach (var managmentObject in searcher.Get())
                 {
-                    var proc = Process.GetProcessById(subPid);
-                    if (proc.HasExited == false)
+                    var subPid = Convert.ToInt32(managmentObject["ProcessID"]);
+                    try
                     {
-                        proc.Kill();
+                        var proc = Process.GetProcessById(subPid);
+                        if (proc.HasExited == false)
+                        {
+                            proc.Kill();
+                        }
                     }
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine($"SubProcess.Kill Exception: {e.Message}");
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine($"SubProcess.Kill Exception: {e.Message}");
+                    }
                 }
             }
         }
@@ -160,10 +148,30 @@ namespace RevitJournal.Revit
             return args;
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Process?.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~RevitProcess()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
         public void Dispose()
         {
-            ((IDisposable)Process).Dispose();
-            Process = null;
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion

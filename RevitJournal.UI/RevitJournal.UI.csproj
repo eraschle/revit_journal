@@ -147,6 +147,10 @@
     <Compile Include="JournalTaskUI\Converter\FamilyIsEnabledMetadataConverter.cs" />
     <Compile Include="JournalTaskUI\FamilyFilter\FilterManager.cs" />
     <Compile Include="JournalTaskUI\FamilyFilter\FilterViewModel.cs" />
+    <Compile Include="Tasks\Converter\TaskResultVisibleConverter.cs" />
+    <Compile Include="Tasks\Converter\TaskExecuteVisibleConverter.cs" />
+    <Compile Include="Tasks\Converter\TaskStatusColorConverter.cs" />
+    <Compile Include="Tasks\Converter\TaskStatusTextConverter.cs" />
     <Compile Include="Tasks\TaskViewModel.cs" />
     <Compile Include="Tasks\Actions\Parameter\BoolParameterConverter.cs" />
     <Compile Include="Tasks\Actions\Parameter\FolderParameterViewModel.cs" />
@@ -207,7 +211,6 @@
       <DependentUpon>JournalManagerPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="JournalManagerUI\JournalManagerPageModel.cs" />
-    <Compile Include="JournalTaskUI\JournalTaskResultViewModel.cs" />
     <Compile Include="JournalTaskUI\JournalTaskOverviewView.xaml.cs">
       <DependentUpon>JournalTaskOverviewView.xaml</DependentUpon>
     </Compile>
@@ -228,7 +231,6 @@
       <DependentUpon>TaskOptionView.xaml</DependentUpon>
     </Compile>
     <Compile Include="JournalTaskUI\Options\TaskOptionViewModel.cs" />
-    <Compile Include="JournalTaskUI\JournalTaskExecuteViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\FamilyViewModel.cs" />
     <Compile Include="MetadataUI\MetadataDialogView.xaml.cs">
       <DependentUpon>MetadataDialogView.xaml</DependentUpon>

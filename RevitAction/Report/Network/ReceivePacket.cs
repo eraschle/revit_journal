@@ -9,6 +9,8 @@ namespace RevitAction.Report.Network
     {
         private readonly Socket _socket;
 
+        private readonly SendPacket sendPacket;
+
         public Func<string, IReportReceiver> FindReport { get; set; }
 
         public IReportReceiver Report { get; private set; }
@@ -18,32 +20,38 @@ namespace RevitAction.Report.Network
         public ReceivePacket(Socket socket)
         {
             _socket = socket;
+            sendPacket = new SendPacket(socket);
         }
 
         public void StartReceiving()
         {
+            if(_socket.Connected == false) { return; }
             try
             {
                 _buffer = new byte[4];
                 _socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, ReceiveCallback, null);
             }
-            finally
+            catch
             {
             }
         }
 
-        public string ReceiveTaskFound()
+        public bool ReceivedResponse(ReportMessage report)
         {
+            if(_socket.Connected == false) { return false; }
             try
             {
                 _buffer = new byte[4];
                 _socket.Receive(_buffer, _buffer.Length, SocketFlags.None);
                 _buffer = new byte[BitConverter.ToInt32(_buffer, 0)];
                 _socket.Receive(_buffer, _buffer.Length, SocketFlags.None);
-                return Encoding.Default.GetString(_buffer);
+                var response = Encoding.Default.GetString(_buffer);
+                return string.IsNullOrEmpty(response) == false
+                    && response.Equals(report.Message);
             }
-            finally
+            catch
             {
+                return false;
             }
         }
 
@@ -67,18 +75,22 @@ namespace RevitAction.Report.Network
                     // Convert the bytes to object
                     string data = Encoding.Default.GetString(_buffer);
                     var report = MessageUtils.Read(data);
-                    
+
                     if (report.Kind == ReportKind.Open)
                     {
                         Report = FindReport.Invoke(report.Message);
-                        var response = Report is null ? string.Empty : Report.TaskId;
-                        _socket.Send(Encoding.Default.GetBytes(response));
+                        sendPacket.Send(Report?.TaskId);
                     }
                     if (Report != null)
                     {
                         Report.MakeReport(report);
                     }
+                    if (report.Kind == ReportKind.Close)
+                    {
+                        sendPacket.Send(report.Message);
+                    }
                 }
+
             }
             catch (Exception ex)
             {
@@ -106,10 +118,9 @@ namespace RevitAction.Report.Network
 
         private void Disconnect()
         {
-
+            if(_socket.Connected == false) { return; }
             try
             {
-                ClientController.Remove(Report);
                 _socket?.Disconnect(true);
             }
             catch (Exception ex)

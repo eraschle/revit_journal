@@ -26,10 +26,9 @@ namespace RevitAction.Report
             sendPacket.Send(report);
         }
 
-        public bool TaskFound(string filePath)
+        public bool HasResponsed(ReportMessage report)
         {
-            return string.IsNullOrEmpty(filePath) == false
-                && filePath.Equals(receivePacket.ReceiveTaskFound());
+            return receivePacket.ReceivedResponse(report);
         }
 
         public void Connect(IPAddress address, short port)
@@ -53,7 +52,9 @@ namespace RevitAction.Report
 
         public void Disconnect()
         {
-            socket.Disconnect(true);
+            receivePacket.StopReceiving();
+            try { socket.Disconnect(true); }
+            catch (Exception) { }
         }
     }
 }

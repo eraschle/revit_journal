@@ -3,6 +3,7 @@ using RevitJournalUI.Tasks;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Threading;
 
 namespace RevitJournalUI.JournalTaskUI
 {
@@ -11,6 +12,14 @@ namespace RevitJournalUI.JournalTaskUI
         public event PropertyChangedEventHandler PropertyChanged;
 
         private const string PrefixExecutedTask = "Executed Tasks ";
+
+        private readonly DispatcherTimer timer;
+
+        public TaskOverviewViewModel()
+        {
+            timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+            timer.Start();
+        }
 
         public ObservableCollection<TaskViewModel> TaskModels { get; } = new ObservableCollection<TaskViewModel>();
 
@@ -95,6 +104,7 @@ namespace RevitJournalUI.JournalTaskUI
             {
                 MaxTasks += 1;
                 var viewModel = new TaskViewModel { TaskUoW = unitOfWork };
+                viewModel.AddTimer(timer);
                 TaskModels.Add(viewModel);
             }
         }
