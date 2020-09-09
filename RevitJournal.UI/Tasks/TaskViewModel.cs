@@ -1,4 +1,4 @@
-﻿using RevitAction.Report;
+﻿using RevitAction;
 using RevitJournal.Tasks;
 using RevitJournalUI.Helper;
 using System;
@@ -26,7 +26,7 @@ namespace RevitJournalUI.Tasks
             get { return TaskUoW.Task.Name; }
         }
 
-        public ReportStatus TaskStatus
+        public TaskAppStatus TaskStatus
         {
             get { return TaskUoW.Status; }
             set { OnPropertyChanged(nameof(TaskStatus)); }
@@ -69,19 +69,25 @@ namespace RevitJournalUI.Tasks
             timer.Tick -= DispatcherTimer_Tick;
         }
 
-        internal void AddProgessEvent()
+        internal void AddProgessEvent(Progress<TaskUnitOfWork> progress)
         {
-            TaskUoW.Progress.ProgressChanged += Progress_ProgressChanged;
+            if(progress is null) { return; }
+
+            progress.ProgressChanged += Progress_ProgressChanged;
         }
 
-        internal void RemoveProgessEvent()
+        internal void RemoveProgessEvent(Progress<TaskUnitOfWork> progress)
         {
-            TaskUoW.Progress.ProgressChanged -= Progress_ProgressChanged;
+            if(progress is null) { return; }
+   
+            progress.ProgressChanged -= Progress_ProgressChanged;
         }
 
         private void Progress_ProgressChanged(object sender, TaskUnitOfWork task)
         {
-            TaskStatus = task.Status;
+            if(task is null || task != TaskUoW) { return; }
+
+            TaskStatus = TaskUoW.Status;
 
             if (TaskUoW.HasTaskJournal)
             {
@@ -92,18 +98,19 @@ namespace RevitJournalUI.Tasks
                 JournalRecorde = TaskUoW.RecordeJournal.Name;
             }
 
-            CurrentAction = task.CurrentAction.Name;
+            CurrentAction = TaskUoW.CurrentAction.Name;
             ExecutedActions = TaskUoW.ExecutedActions;
             ExecutedActionsText = $"{executedActions} / {ActionsCount}";
             if (TaskUoW.Status.IsError)
             {
-
+                ErrorText = TaskUoW.ErrorAction.Name;
+                ErrorTextToolTip = TaskUoW.ErrorMessage;
             }
         }
 
         private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (TaskUoW.Status.IsStarted == false || TaskUoW.Status.Executed) { return; }
+            if (TaskUoW.Status.IsRunning) { return; }
 
             executionTime += timerInterval;
             TaskTime = $"{TimeSpanHelper.GetMinuteAndSeconds(executionTime)} / {TimeSpanHelper.GetMinuteAndSeconds(TaskUoW.Options.Arguments.Timeout)}";

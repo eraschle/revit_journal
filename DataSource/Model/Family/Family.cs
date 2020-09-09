@@ -71,14 +71,14 @@ namespace DataSource.Model.Family
             return omniClass != null;
         }
 
-        public void AddCatalog(Catalog.ACatalog catalog)
+        public void AddCatalog(ACatalog catalog)
         {
             if (catalog is null || Catalogs.Contains(catalog)) { return; }
 
             Catalogs.Add(catalog);
         }
 
-        public IList<Catalog.ACatalog> Catalogs { get; set; } = new List<Catalog.ACatalog>();
+        public IList<ACatalog> Catalogs { get; set; } = new List<ACatalog>();
 
         public bool HasCatalog<TCatalog>(out TCatalog catalog) where TCatalog : class
         {

@@ -23,12 +23,18 @@ namespace RevitAction.Report
 
         public void SendReport(ReportMessage report)
         {
-            sendPacket.Send(report);
+            var message = MessageUtils.Write(report);
+            sendPacket.Send(message);
         }
 
-        public bool HasResponsed(ReportMessage report)
+        public Guid GetResponsed()
         {
-            return receivePacket.ReceivedResponse(report);
+            var received = receivePacket.ReceivedResponse();
+            if (Guid.TryParse(received, out var newActionId))
+            {
+                return newActionId;
+            }
+            return Guid.Empty;
         }
 
         public void Connect(IPAddress address, short port)

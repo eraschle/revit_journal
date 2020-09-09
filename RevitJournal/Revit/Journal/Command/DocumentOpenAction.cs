@@ -8,6 +8,8 @@ namespace RevitJournal.Revit.Journal.Command
 {
     public class DocumentOpenAction : ATaskAction, ITaskActionJournal
     {
+        private static readonly ActionManager actionManager = new ActionManager();
+      
         public ActionParameter Audit { get; private set; }
 
         public DocumentOpenAction() : base("Open File")
@@ -52,7 +54,7 @@ namespace RevitJournal.Revit.Journal.Command
 
         public override Guid Id
         {
-            get { return ReportManager.OpenActionId; }
+            get { return actionManager.OpenActionId; }
         }
 
         public override void PreTask(RevitFamily family)

@@ -45,7 +45,7 @@
                 Margin="{StaticResource DefaultMargin}"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Center"/>
-        <Label Content="{Binding TimeoutTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, TargetNullValue=Timeout}"
+        <Label Content="{Binding TimeoutTitle, UpdateSourceTrigger=PropertyChanged}"
                Grid.Column="0" Grid.Row="2" 
                Margin="{StaticResource DefaultMargin}"
                HorizontalAlignment="Stretch" 

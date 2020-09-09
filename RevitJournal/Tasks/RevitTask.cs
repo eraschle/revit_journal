@@ -1,12 +1,16 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource;
+using DataSource.Model.FileSystem;
+using DataSource.Model.Product;
 using RevitAction.Action;
+using RevitJournal.Revit;
+using RevitJournal.Tasks.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace RevitJournal.Tasks
 {
-    public class RevitTask
+    public class RevitTask : IEquatable<RevitTask>
     {
         public RevitFamily Family { get; private set; }
 
@@ -15,14 +19,14 @@ namespace RevitJournal.Tasks
             get { return Family.RevitFile; }
         }
 
-        public RevitFamilyFile ResultFile { get; set; }
+        public RevitFamilyFile ResultFile { get; set; } = null;
 
         public bool HasResultFile
         {
             get { return ResultFile != null; }
         }
 
-        public RevitFamilyFile BackupFile { get; set; }
+        public RevitFamilyFile BackupFile { get; set; } = null;
 
         public bool HasBackupFile
         {
@@ -56,6 +60,24 @@ namespace RevitJournal.Tasks
             Actions.Add(command);
         }
 
+        internal bool HasActionById(Guid actionId, out ITaskAction action)
+        {
+            action = Actions.FirstOrDefault(act => act.Id == actionId);
+            return action != null;
+        }
+
+
+        internal bool HasNextAction(Guid actionId, out ITaskAction nextAction)
+        {
+            nextAction = null;
+            if (HasActionById(actionId, out var action))
+            {
+                var index = Actions.IndexOf(action) + 1;
+                nextAction = index < Actions.Count ? Actions[index] : null;
+            }
+            return nextAction != null;
+        }
+
         public bool HasCommands(out ICollection<ITaskActionCommand> actionCommands)
         {
             actionCommands = new List<ITaskActionCommand>();
@@ -68,21 +90,30 @@ namespace RevitJournal.Tasks
             return actionCommands.Count > 0;
         }
 
-        internal bool HasActionById(Guid actionId, out ITaskAction action)
-        {
-            action = Actions.FirstOrDefault(act => act.Id == actionId);
-            return action != null;
-        }
-
         public override bool Equals(object obj)
         {
-            return obj is RevitTask task &&
-                   EqualityComparer<RevitFamilyFile>.Default.Equals(Family.RevitFile, task.Family.RevitFile);
+            return Equals(obj as RevitTask);
+        }
+
+        public bool Equals(RevitTask other)
+        {
+            return other != null &&
+                   EqualityComparer<RevitFamily>.Default.Equals(Family, other.Family);
         }
 
         public override int GetHashCode()
         {
-            return 1472110217 + EqualityComparer<RevitFamilyFile>.Default.GetHashCode(Family.RevitFile);
+            return 548286385 + EqualityComparer<RevitFamily>.Default.GetHashCode(Family);
+        }
+
+        public static bool operator ==(RevitTask left, RevitTask right)
+        {
+            return EqualityComparer<RevitTask>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(RevitTask left, RevitTask right)
+        {
+            return !(left == right);
         }
     }
 }

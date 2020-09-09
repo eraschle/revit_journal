@@ -90,9 +90,9 @@ namespace DataSource
 
         public static RevitApp CreateCustom(string name, int version)
         {
-            if (HasVersion(version, false)) { return GetVersion(version, false); }
-
-            return new RevitApp(name, version);
+            return HasVersion(version, false) 
+                ? GetVersion(version, false) 
+                : new RevitApp(name, version);
         }
 
         public static bool HasVersion(int version, bool onlyExist)
@@ -111,7 +111,7 @@ namespace DataSource
             return RevitVersions[version];
         }
 
-        public static bool HasVersionOrNewer(int version, bool onlyExist)
+        public static bool HasVersionOrNewer(int version, bool onlyExist = true)
         {
             return HasVersion(version, onlyExist)
                 || GetNewerRevitVersion(version, onlyExist) > version;

@@ -5,7 +5,7 @@ namespace RevitJournal.Tasks.Options
 {
     public class TaskOptions
     {
-        private static string MyDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        private static readonly string MyDocuments = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
         public ReportOptions Report { get; set; } = new ReportOptions();
 
@@ -14,6 +14,16 @@ namespace RevitJournal.Tasks.Options
         public ParallelOptions Parallel { get; set; } = new ParallelOptions();
 
         public RevitArguments Arguments { get; set; } = new RevitArguments();
+
+        public bool UseMetadata
+        {
+            get { return Arguments.RevitApp.UseMetadata; }
+        }
+
+        public TimeSpan Timeout
+        {
+            get { return Arguments.Timeout; }
+        }
 
         public string RootDirectory { get; set; } = MyDocuments;
 

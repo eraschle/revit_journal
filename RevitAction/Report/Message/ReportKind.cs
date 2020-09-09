@@ -2,6 +2,6 @@
 {
     public enum ReportKind
     {
-        Unknown, Open, Journal, Status, Success, Error, Save, SaveAs, Close
+        Status, Error
     }
 }

@@ -81,8 +81,8 @@ namespace RevitJournalUI.JournalTaskUI
                 if (RootModel is null) { return new List<RevitFamily>(); }
 
                 return RootModel.RecursiveFamilyViewModel
-                    .Where(model => IsFilteredAndCheckedModel(model))
-                    .Select(model => model.RevitFamily).ToList();
+                                .Where(model => IsFilteredAndCheckedModel(model))
+                                .Select(model => model.RevitFamily).ToList();
             }
         }
 
@@ -90,9 +90,8 @@ namespace RevitJournalUI.JournalTaskUI
         {
             get
             {
-                return RecursiveRevitFamilies
-                    .Where(model => model.HasValidMetadata)
-                    .ToList();
+                return RecursiveRevitFamilies.Where(model => model.HasValidMetadata)
+                                             .ToList();
             }
         }
 

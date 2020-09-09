@@ -1,6 +1,4 @@
-﻿using Autodesk.Revit.ApplicationServices;
-using Autodesk.Revit.DB;
-using RevitAction.Action;
+﻿using RevitAction.Action;
 using RevitAction.Report.Message;
 using System;
 using System.Net;
@@ -9,16 +7,10 @@ namespace RevitAction.Report
 {
     public class ReportManager
     {
+        private readonly static ActionManager actionManager = new ActionManager();
+
         private readonly IPAddress _serverAddress;
         private readonly short _serverPort;
-
-        public static Guid OpenActionId { get; } = new Guid("b76c8f93-b406-42ab-93a5-8a155ba04641");
-
-        public static Guid SaveActionId { get; } = new Guid("5dd16def-6869-4747-a660-113f5a273922");
-
-        public static Guid SaveAsActionId { get; } = new Guid("1848a457-4743-4f35-ae4d-9a85264237b2");
-
-        public static Guid CloseActionId { get; } = new Guid("63d85178-d717-4b4b-8333-25e9aef02284");
 
         public ReportManager(IPAddress address = null, short port = 8888)
         {
@@ -28,101 +20,63 @@ namespace RevitAction.Report
 
         public ReportPublisher Publisher { get; private set; }
 
-        public Guid ActionId { get; set; }
+        public Guid ActionId { get; set; } = actionManager.InitialActionId;
 
-        public void StartAction()
-        {
-            var report = new ReportMessage { Kind = ReportKind.Unknown };
-            Send(report);
-        }
-
-        public bool OpenReport(Document document)
+        internal void InitialReport()
         {
             var report = new ReportMessage
             {
-                Kind = ReportKind.Open,
-                Message = document.PathName
-            };
-            Send(report);
-            return Publisher.HasResponsed(report);
-        }
-
-        public void JournalReport(Document document)
-        {
-            var report = new ReportMessage
-            {
-                Kind = ReportKind.Journal,
-                Message = document.Application.RecordingJournalFilename
-            };
-            Send(report);
-        }
-
-        public void SaveReport(Document document)
-        {
-            var report = new ReportMessage
-            {
-                Kind = ReportKind.Save,
-                Message = document.PathName
-            };
-            Send(report);
-        }
-
-        public void SaveAsReport(Document document)
-        {
-            var report = new ReportMessage
-            {
-                Kind = ReportKind.SaveAs,
-                Message = document.PathName
-            };
-            Send(report);
-        }
-
-        public bool CloseReport()
-        {
-            var report = new ReportMessage
-            {
-                Kind = ReportKind.Close,
-                Message = "Closed"
-            };
-            Send(report);
-            return Publisher.HasResponsed(report);
-        }
-
-        public void SuccessReport(string message)
-        {
-            var report = new SuccessMessage { Message = message };
-            Send(report);
-        }
-
-        public void ActionStatusReport(ActionStatus status)
-        {
-            var report = new ReportMessage
-            {
+                ActionId = ActionId,
                 Kind = ReportKind.Status,
-                Message = status.ToString()
+                Message = "Initial"
             };
-            Send(report);
+            Publisher.SendReport(report);
+        }
+
+        internal bool OpenReport(string message)
+        {
+            ActionId = actionManager.OpenActionId;
+            StatusReport(message);
+            return ActionId.Equals(actionManager.JournalActionId);
+        }
+
+        internal void JournalReport(string message)
+        {
+            StatusReport(message);
+        }
+
+        internal void SaveReport(string message)
+        {
+            StatusReport(message);
+        }
+
+        internal bool CloseReport()
+        {
+            StatusReport("Close");
+            return ActionId.Equals(actionManager.CloseActionId);
+        }
+
+        public void StatusReport(string message)
+        {
+            var report = new ReportMessage
+            {
+                ActionId = ActionId,
+                Kind = ReportKind.Status,
+                Message = message
+            };
+            Publisher.SendReport(report);
+            ActionId = Publisher.GetResponsed();
         }
 
         public void Error(string message, Exception exception = null)
         {
-            if (exception != null)
+            var report = new ReportMessage
             {
-                message = string.Join(Environment.NewLine, message, exception.Message, exception.StackTrace);
-            }
-            var report = new ErrorMessage
-            {
+                ActionId = ActionId,
                 Kind = ReportKind.Error,
-                Message = message
+                Message = message,
+                Exception = exception
             };
-            Send(report);
-        }
-
-        private void Send(ReportMessage report)
-        {
-            if (report is null) { throw new ArgumentNullException(nameof(report)); }
-
-            report.ActionId = ActionId;
             Publisher.SendReport(report);
         }
 

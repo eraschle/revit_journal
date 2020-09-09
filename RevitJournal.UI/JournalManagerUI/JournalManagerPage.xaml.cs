@@ -34,7 +34,7 @@ namespace RevitJournalUI.JournalManagerUI
         {
             Setup.Visibility = System.Windows.Visibility.Visible;
             Progess.Visibility = System.Windows.Visibility.Collapsed;
-            ViewModel.SetupFilterVisibility = System.Windows.Visibility.Visible;
+            ViewModel.FileFilterVisibility = System.Windows.Visibility.Visible;
             ViewModel.UpdateDuplicateName();
         }
 

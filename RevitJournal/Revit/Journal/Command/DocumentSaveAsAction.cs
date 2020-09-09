@@ -11,6 +11,8 @@ namespace RevitJournal.Revit.Journal.Command
     {
         private const string suffixFormatString = "yyyy-dd-MM";
 
+        private static readonly ActionManager actionManager = new ActionManager();
+
         private readonly ActionParameter fileSuffix;
         private readonly ActionParameter saveFolder;
         private readonly ActionParameter addAtEnd;
@@ -60,7 +62,7 @@ namespace RevitJournal.Revit.Journal.Command
 
         public override Guid Id
         {
-            get { return ReportManager.SaveAsActionId; }
+            get { return actionManager.SaveActionId; }
         }
 
 

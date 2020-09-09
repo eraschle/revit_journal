@@ -1,20 +1,34 @@
 ﻿using RevitAction.Report;
-using RevitAction.Report.Network;
 using RevitJournal.Tasks.Options;
 using System;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 
-namespace RevitJournal.Tasks.Report
+namespace RevitJournal.Report
 {
-    public class ReportServer
+    public class ReportServer<TResult> where TResult : class, IReportReceiver
     {
         public const int Port = 8888;
 
+        public ClientController<TResult> ClientController { get; set; } = new ClientController<TResult>();
+
         public Socket Socket { get; private set; }
 
-        public Func<string, IReportReceiver> FindFunc { get; set; }
+        public void SetFindReport(Func<string, TResult> findReport)
+        {
+            ClientController.FindReport = findReport;
+        }
+
+        public void SetProgress(IProgress<TResult> progress)
+        {
+            ClientController.Progress = progress;
+        }
+
+        public void DisconnectClient(string taskId)
+        {
+            ClientController.Remove(taskId);
+        }
 
         public void StartListening(TaskOptions options)
         {
@@ -38,9 +52,9 @@ namespace RevitJournal.Tasks.Report
         {
             try
             {
-                Console.WriteLine($"Accept CallBack port:{Port} protocol type: {ProtocolType.Tcp}");
+                Debug.WriteLine($"Accept CallBack port:{Port} protocol type: {ProtocolType.Tcp}");
                 var socket = Socket.EndAccept(result);
-                var client = ClientController.Add(socket, FindFunc);
+                var client = ClientController.Add(socket);
                 client.StartReceiving();
 
                 Socket.BeginAccept(AcceptCallback, Socket);
@@ -56,15 +70,13 @@ namespace RevitJournal.Tasks.Report
             try
             {
                 ClientController.RemoveClients();
+                if(Socket.Connected == false) { return; }
+
                 Socket.Disconnect(true);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("stop listening error" + ex);
-            }
-            finally
-            {
-                FindFunc = null;
+                Debug.WriteLine("stop listening error: " + ex.Message);
             }
         }
     }

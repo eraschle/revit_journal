@@ -25,14 +25,6 @@ namespace RevitJournal.Revit.Addin
             addinApp.VendorId = appInfo.VendorId;
             addinApp.Assembly = appInfo.AssemblyPath;
             addinApp.FullClassName = appInfo.FullClassName;
-            manifest.Save();
-        }
-
-        public static void CreateManifest(string outputPath, ITaskActionCommand action)
-        {
-            if (action is null) { throw new ArgumentNullException(nameof(action)); }
-
-            var manifest = GetManifest(outputPath);
             var commands = manifest.AddInCommands;
             if (HasCommand(commands, DummyGuid))
             {
@@ -43,6 +35,15 @@ namespace RevitJournal.Revit.Addin
                     manifest.Save();
                 }
             }
+            manifest.Save();
+        }
+
+        public static void CreateManifest(string outputPath, ITaskActionCommand action)
+        {
+            if (action is null) { throw new ArgumentNullException(nameof(action)); }
+
+            var manifest = GetManifest(outputPath);
+            var commands = manifest.AddInCommands;
             if (HasCommand(commands, action.Id) == false)
             {
                 var newCommand = new RevitAddInCommand(action.AssemblyPath,

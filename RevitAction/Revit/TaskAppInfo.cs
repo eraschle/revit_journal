@@ -1,4 +1,4 @@
-﻿namespace RevitAction
+﻿namespace RevitAction.Revit
 {
     public class TaskAppInfo : ITaskAppInfo
     {

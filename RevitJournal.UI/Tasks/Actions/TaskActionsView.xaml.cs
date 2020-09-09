@@ -22,5 +22,10 @@ namespace RevitJournalUI.Tasks.Actions
         {
             DialogResult = true;
         }
+
+        internal void UpdateCheckedActions(IEnumerable<ITaskAction> actions)
+        {
+            ViewModel.UpdateAction(actions);
+        }
     }
 }

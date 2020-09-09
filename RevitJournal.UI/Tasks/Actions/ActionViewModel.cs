@@ -38,7 +38,6 @@ namespace RevitJournalUI.Tasks.Actions
             foreach (var parameter in Action.Parameters)
             {
                 var viewModel = ParameterVmBuilder.Build(parameter);
-
                 if (viewModel is null) { continue; }
 
                 Parameters.Add(viewModel);

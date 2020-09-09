@@ -1,6 +1,6 @@
 ﻿using DataSource.Model.FileSystem;
 
-namespace RevitJournal.Tasks.Report
+namespace RevitJournal.Report
 {
     public class TaskReportFile : AFile
     {

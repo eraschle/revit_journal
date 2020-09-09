@@ -10,36 +10,16 @@ namespace RevitAction.Report.Message
 
         public string Message { get; set; }
 
-        public int GetTaskStatus()
+        public Exception Exception { get; set; } = null;
+        
+        public bool HasException
         {
-            switch (Kind)
-            {
-                case ReportKind.Open:
-                    return ReportStatus.Open;
-                case ReportKind.Journal:
-                case ReportKind.Status:
-                case ReportKind.Success:
-                case ReportKind.Save:
-                case ReportKind.SaveAs:
-                    return ReportStatus.Running;
-                case ReportKind.Error:
-                    return ReportStatus.Error;
-                case ReportKind.Close:
-                    return ReportStatus.Finish;
-                case ReportKind.Unknown:
-                default:
-                    return ReportStatus.Unknown;
-            }
+            get { return Exception != null; }
         }
 
-        public bool IsError
+        public override string ToString()
         {
-            get { return Kind == ReportKind.Error; }
-        }
-
-        public bool IsFinished
-        {
-            get { return Kind == ReportKind.Close; }
+            return $"{Kind}: {Message}";
         }
     }
 }

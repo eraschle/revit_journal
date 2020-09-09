@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RevitAction.Report
+namespace RevitAction
 {
-    public class ReportStatus
+    public class TaskAppStatus
     {
-        public const int Unknown    = 0;
-        public const int Initial    = 2;
-        public const int Waiting    = 4;
-        public const int Started    = 8;
-        public const int Open       = 16;
-        public const int Running    = 32;
-        public const int Cancel     = 64;
-        public const int Error      = 128;
-        public const int Timeout    = 256;
-        public const int Finish     = 512;
+        public const int Unknown = 0;
+        public const int Initial = 1;
+        public const int Waiting = 2;
+        public const int Started = 4;
+        public const int Open = 8;
+        public const int Run = 16;
+        public const int Cancel = 32;
+        public const int Error = 64;
+        public const int Timeout = 128;
+        public const int Finish = 256;
+        public const int CleanUp = 512;
 
         private static IList<int> allStatus;
         public static IList<int> All
@@ -23,7 +24,7 @@ namespace RevitAction.Report
             {
                 if (allStatus is null)
                 {
-                    allStatus = new List<int> { Unknown, Initial, Waiting, Started, Open, Running, Cancel, Error, Timeout, Finish };
+                    allStatus = new List<int> { Unknown, Initial, Waiting, Started, Open, Run, Cancel, Error, Timeout, Finish, CleanUp };
                 }
                 return allStatus;
             }
@@ -47,6 +48,12 @@ namespace RevitAction.Report
             }
         }
 
+        public bool IsRunning
+        {
+            get { return (IsStarted || IsOpen || IsRun) && Executed == false; }
+        }
+
+
         public void SetStatus(int status)
         {
             if (All.Contains(status) == false)
@@ -58,13 +65,25 @@ namespace RevitAction.Report
             Status |= status;
         }
 
+        public bool IsInitial
+        {
+            get
+            {
+                return IsReportStatus(Initial)
+                  && IsRunning == false
+                  && Executed == false
+                  && IsCleanUp == false;
+            }
+        }
+
         public bool IsWaiting
         {
             get
             {
                 return IsReportStatus(Waiting)
-                  && IsStarted == false
-                  && Executed == false;
+                  && IsRunning == false
+                  && Executed == false
+                  && IsCleanUp == false;
             }
         }
 
@@ -73,7 +92,28 @@ namespace RevitAction.Report
             get
             {
                 return IsReportStatus(Started)
-                  && Executed == false;
+                  && IsOpen == false
+                  && IsCleanUp == false;
+            }
+        }
+
+        public bool IsOpen
+        {
+            get
+            {
+                return IsReportStatus(Open)
+                    && IsRun == false
+                  && IsCleanUp == false;
+            }
+        }
+
+        public bool IsRun
+        {
+            get
+            {
+                return IsReportStatus(Run)
+                    && Executed == false
+                    && IsCleanUp == false;
             }
         }
 
@@ -97,17 +137,14 @@ namespace RevitAction.Report
             get { return IsReportStatus(Error); }
         }
 
+        public bool IsCleanUp
+        {
+            get { return IsReportStatus(CleanUp); }
+        }
+
         private bool IsReportStatus(int status)
         {
             return (Status & status) == status;
-        }
-
-        public string GetStatusText()
-        {
-            return IsWaiting ? "Wait" 
-                : IsStarted ? "Run" 
-                : Executed ? "Finish" 
-                : "Unknown";
         }
     }
 }

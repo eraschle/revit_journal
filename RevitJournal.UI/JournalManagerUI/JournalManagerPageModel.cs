@@ -3,7 +3,6 @@ using RevitAction.Action;
 using RevitJournal.Tasks;
 using RevitJournal.Tasks.Actions;
 using RevitJournal.Tasks.Options;
-using RevitJournal.Tasks.Report;
 using RevitJournalUI.JournalTaskUI;
 using RevitJournalUI.JournalTaskUI.FamilyFilter;
 using RevitJournalUI.JournalTaskUI.Models;
@@ -13,7 +12,6 @@ using RevitJournalUI.Tasks.Actions;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows;
@@ -33,7 +31,7 @@ namespace RevitJournalUI.JournalManagerUI
         public const string PrefixEditButton = "Edit";
 
         public TaskManager TaskManager { get; private set; }
-        
+
         public TaskOptions TaskOptions { get; private set; }
 
         public JournalManagerPageModel()
@@ -54,7 +52,7 @@ namespace RevitJournalUI.JournalManagerUI
             FamiliesViewModel.PropertyChanged += new PropertyChangedEventHandler(OnCheckedChanged);
 
             SetupFilterCommand = new RelayCommand<ObservableCollection<DirectoryViewModel>>(SetupFilterCommandAction);
-            SetupJournalCommand = new RelayCommand<object>(SetupJournalCommandAction, SetupJournalCommandPredicate);
+            TaskActionsCommand = new RelayCommand<object>(TaskActionsCommandAction, TaskActionsCommandPredicate);
 
             var myDocument = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             FamilyDirectory = myDocument;
@@ -78,7 +76,7 @@ namespace RevitJournalUI.JournalManagerUI
             get { return TaskOptions.RootDirectory; }
             set
             {
-                if (StringUtils.Equals(TaskOptions.RootDirectory ,value)) { return; }
+                if (StringUtils.Equals(TaskOptions.RootDirectory, value)) { return; }
 
                 TaskOptions.RootDirectory = value;
                 OnPropertyChanged(nameof(FamilyDirectory));
@@ -191,16 +189,16 @@ namespace RevitJournalUI.JournalManagerUI
         #region Filtering
 
 
-        private Visibility _SetupFilterVisibility = Visibility.Collapsed;
-        public Visibility SetupFilterVisibility
+        private Visibility fileFilterVisibility = Visibility.Collapsed;
+        public Visibility FileFilterVisibility
         {
-            get { return _SetupFilterVisibility; }
+            get { return fileFilterVisibility; }
             set
             {
-                if (_SetupFilterVisibility == value) { return; }
+                if (fileFilterVisibility == value) { return; }
 
-                _SetupFilterVisibility = value;
-                OnPropertyChanged(nameof(SetupFilterVisibility));
+                fileFilterVisibility = value;
+                OnPropertyChanged(nameof(FileFilterVisibility));
             }
         }
 
@@ -234,33 +232,41 @@ namespace RevitJournalUI.JournalManagerUI
 
         #endregion
 
-        private Visibility setupJournalVisibility = Visibility.Visible;
-        public Visibility SetupJournalVisibility
+        private Visibility taskActionsVisibility = Visibility.Visible;
+        public Visibility TaskActionsVisibility
         {
-            get { return setupJournalVisibility; }
+            get { return taskActionsVisibility; }
             set
             {
-                if (setupJournalVisibility == value) { return; }
+                if (taskActionsVisibility == value) { return; }
 
-                setupJournalVisibility = value;
-                OnPropertyChanged(nameof(SetupJournalVisibility));
+                taskActionsVisibility = value;
+                OnPropertyChanged(nameof(TaskActionsVisibility));
             }
         }
 
-        public ICommand SetupJournalCommand { get; }
+        public ICommand TaskActionsCommand { get; }
 
-        private void SetupJournalCommandAction(object parameter)
+        private void TaskActionsCommandAction(object parameter)
         {
             var actions = ExternalAction.GetTaskActions(ActionDirectory);
             var dialog = new TaskActionsView(actions, TaskOptions);
+            if (Actions.Count > 0)
+            {
+                dialog.UpdateCheckedActions(Actions);
+            }
             var result = dialog.ShowDialog();
             if (result == true)
             {
-                UpdateActions(dialog.ViewModel);
+                Actions.Clear();
+                foreach (var action in dialog.ViewModel.CheckedActions)
+                {
+                    Actions.Add(action);
+                }
             }
         }
 
-        private bool SetupJournalCommandPredicate(object parameter)
+        private bool TaskActionsCommandPredicate(object parameter)
         {
             return string.IsNullOrEmpty(TaskOptions.ActionDirectory) == false
                 && Directory.Exists(TaskOptions.ActionDirectory);
@@ -268,15 +274,6 @@ namespace RevitJournalUI.JournalManagerUI
 
         public ObservableCollection<ITaskAction> Actions { get; }
             = new ObservableCollection<ITaskAction>();
-
-        private void UpdateActions(TaskActionsViewModel viewModel)
-        {
-            Actions.Clear();
-            foreach (var commands in viewModel.CheckedActions)
-            {
-                Actions.Add(commands);
-            }
-        }
 
         #region Revit Content Overview
 
@@ -331,28 +328,12 @@ namespace RevitJournalUI.JournalManagerUI
         private void CreateCommandAction(FamilyOverviewViewModel model)
         {
             TaskManager.ClearTasks();
-            var arguments = TaskOptions.Arguments;
-            var useMetadataRevitVersion = arguments.RevitApp.UseMetadata;
 
-            const bool runnungApps = true;
             foreach (var family in model.RecursiveRevitFamilies)
             {
-                if (family.HasRepairableMetadata == false
-                    || (useMetadataRevitVersion && family.HasValidMetadata == false)) { continue; }
+                if ((TaskOptions.UseMetadata && TaskManager.IsRevitInstalled(family, out _) == false)
+                    || TaskManager.IsExecutable(family, TaskOptions) == false) { continue; }
 
-                if (useMetadataRevitVersion)
-                {
-                    var metadata = family.Metadata;
-                    if (metadata.HasProduct(out var product) == false
-                        || ProductManager.HasVersionOrNewer(product.Version, runnungApps) == false)
-                    {
-                        Debug.WriteLine("No vaid Product Version installed.");
-                        continue;
-                    }
-
-                    var revitApp = ProductManager.GetVersionOrNewer(product.Version, runnungApps);
-                    arguments.RevitApp = revitApp;
-                }
                 var task = new RevitTask(family);
                 foreach (var action in Actions)
                 {
@@ -367,8 +348,8 @@ namespace RevitJournalUI.JournalManagerUI
             FamiliesVisibility = Visibility.Collapsed;
             BackVisibility = Visibility.Visible;
             TaskVisibility = Visibility.Visible;
-            SetupJournalVisibility = Visibility.Collapsed;
-            SetupFilterVisibility = Visibility.Collapsed;
+            TaskActionsVisibility = Visibility.Collapsed;
+            FileFilterVisibility = Visibility.Collapsed;
             TaskOptionViewModel.OptionsEnabled = false;
         }
 
@@ -381,8 +362,8 @@ namespace RevitJournalUI.JournalManagerUI
             TaskVisibility = Visibility.Collapsed;
             BackVisibility = Visibility.Collapsed;
 
-            SetupJournalVisibility = Visibility.Visible;
-            SetupFilterVisibility = Visibility.Visible;
+            TaskActionsVisibility = Visibility.Visible;
+            FileFilterVisibility = Visibility.Visible;
             TaskOptionViewModel.OptionsEnabled = true;
         }
 
@@ -508,16 +489,16 @@ namespace RevitJournalUI.JournalManagerUI
             CancelVisibility = Visibility.Visible;
             BackVisibility = Visibility.Collapsed;
 
-            TaskManager.StartServer(TaskOptions);
-            TasksViewModel.AddProgessEvent();
+            TaskManager.StartServer(TaskOptions, TasksViewModel.Progress);
+            TasksViewModel.AddEvents();
             using (var cancel = new CancellationTokenSource())
             {
                 Cancellation = cancel;
-                await TaskManager.ExecuteTasks(TaskOptions, Cancellation.Token)
+                await TaskManager.ExecuteTasks(TaskOptions, TasksViewModel.Progress, Cancellation.Token)
                                  .ConfigureAwait(false);
                 Cancellation = null;
             }
-            TasksViewModel.RemoveProgessEvent();
+            TasksViewModel.RemoveEvents();
             TaskManager.StopServer();
             ExecuteEnable = true;
         }

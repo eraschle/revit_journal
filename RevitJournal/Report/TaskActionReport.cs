@@ -1,20 +1,12 @@
 ﻿using System.Collections.Generic;
-using RevitAction.Report;
 using RevitAction.Report.Message;
 
-namespace RevitJournal.Tasks.Report
+namespace RevitJournal.Report
 {
     public class TaskActionReport
     {
         private readonly Dictionary<ReportKind, List<string>> messages
             = new Dictionary<ReportKind, List<string>>();
-
-        public ActionStatus Status { get; set; }
-
-        public bool IsExecuted
-        {
-            get { return Status == ActionStatus.Finished || Status == ActionStatus.Error; }
-        }
 
         public void Add(ReportMessage report)
         {
@@ -27,14 +19,14 @@ namespace RevitJournal.Tasks.Report
             messages[report.Kind].Add(report.Message);
         }
 
-        public IEnumerable<string> SuccessMessages
+        public IEnumerable<string> StatusReports
         {
-            get { return messages[ReportKind.Success]; }
+            get { return messages[ReportKind.Status]; }
         }
 
-        public IEnumerable<string> ErrorMessages
+        public bool HasStatusReports
         {
-            get { return messages[ReportKind.Error]; }
+            get { return messages.ContainsKey(ReportKind.Status); }
         }
     }
 }

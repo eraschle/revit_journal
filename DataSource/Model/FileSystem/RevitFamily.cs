@@ -1,10 +1,11 @@
 ﻿using DataSource.Helper;
 using DataSource.Metadata;
+using System.Collections.Generic;
 using DS = DataSource.Model.Family;
 
 namespace DataSource.Model.FileSystem
 {
-    public class RevitFamily
+    public class RevitFamily : System.IEquatable<RevitFamily>
     {
         private readonly MetadataFamilyJsonContainer MetaDataContainer;
         public const string EditedSuffix = "edited";
@@ -81,6 +82,32 @@ namespace DataSource.Model.FileSystem
         public DS.Family ReadEditedMetaData()
         {
             return MetaDataContainer.ReadMetaData(EditedMetadataFile);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as RevitFamily);
+        }
+
+        public bool Equals(RevitFamily other)
+        {
+            return other != null &&
+                   EqualityComparer<RevitFamilyFile>.Default.Equals(RevitFile, other.RevitFile);
+        }
+
+        public override int GetHashCode()
+        {
+            return 1472110217 + EqualityComparer<RevitFamilyFile>.Default.GetHashCode(RevitFile);
+        }
+
+        public static bool operator ==(RevitFamily left, RevitFamily right)
+        {
+            return EqualityComparer<RevitFamily>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(RevitFamily left, RevitFamily right)
+        {
+            return !(left == right);
         }
     }
 }

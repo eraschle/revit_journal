@@ -12,7 +12,7 @@ namespace RevitJournalUI.Tasks.Actions.Parameter
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public IActionParameter Parameter { get; }
+        public IActionParameter Parameter { get; set; }
 
         protected string DefaultValue { get; set; }
 
@@ -24,13 +24,15 @@ namespace RevitJournalUI.Tasks.Actions.Parameter
             }
 
             Parameter = parameter;
-            Value = parameter.Value;
             IsEnable = isEnable;
             SetDefaultCommand(parameter);
             SetClearCommand();
         }
 
-        public string Name { get { return Parameter.Name; } }
+        public string Name
+        {
+            get { return Parameter.Name; }
+        }
 
         public virtual string Value
         {
@@ -74,7 +76,6 @@ namespace RevitJournalUI.Tasks.Actions.Parameter
 
         public bool HasCommand { get { return Command != null; } }
 
-
         #region Clear Command
 
         public virtual ICommand ClearCommand { get; set; } = null;
@@ -102,7 +103,10 @@ namespace RevitJournalUI.Tasks.Actions.Parameter
 
         public virtual ICommand DefaultCommand { get; set; } = null;
 
-        public bool HasDefaultCommand { get { return DefaultCommand != null; } }
+        public bool HasDefaultCommand
+        {
+            get { return DefaultCommand != null; }
+        }
 
         protected void SetDefaultCommand(IActionParameter parameter)
         {

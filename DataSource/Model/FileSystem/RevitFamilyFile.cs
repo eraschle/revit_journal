@@ -31,9 +31,9 @@ namespace DataSource.Model.FileSystem
             if (backupSplit.Length == 1) { return false; }
 
             var backup = backupSplit.LastOrDefault();
-            if (string.IsNullOrWhiteSpace(backup)) { return false; }
-
-            return int.TryParse(backup, out _);
+            return string.IsNullOrWhiteSpace(backup) == false
+                && backup.Length == 4 
+                && int.TryParse(backup, out _);
         }
 
         public IEnumerable<RevitFamilyFile> Backups
@@ -42,8 +42,16 @@ namespace DataSource.Model.FileSystem
             {
                 var search = string.Concat(Name, Constant.Point, Constant.Star, Constant.Point, Extension);
                 return Directory.GetFiles(ParentFolder, search, SearchOption.TopDirectoryOnly)
-                    .Select(path => new RevitFamilyFile { FullPath = path })
-                    .Where(rvt => rvt.IsBackup);
+                                .Select(path => new RevitFamilyFile { FullPath = path })
+                                .Where(rvt => rvt.IsBackup);
+            }
+        }
+
+        public void DeleteBackups()
+        {
+            foreach (var file in Backups)
+            {
+                file.Delete();
             }
         }
     }

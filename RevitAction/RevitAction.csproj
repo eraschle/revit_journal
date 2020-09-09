@@ -56,6 +56,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Action\ATaskActionDialog.cs" />
+    <Compile Include="Action\ITaskActionDialog.cs" />
     <Compile Include="Action\ITaskActionJournal.cs" />
     <Compile Include="Action\ITaskActionCommand.cs" />
     <Compile Include="Action\Parameter\ActionParameterSelect.cs" />
@@ -68,15 +70,13 @@
     <Compile Include="Action\Parameter\ParameterListConverter.cs" />
     <Compile Include="ITaskAppInfo.cs" />
     <Compile Include="ITaskInfo.cs" />
-    <Compile Include="Report\Message\SuccessMessage.cs" />
+    <Compile Include="Action\ActionManager.cs" />
     <Compile Include="Report\Message\MessageUtils.cs" />
-    <Compile Include="Report\Network\ClientController.cs" />
     <Compile Include="Report\IReportReceiver.cs" />
     <Compile Include="Report\IReportPublisher.cs" />
+    <Compile Include="Report\Message\ReportsResponse.cs" />
     <Compile Include="Report\Message\ReportMessage.cs" />
-    <Compile Include="Report\Message\ErrorMessage.cs" />
     <Compile Include="Report\Network\ReceivePacket.cs" />
-    <Compile Include="Report\Network\ReportClient.cs" />
     <Compile Include="Report\ReportManager.cs" />
     <Compile Include="Report\ReportPublisher.cs" />
     <Compile Include="Report\Message\ReportKind.cs" />
@@ -84,11 +84,12 @@
     <Compile Include="Action\ITaskAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Report\Network\SendPacket.cs" />
-    <Compile Include="Report\ReportStatus.cs" />
+    <Compile Include="Revit\RevitExternalDialogCommand.cs" />
+    <Compile Include="Revit\ARevitExternalCommand.cs" />
+    <Compile Include="TaskAppStatus.cs" />
     <Compile Include="Report\ITaskReport.cs" />
-    <Compile Include="Report\ActionStatus.cs" />
-    <Compile Include="TaskAppInfo.cs" />
-    <Compile Include="TaskApp.cs" />
+    <Compile Include="Revit\TaskAppInfo.cs" />
+    <Compile Include="Revit\TaskApp.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataSource\DataSource.csproj">

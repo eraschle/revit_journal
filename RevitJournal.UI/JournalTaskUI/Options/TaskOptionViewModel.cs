@@ -16,7 +16,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
 
         private const string prefixParallelProcess = "Parallel Processes";
         private const string prefixTimeoutTitle = "Timeout";
-        
+
         public TaskOptions Options { get; set; }
 
         public TaskOptionViewModel()
@@ -48,27 +48,14 @@ namespace RevitJournalUI.JournalTaskUI.Options
             }
         }
 
-        private string timeoutTitle = CreateTimeoutTitle(RevitArguments.DefaultTimeout);
         public string TimeoutTitle
         {
-            get { return timeoutTitle; }
-            set
-            {
-                if (StringUtils.Equals(timeoutTitle, value)) { return; }
-
-                timeoutTitle = value;
-                OnPropertyChanged(nameof(TimeoutTitle));
-            }
-        }
-
-        private static string CreateTimeoutTitle(TimeSpan timeSpan)
-        {
-            return string.Concat(prefixTimeoutTitle, " [", TimeSpanHelper.GetMinutes(timeSpan), " min]");
+            get { return CreateTimeoutTitle(); }
         }
 
         private string CreateTimeoutTitle()
         {
-            return CreateTimeoutTitle(Options.Arguments.Timeout);
+            return string.Concat(prefixTimeoutTitle, " [", TimeSpanHelper.GetMinutes(Options.Timeout), " min]");
         }
 
         public static int TimeoutMinimum
@@ -83,15 +70,15 @@ namespace RevitJournalUI.JournalTaskUI.Options
 
         public int Timeout
         {
-            get { return (int)Options.Arguments.Timeout.TotalMinutes; }
+            get { return (int)Options.Timeout.TotalMinutes; }
             set
             {
                 var newValue = TimeSpan.FromMinutes(value);
-                if (Options.Arguments.Timeout == newValue) { return; }
+                if (Options.Timeout == newValue) { return; }
 
                 Options.Arguments.Timeout = newValue;
-                TimeoutTitle = CreateTimeoutTitle();
                 OnPropertyChanged(nameof(Timeout));
+                OnPropertyChanged(nameof(TimeoutTitle));
             }
         }
 

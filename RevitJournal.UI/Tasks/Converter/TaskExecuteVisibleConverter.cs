@@ -1,4 +1,4 @@
-﻿using RevitAction.Report;
+﻿using RevitAction;
 using System;
 using System.Globalization;
 using System.Windows;
@@ -10,7 +10,7 @@ namespace RevitJournalUI.Tasks.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is ReportStatus status) || status.Executed || status.IsStarted == false)
+            if (!(value is TaskAppStatus status) || status.Executed || status.IsRunning == false)
             {
                 return Visibility.Collapsed;
             }

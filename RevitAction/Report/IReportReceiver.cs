@@ -1,13 +1,16 @@
 ﻿using RevitAction.Report.Message;
+using System;
 
 namespace RevitAction.Report
 {
     public interface IReportReceiver
     {
-        void SetStatus(int status);
+        string TaskId { get; }
 
         void MakeReport(ReportMessage report);
 
-        string TaskId { get; }
+        Action<string> DisconnectAction { get; set; }
+
+        Guid GetNextAction(Guid actionId);
     }
 }

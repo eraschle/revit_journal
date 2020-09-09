@@ -6,7 +6,7 @@ using DataSource.Model.FileSystem;
 using RevitAction.Report;
 using RevitJournal.Revit.Journal;
 
-namespace RevitJournal.Tasks.Report
+namespace RevitJournal.Report
 {
     public class TaskReport : ITaskReport
     {

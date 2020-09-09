@@ -1,7 +1,5 @@
-﻿using RevitAction.Report;
-using System;
+﻿using System;
 using System.Globalization;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -12,35 +10,34 @@ namespace RevitJournalUI.Tasks.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is ReportStatus status))
+            if (!(value is RevitAction.TaskAppStatus status))
             {
                 return new SolidColorBrush(Colors.Cyan);
             }
 
-            if (status.IsWaiting)
+            if (status.IsWaiting || status.IsInitial)
             {
                 return new SolidColorBrush(Colors.Yellow);
             }
-            else if (status.IsStarted)
+            else if (status.IsRunning)
             {
                 return new SolidColorBrush(Colors.GreenYellow);
             }
             else if (status.Executed)
             {
-                var color = new SolidColorBrush(Colors.Green);
                 if (status.IsCancel)
                 {
-                    color = new SolidColorBrush(Colors.OrangeRed);
+                    return new SolidColorBrush(Colors.OrangeRed);
                 }
                 if (status.IsError)
                 {
-                    color = new SolidColorBrush(Colors.Red);
+                    return new SolidColorBrush(Colors.Red);
                 }
                 else if (status.IsTimeout)
                 {
-                    color = new SolidColorBrush(Colors.DarkRed);
+                    return new SolidColorBrush(Colors.DarkRed);
                 }
-                return color;
+                return new SolidColorBrush(Colors.Green);
             }
             return value is Control control ? control.Background : new SolidColorBrush(Colors.Transparent);
         }

@@ -16,8 +16,6 @@ namespace RevitJournalUI.Tasks.Actions
         public ObservableCollection<ActionViewModel> ActionViewModels { get; }
             = new ObservableCollection<ActionViewModel>();
 
-        public bool HasCheckedCommands { get { return CheckedActions.Any(); } }
-
         public IEnumerable<ITaskAction> CheckedActions
         {
             get
@@ -28,12 +26,26 @@ namespace RevitJournalUI.Tasks.Actions
             }
         }
 
+        internal void UpdateAction(IEnumerable<ITaskAction> taskActions)
+        {
+            if (taskActions is null) { return; }
+
+            foreach (var action in taskActions)
+            {
+                var viewModel = ActionViewModels.FirstOrDefault(act => act.Name == action.Name);
+                if(viewModel is null) { continue; }
+
+                viewModel.Action = action;
+                viewModel.UpdateParameters();
+                viewModel.Checked = true;
+            }
+        }
+
         public void UpdateAction(IEnumerable<ITaskAction> taskActions, TaskOptions options)
         {
             if (taskActions is null || options is null) { return; }
 
             ActionViewModels.Clear();
-
             foreach (var action in taskActions)
             {
                 action.SetLibraryRoot(options.RootDirectory);

@@ -3,6 +3,7 @@ using RevitJournalUI.Tasks;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Threading;
 
 namespace RevitJournalUI.JournalTaskUI
@@ -11,6 +12,9 @@ namespace RevitJournalUI.JournalTaskUI
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public Progress<TaskUnitOfWork> Progress { get; set; } = new Progress<TaskUnitOfWork>();
+
+
         private const string PrefixExecutedTask = "Executed Tasks ";
 
         private readonly DispatcherTimer timer;
@@ -18,7 +22,6 @@ namespace RevitJournalUI.JournalTaskUI
         public TaskOverviewViewModel()
         {
             timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-            timer.Start();
         }
 
         public ObservableCollection<TaskViewModel> TaskModels { get; } = new ObservableCollection<TaskViewModel>();
@@ -75,27 +78,30 @@ namespace RevitJournalUI.JournalTaskUI
             }
         }
 
-        internal void AddProgessEvent()
+        internal void AddEvents()
         {
             foreach (var viewModel in TaskModels)
             {
-                viewModel.TaskUoW.Progress.ProgressChanged += Progress_ProgressChanged;
-                viewModel.AddProgessEvent();
+                viewModel.AddTimer(timer);
+                viewModel.AddProgessEvent(Progress);
+                Progress.ProgressChanged += Progress_ProgressChanged;
             }
+            timer.Start();
         }
 
-        internal void RemoveProgessEvent()
+        internal void RemoveEvents()
         {
             foreach (var viewModel in TaskModels)
             {
-                viewModel.TaskUoW.Progress.ProgressChanged += Progress_ProgressChanged;
-                viewModel.RemoveProgessEvent();
+                viewModel.RemoveTimer(timer);
+                viewModel.RemoveProgessEvent(Progress);
+                Progress.ProgressChanged -= Progress_ProgressChanged;
             }
+            timer.Stop();
         }
 
         internal void Update(TaskManager manager)
         {
-            ///TODO refactor Progress
             if (manager is null || manager.HasTasks == false) { return; }
 
             TaskModels.Clear();
@@ -104,16 +110,35 @@ namespace RevitJournalUI.JournalTaskUI
             {
                 MaxTasks += 1;
                 var viewModel = new TaskViewModel { TaskUoW = unitOfWork };
-                viewModel.AddTimer(timer);
                 TaskModels.Add(viewModel);
             }
+
+            ExecutedTasks = 0;
+            SetExecutedTasks();
         }
 
         private void Progress_ProgressChanged(object sender, TaskUnitOfWork task)
         {
             if (task.Status.Executed == false) { return; }
 
-            //if finished count plus 1 
+            var viewModel = TaskModels.FirstOrDefault(mdl => mdl.TaskUoW.Equals(task));
+            if (viewModel is null) { return; }
+
+            if (task.Status.Executed && task.Status.IsCleanUp == false)
+            {
+                ExecutedTasks += 1;
+                SetExecutedTasks();
+            }
+            else if (task.Status.IsCleanUp)
+            {
+                task.Cleanup();
+                viewModel.RemoveProgessEvent(Progress);
+                viewModel.RemoveTimer(timer);
+            }
+        }
+
+        private void SetExecutedTasks()
+        {
             var executed = ExecutedTasks + " / " + MaxTasks;
             ExecutedTasksText = PrefixExecutedTask + executed;
         }

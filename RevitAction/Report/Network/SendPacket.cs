@@ -1,5 +1,4 @@
-﻿using RevitAction.Report.Message;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
@@ -13,12 +12,6 @@ namespace RevitAction.Report.Network
         public SendPacket(Socket socket)
         {
             _socket = socket;
-        }
-
-        public void Send(ReportMessage report)
-        {
-            var reportData = MessageUtils.Write(report);
-            Send(reportData);
         }
 
         public void Send(string message)
