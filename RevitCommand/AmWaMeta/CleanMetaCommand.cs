@@ -24,39 +24,32 @@ namespace RevitCommand.AmWaMeta
                 return Result.Succeeded;
             }
 
-            try
+            var document = commandData.Application.ActiveUIDocument.Document;
+            var makesChanges = false;
+            using (Transaction transaction = new Transaction(document))
             {
-                var document = commandData.Application.ActiveUIDocument.Document;
-                var makesChanges = false;
-                using (Transaction transaction = new Transaction(document))
+                try
                 {
-                    try
-                    {
-                        transaction.Start("Extensible storage deleted");
-                        Schema.EraseSchemaAndAllEntities(schema, true);
-                        transaction.Commit();
-                        makesChanges = true;
-                        TaskApp.Reporter.ActionId = Action.Id;
-                        TaskApp.Reporter.StatusReport(transaction.GetName());
-                    }
-                    catch (Exception ex)
-                    {
-                        makesChanges = false;
-                        transaction.RollBack();
-                        TaskApp.Reporter.ActionId = Action.Id;
-                        TaskApp.Reporter.Error(transaction.GetName(), ex);
-                    }
+                    transaction.Start("Extensible storage deleted");
+                    Schema.EraseSchemaAndAllEntities(schema, true);
+                    transaction.Commit();
+                    makesChanges = true;
+                    TaskApp.Reporter.ActionId = Action.Id;
+                    TaskApp.Reporter.StatusReport(transaction.GetName());
                 }
-                //document.Close(makesChanges);
-                document.Save();
-                return Result.Succeeded;
+                catch (Exception ex)
+                {
+                    makesChanges = false;
+                    TaskApp.Reporter.ActionId = Action.Id;
+                    TaskApp.Reporter.Error(transaction.GetName(), ex);
+                    transaction.RollBack();
+                }
             }
-            catch (Exception ex)
+            if (makesChanges)
             {
-                TaskApp.Reporter.ActionId = Action.Id;
-                TaskApp.Reporter.Error("Save family", ex);
-                return Result.Failed;
+                document.Save();
             }
+            return Result.Succeeded;
         }
     }
 }
