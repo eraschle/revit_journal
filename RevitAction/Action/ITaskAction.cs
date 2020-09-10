@@ -15,10 +15,6 @@ namespace RevitAction.Action
 
         bool HasParameters { get; }
 
-        bool HasParameter(string name, out IActionParameter parameter);
-
-        bool HasParameter(string name);
-
         bool MakeChanges { get; }
 
         bool DependsOn(ITaskAction action);

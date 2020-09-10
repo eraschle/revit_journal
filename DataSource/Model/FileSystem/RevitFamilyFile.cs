@@ -36,6 +36,7 @@ namespace DataSource.Model.FileSystem
                 && int.TryParse(backup, out _);
         }
 
+        [JsonIgnore]
         public IEnumerable<RevitFamilyFile> Backups
         {
             get

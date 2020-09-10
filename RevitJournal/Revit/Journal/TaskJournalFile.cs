@@ -6,8 +6,6 @@ namespace RevitJournal.Revit.Journal
     {
         public const string JournalProcessExtension = "txt";
 
-        public string JournalDirectory { get { return ParentFolder; } }
-
         public override string ToString()
         {
             return Name;

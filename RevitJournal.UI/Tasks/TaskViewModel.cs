@@ -71,32 +71,26 @@ namespace RevitJournalUI.Tasks
 
         internal void AddProgessEvent(Progress<TaskUnitOfWork> progress)
         {
-            if(progress is null) { return; }
+            if (progress is null) { return; }
 
             progress.ProgressChanged += Progress_ProgressChanged;
         }
 
         internal void RemoveProgessEvent(Progress<TaskUnitOfWork> progress)
         {
-            if(progress is null) { return; }
-   
+            if (progress is null) { return; }
+
             progress.ProgressChanged -= Progress_ProgressChanged;
         }
 
         private void Progress_ProgressChanged(object sender, TaskUnitOfWork task)
         {
-            if(task is null || task != TaskUoW) { return; }
+            if (task is null || task != TaskUoW) { return; }
 
             TaskStatus = TaskUoW.Status;
 
-            if (TaskUoW.HasTaskJournal)
-            {
-                JournalTask = TaskUoW.TaskJournal.Name;
-            }
-            if (TaskUoW.HasRecordeJournal)
-            {
-                JournalRecorde = TaskUoW.RecordeJournal.Name;
-            }
+            JournalTask = TaskUoW.TaskJournal.Name;
+            JournalRecorde = TaskUoW.RecordeJournal.Name;
 
             CurrentAction = TaskUoW.CurrentAction.Name;
             ExecutedActions = TaskUoW.ExecutedActions;
@@ -110,7 +104,7 @@ namespace RevitJournalUI.Tasks
 
         private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (TaskUoW.Status.IsRunning) { return; }
+            if (TaskUoW.Status.IsRunning == false) { return; }
 
             executionTime += timerInterval;
             TaskTime = $"{TimeSpanHelper.GetMinuteAndSeconds(executionTime)} / {TimeSpanHelper.GetMinuteAndSeconds(TaskUoW.Options.Arguments.Timeout)}";

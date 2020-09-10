@@ -17,18 +17,15 @@ namespace RevitAction.Report.Network
         public void Send(string message)
         {
             if (string.IsNullOrEmpty(message)) { return; }
+
+            var fullPacket = new List<byte>();
+            fullPacket.AddRange(BitConverter.GetBytes(message.Length));
+            fullPacket.AddRange(Encoding.Default.GetBytes(message));
             try
             {
-                var fullPacket = new List<byte>();
-                fullPacket.AddRange(BitConverter.GetBytes(message.Length));
-                fullPacket.AddRange(Encoding.Default.GetBytes(message));
                 _socket.Send(fullPacket.ToArray());
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
+            catch (Exception) { }
         }
     }
 }

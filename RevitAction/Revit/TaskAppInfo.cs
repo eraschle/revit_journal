@@ -10,14 +10,14 @@
             set { }
         }
 
-        public string Namespace
+        public string TaskNamespace
         {
             get { return GetType().Namespace; }
         }
 
         public string FullClassName
         {
-            get { return $"{Namespace}.{nameof(TaskApp)}"; }
+            get { return $"{TaskNamespace}.{nameof(TaskApp)}"; }
         }
 
         public string VendorId { get; } = DefaultVendorId;

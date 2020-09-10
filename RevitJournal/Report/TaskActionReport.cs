@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using RevitAction.Action;
 using RevitAction.Report.Message;
 
 namespace RevitJournal.Report
@@ -10,7 +11,7 @@ namespace RevitJournal.Report
 
         public void Add(ReportMessage report)
         {
-            if (report is null) { return; }
+            if (report is null || report.Kind == ReportKind.Error) { return; }
 
             if (messages.ContainsKey(report.Kind) == false)
             {
@@ -19,14 +20,26 @@ namespace RevitJournal.Report
             messages[report.Kind].Add(report.Message);
         }
 
-        public IEnumerable<string> StatusReports
+        public ITaskAction TaskAction { get; set; }
+
+        public IEnumerable<string> StatusReports()
         {
-            get { return messages[ReportKind.Status]; }
+            return messages[ReportKind.Status];
         }
 
-        public bool HasStatusReports
+        public bool HasStatusReports()
         {
-            get { return messages.ContainsKey(ReportKind.Status); }
+            return messages.ContainsKey(ReportKind.Status); 
+        }
+
+        public IEnumerable<string> WarningReports()
+        {
+            return messages[ReportKind.Warning];
+        }
+
+        public bool HasWarningReports()
+        {
+            return messages.ContainsKey(ReportKind.Warning);
         }
     }
 }

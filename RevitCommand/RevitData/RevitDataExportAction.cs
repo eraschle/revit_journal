@@ -18,7 +18,7 @@ namespace RevitCommand.RevitData
             get { return new Guid("6d6b38cf-cb70-4a73-9e2d-56fc23cd9cbf"); }
         }
 
-        public override string Namespace
+        public override string TaskNamespace
         {
             get { return GetType().Namespace; }
         }

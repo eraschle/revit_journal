@@ -3,8 +3,6 @@ using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 using RevitAction.Report;
-using System;
-using System.Threading;
 
 namespace RevitAction.Revit
 {
@@ -16,9 +14,19 @@ namespace RevitAction.Revit
         {
             if (application is null) { return Result.Failed; }
 
-            Reporter = new ReportManager();
-            Reporter.Connect();
-            Reporter.InitialReport();
+            application.DialogBoxShowing += Application_DialogBoxShowing;
+            try
+            {
+                Reporter = new ReportManager();
+                Reporter.Connect();
+                Reporter.InitialReport();
+            }
+            catch
+            {
+                return Result.Failed;
+            }
+
+            application.ControlledApplication.FailuresProcessing += ControlledApplication_FailuresProcessing;
 
             application.ControlledApplication.DocumentOpened += ControlledApplication_DocumentOpened;
 
@@ -26,10 +34,6 @@ namespace RevitAction.Revit
             application.ControlledApplication.DocumentSavedAs += ControlledApplication_DocumentSavedAs;
 
             application.ControlledApplication.DocumentClosed += ControlledApplication_DocumentClosed;
-
-            application.DialogBoxShowing += Application_DialogBoxShowing;
-            application.ControlledApplication.FailuresProcessing += ControlledApplication_FailuresProcessing;
-
             return Result.Succeeded;
         }
 
@@ -75,10 +79,6 @@ namespace RevitAction.Revit
 
         private void ControlledApplication_DocumentClosed(object sender, DocumentClosedEventArgs e)
         {
-            while (Reporter.CloseReport() == false)
-            {
-                Thread.Sleep(TimeSpan.FromSeconds(2));
-            }
             Reporter.Disconnect();
         }
 
@@ -95,9 +95,10 @@ namespace RevitAction.Revit
         private void ControlledApplication_FailuresProcessing(object sender, FailuresProcessingEventArgs args)
         {
             var result = args.GetProcessingResult();
-            if (result != FailureProcessingResult.WaitForUserInput) { return; }
-
-            Reporter.Error(result.ToString());
+            if (result == FailureProcessingResult.WaitForUserInput)
+            {
+                Reporter.Error(result.ToString());
+            }
         }
 
         #endregion

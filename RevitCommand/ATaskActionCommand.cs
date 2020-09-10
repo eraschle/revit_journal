@@ -6,11 +6,11 @@ namespace RevitCommand
     {
         protected ATaskActionCommand(string name) : base(name) { }
 
-        public abstract string Namespace { get; }
+        public abstract string TaskNamespace { get; }
 
         public string FullClassName
         {
-            get { return $"{Namespace}.{ExternalCommandName}"; }
+            get { return $"{TaskNamespace}.{ExternalCommandName}"; }
         }
 
         protected abstract string ExternalCommandName { get; }

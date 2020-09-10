@@ -50,12 +50,6 @@ namespace RevitAction.Report
             StatusReport(message);
         }
 
-        internal bool CloseReport()
-        {
-            StatusReport("Close");
-            return ActionId.Equals(actionManager.CloseActionId);
-        }
-
         public void StatusReport(string message)
         {
             var report = new ReportMessage
@@ -76,6 +70,16 @@ namespace RevitAction.Report
                 Kind = ReportKind.Error,
                 Message = message,
                 Exception = exception
+            };
+            Publisher.SendReport(report);
+        }
+        public void Warning(string message)
+        {
+            var report = new ReportMessage
+            {
+                ActionId = ActionId,
+                Kind = ReportKind.Warning,
+                Message = message
             };
             Publisher.SendReport(report);
         }

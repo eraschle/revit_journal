@@ -34,7 +34,8 @@ namespace DataSource.Model.FileSystem
 
         [JsonIgnore]
         public string Extension { get; protected set; } = string.Empty;
-
+        
+        [JsonIgnore]
         public override bool Exist { get { return File.Exists(FullPath); } }
 
         protected void SetFilePath(string filePath)

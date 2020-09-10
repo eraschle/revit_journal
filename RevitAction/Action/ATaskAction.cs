@@ -1,8 +1,6 @@
 ﻿using DataSource.Model.FileSystem;
-using RevitAction.Report;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace RevitAction.Action
 {
@@ -32,21 +30,6 @@ namespace RevitAction.Action
         public bool MakeChanges { get; protected set; } = false;
 
         public abstract Guid Id { get; }
-
-        public bool HasParameter(string name, out IActionParameter parameter)
-        {
-            parameter = null;
-            if (HasParameters)
-            {
-                parameter = Parameters.FirstOrDefault(par => par.Name == name);
-            }
-            return parameter != null;
-        }
-
-        public bool HasParameter(string name)
-        {
-            return HasParameter(name, out _);
-        }
 
         public virtual bool DependsOn(ITaskAction action)
         {

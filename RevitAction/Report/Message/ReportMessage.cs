@@ -10,6 +10,8 @@ namespace RevitAction.Report.Message
 
         public string Message { get; set; }
 
+        public DateTime Time { get; set; } = DateTime.Now;
+
         public Exception Exception { get; set; } = null;
         
         public bool HasException

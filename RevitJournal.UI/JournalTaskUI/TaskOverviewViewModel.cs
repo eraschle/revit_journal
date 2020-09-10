@@ -84,20 +84,20 @@ namespace RevitJournalUI.JournalTaskUI
             {
                 viewModel.AddTimer(timer);
                 viewModel.AddProgessEvent(Progress);
-                Progress.ProgressChanged += Progress_ProgressChanged;
             }
+            Progress.ProgressChanged += Progress_ProgressChanged;
             timer.Start();
         }
 
         internal void RemoveEvents()
         {
+            timer.Stop();
             foreach (var viewModel in TaskModels)
             {
                 viewModel.RemoveTimer(timer);
                 viewModel.RemoveProgessEvent(Progress);
-                Progress.ProgressChanged -= Progress_ProgressChanged;
             }
-            timer.Stop();
+            Progress.ProgressChanged -= Progress_ProgressChanged;
         }
 
         internal void Update(TaskManager manager)
@@ -119,21 +119,18 @@ namespace RevitJournalUI.JournalTaskUI
 
         private void Progress_ProgressChanged(object sender, TaskUnitOfWork task)
         {
-            if (task.Status.Executed == false) { return; }
+            if (task.Status.IsCleanUp == false) { return; }
 
             var viewModel = TaskModels.FirstOrDefault(mdl => mdl.TaskUoW.Equals(task));
             if (viewModel is null) { return; }
 
-            if (task.Status.Executed && task.Status.IsCleanUp == false)
-            {
-                ExecutedTasks += 1;
-                SetExecutedTasks();
-            }
             else if (task.Status.IsCleanUp)
             {
                 task.Cleanup();
-                viewModel.RemoveProgessEvent(Progress);
                 viewModel.RemoveTimer(timer);
+                viewModel.RemoveProgessEvent(Progress);
+                ExecutedTasks += 1;
+                SetExecutedTasks();
             }
         }
 

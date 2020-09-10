@@ -1,5 +1,6 @@
 ﻿using DataSource;
 using RevitAction.Action;
+using RevitJournal.Revit.Journal.Command;
 using RevitJournal.Tasks;
 using RevitJournal.Tasks.Actions;
 using RevitJournal.Tasks.Options;
@@ -14,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -41,7 +43,8 @@ namespace RevitJournalUI.JournalManagerUI
             ProductManager.UpdateVersions();
             TaskOptionViewModel = new TaskOptionViewModel { Options = TaskOptions };
             FamiliesViewModel = new FamilyOverviewViewModel { FilterManager = FilterManager };
-            PropertyChanged += new PropertyChangedEventHandler(FamiliesViewModel.OnContentDirectoryChanged);
+            PropertyChanged += FamiliesViewModel.OnContentDirectoryChanged;
+            
             CreateCommand = new RelayCommand<FamilyOverviewViewModel>(CreateCommandAction, CreateCommandPredicate);
             BackCommand = new RelayCommand<object>(BackCommandAction);
             DuplicateCommand = new RelayCommand<FamilyOverviewViewModel>(DuplicateCommandAction, DuplicateCommandPredicate);
@@ -56,14 +59,22 @@ namespace RevitJournalUI.JournalManagerUI
 
             var myDocument = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             FamilyDirectory = myDocument;
+            ChooseFamilyDirectoryCommand = new RelayCommand<string>(ChooseFamilyDirectoryAction);
             JournalDirectory = myDocument;
+            ChooseJournalDirectoryCommand = new RelayCommand<string>(ChooseJournalDirectoryAction);
             ActionDirectory = myDocument;
+            ChooseActionDirectoryCommand = new RelayCommand<string>(ChooseActionDirectoryAction);
 
 #if DEBUG
-            FamilyDirectory = @"C:\develop\workspace\revit_journal_test_data\families";
-            JournalDirectory = @"C:\develop\workspace\revit_journal_test_data\journals";
+            FamilyDirectory = @"C:\develop\workspace\Content\Blob\Elektro\Akustischer_Alarmgeber";
+            JournalDirectory = @"C:\develop\workspace\Content\journal";
 #endif
             TaskOptionViewModel.SelectedRevitApp = ProductManager.UseMetadata;
+        }
+
+        private void JournalManagerPageModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
 
@@ -83,10 +94,7 @@ namespace RevitJournalUI.JournalManagerUI
             }
         }
 
-        public ICommand ChooseFamilyDirectoryCommand
-        {
-            get { return new RelayCommand<string>(ChooseFamilyDirectoryAction); }
-        }
+        public ICommand ChooseFamilyDirectoryCommand { get; }
 
         private void ChooseFamilyDirectoryAction(string selectedPath)
         {
@@ -105,10 +113,7 @@ namespace RevitJournalUI.JournalManagerUI
             }
         }
 
-        public ICommand ChooseJournalDirectoryCommand
-        {
-            get { return new RelayCommand<string>(ChooseJournalDirectoryAction); }
-        }
+        public ICommand ChooseJournalDirectoryCommand { get; }
 
         private void ChooseJournalDirectoryAction(string selectedPath)
         {
@@ -127,10 +132,7 @@ namespace RevitJournalUI.JournalManagerUI
             }
         }
 
-        public ICommand ChooseActionDirectoryCommand
-        {
-            get { return new RelayCommand<string>(ChooseActionDirectoryAction); }
-        }
+        public ICommand ChooseActionDirectoryCommand { get; }
 
         private void ChooseActionDirectoryAction(string selectedPath)
         {
@@ -261,6 +263,10 @@ namespace RevitJournalUI.JournalManagerUI
                 Actions.Clear();
                 foreach (var action in dialog.ViewModel.CheckedActions)
                 {
+                    if (action is DocumentSaveAction saveAction)
+                    {
+                        TaskOptions.DeleteRevitBackup = saveAction.Backup.BoolValue;
+                    }
                     Actions.Add(action);
                 }
             }
@@ -498,9 +504,15 @@ namespace RevitJournalUI.JournalManagerUI
                                  .ConfigureAwait(false);
                 Cancellation = null;
             }
+            CleanupEvents();
+            ExecuteEnable = true;
+        }
+
+        private async void CleanupEvents()
+        {
+            await Task.Delay(TimeSpan.FromMinutes(2)).ConfigureAwait(false);
             TasksViewModel.RemoveEvents();
             TaskManager.StopServer();
-            ExecuteEnable = true;
         }
 
         private bool ExecuteCommandPredicate(object parameter)

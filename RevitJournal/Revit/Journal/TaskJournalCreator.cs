@@ -14,7 +14,7 @@ namespace RevitJournal.Revit.Journal
         internal static TaskJournalFile Create(RevitTask journalTask, string journalDirectory)
         {
             var journalFile = GetJournalFile(journalTask.Family, journalDirectory);
-            var content = JournalBuilder.Build(journalTask);
+            var content = JournalBuilder.Build(journalTask.Actions);
             File.WriteAllText(journalFile.FullPath, content, Encoding.Default);
             return journalFile;
         }

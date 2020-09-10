@@ -4,7 +4,7 @@
     {
         string AssemblyPath { get; set; }
 
-        string Namespace { get; }
+        string TaskNamespace { get; }
 
         string FullClassName { get; }
 

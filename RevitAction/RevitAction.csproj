@@ -56,8 +56,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Action\ATaskActionDialog.cs" />
-    <Compile Include="Action\ITaskActionDialog.cs" />
     <Compile Include="Action\ITaskActionJournal.cs" />
     <Compile Include="Action\ITaskActionCommand.cs" />
     <Compile Include="Action\Parameter\ActionParameterSelect.cs" />
@@ -84,7 +82,6 @@
     <Compile Include="Action\ITaskAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Report\Network\SendPacket.cs" />
-    <Compile Include="Revit\RevitExternalDialogCommand.cs" />
     <Compile Include="Revit\ARevitExternalCommand.cs" />
     <Compile Include="TaskAppStatus.cs" />
     <Compile Include="Report\ITaskReport.cs" />

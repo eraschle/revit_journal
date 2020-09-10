@@ -25,13 +25,6 @@ namespace RevitAction.Report
             return SaveActionId.Equals(actionId);
         }
 
-        public Guid CloseActionId { get; } = new Guid("aee0d8c6-7292-41b3-80ca-b3353162cfba");
-
-        public bool IsCloseAction(Guid actionId)
-        {
-            return CloseActionId.Equals(actionId);
-        }
-
         public Guid JournalActionId { get; } = new Guid("c336ec5c-f056-4bef-8022-060259a0d819");
 
         public bool IsJournalAction(Guid actionId)
@@ -39,19 +32,22 @@ namespace RevitAction.Report
             return JournalActionId.Equals(actionId);
         }
 
-        public Guid PurgeUnusedId { get;}
-
-        public bool IsPurgeUnusedId(Guid actionId)
-        {
-            return PurgeUnusedId.Equals(actionId);
-        }
-
-
         public bool IsAppAction(Guid actionId)
         {
             return IsInitialAction(actionId)
-                || IsJournalAction(actionId)
-                || IsCloseAction(actionId);
+                || IsJournalAction(actionId);
+        }
+
+        public bool IsCustomAction(Guid actionId)
+        {
+            return IsAppAction(actionId) == false
+                && IsDefaultAction(actionId) == false;
+        }
+
+        public bool IsDefaultAction(Guid actionId)
+        {
+            return IsOpenAction(actionId) 
+                || IsSaveAction(actionId);
         }
 
         public bool IsActionId(string actionId, out Guid action)

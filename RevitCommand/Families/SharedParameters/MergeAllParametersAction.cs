@@ -11,7 +11,7 @@ namespace RevitCommand.Families.SharedParameters
             get { return new Guid("af072261-088e-42d3-bf5e-39fc99ea5736"); }
         }
 
-        public override string Namespace
+        public override string TaskNamespace
         {
             get { return GetType().Namespace; }
         }

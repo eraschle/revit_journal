@@ -19,7 +19,7 @@ namespace RevitCommand.Families.Metadata
             get { return new Guid("7d3a1639-4384-4488-b34c-08f29aebac2f"); }
         }
 
-        public override string Namespace
+        public override string TaskNamespace
         {
             get { return GetType().Namespace; }
         }

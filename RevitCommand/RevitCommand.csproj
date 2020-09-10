@@ -66,6 +66,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ATaskActionCommand.cs" />
+    <Compile Include="AmWaMeta\CleanMetaAction.cs" />
+    <Compile Include="AmWaMeta\CleanMetaCommand.cs" />
     <Compile Include="CommandReport\ReportJsonDataSource.cs" />
     <Compile Include="Families\AFamilyRevitCommand.cs" />
     <Compile Include="Families\ImageExport\AFamilyImageExportCommand.cs" />
@@ -93,7 +95,7 @@
     <Compile Include="Families\RevitFamilyManagerReport.cs" />
     <Compile Include="Families\SharedParameterManager.cs" />
     <Compile Include="Families\RevitFamilyParameterManager.cs" />
-    <Compile Include="JournalCommand\DocumentPurgeUnusedCommand.cs" />
+    <None Include="JournalCommand\DocumentPurgeUnusedCommand.cs" />
     <Compile Include="Families\SharedParameters\MergeSelectParameterAction.cs" />
     <Compile Include="Families\SharedParameters\SharedFileActionParameter.cs" />
     <Compile Include="Families\SharedParameters\SharedParameterActionParameter.cs" />

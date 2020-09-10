@@ -132,22 +132,29 @@ namespace RevitJournal.Tasks
             while (runningTasks.Count > 0)
             {
                 var finished = Task.WhenAny(runningTasks.ToArray()).Result;
+                runningTasks.Remove(finished);
                 if (cancellation.IsCancellationRequested)
                 {
-                    foreach (var nextTask in TaskQueue)
-                    {
-                        nextTask.KillProcess();
-                        nextTask.Status.SetStatus(TaskAppStatus.Cancel);
-                        progress.Report(nextTask);
-                    }
+                    CancelTasks(progress);
                     TaskQueue.Clear();
+                    runningTasks.Clear();
                 }
                 if (TaskQueue.Count > 0)
                 {
                     var nextTask = GetNextTask(progress, cancellation);
                     runningTasks.Add(nextTask);
                 }
-                runningTasks.Remove(finished);
+            }
+        }
+
+        private void CancelTasks(IProgress<TaskUnitOfWork> progress)
+        {
+            if(TaskQueue.Count == 0) { return; }
+
+            foreach (var nextTask in TaskQueue)
+            {
+                nextTask.KillProcess();
+                nextTask.ReportStatus(progress, TaskAppStatus.Cancel);
             }
         }
 

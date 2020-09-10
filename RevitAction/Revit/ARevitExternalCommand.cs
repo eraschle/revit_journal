@@ -26,9 +26,12 @@ namespace RevitAction.Revit
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            TaskApp.Reporter.ActionId = Action.Id;
+            TaskApp.Reporter.StatusReport($"Action started");
             if (commandData is null)
             {
                 message = "No command data";
+                TaskApp.Reporter.ActionId = Action.Id;
                 TaskApp.Reporter.Error(message);
                 return Result.Failed;
             }
@@ -39,6 +42,7 @@ namespace RevitAction.Revit
             if (UIDocument is null)
             {
                 message = "UIDocument is NULL";
+                TaskApp.Reporter.ActionId = Action.Id;
                 TaskApp.Reporter.Error(message);
                 return Result.Failed;
             }
@@ -47,6 +51,7 @@ namespace RevitAction.Revit
             if (Document is null)
             {
                 message = "Document is NULL";
+                TaskApp.Reporter.ActionId = Action.Id;
                 TaskApp.Reporter.Error(message);
                 return Result.Failed;
             }
@@ -54,12 +59,14 @@ namespace RevitAction.Revit
             try
             {
                 var result = ExecuteRevitCommand(commandData, ref message, elements);
-                TaskApp.Reporter.StatusReport("Successfully executed");
+                TaskApp.Reporter.ActionId = Action.Id;
+                TaskApp.Reporter.StatusReport($"Successfully executed");
                 return result;
             }
             catch (Exception exp)
             {
-                TaskApp.Reporter.Error(Action.Name, exp);
+                TaskApp.Reporter.ActionId = Action.Id;
+                TaskApp.Reporter.Error("Revit Execute-Method", exp);
                 return Result.Failed;
             }
         }

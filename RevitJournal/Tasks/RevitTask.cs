@@ -90,6 +90,22 @@ namespace RevitJournal.Tasks
             return actionCommands.Count > 0;
         }
 
+        public void PreExecution(BackupOptions options)
+        {
+            if(options is null) { throw new ArgumentNullException(nameof(options)); }
+
+            if (options.CreateBackup)
+            {
+                var backupPath = options.CreateBackupFile(SourceFile);
+                BackupFile = SourceFile.CopyTo<RevitFamilyFile>(backupPath, true);
+            }
+
+            foreach (var command in Actions)
+            {
+                command.PreTask(Family);
+            }
+        }
+
         public override bool Equals(object obj)
         {
             return Equals(obj as RevitTask);

@@ -11,7 +11,7 @@ namespace RevitCommand.Families.ImageExport
             get { return new Guid("52f427dd-6db4-43bd-b4d2-c7327ae274fa"); }
         }
 
-        public override string Namespace
+        public override string TaskNamespace
         {
             get { return GetType().Namespace; }
         }

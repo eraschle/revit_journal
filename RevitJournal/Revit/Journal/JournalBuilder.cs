@@ -12,11 +12,11 @@ namespace RevitJournal.Revit.Journal
         private static readonly RevitStartCommand startRevit = new RevitStartCommand();
         private static readonly RevitCloseCommand closeRevit = new RevitCloseCommand();
 
-        internal static string Build(RevitTask task)
+        internal static string Build(IEnumerable<ITaskAction> actions)
         {
             var journalLines = new StringBuilder();
             AddLines(ref journalLines, startRevit.Commands);
-            foreach (var action in task.Actions)
+            foreach (var action in actions)
             {
                 if (action is ITaskActionJournal journal)
                 {
@@ -68,7 +68,7 @@ namespace RevitJournal.Revit.Journal
 
             return new string[]
             {
-                $"Jrn.RibbonEvent \"Execute external command:{command.Id}:{command.Namespace}\"",
+                $"Jrn.RibbonEvent \"Execute external command:{command.Id}:{command.TaskNamespace}\"",
                 data.ToString()
             };
         }

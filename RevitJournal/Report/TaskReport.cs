@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.IO;
 using DataSource.Model.FileSystem;
 using RevitAction.Report;
 using RevitJournal.Revit.Journal;
+using RevitAction.Action;
 
 namespace RevitJournal.Report
 {
@@ -14,7 +14,11 @@ namespace RevitJournal.Report
         {
             if (result is null) { return; }
 
-            var content = JsonConvert.SerializeObject(result, Formatting.Indented);
+            var setting = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+            var content = JsonConvert.SerializeObject(result, Formatting.Indented, setting);
             var resultFile = GetResultFile(result);
             File.WriteAllText(resultFile.FullPath, content);
         }
@@ -36,6 +40,13 @@ namespace RevitJournal.Report
 
         public RevitFamilyFile BackupFile { get; set; }
 
+        public List<string> SuccessReport { get; } = new List<string>();
+
+        public List<string> WarningReport { get; } = new List<string>();
+
+        public ITaskAction ErrorReport { get; set; } = null;
+
+        public string ErrorMessage { get; set; } = null;
 
         public override bool Equals(object obj)
         {

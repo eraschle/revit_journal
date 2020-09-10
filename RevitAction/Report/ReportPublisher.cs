@@ -40,26 +40,16 @@ namespace RevitAction.Report
         public void Connect(IPAddress address, short port)
         {
             var endPoint = new IPEndPoint(address, port);
-            while (socket.Connected == false)
-            {
-                try
-                {
-                    socket.Connect(endPoint);
-                    Console.WriteLine("Try to connect");
-                }
-                catch
-                {
-                    Thread.Sleep(1000);
-                    Console.WriteLine("Wait a second to try again connect to the server");
-                }
-            }
-            Console.WriteLine("Connected");
+            socket.Connect(endPoint);
         }
 
         public void Disconnect()
         {
-            receivePacket.StopReceiving();
-            try { socket.Disconnect(true); }
+            try
+            {
+                receivePacket.StopReceiving();
+                socket.Disconnect(true);
+            }
             catch (Exception) { }
         }
     }
