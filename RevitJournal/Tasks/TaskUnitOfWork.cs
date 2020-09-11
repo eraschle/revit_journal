@@ -78,13 +78,13 @@ namespace RevitJournal.Tasks
             var nextActionId = Guid.Empty;
             if (actionManager.IsOpenAction(actionId))
             {
-                nextActionId = actionManager.JournalActionId;
+                nextActionId = ActionManager.JournalActionId;
             }
             else
             {
                 if (actionManager.IsJournalAction(actionId))
                 {
-                    actionId = actionManager.OpenActionId;
+                    actionId = ActionManager.OpenActionId;
                 }
                 if (Task.HasNextAction(actionId, out var nextAction))
                 {
