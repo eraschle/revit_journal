@@ -14,7 +14,7 @@ namespace RevitCommand.Families.Metadata
     [Journaling(JournalingMode.UsingCommandData)]
     public class CreateMetadataCommand : AFamilyRevitCommand<CreateMetadataAction>
     {
-        protected override Result InternalExecute(ref string message, ref string errorMessage)
+        protected override Result InternalExecute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             var revitFile = AFile.Create<RevitFamilyFile>(Document.PathName);
             var dataSource = new MetadataJsonDataSource(revitFile);

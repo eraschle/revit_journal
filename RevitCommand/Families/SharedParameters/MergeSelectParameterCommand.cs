@@ -10,7 +10,6 @@ using Utilities;
 
 namespace RevitCommand.Families.SharedParameters
 {
-
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
@@ -21,7 +20,7 @@ namespace RevitCommand.Families.SharedParameters
 
         public MergeSelectParameterCommand() : base() { }
 
-        protected override Result InternalExecute(ref string message, ref string errorMessage)
+        protected override Result InternalExecute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             if (File.Exists(Action.SharedFile.Value) == false)
             {
@@ -35,7 +34,7 @@ namespace RevitCommand.Families.SharedParameters
 
             if (Action.SharedParameters.ParameterNames.Count == 0)
             {
-                errorMessage = NoSharedParanmeter;
+                message = NoSharedParanmeter;
                 return Result.Succeeded;
             }
 

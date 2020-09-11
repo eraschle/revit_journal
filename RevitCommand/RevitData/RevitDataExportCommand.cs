@@ -15,7 +15,7 @@ namespace RevitCommand.RevitData
         private readonly RevitEnumCreator Creator = new RevitEnumCreator();
         private const string ProductDataDirectory = @"C:\workspace\TEMP\RevitJournal\ProductData";
 
-        protected override Result ExecuteRevitCommand(ref string message, ref string errorMessage)
+        protected override Result ExecuteRevitCommand(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             if (int.TryParse(Application.VersionNumber, out var version) == false)
             {

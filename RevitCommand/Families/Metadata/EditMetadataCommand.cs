@@ -13,7 +13,7 @@ namespace RevitCommand.Families.Metadata
     {
         private const string debugLibraryPath = @"C:\develop\workspace\TEMP\JournalData\test files\";
 
-        protected override Result InternalExecute(ref string message, ref string errorMessage)
+        protected override Result InternalExecute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
 #if DEBUG
             Action.Library.Value = debugLibraryPath;

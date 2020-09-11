@@ -14,7 +14,7 @@ namespace RevitCommand.Families.SharedParameters
     {
         public MergeAllParametersCommand() : base() { }
 
-        protected override Result InternalExecute(ref string message, ref string errorMessage)
+        protected override Result InternalExecute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             var filePath = Action.SharedFile.Value;
             if (File.Exists(filePath) == false)

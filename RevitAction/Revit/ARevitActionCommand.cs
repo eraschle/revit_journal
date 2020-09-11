@@ -26,15 +26,15 @@ namespace RevitAction.Revit
             Action = new TAction();
         }
 
-        public Result Execute(ExternalCommandData commandData, ref string errorMessage, ElementSet elements)
+        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             TaskApp.Reporter.ActionId = Action.Id;
             TaskApp.Reporter.StatusReport($"Action started");
             if (commandData is null)
             {
-                errorMessage = "No command data";
+                message = "No command data";
                 TaskApp.Reporter.ActionId = Action.Id;
-                TaskApp.Reporter.Error(errorMessage);
+                TaskApp.Reporter.Error(message);
                 return Result.Failed;
             }
 
@@ -43,18 +43,18 @@ namespace RevitAction.Revit
             UIDocument = commandData.Application.ActiveUIDocument;
             if (UIDocument is null)
             {
-                errorMessage = "UIDocument is NULL";
+                message = "UIDocument is NULL";
                 TaskApp.Reporter.ActionId = Action.Id;
-                TaskApp.Reporter.Error(errorMessage);
+                TaskApp.Reporter.Error(message);
                 return Result.Failed;
             }
 
             Document = UIDocument.Document;
             if (Document is null)
             {
-                errorMessage = "Document is NULL";
+                message = "Document is NULL";
                 TaskApp.Reporter.ActionId = Action.Id;
-                TaskApp.Reporter.Error(errorMessage);
+                TaskApp.Reporter.Error(message);
                 return Result.Failed;
             }
 
@@ -62,9 +62,7 @@ namespace RevitAction.Revit
 
             try
             {
-                string message = null;
-                errorMessage = null;
-                var result = ExecuteRevitCommand(ref message, ref errorMessage);
+                var result = ExecuteRevitCommand(commandData, ref message, elements);
                 TaskApp.Reporter.ActionId = Action.Id;
                 TaskApp.Reporter.StatusReport(message ?? "Successfully executed");
                 return result;
@@ -72,7 +70,7 @@ namespace RevitAction.Revit
             catch (Exception exp)
             {
                 TaskApp.Reporter.ActionId = Action.Id;
-                TaskApp.Reporter.Error(errorMessage ?? "Revit Execute-Method", exp);
+                TaskApp.Reporter.Error(message ?? "Revit Execute-Method", exp);
                 return Result.Failed;
             }
         }
@@ -88,6 +86,6 @@ namespace RevitAction.Revit
             }
         }
 
-        protected abstract Result ExecuteRevitCommand(ref string message, ref string errorMessage);
+        protected abstract Result ExecuteRevitCommand(ExternalCommandData commandData, ref string errorMessage, ElementSet elements);
     }
 }
