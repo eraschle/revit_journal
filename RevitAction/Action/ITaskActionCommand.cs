@@ -1,4 +1,9 @@
-﻿namespace RevitAction.Action
+﻿using System.Collections.Generic;
+
+namespace RevitAction.Action
 {
-    public interface ITaskActionCommand : ITaskAction, ITaskInfo { }
+    public interface ITaskActionCommand : ITaskAction
+    {
+        ITaskInfo TaskInfo { get; }
+    }
 }

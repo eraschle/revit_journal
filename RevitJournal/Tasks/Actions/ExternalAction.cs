@@ -88,7 +88,7 @@ namespace RevitJournal.Tasks.Actions
             var action = Activator.CreateInstance(actionType, false) as ITaskAction;
             if (action is ITaskActionCommand command)
             {
-                command.AssemblyPath = Assembly;
+                command.TaskInfo.AssemblyPath = Assembly;
             }
             return action;
         }

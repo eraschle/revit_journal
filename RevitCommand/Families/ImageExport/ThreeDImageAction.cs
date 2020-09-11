@@ -3,29 +3,14 @@ using System;
 
 namespace RevitCommand.Families.ImageExport
 {
-    public class ThreeDImageAction : ATaskActionCommand
+    public class ThreeDImageAction : ATaskActionCommand<ThreeDImageAction, ThreeDImageRevitCommand>
     {
-        public ActionParameter Background { get; private set; }
+        public ActionParameter Background { get; set; }
 
-        public ThreeDImageAction() : base("3D Image Export")
+        public ThreeDImageAction() : base("3D Image Export", new Guid("d62ba092-cf93-4906-90d8-1948d2dd67c5"))
         {
-            Background = ParameterBuilder.CreateJournal("Background Image", "Background", ParameterKind.ImageFile);
+            Background = ActionParameter.Create("Background Image", "Background", ParameterKind.ImageFile);
             Parameters.Add(Background);
-        }
-
-        public override Guid Id
-        {
-            get { return new Guid("d62ba092-cf93-4906-90d8-1948d2dd67c5"); }
-        }
-
-        public override string TaskNamespace
-        {
-            get { return GetType().Namespace; }
-        }
-
-        protected override string ExternalCommandName
-        {
-            get { return nameof(ThreeDImageRevitCommand); }
         }
     }
 }

@@ -11,8 +11,6 @@ namespace RevitJournal.Revit.Journal.Command
     {
         private const string suffixFormatString = "yyyy-dd-MM";
 
-        private static readonly ActionManager actionManager = new ActionManager();
-
         private readonly ActionParameter fileSuffix;
         private readonly ActionParameter saveFolder;
         private readonly ActionParameter addAtEnd;
@@ -23,23 +21,23 @@ namespace RevitJournal.Revit.Journal.Command
 
         private readonly PathCreator pathCreator = new PathCreator();
 
-        public DocumentSaveAsAction() : base("Save As")
+        public DocumentSaveAsAction() : base("Save As", ActionManager.SaveActionId)
         {
             AddParameter(new ActionParameterInfo("Save As Path Model", CreateSymbolicPath));
 
-            fileSuffix = ParameterBuilder.Text("File suffix", defaultValue: GetDate());
+            fileSuffix = ActionParameter.Text("File suffix", null, defaultValue: GetDate());
             AddParameter(fileSuffix);
 
-            saveFolder = ParameterBuilder.Text("Save As Folder");
+            saveFolder = ActionParameter.Text("Save As Folder", null);
             AddParameter(saveFolder);
 
-            addAtEnd = ParameterBuilder.Bool("Add Folder At End", true);
+            addAtEnd = ActionParameter.Bool("Add Folder At End", null, true);
             AddParameter(addAtEnd);
 
-            currentRoot = ParameterBuilder.Create("Library Folder [Current]", ParameterKind.TextInfoValue);
+            currentRoot = ActionParameter.Create("Library Folder [Current]", null, ParameterKind.TextInfoValue);
             AddParameter(currentRoot);
 
-            newRoot = ParameterBuilder.Create("Library Folder [New]", ParameterKind.SelectFolder);
+            newRoot = ActionParameter.Create("Library Folder [New]", null, ParameterKind.SelectFolder);
             AddParameter(newRoot);
         }
 
@@ -60,17 +58,11 @@ namespace RevitJournal.Revit.Journal.Command
             }
         }
 
-        public override Guid Id
-        {
-            get { return actionManager.SaveActionId; }
-        }
-
-
         private string CreateSymbolicPath()
         {
-            pathCreator.FileSuffix = fileSuffix.Value; ;
+            pathCreator.FileSuffix = fileSuffix.Value;
             pathCreator.BackupFolder = saveFolder.Value;
-            pathCreator.AddBackupAtEnd = addAtEnd.BoolValue;
+            pathCreator.AddBackupAtEnd = addAtEnd.GetBoolValue();
             pathCreator.SetRoot(currentRoot.Value);
             pathCreator.SetNewRoot(newRoot.Value);
             return pathCreator.CreateSymbolic();

@@ -1,5 +1,4 @@
 ﻿using DataSource.Model.FileSystem;
-using DataSource.Model.Product;
 using RevitAction;
 using RevitAction.Action;
 using RevitAction.Report;
@@ -11,8 +10,6 @@ using RevitJournal.Tasks.Actions;
 using RevitJournal.Tasks.Options;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 

@@ -1,22 +1,18 @@
-﻿using RevitAction.Action;
+﻿using RevitAction;
+using RevitAction.Action;
+using System;
 
 namespace RevitCommand
 {
-    public abstract class ATaskActionCommand : ATaskAction, ITaskActionCommand
+    public abstract class ATaskActionCommand<TAction, TCommand> : ATaskAction, ITaskActionCommand
+        where TAction : ITaskAction
+        where TCommand : class
     {
-        protected ATaskActionCommand(string name) : base(name) { }
-
-        public abstract string TaskNamespace { get; }
-
-        public string FullClassName
+        protected ATaskActionCommand(string name, Guid actionId) : base(name, actionId)
         {
-            get { return $"{TaskNamespace}.{ExternalCommandName}"; }
+            TaskInfo = new TaskActionInfo<TAction, TCommand> { Id = actionId };
         }
 
-        protected abstract string ExternalCommandName { get; }
-
-        public string VendorId { get; } = "RascerDev";
-
-        public string AssemblyPath { get; set; }
+        public ITaskInfo TaskInfo { get; }
     }
 }

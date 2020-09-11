@@ -39,13 +39,7 @@ namespace RevitCommand.Families.ImageExport
                 return Result.Succeeded;
             }
 
-            var imageFilePath = string.Empty;
-            var keyBackground = Action.Background.JournalKey;
-            if (JournalKeyExist(commandData, keyBackground, out var backgroundPath))
-            {
-                imageFilePath = backgroundPath;
-            }
-
+            var imageFilePath = Action.Background.Value;
             var collector = GetViewCollector().WherePasses(Not3dCategoriesFilter);
             var excludingIds = new List<ElementId>();
             if (HasFamilyInstances(out var instanceCollector))

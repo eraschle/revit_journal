@@ -1,26 +1,25 @@
 ﻿using DataSource.Model.FileSystem;
 using RevitAction.Action;
 using RevitAction.Report;
-using System;
 using System.Collections.Generic;
 
 namespace RevitJournal.Revit.Journal.Command
 {
     public class DocumentOpenAction : ATaskAction, ITaskActionJournal
     {
-        private static readonly ActionManager actionManager = new ActionManager();
-      
         public ActionParameter Audit { get; private set; }
 
-        public DocumentOpenAction() : base("Open File")
+        public DocumentOpenAction() : base("Open File", ActionManager.OpenActionId)
         {
-            Audit = ParameterBuilder.Bool("Audit", false);
+            Audit = ActionParameter.Bool("Audit", "Audit", false);
             Parameters.Add(Audit);
         }
 
+        private RevitFamilyFile RevitFile { get; set; }
+
         public IEnumerable<string> Commands
         {
-            get { return Audit.BoolValue ? OpenAuditCommand : OpenCommand; }
+            get { return Audit.GetBoolValue() ? OpenAuditCommand : OpenCommand; }
         }
 
         private string[] OpenCommand
@@ -29,7 +28,7 @@ namespace RevitJournal.Revit.Journal.Command
             {
                 return new string[] {
                     JournalBuilder.Build("StartupPage", "ID_FILE_MRU_FIRST"),
-                    string.Concat("Jrn.Data \"MRUFileName\" , \"", FamilyFile.FullPath, "\"") };
+                    string.Concat("Jrn.Data \"MRUFileName\" , \"", RevitFile.FullPath, "\"") };
             }
         }
 
@@ -45,23 +44,16 @@ namespace RevitJournal.Revit.Journal.Command
                     JournalBuilder.Build("Ribbon", "ID_REVIT_FILE_OPEN"),
                     string.Concat("Jrn.Data \"FileOpenSubDialog\" , \"AuditCheckBox\", \"True\""),
                     string.Concat("Jrn.Data \"TaskDialogResult\" , \"\" , \"Yes\", \"IDYES\""),
-                    string.Concat("Jrn.Data \"File Name\" , \"IDOK\", \"", FamilyFile.FullPath, "\"")
+                    string.Concat("Jrn.Data \"File Name\" , \"IDOK\", \"", RevitFile.FullPath, "\"")
                 };
             }
-        }
-
-        public RevitFamilyFile FamilyFile { get; set; }
-
-        public override Guid Id
-        {
-            get { return actionManager.OpenActionId; }
         }
 
         public override void PreTask(RevitFamily family)
         {
             if (family is null) { return; }
 
-            FamilyFile = family.RevitFile;
+            RevitFile = family.RevitFile;
         }
     }
 }

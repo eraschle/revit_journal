@@ -10,7 +10,7 @@ namespace RevitCommand.AmWaMeta
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
-    internal class CleanMetaCommand : ARevitExternalCommand<CleanMetaAction>
+    public class CleanMetaCommand : ARevitActionCommand<CleanMetaAction>
     {
         public static readonly Guid schemaGuid = new Guid("{61EB3D3C-F5DE-4FCA-8A7C-0105122C62BB}");
 
@@ -24,9 +24,8 @@ namespace RevitCommand.AmWaMeta
                 return Result.Succeeded;
             }
 
-            var document = commandData.Application.ActiveUIDocument.Document;
             var makesChanges = false;
-            using (Transaction transaction = new Transaction(document))
+            using (Transaction transaction = new Transaction(Document))
             {
                 try
                 {
@@ -47,7 +46,7 @@ namespace RevitCommand.AmWaMeta
             }
             if (makesChanges)
             {
-                document.Save();
+                Document.Save();
             }
             return Result.Succeeded;
         }

@@ -1,24 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace RevitCommand.Families.SharedParameters
 {
-    public class MergeAllParametersAction : AParametersAction
+    public class MergeAllParametersAction : ATaskActionCommand<MergeAllParametersAction, MergeAllParametersCommand>
     {
-        public MergeAllParametersAction() : base("Merge Shared [ALL]") { }
-
-        public override Guid Id
+        public SharedFileActionParameter SharedFile { get; set; }
+     
+        public MergeAllParametersAction() : base("Merge Shared [ALL]", new Guid("af072261-088e-42d3-bf5e-39fc99ea5736"))
         {
-            get { return new Guid("af072261-088e-42d3-bf5e-39fc99ea5736"); }
-        }
-
-        public override string TaskNamespace
-        {
-            get { return GetType().Namespace; }
-        }
-
-        protected override string ExternalCommandName
-        {
-            get { return nameof(MergeAllParametersRevitCommand); }
+            SharedFile = new SharedFileActionParameter("Shared Parameter File");
+            Parameters.Add(SharedFile);
+            MakeChanges = true;
         }
     }
 }

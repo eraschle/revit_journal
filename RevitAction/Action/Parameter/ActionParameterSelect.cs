@@ -6,8 +6,8 @@ namespace RevitAction.Action.Parameter
     {
         public IList<string> SelectableValues { get; private set; }
 
-        public ActionParameterSelect(string name, IList<string> selectableValues)
-            : base(name, "Selected", ParameterKind.Selectable)
+        public ActionParameterSelect(string name, string journalKey, IList<string> selectableValues)
+            : base(name, journalKey, ParameterKind.Selectable)
         {
             SelectableValues = selectableValues;
         }

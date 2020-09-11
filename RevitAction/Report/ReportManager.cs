@@ -7,8 +7,6 @@ namespace RevitAction.Report
 {
     public class ReportManager
     {
-        private readonly static ActionManager actionManager = new ActionManager();
-
         private readonly IPAddress _serverAddress;
         private readonly short _serverPort;
 
@@ -20,13 +18,13 @@ namespace RevitAction.Report
 
         public ReportPublisher Publisher { get; private set; }
 
-        public Guid ActionId { get; set; } = actionManager.InitialActionId;
+        public Guid ActionId { get; set; }
 
         internal void InitialReport()
         {
             var report = new ReportMessage
             {
-                ActionId = ActionId,
+                ActionId = ActionManager.InitialActionId,
                 Kind = ReportKind.Status,
                 Message = "Initial"
             };
@@ -35,9 +33,9 @@ namespace RevitAction.Report
 
         internal bool OpenReport(string message)
         {
-            ActionId = actionManager.OpenActionId;
+            ActionId = ActionManager.OpenActionId;
             StatusReport(message);
-            return ActionId.Equals(actionManager.JournalActionId);
+            return ActionId.Equals(ActionManager.JournalActionId);
         }
 
         internal void JournalReport(string message)

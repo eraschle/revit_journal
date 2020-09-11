@@ -6,11 +6,14 @@ namespace RevitAction.Action
 {
     public abstract class ATaskAction : ITaskAction
     {
-        protected ATaskAction(string name)
+        protected ATaskAction(string name, Guid actionId)
         {
             Name = name;
+            Id = actionId;
         }
 
+        public Guid Id { get; }
+     
         public string Name { get; private set; }
 
         public IList<IActionParameter> Parameters { get; } = new List<IActionParameter>();
@@ -28,8 +31,6 @@ namespace RevitAction.Action
         }
 
         public bool MakeChanges { get; protected set; } = false;
-
-        public abstract Guid Id { get; }
 
         public virtual bool DependsOn(ITaskAction action)
         {

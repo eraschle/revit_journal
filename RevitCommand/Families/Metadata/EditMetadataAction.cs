@@ -1,39 +1,21 @@
-﻿using DataSource.Model.FileSystem;
-using RevitAction.Action;
+﻿using RevitAction.Action;
 using System;
 
 namespace RevitCommand.Families.Metadata
 {
-    public class EditMetadataAction : ATaskActionCommand
+    public class EditMetadataAction : ATaskActionCommand<EditMetadataAction, EditMetadataCommand>
     {
-        public ActionParameter Library { get; private set; }
+        public ActionParameter Library { get; set; }
 
-        public EditMetadataAction() : base("Change Metadata")
+        public EditMetadataAction() : base("Change Metadata", new Guid("318cfd92-27ee-47a8-bb0f-840a9ff0b081"))
         {
-            Library = ParameterBuilder.CreateJournal("Library", "Library", ParameterKind.Hidden);
+            Library = ActionParameter.Text("Library Path", "Library");
             Parameters.Add(Library);
         }
 
-        public override Guid Id
+        public override void SetLibraryRoot(string libraryRoot)
         {
-            get { return new Guid("318cfd92-27ee-47a8-bb0f-840a9ff0b081"); }
-        }
-
-        public override string TaskNamespace
-        {
-            get { return GetType().Namespace; }
-        }
-
-        protected override string ExternalCommandName
-        {
-            get { return nameof(EditMetadataRevitCommand); }
-        }
-
-        public override void PreTask(RevitFamily family)
-        {
-            if (family is null) { return; }
-
-            Library.Value = family.LibraryPath;
+            Library.Value = libraryRoot;
         }
     }
 }

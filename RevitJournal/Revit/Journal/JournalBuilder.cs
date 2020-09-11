@@ -1,8 +1,8 @@
 ﻿using RevitAction.Action;
 using RevitJournal.Revit.Journal.Command;
-using RevitJournal.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace RevitJournal.Revit.Journal
@@ -11,6 +11,7 @@ namespace RevitJournal.Revit.Journal
     {
         private static readonly RevitStartCommand startRevit = new RevitStartCommand();
         private static readonly RevitCloseCommand closeRevit = new RevitCloseCommand();
+
 
         internal static string Build(IEnumerable<ITaskAction> actions)
         {
@@ -58,18 +59,18 @@ namespace RevitJournal.Revit.Journal
 
         private static IEnumerable<string> BuildCommand(ITaskActionCommand command)
         {
-            var parameters = command.Parameters;
-            var data = new StringBuilder();
-            data.Append($"Jrn.Data \"APIStringStringMapJournalData\", {parameters.Count}");
+            var parameters = command.Parameters.Where(par => par.IsJournalParameter);
+            var journalData = new StringBuilder();
+            journalData.Append($"Jrn.Data \"APIStringStringMapJournalData\", {parameters.Count()}");
             foreach (var parameter in parameters)
             {
-                data.Append($", \"{parameter.JournalKey}\", \"{parameter.Value}\"");
+                journalData.Append($", \"{parameter.JournalKey}\", \"{parameter.GetJournalValue()}\"");
             }
 
             return new string[]
             {
-                $"Jrn.RibbonEvent \"Execute external command:{command.Id}:{command.TaskNamespace}\"",
-                data.ToString()
+                $"Jrn.RibbonEvent \"Execute external command:{command.Id}:{command.TaskInfo.TaskNamespace}\"",
+                journalData.ToString()
             };
         }
     }

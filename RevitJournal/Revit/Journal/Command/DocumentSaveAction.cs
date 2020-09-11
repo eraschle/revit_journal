@@ -1,30 +1,22 @@
 ﻿using RevitAction.Action;
 using RevitAction.Report;
-using System;
 using System.Collections.Generic;
 
 namespace RevitJournal.Revit.Journal.Command
 {
     public class DocumentSaveAction : ATaskAction, ITaskActionJournal
     {
-        private static readonly ActionManager actionManager = new ActionManager();
-    
         public ActionParameter Backup { get; set; }
 
-        public DocumentSaveAction() : base("Save")
+        public DocumentSaveAction() : base("Save", ActionManager.SaveActionId)
         {
-            Backup = ParameterBuilder.Bool("Delete Backup", true);
+            Backup = ActionParameter.Bool("Delete Backup", "DeleteBackpus", true);
             Parameters.Add(Backup);
         }
 
         public IEnumerable<string> Commands
         {
             get { return new string[] { JournalBuilder.Build("Ribbon", "ID_REVIT_FILE_SAVE") }; }
-        }
-
-        public override Guid Id
-        {
-            get { return actionManager.SaveActionId; }
         }
     }
 }

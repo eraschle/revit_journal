@@ -46,10 +46,11 @@ namespace RevitJournal.Revit.Addin
             var commands = manifest.AddInCommands;
             if (HasCommand(commands, action.Id) == false)
             {
-                var newCommand = new RevitAddInCommand(action.AssemblyPath,
-                                                       action.Id,
-                                                       action.FullClassName,
-                                                       action.VendorId);
+                var info = action.TaskInfo;
+                var newCommand = new RevitAddInCommand(info.AssemblyPath,
+                                                       info.Id,
+                                                       info.FullClassName,
+                                                       info.VendorId);
                 commands.Add(newCommand);
                 manifest.Save();
             }

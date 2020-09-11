@@ -1,13 +1,19 @@
-﻿namespace RevitAction
+﻿using System;
+
+namespace RevitAction
 {
     public interface ITaskInfo
     {
-        string AssemblyPath { get; set; }
+        Guid Id { get; }
+
+        string VendorId { get; }
 
         string TaskNamespace { get; }
 
+        string TypeName { get; }
+
         string FullClassName { get; }
 
-        string VendorId { get; }
+        string AssemblyPath { get; set; }
     }
 }

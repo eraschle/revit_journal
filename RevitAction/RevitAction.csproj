@@ -59,13 +59,13 @@
     <Compile Include="Action\ITaskActionJournal.cs" />
     <Compile Include="Action\ITaskActionCommand.cs" />
     <Compile Include="Action\Parameter\ActionParameterSelect.cs" />
-    <Compile Include="Action\Parameter\ParameterBuilder.cs" />
     <Compile Include="Action\Parameter\ActionParameterInfo.cs" />
     <Compile Include="Action\Parameter\ActionParameter.cs" />
     <Compile Include="Action\Parameter\AActionParameter.cs" />
     <Compile Include="Action\ATaskAction.cs" />
     <Compile Include="Action\Parameter\ParameterKind.cs" />
     <Compile Include="Action\Parameter\ParameterListConverter.cs" />
+    <Compile Include="Action\TaskActionInfo.cs" />
     <Compile Include="ITaskAppInfo.cs" />
     <Compile Include="ITaskInfo.cs" />
     <Compile Include="Action\ActionManager.cs" />
@@ -82,7 +82,7 @@
     <Compile Include="Action\ITaskAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Report\Network\SendPacket.cs" />
-    <Compile Include="Revit\ARevitExternalCommand.cs" />
+    <Compile Include="Revit\ARevitActionCommand.cs" />
     <Compile Include="TaskAppStatus.cs" />
     <Compile Include="Report\ITaskReport.cs" />
     <Compile Include="Revit\TaskAppInfo.cs" />

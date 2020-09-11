@@ -4,28 +4,28 @@ namespace RevitAction.Report
 {
     public class ActionManager
     {
-        public Guid InitialActionId { get; } = new Guid("df82cb97-c5b9-4fa8-a84c-6da99eb05b71");
+        public static Guid InitialActionId { get; } = new Guid("df82cb97-c5b9-4fa8-a84c-6da99eb05b71");
 
         public bool IsInitialAction(Guid actionId)
         {
             return InitialActionId.Equals(actionId);
         }
 
-        public Guid OpenActionId { get; } = new Guid("442b4117-76bf-4421-a516-73ecf3b1a397");
+        public static Guid OpenActionId { get; } = new Guid("442b4117-76bf-4421-a516-73ecf3b1a397");
 
         public bool IsOpenAction(Guid actionId)
         {
             return OpenActionId.Equals(actionId);
         }
 
-        public Guid SaveActionId { get; } = new Guid("f3c2f463-09d8-4943-a7a6-7e78f47c0bbf");
+        public static Guid SaveActionId { get; } = new Guid("f3c2f463-09d8-4943-a7a6-7e78f47c0bbf");
 
         public bool IsSaveAction(Guid actionId)
         {
             return SaveActionId.Equals(actionId);
         }
 
-        public Guid JournalActionId { get; } = new Guid("c336ec5c-f056-4bef-8022-060259a0d819");
+        public static Guid JournalActionId { get; } = new Guid("c336ec5c-f056-4bef-8022-060259a0d819");
 
         public bool IsJournalAction(Guid actionId)
         {

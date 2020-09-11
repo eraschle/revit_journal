@@ -265,7 +265,7 @@ namespace RevitJournalUI.JournalManagerUI
                 {
                     if (action is DocumentSaveAction saveAction)
                     {
-                        TaskOptions.DeleteRevitBackup = saveAction.Backup.BoolValue;
+                        TaskOptions.DeleteRevitBackup |= saveAction.Backup.GetBoolValue();
                     }
                     Actions.Add(action);
                 }

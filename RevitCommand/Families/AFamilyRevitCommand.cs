@@ -5,7 +5,8 @@ using RevitAction.Revit;
 
 namespace RevitCommand.Families
 {
-    public abstract class AFamilyRevitCommand<TAction> : ARevitExternalCommand<TAction> where TAction : ITaskActionCommand, new()
+    public abstract class AFamilyRevitCommand<TAction> : ARevitActionCommand<TAction> 
+        where TAction : ITaskActionCommand, new()
     {
         protected Family Family { get; private set; }
 

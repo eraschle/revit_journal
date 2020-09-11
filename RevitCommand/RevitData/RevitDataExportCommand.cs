@@ -10,30 +10,22 @@ namespace RevitCommand.RevitData
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
-    public class RevitDataExportCommand : ARevitExternalCommand<RevitDataExportAction, RevitDataExportAction>
+    public class RevitDataExportCommand : ARevitActionCommand<RevitDataExportAction>
     {
         private readonly RevitEnumCreator Creator = new RevitEnumCreator();
         private const string ProductDataDirectory = @"C:\workspace\TEMP\RevitJournal\ProductData";
 
         protected override Result ExecuteRevitCommand(ref string message, ref string errorMessage)
         {
-            if(int.TryParse(Application.VersionNumber, out var version) == false)
+            if (int.TryParse(Application.VersionNumber, out var version) == false)
             {
                 message = $"Could not parse version number: {Application.VersionNumber}";
                 return Result.Failed;
             }
-
-            var journalKey = Action.ExportDirectory.JournalKey;
 #if DEBUG
-            commandData.JournalData.Add(journalKey, ProductDataDirectory);
+            Action.ExportDirectory.Value = ProductDataDirectory;
 #endif
-            if (JournalKeyExist(commandData, journalKey, out var productDirectory) == false)
-            {
-                message = $"No Journal Key for Directory of ProductData found: {journalKey}";
-                return Result.Failed;
-            }
-
-            var jsonFile = ProductDataJsonDataSource.CreateJsonFile(productDirectory, version);
+            var jsonFile = ProductDataJsonDataSource.CreateJsonFile(Action.ExportDirectory.Value, version);
             var datasource = ProductDataJsonDataSource.CreateDataSource(jsonFile);
             var productData = new RevitProductData
             {

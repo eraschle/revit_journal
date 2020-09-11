@@ -77,8 +77,8 @@
     <Compile Include="Families\ImageExport\TwoDImageAction.cs" />
     <Compile Include="Families\ImageExport\ThreeDImageRevitCommand.cs" />
     <Compile Include="Families\ImageExport\TwoDImageRevitCommand.cs" />
-    <Compile Include="Families\Metadata\EditMetadataRevitCommand.cs" />
-    <Compile Include="Families\Metadata\CreateMetadataRevitCommand.cs" />
+    <Compile Include="Families\Metadata\EditMetadataCommand.cs" />
+    <Compile Include="Families\Metadata\CreateMetadataCommand.cs" />
     <Compile Include="CommandReport\ParameterSharedAddReportLine.cs" />
     <Compile Include="CommandReport\Report.cs" />
     <Compile Include="Families\Metadata\CreateMetadataAction.cs" />
@@ -87,11 +87,9 @@
     <Compile Include="Families\Metadata\MetadataFamilyComparer.cs" />
     <Compile Include="Families\Metadata\RevitMetadataManager.cs" />
     <Compile Include="Families\RevitFamilyParameterUpdater.cs" />
-    <Compile Include="Families\SharedParameters\AParameterRevitCommand.cs" />
-    <Compile Include="Families\SharedParameters\AParametersAction.cs" />
     <Compile Include="Families\SharedParameters\MergeAllParametersAction.cs" />
-    <Compile Include="Families\SharedParameters\MergeSelectParametersRevitCommand.cs" />
-    <Compile Include="Families\SharedParameters\MergeAllParametersRevitCommand.cs" />
+    <Compile Include="Families\SharedParameters\MergeSelectParameterCommand.cs" />
+    <Compile Include="Families\SharedParameters\MergeAllParametersCommand.cs" />
     <Compile Include="Families\RevitFamilyManagerReport.cs" />
     <Compile Include="Families\SharedParameterManager.cs" />
     <Compile Include="Families\RevitFamilyParameterManager.cs" />
@@ -116,7 +114,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="RevitData\RevitDataExportAction.cs" />
-    <Compile Include="RevitData\RevitDataExportRevitCommand.cs" />
+    <Compile Include="RevitData\RevitDataExportCommand.cs" />
     <Compile Include="RevitEnumCreator.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +142,10 @@
     <ProjectReference Include="..\RevitAction\RevitAction.csproj">
       <Project>{e89e17ed-9ad7-4562-b5f6-8d0121fbda10}</Project>
       <Name>RevitAction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{C32F0DC7-ACBA-4802-90D1-BD7641CA851E}</Project>
+      <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
