@@ -10,7 +10,7 @@ namespace RevitAction
 
         string TaskNamespace { get; }
 
-        string TypeName { get; }
+        string ClassName { get; }
 
         string FullClassName { get; }
 

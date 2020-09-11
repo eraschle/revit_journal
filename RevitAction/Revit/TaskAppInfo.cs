@@ -15,11 +15,11 @@ namespace RevitAction.Revit
             get { return GetType().Namespace; }
         }
 
-        public string TypeName { get; } = nameof(TaskApp);
+        public string ClassName { get; } = nameof(TaskApp);
 
         public string FullClassName
         {
-            get { return $"{TaskNamespace}.{TypeName}"; }
+            get { return $"{TaskNamespace}.{ClassName}"; }
         }
 
 

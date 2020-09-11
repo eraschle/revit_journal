@@ -1,4 +1,5 @@
 ﻿using DataSource;
+using RevitAction;
 using RevitAction.Action;
 using RevitAction.Action.Parameter;
 using System;
@@ -7,7 +8,7 @@ using System.Linq;
 
 namespace RevitCommand.Families.SharedParameters
 {
-    public class MergeSelectParameterAction : ATaskActionCommand<MergeSelectParameterAction, MergeSelectParameterCommand>
+    public class MergeSelectParameterAction : ATaskAction, ITaskActionCommand
     {
         public SharedFileActionParameter SharedFile { get; set; }
       
@@ -20,9 +21,12 @@ namespace RevitCommand.Families.SharedParameters
         public ActionParameterSelect ParameterGroups { get; set; }
 
         public ActionParameter ParameterGroup { get; set; }
+     
+        public ITaskInfo TaskInfo { get; }
 
         public MergeSelectParameterAction() : base("Merge Shared [Selectable]", new Guid("2c0ddb9f-ec48-4c34-bc96-1105eb3a1637"))
         {
+            TaskInfo = new TaskActionInfo<MergeSelectParameterAction>(nameof(MergeSelectParameterCommand));
             SharedFile = new SharedFileActionParameter("Shared Parameter File");
             Parameters.Add(SharedFile);
 

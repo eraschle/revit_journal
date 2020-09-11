@@ -65,7 +65,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ATaskActionCommand.cs" />
     <Compile Include="AmWaMeta\CleanMetaAction.cs" />
     <Compile Include="AmWaMeta\CleanMetaCommand.cs" />
     <Compile Include="CommandReport\ReportJsonDataSource.cs" />
