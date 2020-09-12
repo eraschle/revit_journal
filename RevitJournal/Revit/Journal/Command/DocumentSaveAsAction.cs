@@ -4,6 +4,8 @@ using RevitAction.Report;
 using RevitJournal.Helper;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 
 namespace RevitJournal.Revit.Journal.Command
 {
@@ -28,7 +30,7 @@ namespace RevitJournal.Revit.Journal.Command
             fileSuffix = ActionParameter.Text("File suffix", null, defaultValue: GetDate());
             AddParameter(fileSuffix);
 
-            saveFolder = ActionParameter.Text("Save As Folder", null);
+            saveFolder = ActionParameter.Text("Save As Folder", null, defaultValue: GetDate());
             AddParameter(saveFolder);
 
             addAtEnd = ActionParameter.Bool("Add Folder At End", null, true);
@@ -43,7 +45,7 @@ namespace RevitJournal.Revit.Journal.Command
 
         private string GetDate()
         {
-            return DateTime.Now.ToString(suffixFormatString);
+            return DateTime.Now.ToString(suffixFormatString, CultureInfo.CurrentCulture);
         }
 
 
@@ -52,9 +54,17 @@ namespace RevitJournal.Revit.Journal.Command
             get
             {
                 var saveAsPath = pathCreator.CreatePath(familyFile);
-                return new string[] {
+                var commands = new List<string>
+                {
                     JournalBuilder.Build("Ribbon", "ID_REVIT_SAVE_AS_FAMILY"),
-                    string.Concat("Jrn.Data \"File Name\" , \"IDOK\", \"", saveAsPath, "\"") };
+                    string.Concat("Jrn.Data \"File Name\" , \"IDOK\", \"", saveAsPath, "\"")
+                };
+
+                if (File.Exists(saveAsPath))
+                {
+                    commands.Add("Jrn.Data \"TaskDialogResult\" , \"\" , \"Yes\", \"IDYES\"");
+                }
+                return commands.ToArray();
             }
         }
 

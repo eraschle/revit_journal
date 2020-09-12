@@ -2,6 +2,7 @@
 using DataSource.Model.FileSystem;
 using RevitJournal.Tasks;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -32,7 +33,7 @@ namespace RevitJournal.Revit.Journal
 
         private static string GetJournalFileName(RevitFamilyFile revitFile)
         {
-            var suffix = DateTime.Now.ToString(SuffixFormatString);
+            var suffix = DateTime.Now.ToString(SuffixFormatString, CultureInfo.CurrentCulture);
             var fileName = string.Concat(revitFile.Name, Constant.Underline, suffix);
             return fileName.Replace(Constant.Space, Constant.Underline);
         }
