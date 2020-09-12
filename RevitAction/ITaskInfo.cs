@@ -6,7 +6,7 @@ namespace RevitAction
     {
         Guid Id { get; }
 
-        string VendorId { get; }
+        string VendorId { get; set; }
 
         string TaskNamespace { get; }
 

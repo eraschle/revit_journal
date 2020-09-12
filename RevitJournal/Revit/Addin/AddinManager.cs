@@ -4,49 +4,48 @@ using System.IO;
 using System.Linq;
 using Autodesk.RevitAddIns;
 using RevitAction;
-using RevitAction.Action;
-using RevitJournal.Properties;
 
 namespace RevitJournal.Revit.Addin
 {
     public static class AddinManager
     {
-        public static Guid DummyGuid { get; } = new Guid("5cd4edd6-51ef-46c3-9afe-3b9d5fced66e");
-
-        public static Guid AppAddinId { get; } = new Guid("5aa93805-8e2a-4b8a-8087-94556cebe3b7");
-
         public const string VendorId = "RascerDev";
 
-        public static void CreateAppManifest(string outputPath, ITaskAppInfo appInfo)
+        public static void CreateAppManifest(string outputPath, ITaskAppInfo info)
         {
-            var manifest = GetManifest(outputPath);
-            var addinApps = manifest.AddInApplications;
-            var addinApp = addinApps.FirstOrDefault(app => app.AddInId == AppAddinId);
-            addinApp.VendorId = appInfo.VendorId;
-            addinApp.Assembly = appInfo.AssemblyPath;
-            addinApp.FullClassName = appInfo.FullClassName;
-            var commands = manifest.AddInCommands;
-            if (HasCommand(commands, DummyGuid))
+            if (info is null) { throw new ArgumentNullException(nameof(info)); }
+
+            if (string.IsNullOrEmpty(info.VendorId))
             {
-                var dummyCmd = commands.First(cmd => IsCommand(cmd, DummyGuid));
-                if (dummyCmd != null)
-                {
-                    commands.Remove(dummyCmd);
-                    manifest.Save();
-                }
+                info.VendorId = VendorId;
             }
-            manifest.Save();
+            var manifestPath = GetManifestPath(outputPath);
+            if (File.Exists(manifestPath) == false)
+            {
+                File.Delete(manifestPath);
+            }
+            var manifest = new RevitAddInManifest();
+            manifest.AddInApplications.Add(new RevitAddInApplication(info.ClassName,
+                                                                     info.AssemblyPath,
+                                                                     info.Id,
+                                                                     info.FullClassName,
+                                                                     info.VendorId));
+            manifest.SaveAs(manifestPath);
         }
 
-        public static void CreateManifest(string outputPath, ITaskActionCommand action)
+        public static void CreateManifest(string outputPath, ITaskInfo info)
         {
-            if (action is null) { throw new ArgumentNullException(nameof(action)); }
+            if (info is null) { throw new ArgumentNullException(nameof(info)); }
 
-            var manifest = GetManifest(outputPath);
+            var manifestPath = GetManifestPath(outputPath);
+            var manifest = AddInManifestUtility.GetRevitAddInManifest(manifestPath);
             var commands = manifest.AddInCommands;
-            if (HasCommand(commands, action.Id) == false)
+            if (HasCommand(commands, info.Id) == false)
             {
-                var info = action.TaskInfo;
+                if (string.IsNullOrEmpty(info.VendorId))
+                {
+                    info.VendorId = VendorId;
+                }
                 var newCommand = new RevitAddInCommand(info.AssemblyPath,
                                                        info.Id,
                                                        info.FullClassName,
@@ -56,26 +55,14 @@ namespace RevitJournal.Revit.Addin
             }
         }
 
-        private static RevitAddInManifest GetManifest(string outputPath)
+        private static string GetManifestPath(string outputPath)
         {
-            var manifestPath = Path.Combine(outputPath, "RevitJournalAddins.addin");
-            if (File.Exists(manifestPath) == false)
-            {
-                var template = Resources.AddinTemplate;
-                File.WriteAllBytes(manifestPath, template);
-            }
-            return AddInManifestUtility.GetRevitAddInManifest(manifestPath);
+            return Path.Combine(outputPath, "RevitJournalAddins.addin");
         }
 
         private static bool HasCommand(IEnumerable<RevitAddInCommand> commands, Guid guid)
         {
-            return commands.Any(cmd => IsCommand(cmd, guid));
-        }
-
-
-        private static bool IsCommand(RevitAddInCommand command, Guid guid)
-        {
-            return command.AddInId.Equals(guid);
+            return commands.Any(cmd => cmd.AddInId.Equals(guid));
         }
     }
 }

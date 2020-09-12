@@ -25,7 +25,7 @@ namespace RevitAction.Action
             get { return $"{TaskNamespace}.{ClassName}"; }
         }
 
-        public string VendorId { get; set; } = "RascerDev";
+        public string VendorId { get; set; }
 
     }
 }

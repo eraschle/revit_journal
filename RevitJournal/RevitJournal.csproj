@@ -119,11 +119,6 @@
     <Compile Include="Tasks\Options\ParallelOptions.cs" />
     <Compile Include="Tasks\Options\ReportOptions.cs" />
     <Compile Include="Tasks\Actions\TaskActionComparer.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Revit\Addin\AddinManager.cs" />
     <Compile Include="Revit\Journal\JournalBuilder.cs" />
     <Compile Include="Revit\Journal\Command\RevitCloseCommand.cs" />
@@ -184,12 +179,6 @@
       <Project>{c32f0dc7-acba-4802-90d1-bd7641ca851e}</Project>
       <Name>Utilities</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

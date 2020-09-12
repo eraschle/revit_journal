@@ -4,11 +4,9 @@ namespace RevitAction.Revit
 {
     public class TaskAppInfo : ITaskAppInfo
     {
-        public static string DefaultVendorId { get; } = "RascerDev";
+        public Guid Id { get; } = new Guid("5aa93805-8e2a-4b8a-8087-94556cebe3b7");
 
-        public Guid Id { get { return Guid.Empty; } }
-
-        public string VendorId { get; } = DefaultVendorId;
+        public string VendorId { get; set; }
 
         public string TaskNamespace
         {

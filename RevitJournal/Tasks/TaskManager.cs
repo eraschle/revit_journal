@@ -85,7 +85,7 @@ namespace RevitJournal.Tasks
             AddinManager.CreateAppManifest(journal, ExternalAction.GetTaskApp());
             foreach (var command in commands)
             {
-                AddinManager.CreateManifest(journal, command);
+                AddinManager.CreateManifest(journal, command.TaskInfo);
             }
         }
 
