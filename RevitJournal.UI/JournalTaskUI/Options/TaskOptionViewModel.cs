@@ -227,6 +227,18 @@ namespace RevitJournalUI.JournalTaskUI.Options
             }
         }
 
+        public bool DeleteAppBackups
+        {
+            get { return Options.DeleteRevitBackup; }
+            set
+            {
+                if (Options.DeleteRevitBackup == value) { return; }
+
+                Options.DeleteRevitBackup = value;
+                OnPropertyChanged(nameof(CreateBackup));
+            }
+        }
+
         protected void OnPropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

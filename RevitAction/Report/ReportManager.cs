@@ -10,6 +10,8 @@ namespace RevitAction.Report
         private readonly IPAddress _serverAddress;
         private readonly short _serverPort;
 
+        private readonly ActionManager ActionManager = new ActionManager();
+
         public ReportManager(IPAddress address = null, short port = 8888)
         {
             _serverAddress = address ?? IPAddress.Loopback;
@@ -80,6 +82,11 @@ namespace RevitAction.Report
                 Message = message
             };
             Publisher.SendReport(report);
+        }
+
+        public bool IsAllowdDialog(string dialogId)
+        {
+            return ActionManager.AllowedDialogs.Contains(dialogId);
         }
 
         public void Connect()

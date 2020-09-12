@@ -18,6 +18,7 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Label Content="Revit"
                Grid.Column="0" Grid.Row="0" 
@@ -92,37 +93,48 @@
                       VerticalAlignment="Stretch"
                       VerticalContentAlignment="Center"/>
         </Grid>
+        <Label Content="Delete Revit-Backups"
+                   Grid.Column="0" Grid.Row="4" 
+                   Margin="{StaticResource DefaultMargin}"
+                   HorizontalAlignment="Stretch" 
+                   VerticalAlignment="Center"/>
+        <CheckBox Grid.Column="1" Grid.Row="4" 
+                      Margin="{StaticResource DefaultMargin}"
+                      IsChecked="{Binding DeleteAppBackups, UpdateSourceTrigger=PropertyChanged}"
+                      IsEnabled="{Binding OptionsEnabled}"
+                      HorizontalAlignment="Stretch" 
+                      VerticalAlignment="Center"/>
         <Label Content="Create Backup"
-               Grid.Column="0" Grid.Row="4" 
+               Grid.Column="0" Grid.Row="5" 
                Margin="{StaticResource DefaultMargin}"
                HorizontalAlignment="Stretch" 
                VerticalAlignment="Center"/>
         <CheckBox x:Name="ckbBackup"
-                  Grid.Column="1" Grid.Row="4"
+                  Grid.Column="1" Grid.Row="5" 
                   Margin="{StaticResource DefaultMargin}"
                   IsChecked="{Binding CreateBackup, UpdateSourceTrigger=PropertyChanged}"
                   IsEnabled="{Binding OptionsEnabled}"
                   HorizontalAlignment="Stretch" 
                   VerticalAlignment="Center"/>
         <Label Content="Subfolder"
-               Grid.Column="0" Grid.Row="5" 
+               Grid.Column="0" Grid.Row="6" 
                Margin="{StaticResource DefaultMargin}"
                HorizontalAlignment="Stretch" 
                VerticalAlignment="Stretch"/>
         <TextBox Text="{Binding BackupSubFolder, UpdateSourceTrigger=PropertyChanged}" 
-                 Grid.Column="1" Grid.Row="5"
+                 Grid.Column="1" Grid.Row="6"
                  Margin="{StaticResource DefaultMargin}"
                  IsEnabled="{Binding CreateBackup, UpdateSourceTrigger=PropertyChanged}"
                  HorizontalAlignment="Stretch" 
                  VerticalAlignment="Stretch"
                  VerticalContentAlignment="Center"/>
         <Label Content="File Suffix"
-               Grid.Column="0" Grid.Row="6" 
+               Grid.Column="0" Grid.Row="7" 
                Margin="{StaticResource DefaultMargin}"
                HorizontalAlignment="Stretch" 
                VerticalAlignment="Stretch"/>
         <TextBox Text="{Binding BackupSuffix, UpdateSourceTrigger=PropertyChanged}" 
-                 Grid.Column="1" Grid.Row="6"
+                 Grid.Column="1" Grid.Row="7"
                  Margin="{StaticResource DefaultMargin}"
                  IsEnabled="{Binding CreateBackup, UpdateSourceTrigger=PropertyChanged}"
                  HorizontalAlignment="Stretch" 

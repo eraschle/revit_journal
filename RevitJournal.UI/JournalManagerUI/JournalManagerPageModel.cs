@@ -263,10 +263,6 @@ namespace RevitJournalUI.JournalManagerUI
                 Actions.Clear();
                 foreach (var action in dialog.ViewModel.CheckedActions)
                 {
-                    if (action is DocumentSaveAction saveAction)
-                    {
-                        TaskOptions.DeleteRevitBackup |= saveAction.Backup.GetBoolValue();
-                    }
                     Actions.Add(action);
                 }
             }

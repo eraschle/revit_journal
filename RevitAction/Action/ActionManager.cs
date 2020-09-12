@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace RevitAction.Report
 {
@@ -48,6 +49,17 @@ namespace RevitAction.Report
         {
             return IsOpenAction(actionId) 
                 || IsSaveAction(actionId);
+        }
+
+        public IList<string> AllowedDialogs
+        {
+            get
+            {
+                return new List<string>
+                {
+                    "TaskDialog_Replace_Existing_File"
+                };
+            }
         }
 
         public bool IsActionId(string actionId, out Guid action)

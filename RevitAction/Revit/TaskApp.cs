@@ -88,7 +88,9 @@ namespace RevitAction.Revit
 
         private void Application_DialogBoxShowing(object sender, DialogBoxShowingEventArgs args)
         {
-            //args.OverrideResult(-1);
+            if (Reporter.IsAllowdDialog(args.DialogId)) { return; }
+            
+            args.OverrideResult(-1);
             Reporter.Error(args.DialogId);
         }
 

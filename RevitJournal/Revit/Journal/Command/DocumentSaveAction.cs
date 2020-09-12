@@ -6,13 +6,7 @@ namespace RevitJournal.Revit.Journal.Command
 {
     public class DocumentSaveAction : ATaskAction, ITaskActionJournal
     {
-        public ActionParameter Backup { get; set; }
-
-        public DocumentSaveAction() : base("Save", ActionManager.SaveActionId)
-        {
-            Backup = ActionParameter.Bool("Delete Backup", "DeleteBackpus", true);
-            Parameters.Add(Backup);
-        }
+        public DocumentSaveAction() : base("Save", ActionManager.SaveActionId) { }
 
         public IEnumerable<string> Commands
         {
