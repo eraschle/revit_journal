@@ -4,12 +4,12 @@ namespace RevitAction.Action.Parameter
 {
     public class ActionParameterSelect : AActionParameter
     {
-        public IList<string> SelectableValues { get; private set; }
+        public IList<string> Values { get; private set; }
 
-        public ActionParameterSelect(string name, string journalKey, IList<string> selectableValues)
+        public ActionParameterSelect(string name, string journalKey, IList<string> values)
             : base(name, journalKey, ParameterKind.Selectable)
         {
-            SelectableValues = selectableValues;
+            Values = values;
         }
     }
 }

@@ -158,7 +158,7 @@
       <DependentUpon>CmdParameterListItemsView.xaml</DependentUpon>
     </None>
     <None Include="Tasks\Actions\Parameter\CmdParameterListItemsViewModel.cs" />
-    <None Include="Tasks\Actions\Parameter\CmdParameterSelectViewModel.cs" />
+    <Compile Include="Tasks\Actions\Parameter\SelectParameterViewModel.cs" />
     <None Include="Tasks\Actions\Parameter\CmdParameterListViewModel.cs" />
     <Compile Include="Tasks\Actions\Parameter\InfoParameterViewModel.cs" />
     <Compile Include="Tasks\Actions\TaskActionsView.xaml.cs">
@@ -167,7 +167,6 @@
     <Compile Include="Tasks\Actions\TaskActionsViewModel.cs" />
     <Compile Include="Tasks\Actions\Parameter\BoolParameterViewModel.cs" />
     <Compile Include="Tasks\Actions\Parameter\FileParameterViewModel.cs" />
-    <None Include="Tasks\Actions\Parameter\CmdParameterStringViewModel.cs" />
     <Compile Include="Tasks\Actions\ActionViewModel.cs" />
     <Compile Include="JournalTaskUI\Converter\AMetadataConverter.cs" />
     <Compile Include="MetadataUI\Converter\AColorConverter.cs" />

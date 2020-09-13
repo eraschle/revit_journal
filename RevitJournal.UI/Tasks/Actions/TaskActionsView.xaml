@@ -236,7 +236,7 @@
                                                 </ContentPresenter.Content>
                                             </ContentPresenter>
                                         </DataTemplate>
-                                        <!--<DataTemplate DataType="{x:Type local:CmdParameterListViewModel}">
+                                        <!--<DataTemplate DataType="{x:Type par:CmdParameterListViewModel}">
                                             <ContentPresenter>
                                                 <ContentPresenter.Content>
                                                     <Grid>
@@ -260,8 +260,8 @@
                                                     </Grid>
                                                 </ContentPresenter.Content>
                                             </ContentPresenter>
-                                        </DataTemplate>
-                                        <DataTemplate DataType="{x:Type local:CmdParameterSelectViewModel}">
+                                        </DataTemplate>-->
+                                        <DataTemplate DataType="{x:Type par:SelectParameterViewModel}">
                                             <ContentPresenter>
                                                 <ContentPresenter.Content>
                                                     <Grid>
@@ -272,7 +272,7 @@
                                                         <Label Content="{Binding Name}" 
                                                                Style="{StaticResource StyleLabelItem}"
                                                                Grid.Column="0"/>
-                                                        <ComboBox ItemsSource="{Binding ParameterValues}" 
+                                                        <ComboBox ItemsSource="{Binding Values}" 
                                                                   SelectedItem="{Binding Value}"
                                                                   IsEnabled="{Binding IsEnable}"
                                                                   Style="{StaticResource StyleComboBoxItem}"
@@ -280,7 +280,7 @@
                                                     </Grid>
                                                 </ContentPresenter.Content>
                                             </ContentPresenter>
-                                        </DataTemplate>-->
+                                        </DataTemplate>
                                     </ListBox.Resources>
                                 </ListBox>
                             </StackPanel>
