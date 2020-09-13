@@ -26,11 +26,7 @@ namespace RevitJournalUI.Tasks.Converter
             {
                 return "Start";
             }
-            if (status.IsOpen)
-            {
-                return "Open";
-            }
-            if (status.IsRun)
+            if (status.IsRunning)
             {
                 return "Run";
             }
@@ -40,13 +36,13 @@ namespace RevitJournalUI.Tasks.Converter
             }
             if (status.IsTimeout)
             {
-                return "Timeout";
+                return "Time";
             }
             if (status.IsCancel)
             {
                 return "Cancel";
             }
-            return "Finished";
+            return "Finish";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
