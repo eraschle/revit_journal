@@ -6,7 +6,7 @@ using RevitAction.Action;
 
 namespace RevitJournal.Report
 {
-    public class TaskReport : ITaskReport
+    public class TaskReport
     {
         public RevitFamilyFile SourceFile { get; set; }
 
