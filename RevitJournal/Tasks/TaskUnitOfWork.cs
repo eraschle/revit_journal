@@ -156,23 +156,15 @@ namespace RevitJournal.Tasks
 
         private int GetTaskStatus(ReportMessage report)
         {
-            var status = TaskAppStatus.Run;
             switch (report.Kind)
             {
-                case ReportKind.Status:
-                    if (actionManager.IsOpenAction(report.ActionId))
-                    {
-                        status = TaskAppStatus.Open;
-                    }
-                    break;
                 case ReportKind.Error:
-                    status = TaskAppStatus.Error;
-                    break;
+                    return TaskAppStatus.Error;
+                case ReportKind.Status:
                 case ReportKind.Warning:
                 default:
-                    break;
+                    return TaskAppStatus.Running;
             }
-            return status;
         }
 
         private TFile CreateFile<TFile>(ReportMessage report) where TFile : AFile, new()
@@ -193,7 +185,7 @@ namespace RevitJournal.Tasks
             if (Task.HasBackupFile)
             {
                 Task.BackupFile.DeleteBackups();
-            }   
+            }
         }
 
         private bool HasActionReport(Guid actionId, out TaskActionReport actionReport)
@@ -219,6 +211,11 @@ namespace RevitJournal.Tasks
             Process.KillProcess();
         }
 
+        public void CancelProcess(IProgress<TaskUnitOfWork> progress)
+        {
+            KillProcess();
+            ReportStatus(progress, TaskAppStatus.Cancel);
+        }
         #endregion
 
         internal async Task CreateTask(IProgress<TaskUnitOfWork> progress, CancellationToken cancel)
@@ -230,7 +227,7 @@ namespace RevitJournal.Tasks
             ReportStatus(progress, TaskAppStatus.Started);
             using (var taskCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel))
             {
-                taskCancel.Token.Register(KillProcess);
+                taskCancel.Token.Register(() => CancelProcess(progress));
                 using (Process = new RevitProcess(TaskArguments))
                 {
                     var normalExit = await Process.RunTaskAsync(TaskJournal, taskCancel.Token)
@@ -240,13 +237,9 @@ namespace RevitJournal.Tasks
                         ReportStatus(progress, TaskAppStatus.Timeout);
                     }
                 }
-                if (taskCancel.IsCancellationRequested)
-                {
-                    ReportStatus(progress, TaskAppStatus.Cancel);
-                }
+                Process = null;
                 ReportStatus(progress, TaskAppStatus.Finish);
             }
-            ReportStatus(progress, TaskAppStatus.CleanUp);
         }
 
         private RevitArguments TaskArguments
@@ -276,7 +269,7 @@ namespace RevitJournal.Tasks
 
         public void Cleanup()
         {
-            Process.KillProcess();
+            Process?.KillProcess();
             DisconnectAction?.Invoke(TaskId);
             DeleteBackups();
             CreateLogs();

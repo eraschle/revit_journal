@@ -119,19 +119,16 @@ namespace RevitJournalUI.JournalTaskUI
 
         private void Progress_ProgressChanged(object sender, TaskUnitOfWork task)
         {
-            if (task.Status.IsCleanUp == false) { return; }
+            if (task.Status.IsExecuted == false) { return; }
 
             var viewModel = TaskModels.FirstOrDefault(mdl => mdl.TaskUoW.Equals(task));
             if (viewModel is null) { return; }
 
-            else if (task.Status.IsCleanUp)
-            {
-                task.Cleanup();
-                viewModel.RemoveTimer(timer);
-                viewModel.RemoveProgessEvent(Progress);
-                ExecutedTasks += 1;
-                SetExecutedTasks();
-            }
+            task.Cleanup();
+            viewModel.RemoveTimer(timer);
+            viewModel.RemoveProgessEvent(Progress);
+            ExecutedTasks += 1;
+            SetExecutedTasks();
         }
 
         private void SetExecutedTasks()
