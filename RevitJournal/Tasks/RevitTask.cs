@@ -106,6 +106,22 @@ namespace RevitJournal.Tasks
             }
         }
 
+        public void DeleteBackups(TaskOptions options)
+        {
+            if (options is null || options.DeleteRevitBackup == false) { return; }
+
+            SourceFile.DeleteBackups();
+            if (HasResultFile)
+            {
+                ResultFile.DeleteBackups();
+            }
+
+            if (HasBackupFile)
+            {
+                BackupFile.DeleteBackups();
+            }
+        }
+
         public override bool Equals(object obj)
         {
             return Equals(obj as RevitTask);

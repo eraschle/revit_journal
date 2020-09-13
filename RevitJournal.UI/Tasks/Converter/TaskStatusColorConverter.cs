@@ -19,11 +19,11 @@ namespace RevitJournalUI.Tasks.Converter
             {
                 return new SolidColorBrush(Colors.Yellow);
             }
-            else if (status.IsRunning)
+            else if (status.IsStarted || status.IsRunning)
             {
                 return new SolidColorBrush(Colors.GreenYellow);
             }
-            else if (status.Executed)
+            else if (status.IsExecuted)
             {
                 if (status.IsCancel)
                 {

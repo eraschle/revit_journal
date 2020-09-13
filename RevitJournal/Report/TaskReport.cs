@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
-using System.IO;
 using DataSource.Model.FileSystem;
 using RevitAction.Report;
 using RevitJournal.Revit.Journal;
@@ -10,26 +8,6 @@ namespace RevitJournal.Report
 {
     public class TaskReport : ITaskReport
     {
-        public static void Write(TaskReport result)
-        {
-            if (result is null) { return; }
-
-            var setting = new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore
-            };
-            var content = JsonConvert.SerializeObject(result, Formatting.Indented, setting);
-            var resultFile = GetResultFile(result);
-            File.WriteAllText(resultFile.FullPath, content);
-        }
-
-        private static TaskReportFile GetResultFile(TaskReport result)
-        {
-            return result.SourceFile
-                .ChangeExtension<TaskReportFile>(TaskReportFile.TaskResultExtension)
-                .ChangeFileName<TaskReportFile>(result.SourceFile.Name + "_Result");
-        }
-
         public RevitFamilyFile SourceFile { get; set; }
 
         public TaskJournalFile TaskJournal { get; set; }

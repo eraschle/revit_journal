@@ -10,7 +10,7 @@ namespace RevitJournalUI.Tasks.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is TaskAppStatus status) || status.Executed || status.IsRunning == false)
+            if (!(value is TaskAppStatus status) || status.IsExecuted)
             {
                 return Visibility.Collapsed;
             }

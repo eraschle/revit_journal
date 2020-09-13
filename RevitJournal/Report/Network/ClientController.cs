@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 
-namespace RevitJournal.Report
+namespace RevitJournal.Report.Network
 {
     public class ClientController<TResult> where TResult : class, IReportReceiver
     {
@@ -13,14 +13,11 @@ namespace RevitJournal.Report
 
         public Func<string, TResult> FindReport { get; set; }
 
-        public IProgress<TResult> Progress { get; set; }
-
-        public ReportClient<TResult> Add(Socket socket)
+        public ReportClient<TResult> AddClient(Socket socket)
         {
             var client = new ReportClient<TResult>(socket)
             {
-                FindReport = FindReport,
-                Progress = Progress,
+                FindReport = FindReport
             };
 
             lock (lockObject)

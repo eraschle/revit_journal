@@ -19,6 +19,8 @@ namespace RevitJournalUI.Tasks
 
         internal TaskUnitOfWork TaskUoW { get; set; }
 
+        public string TotalTime { get; set; }
+
         #region Task
 
         public string TaskName
@@ -94,20 +96,22 @@ namespace RevitJournalUI.Tasks
 
             CurrentAction = TaskUoW.CurrentAction.Name;
             ExecutedActions = TaskUoW.ExecutedActions;
-            ExecutedActionsText = $"{executedActions} / {ActionsCount}";
-            if (TaskUoW.Status.IsError)
+            var reportManager = TaskUoW.ReportManager;
+            if (reportManager.HasErrorAction)
             {
-                ErrorText = TaskUoW.ErrorAction.Name;
-                ErrorTextToolTip = TaskUoW.ErrorMessage;
+                ErrorText = reportManager.ErrorAction.Name;
+                ErrorTextToolTip = reportManager.ErrorMessage;
             }
         }
 
         private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (TaskUoW.Status.IsRunning == false) { return; }
-
-            executionTime += timerInterval;
-            TaskTime = $"{TimeSpanHelper.GetMinuteAndSeconds(executionTime)} / {TimeSpanHelper.GetMinuteAndSeconds(TaskUoW.Options.Arguments.Timeout)}";
+            if (TaskUoW.Status.IsStarted && TaskUoW.Status.IsExecuted == false)
+            {
+                executionTime += timerInterval;
+                var runTime = TimeSpanHelper.GetMinuteAndSeconds(executionTime);
+                TaskTime = $"{runTime} / {TotalTime}";
+            }
         }
 
         #endregion
@@ -124,20 +128,13 @@ namespace RevitJournalUI.Tasks
 
                 executedActions = value;
                 OnPropertyChanged(nameof(ExecutedActions));
+                OnPropertyChanged(nameof(ExecutedActionsText));
             }
         }
 
-        private string executedActionsText = string.Empty;
         public string ExecutedActionsText
         {
-            get { return executedActionsText; }
-            set
-            {
-                if (StringUtils.Equals(executedActionsText, value)) { return; }
-
-                executedActionsText = value;
-                OnPropertyChanged(nameof(ExecutedActionsText));
-            }
+            get { return $"{ExecutedActions} / {ActionsCount}"; }
         }
 
         public double ActionsCount

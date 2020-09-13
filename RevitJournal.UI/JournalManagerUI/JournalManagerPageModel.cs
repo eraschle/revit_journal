@@ -345,7 +345,7 @@ namespace RevitJournalUI.JournalManagerUI
                 TaskManager.AddTask(task, TaskOptions);
             }
 
-            TasksViewModel.Update(TaskManager);
+            TasksViewModel.Update(TaskManager, TaskOptions);
 
             FamiliesVisibility = Visibility.Collapsed;
             BackVisibility = Visibility.Visible;
@@ -359,7 +359,7 @@ namespace RevitJournalUI.JournalManagerUI
 
         private void BackCommandAction(object parameter)
         {
-            TaskManager.CleanTaskRunner();
+            TaskManager.ClearTasks();
             FamiliesVisibility = Visibility.Visible;
             TaskVisibility = Visibility.Collapsed;
             BackVisibility = Visibility.Collapsed;
@@ -491,7 +491,7 @@ namespace RevitJournalUI.JournalManagerUI
             CancelVisibility = Visibility.Visible;
             BackVisibility = Visibility.Collapsed;
 
-            TaskManager.StartServer(TaskOptions, TasksViewModel.Progress);
+            TaskManager.StartServer(TaskOptions);
             TasksViewModel.AddEvents();
             using (var cancel = new CancellationTokenSource())
             {

@@ -1,6 +1,9 @@
 ﻿using RevitJournal.Tasks;
+using RevitJournal.Tasks.Options;
+using RevitJournalUI.Helper;
 using RevitJournalUI.Tasks;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -100,16 +103,21 @@ namespace RevitJournalUI.JournalTaskUI
             Progress.ProgressChanged -= Progress_ProgressChanged;
         }
 
-        internal void Update(TaskManager manager)
+        internal void Update(TaskManager manager, TaskOptions options)
         {
             if (manager is null || manager.HasTasks == false) { return; }
 
             TaskModels.Clear();
             MaxTasks = 0;
+            var totalTime = TimeSpanHelper.GetMinuteAndSeconds(options.Arguments.Timeout);
             foreach (var unitOfWork in manager.UnitOfWorks)
             {
                 MaxTasks += 1;
-                var viewModel = new TaskViewModel { TaskUoW = unitOfWork };
+                var viewModel = new TaskViewModel
+                {
+                    TaskUoW = unitOfWork,
+                    TotalTime = totalTime
+                };
                 TaskModels.Add(viewModel);
             }
 
@@ -119,19 +127,16 @@ namespace RevitJournalUI.JournalTaskUI
 
         private void Progress_ProgressChanged(object sender, TaskUnitOfWork task)
         {
-            if (task.Status.IsCleanUp == false) { return; }
+            if (task.Status.IsExecuted == false) { return; }
 
             var viewModel = TaskModels.FirstOrDefault(mdl => mdl.TaskUoW.Equals(task));
             if (viewModel is null) { return; }
 
-            else if (task.Status.IsCleanUp)
-            {
-                task.Cleanup();
-                viewModel.RemoveTimer(timer);
-                viewModel.RemoveProgessEvent(Progress);
-                ExecutedTasks += 1;
-                SetExecutedTasks();
-            }
+            ExecutedTasks += 1;
+            SetExecutedTasks();
+            task.Cleanup();
+            viewModel.RemoveTimer(timer);
+            viewModel.RemoveProgessEvent(Progress);
         }
 
         private void SetExecutedTasks()

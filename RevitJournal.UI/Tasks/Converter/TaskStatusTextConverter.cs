@@ -24,13 +24,9 @@ namespace RevitJournalUI.Tasks.Converter
             }
             if (status.IsStarted)
             {
-                return "Start";
+                return "Started";
             }
-            if (status.IsOpen)
-            {
-                return "Open";
-            }
-            if (status.IsRun)
+            if (status.IsRunning)
             {
                 return "Run";
             }

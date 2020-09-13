@@ -7,22 +7,24 @@ using System.Threading.Tasks;
 using RevitJournal.Revit.Addin;
 using RevitJournal.Tasks.Options;
 using RevitJournal.Tasks.Actions;
-using RevitAction.Report.Message;
-using RevitAction.Report;
-using RevitJournal.Report;
 using DataSource.Model.FileSystem;
 using DataSource.Model.Product;
 using RevitAction;
+using RevitJournal.Report.Network;
 
 namespace RevitJournal.Tasks
 {
-    public partial class TaskManager
+    public class TaskManager
     {
         private ReportServer<TaskUnitOfWork> ReportServer { get; set; } = new ReportServer<TaskUnitOfWork>();
+
+        private ClientController<TaskUnitOfWork> ClientController { get; set; } = new ClientController<TaskUnitOfWork>();
 
         public Queue<TaskUnitOfWork> TaskQueue { get; } = new Queue<TaskUnitOfWork>();
 
         public IList<TaskUnitOfWork> UnitOfWorks { get; } = new List<TaskUnitOfWork>();
+
+        public IProgress<TaskUnitOfWork> Progress { get; set; }
 
         public bool HasTasks
         {
@@ -51,7 +53,7 @@ namespace RevitJournal.Tasks
 
             var unitOfWork = new TaskUnitOfWork(task, options)
             {
-                DisconnectAction = ReportServer.DisconnectClient
+                DisconnectAction = ClientController.Remove
             };
             UnitOfWorks.Add(unitOfWork);
             TaskQueue.Enqueue(unitOfWork);
@@ -99,8 +101,8 @@ namespace RevitJournal.Tasks
             var status = TaskAppStatus.Waiting;
             foreach (var unitOfWork in UnitOfWorks)
             {
-                unitOfWork.Status.SetStatus(status);
-                progress.Report(unitOfWork);
+                unitOfWork.Progress = progress;
+                unitOfWork.ReportStatus(status);
             }
         }
 
@@ -111,70 +113,62 @@ namespace RevitJournal.Tasks
 
             CreateAddinFile(options);
             SetWaitingStatus(progress);
-            return Task.Run(() => { RunTasks(options, progress, cancellation); });
+            return Task.Run(() => { RunTasks(options, cancellation); });
         }
 
-        public void StartServer(TaskOptions options, IProgress<TaskUnitOfWork> progress)
+        public void StartServer(TaskOptions options)
         {
-            ReportServer.SetFindReport(ByTaskId);
-            ReportServer.SetProgress(progress);
+            ClientController.FindReport = ByTaskId;
+            ReportServer.Clients = ClientController;
             ReportServer.StartListening(options);
         }
 
         public void StopServer()
         {
+            ClientController.RemoveClients();
             ReportServer.StopListening();
         }
 
-        private void RunTasks(TaskOptions options, IProgress<TaskUnitOfWork> progress, CancellationToken cancellation)
+        private void RunTasks(TaskOptions options, CancellationToken cancellation)
         {
-            var runningTasks = CreateTasks(options, progress, cancellation);
+            var runningTasks = CreateTasks(options, cancellation);
             while (runningTasks.Count > 0)
             {
                 var finished = Task.WhenAny(runningTasks.ToArray()).Result;
-                runningTasks.Remove(finished);
                 if (cancellation.IsCancellationRequested)
                 {
-                    CancelTasks(progress);
-                    TaskQueue.Clear();
-                    runningTasks.Clear();
+                    while (TaskQueue.Count > 0)
+                    {
+                        var task = TaskQueue.Dequeue();
+                        task.CancelProcess();
+                    }
                 }
                 if (TaskQueue.Count > 0)
                 {
-                    var nextTask = GetNextTask(progress, cancellation);
+                    var nextTask = GetNextTask(cancellation);
                     runningTasks.Add(nextTask);
                 }
+                runningTasks.Remove(finished);
             }
         }
 
-        private void CancelTasks(IProgress<TaskUnitOfWork> progress)
-        {
-            if(TaskQueue.Count == 0) { return; }
-
-            foreach (var nextTask in TaskQueue)
-            {
-                nextTask.KillProcess();
-                nextTask.ReportStatus(progress, TaskAppStatus.Cancel);
-            }
-        }
-
-        private ICollection<Task> CreateTasks(TaskOptions options, IProgress<TaskUnitOfWork> progress, CancellationToken cancellation)
+        private ICollection<Task> CreateTasks(TaskOptions options, CancellationToken cancellation)
         {
             var max = Math.Min(options.Parallel.ParallelProcesses, TaskQueue.Count);
             var runningTasks = new List<Task>();
 
             while (runningTasks.Count < max)
             {
-                var task = GetNextTask(progress, cancellation);
+                var task = GetNextTask(cancellation);
                 runningTasks.Add(task);
             }
             return runningTasks;
         }
 
-        private Task GetNextTask(IProgress<TaskUnitOfWork> progress, CancellationToken cancellation)
+        private Task GetNextTask(CancellationToken cancellation)
         {
             var unitOfWork = TaskQueue.Dequeue();
-            return unitOfWork.CreateTask(progress, cancellation);
+            return unitOfWork.CreateTask(cancellation);
         }
     }
 }

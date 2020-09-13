@@ -2,26 +2,23 @@
 using RevitAction.Report.Message;
 using RevitAction.Report.Network;
 using System;
+using System.Diagnostics;
 using System.Net.Sockets;
 
-namespace RevitJournal.Report
+namespace RevitJournal.Report.Network
 {
     public class ReportClient<TResult> where TResult : class, IReportReceiver
     {
-        private static readonly ActionManager actionManager = new ActionManager();
-
         private readonly ReceivePacket _receive;
-        private readonly SendPacket sendPacket;
+        private readonly SendPacket _send;
 
         public Func<string, TResult> FindReport { get; set; }
-
-        public IProgress<TResult> Progress { get; set; }
 
         public TResult Reporter { get; private set; }
 
         public ReportClient(Socket socket)
         {
-            sendPacket = new SendPacket(socket);
+            _send = new SendPacket(socket);
             _receive = new ReceivePacket(socket)
             {
                 ReportAction = ReportAction
@@ -35,24 +32,22 @@ namespace RevitJournal.Report
             switch (report.Kind)
             {
                 case ReportKind.Status:
-                    if (actionManager.IsOpenAction(report.ActionId))
+                    if (ActionManager.IsOpenAction(report.ActionId))
                     {
                         Reporter = FindReport.Invoke(report.Message);
+                        Debug.WriteLine($"Reporter found? {Reporter is object} => {report.Message}");
                     }
                     if (Reporter is object)
                     {
                         var nextActionId = Reporter.GetNextAction(report.ActionId);
-                        sendPacket.Send(nextActionId.ToString());
+                        _send.Send(nextActionId.ToString());
                     }
                     break;
                 case ReportKind.Error:
                 default:
                     break;
             }
-            if (Reporter is null) { return; }
-
-            Reporter.MakeReport(report);
-            Progress.Report(Reporter);
+            Reporter?.MakeReport(report);
         }
 
         public string ClientId

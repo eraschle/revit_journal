@@ -100,6 +100,8 @@
     <Compile Include="Duplicate\Comparer\ParameterComparer\ParameterNameDublicateComparer.cs" />
     <Compile Include="Duplicate\DuplicateManager.cs" />
     <Compile Include="Helper\PathCreator.cs" />
+    <Compile Include="Report\TaskReportManager.cs" />
+    <Compile Include="Report\TaskReportDataSource.cs" />
     <Compile Include="Revit\Journal\NullRecordeJournalFile.cs" />
     <Compile Include="Revit\Journal\NullTaskJournalFile.cs" />
     <Compile Include="Tasks\Actions\NullTaskAction.cs" />
@@ -108,9 +110,9 @@
     <Compile Include="Revit\Journal\Command\DocumentSaveAsAction.cs" />
     <Compile Include="Revit\Journal\Command\DocumentSaveAction.cs" />
     <Compile Include="Revit\Journal\RecordeJournalFile.cs" />
-    <Compile Include="Report\ClientController.cs" />
-    <Compile Include="Report\ReportClient.cs" />
-    <Compile Include="Report\ReportServer.cs" />
+    <Compile Include="Report\Network\ClientController.cs" />
+    <Compile Include="Report\Network\ReportClient.cs" />
+    <Compile Include="Report\Network\ReportServer.cs" />
     <Compile Include="Revit\RevitArguments.cs" />
     <Compile Include="Tasks\Actions\ExternalAction.cs" />
     <Compile Include="Tasks\Actions\ExternalActionDataSource.cs" />

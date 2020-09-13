@@ -1,4 +1,6 @@
-﻿namespace RevitAction.Action
+﻿using Newtonsoft.Json;
+
+namespace RevitAction.Action
 {
     public abstract class AActionParameter : IActionParameter
     {
@@ -6,8 +8,10 @@
 
         public virtual string Value { get; set; } = string.Empty;
 
+        [JsonIgnore]
         public string DefaultValue { get; set; } = string.Empty;
 
+        [JsonIgnore]
         public ParameterKind Kind { get; }
 
         public string JournalKey { get; }
