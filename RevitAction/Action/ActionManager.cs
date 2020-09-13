@@ -10,6 +10,7 @@ namespace RevitAction.Report
     {
         public const string CustomStartMessage = "Custom_Action_Started";
         public const string CustomFinishMessage = "Custom_Action_Finished";
+        public const string InitialMessage = "Initial_Action_Message";
 
         public static bool IsCustomStart(string message)
         {
@@ -103,6 +104,10 @@ namespace RevitAction.Report
 
         public Guid GetNextAction(Guid actionId)
         {
+            if (IsInitialAction(actionId))
+            {
+                return OpenActionId;
+            }
             if (IsOpenAction(actionId))
             {
                 return JournalActionId;
