@@ -91,7 +91,6 @@
     <Compile Include="Report\Network\SendPacket.cs" />
     <Compile Include="Revit\ARevitActionCommand.cs" />
     <Compile Include="TaskAppStatus.cs" />
-    <Compile Include="Report\ITaskReport.cs" />
     <Compile Include="Revit\TaskAppInfo.cs" />
     <Compile Include="Revit\TaskApp.cs" />
   </ItemGroup>
