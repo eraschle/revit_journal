@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using RevitAction.Action;
+using RevitAction.Revit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Linq;
 namespace RevitCommand.Families.ImageExport
 {
     public abstract class AFamilyImageExportCommand<TAction>
-        : AFamilyRevitCommand<TAction> where TAction : ITaskActionCommand, new()
+        : ARevitActionCommand<TAction> where TAction : ITaskActionCommand, new()
     {
         protected ImageExportManager Manager;
         protected readonly ElementFilter ExcludeHeads;
@@ -37,7 +38,7 @@ namespace RevitCommand.Families.ImageExport
             ExcludeHeads = new ElementMulticategoryFilter(categories, true);
         }
 
-        protected override Result InternalExecute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        protected override Result ExecuteRevitCommand(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             Manager = new ImageExportManager(UIDocument);
             using (var transactionGroup = new TransactionGroup(Document, "ExportImage"))
@@ -223,9 +224,10 @@ namespace RevitCommand.Families.ImageExport
 
         protected void SetLineColorAndWeight(Color color, int lineWeight)
         {
-            if (AreAllElementsHidden(out var elements)) { return; }
+            if (AreAllElementsHidden(out var elements) 
+                || Document.IsFamilyDocument == false) { return; }
 
-            SetCategoryDesign(Family.FamilyCategory, color, lineWeight);
+            SetCategoryDesign(Document.OwnerFamily.FamilyCategory, color, lineWeight);
             foreach (var element in elements)
             {
                 var category = element.Category;

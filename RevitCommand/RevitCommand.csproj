@@ -68,7 +68,6 @@
     <Compile Include="AmWaMeta\CleanMetaAction.cs" />
     <Compile Include="AmWaMeta\CleanMetaCommand.cs" />
     <Compile Include="CommandReport\ReportJsonDataSource.cs" />
-    <Compile Include="Families\AFamilyRevitCommand.cs" />
     <Compile Include="Families\ImageExport\AFamilyImageExportCommand.cs" />
     <Compile Include="Families\ImageExport\GeomCombinationCommand.cs" />
     <Compile Include="Families\ImageExport\ImageExportManager.cs" />

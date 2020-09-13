@@ -240,11 +240,12 @@ namespace RevitCommand.Families.ImageExport
 
         private void SetMaterial()
         {
-            if (AreAllElementsHidden(out var visibleCollector)) { return; }
+            if (AreAllElementsHidden(out var visibleCollector)
+                || Document.IsFamilyDocument == false) { return; }
 
             var bip = BuiltInParameter.MATERIAL_ID_PARAM;
             var material = CreateMaterial();
-            Family.FamilyCategory.Material = material;
+            Document.OwnerFamily.FamilyCategory.Material = material;
             SetFamilyParameterMaterial(material);
             foreach (var element in visibleCollector.ToElements())
             {
@@ -299,7 +300,7 @@ namespace RevitCommand.Families.ImageExport
             if (element is null) { return false; }
 
             var category = element.Category;
-            return category != null && category.Id.Equals(Family.FamilyCategoryId);
+            return category != null && category.Id.Equals(Document.OwnerFamily.FamilyCategoryId);
         }
 
 
@@ -310,7 +311,7 @@ namespace RevitCommand.Families.ImageExport
             var currentType = familyManager.CurrentType;
             if (currentType is null) { return false; }
 
-            var familyCategory = Family.FamilyCategory;
+            var familyCategory = Document.OwnerFamily.FamilyCategory;
             foreach (FamilyParameter parameter in familyManager.Parameters)
             {
                 if (parameter.Definition.ParameterType != ParameterType.FamilyType) { continue; }
@@ -329,7 +330,8 @@ namespace RevitCommand.Families.ImageExport
         private bool HasTemplateExtrusion(FilteredElementCollector collector, out Element element)
         {
             element = null;
-            var host = Family.get_Parameter(BuiltInParameter.FAMILY_HOSTING_BEHAVIOR);
+            var family = Document.OwnerFamily;
+            var host = family.get_Parameter(BuiltInParameter.FAMILY_HOSTING_BEHAVIOR);
             if (host != null && host.AsInteger() > 0)
             {
                 element = FirstCreatedExtrusion(collector);

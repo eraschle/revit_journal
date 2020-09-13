@@ -3,6 +3,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using DataSource.Model.FileSystem;
 using RevitAction.Action.Parameter;
+using RevitAction.Revit;
 using RevitCommand.Reports;
 using System;
 using System.IO;
@@ -13,14 +14,14 @@ namespace RevitCommand.Families.SharedParameters
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
-    public class MergeSelectParameterCommand : AFamilyRevitCommand<MergeSelectParameterAction>
+    public class MergeSelectParameterCommand : ARevitActionCommand<MergeSelectParameterAction>
     {
         private const string NoSharedParanmeter = "No Shared Parameter File found";
         private const string SearchSharedParanmeter = "Search Shared Parameters";
 
         public MergeSelectParameterCommand() : base() { }
 
-        protected override Result InternalExecute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        protected override Result ExecuteRevitCommand(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             if (File.Exists(Action.SharedFile.Value) == false)
             {

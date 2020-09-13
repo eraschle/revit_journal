@@ -2,6 +2,7 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using DataSource.Model.FileSystem;
+using RevitAction.Revit;
 using System;
 
 namespace RevitCommand.Families.Metadata
@@ -9,11 +10,11 @@ namespace RevitCommand.Families.Metadata
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
-    public class EditMetadataCommand : AFamilyRevitCommand<EditMetadataAction>
+    public class EditMetadataCommand : ARevitActionCommand<EditMetadataAction>
     {
         private const string debugLibraryPath = @"C:\develop\workspace\TEMP\JournalData\test files\";
 
-        protected override Result InternalExecute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        protected override Result ExecuteRevitCommand(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
 #if DEBUG
             Action.Library.Value = debugLibraryPath;

@@ -2,6 +2,7 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using DataSource.Model.FileSystem;
+using RevitAction.Revit;
 using RevitCommand.Reports;
 using System.IO;
 
@@ -10,11 +11,11 @@ namespace RevitCommand.Families.SharedParameters
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
     [Journaling(JournalingMode.UsingCommandData)]
-    public class MergeAllParametersCommand : AFamilyRevitCommand<MergeAllParametersAction>
+    public class MergeAllParametersCommand : ARevitActionCommand<MergeAllParametersAction>
     {
         public MergeAllParametersCommand() : base() { }
 
-        protected override Result InternalExecute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        protected override Result ExecuteRevitCommand(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             var filePath = Action.SharedFile.Value;
             if (File.Exists(filePath) == false)
