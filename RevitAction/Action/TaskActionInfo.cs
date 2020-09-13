@@ -4,9 +4,10 @@ namespace RevitAction.Action
 {
     public class TaskActionInfo<TAction> : ITaskInfo where TAction : ITaskAction
     {
-        public TaskActionInfo(string typeName)
+        public TaskActionInfo(Guid actionId, string typeName)
         {
             ClassName = typeName;
+            Id = actionId;
         }
 
         public string AssemblyPath { get; set; } = typeof(TAction).Assembly.Location;
