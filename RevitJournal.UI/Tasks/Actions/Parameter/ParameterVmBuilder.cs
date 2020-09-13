@@ -28,18 +28,18 @@ namespace RevitJournalUI.Tasks.Actions.Parameter
                     return BuildImageFile(parameter);
                 case ParameterKind.SelectFolder:
                     return BuildSelectFolder(parameter);
-                case ParameterKind.List:
-                //viewModel = new CmdParameterListViewModel
-                //{
-                //    Parameter = parameter
-                //};
-                //break;
                 case ParameterKind.Selectable:
                     if (!(parameter is ActionParameterSelect select))
                     {
                         throw new ArgumentException($"Parameter must be of type {nameof(ActionParameterSelect)}");
                     }
                     return new SelectParameterViewModel(select);
+                case ParameterKind.List:
+                    //viewModel = new CmdParameterListViewModel
+                    //{
+                    //    Parameter = parameter
+                    //};
+                    //break;
                 case ParameterKind.Hidden:
                 default:
                     return null;
