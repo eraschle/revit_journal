@@ -1,4 +1,5 @@
 ﻿using DataSource.Model.FileSystem;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -25,11 +26,13 @@ namespace RevitAction.Action
             Parameters.Add(parameter);
         }
 
+        [JsonIgnore]
         public bool HasParameters
         {
             get { return Parameters != null && Parameters.Count > 0; }
         }
 
+        [JsonIgnore]
         public bool MakeChanges { get; protected set; } = false;
 
         public virtual bool DependsOn(ITaskAction action)

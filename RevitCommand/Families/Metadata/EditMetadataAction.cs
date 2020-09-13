@@ -12,7 +12,7 @@ namespace RevitCommand.Families.Metadata
 
         public EditMetadataAction() : base("Change Metadata", new Guid("318cfd92-27ee-47a8-bb0f-840a9ff0b081"))
         {
-            TaskInfo = new TaskActionInfo<EditMetadataAction>(nameof(EditMetadataCommand));
+            TaskInfo = new TaskActionInfo<EditMetadataAction>(Id, nameof(EditMetadataCommand));
             Library = ActionParameter.Text("Library Path", "Library");
             Parameters.Add(Library);
         }

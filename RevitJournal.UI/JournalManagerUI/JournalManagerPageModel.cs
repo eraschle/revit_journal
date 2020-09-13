@@ -9,6 +9,7 @@ using RevitJournalUI.JournalTaskUI.FamilyFilter;
 using RevitJournalUI.JournalTaskUI.Models;
 using RevitJournalUI.JournalTaskUI.Options;
 using RevitJournalUI.MetadataUI;
+using RevitJournalUI.Tasks;
 using RevitJournalUI.Tasks.Actions;
 using System;
 using System.Collections.ObjectModel;
@@ -44,7 +45,7 @@ namespace RevitJournalUI.JournalManagerUI
             TaskOptionViewModel = new TaskOptionViewModel { Options = TaskOptions };
             FamiliesViewModel = new FamilyOverviewViewModel { FilterManager = FilterManager };
             PropertyChanged += FamiliesViewModel.OnContentDirectoryChanged;
-            
+
             CreateCommand = new RelayCommand<FamilyOverviewViewModel>(CreateCommandAction, CreateCommandPredicate);
             BackCommand = new RelayCommand<object>(BackCommandAction);
             DuplicateCommand = new RelayCommand<FamilyOverviewViewModel>(DuplicateCommandAction, DuplicateCommandPredicate);
@@ -345,7 +346,7 @@ namespace RevitJournalUI.JournalManagerUI
                 TaskManager.AddTask(task, TaskOptions);
             }
 
-            TasksViewModel.Update(TaskManager);
+            TasksViewModel.Update(TaskManager, TaskOptions);
 
             FamiliesVisibility = Visibility.Collapsed;
             BackVisibility = Visibility.Visible;
@@ -359,7 +360,7 @@ namespace RevitJournalUI.JournalManagerUI
 
         private void BackCommandAction(object parameter)
         {
-            TaskManager.CleanTaskRunner();
+            TaskManager.ClearTasks();
             FamiliesVisibility = Visibility.Visible;
             TaskVisibility = Visibility.Collapsed;
             BackVisibility = Visibility.Collapsed;
@@ -491,22 +492,23 @@ namespace RevitJournalUI.JournalManagerUI
             CancelVisibility = Visibility.Visible;
             BackVisibility = Visibility.Collapsed;
 
-            TaskManager.StartServer(TaskOptions, TasksViewModel.Progress);
+            TaskManager.StartServer(TaskOptions);
             TasksViewModel.AddEvents();
             using (var cancel = new CancellationTokenSource())
             {
                 Cancellation = cancel;
-                await TaskManager.ExecuteTasks(TaskOptions, TasksViewModel.Progress, Cancellation.Token)
+                TaskManager.SetProgress(TasksViewModel.Progress);
+                await TaskManager.ExecuteTasks(TaskOptions, Cancellation.Token)
                                  .ConfigureAwait(false);
                 Cancellation = null;
             }
-            CleanupEvents();
+            await CleanupEvents().ConfigureAwait(false);
             ExecuteEnable = true;
         }
 
-        private async void CleanupEvents()
+        private async Task CleanupEvents()
         {
-            await Task.Delay(TimeSpan.FromMinutes(2)).ConfigureAwait(false);
+            await Task.Delay(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
             TasksViewModel.RemoveEvents();
             TaskManager.StopServer();
         }

@@ -26,7 +26,7 @@ namespace RevitCommand.Families.SharedParameters
 
         public MergeSelectParameterAction() : base("Merge Shared [Selectable]", new Guid("2c0ddb9f-ec48-4c34-bc96-1105eb3a1637"))
         {
-            TaskInfo = new TaskActionInfo<MergeSelectParameterAction>(nameof(MergeSelectParameterCommand));
+            TaskInfo = new TaskActionInfo<MergeSelectParameterAction>(Id, nameof(MergeSelectParameterCommand));
             SharedFile = new SharedFileActionParameter("Shared Parameter File");
             Parameters.Add(SharedFile);
 
