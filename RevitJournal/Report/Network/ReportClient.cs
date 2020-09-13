@@ -35,7 +35,6 @@ namespace RevitJournal.Report.Network
                     if (ActionManager.IsOpenAction(report.ActionId))
                     {
                         Reporter = FindReport.Invoke(report.Message);
-                        Debug.WriteLine($"Reporter found? {Reporter is object} => {report.Message}");
                     }
                     if (Reporter is object)
                     {

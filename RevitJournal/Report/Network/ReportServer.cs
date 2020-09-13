@@ -13,7 +13,7 @@ namespace RevitJournal.Report.Network
 
         private Socket ServerSocket { get; set; }
 
-        public ClientController<TResult> Clients { get; set; }
+        public Func<Socket, ReportClient<TResult>> AddClient{ get; set; }
 
         public void StartListening(TaskOptions options)
         {
@@ -24,8 +24,7 @@ namespace RevitJournal.Report.Network
                 ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 var endPoint = new IPEndPoint(IPAddress.Loopback, Port);
                 ServerSocket.Bind(endPoint);
-                //ServerSocket.Listen(options.Parallel.ParallelProcesses);
-                ServerSocket.Listen(100);
+                ServerSocket.Listen(options.Parallel.ParallelProcesses);
                 ServerSocket.BeginAccept(AcceptCallback, ServerSocket);
             }
             catch (Exception ex)
@@ -36,11 +35,12 @@ namespace RevitJournal.Report.Network
 
         public void AcceptCallback(IAsyncResult result)
         {
+            if(ServerSocket is null) { return; }
             try
             {
                 Debug.WriteLine($"Accept CallBack port:{Port} protocol type: {ProtocolType.Tcp}");
                 var socket = ServerSocket.EndAccept(result);
-                var client = Clients.AddClient(socket);
+                var client = AddClient.Invoke(socket);
                 client.StartReceiving();
 
                 ServerSocket.BeginAccept(AcceptCallback, ServerSocket);
@@ -55,9 +55,8 @@ namespace RevitJournal.Report.Network
         {
             try
             {
-                if (ServerSocket.Connected == false) { return; }
-
-                ServerSocket.Disconnect(true);
+                ServerSocket.Close();
+                ServerSocket = null;
             }
             catch (Exception ex)
             {

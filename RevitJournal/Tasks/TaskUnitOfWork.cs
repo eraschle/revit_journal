@@ -37,6 +37,8 @@ namespace RevitJournal.Tasks
 
         public IProgress<TaskUnitOfWork> Progress { get; set; }
 
+        public Action<string> DisconnectAction { get; set; }
+
         public TaskUnitOfWork(RevitTask task, TaskOptions options)
         {
             Task = task;
@@ -173,6 +175,7 @@ namespace RevitJournal.Tasks
         public void CancelProcess()
         {
             ReportStatus(TaskAppStatus.Cancel);
+            DisconnectAction?.Invoke(TaskId);
             KillProcess();
         }
 
@@ -195,8 +198,8 @@ namespace RevitJournal.Tasks
                         ReportStatus(TaskAppStatus.Timeout);
                     }
                 }
+                Process = null;
             }
-            Process = null;
             ReportStatus(TaskAppStatus.Finish);
         }
 
@@ -231,8 +234,6 @@ namespace RevitJournal.Tasks
             Task.DeleteBackups(Options);
             Progress = null;
         }
-
-        public Action<string> DisconnectAction { get; set; }
 
         public override bool Equals(object obj)
         {

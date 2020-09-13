@@ -62,11 +62,6 @@ namespace RevitJournal.Tasks
         public void ClearTasks()
         {
             UnitOfWorks.Clear();
-            CleanTaskRunner();
-        }
-
-        public void CleanTaskRunner()
-        {
             TaskQueue.Clear();
         }
 
@@ -96,30 +91,27 @@ namespace RevitJournal.Tasks
             return UnitOfWorks.FirstOrDefault(uow => uow.TaskId == familyPath);
         }
 
-        private void SetWaitingStatus(IProgress<TaskUnitOfWork> progress)
+        public void SetProgress(IProgress<TaskUnitOfWork> progress)
         {
-            var status = TaskAppStatus.Waiting;
             foreach (var unitOfWork in UnitOfWorks)
             {
                 unitOfWork.Progress = progress;
-                unitOfWork.ReportStatus(status);
+                unitOfWork.ReportStatus(TaskAppStatus.Waiting);
             }
         }
 
-        public Task ExecuteTasks(TaskOptions options, IProgress<TaskUnitOfWork> progress, CancellationToken cancellation)
+        public Task ExecuteTasks(TaskOptions options, CancellationToken cancellation)
         {
             if (options is null) { throw new ArgumentNullException(nameof(options)); }
-            if (progress is null) { throw new ArgumentNullException(nameof(progress)); }
 
             CreateAddinFile(options);
-            SetWaitingStatus(progress);
             return Task.Run(() => { RunTasks(options, cancellation); });
         }
 
         public void StartServer(TaskOptions options)
         {
             ClientController.FindReport = ByTaskId;
-            ReportServer.Clients = ClientController;
+            ReportServer.AddClient = ClientController.AddClient;
             ReportServer.StartListening(options);
         }
 
@@ -161,6 +153,7 @@ namespace RevitJournal.Tasks
             {
                 var task = GetNextTask(cancellation);
                 runningTasks.Add(task);
+                Task.Delay(TimeSpan.FromMilliseconds(100)).Wait();
             }
             return runningTasks;
         }
