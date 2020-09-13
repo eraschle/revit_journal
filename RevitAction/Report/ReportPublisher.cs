@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 
 namespace RevitAction.Report
 {
@@ -28,7 +27,7 @@ namespace RevitAction.Report
             _sendPacket.Send(message);
         }
 
-        public Guid GetResponsedActionId()
+        public Guid GetActionIdResponse()
         {
             try
             {
@@ -37,12 +36,12 @@ namespace RevitAction.Report
             }
             catch (Exception exception)
             {
-                DebugMessage(nameof(GetResponsedActionId), exception);
+                DebugMessage(nameof(GetActionIdResponse), exception);
                 return Guid.Empty;
             }
         }
 
-        public ActionManager GetResponsedTaskActions()
+        public ActionManager GetActionManagerResponse()
         {
             try
             {
@@ -51,7 +50,7 @@ namespace RevitAction.Report
             }
             catch (Exception exception)
             {
-                DebugMessage(nameof(GetResponsedTaskActions), exception);
+                DebugMessage(nameof(GetActionManagerResponse), exception);
                 return null;
             }
         }
