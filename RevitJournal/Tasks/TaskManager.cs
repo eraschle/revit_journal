@@ -11,18 +11,21 @@ using DataSource.Model.FileSystem;
 using DataSource.Model.Product;
 using RevitAction;
 using RevitJournal.Report.Network;
+using RevitAction.Report;
 
 namespace RevitJournal.Tasks
 {
     public class TaskManager
     {
-        private ReportServer<TaskUnitOfWork> ReportServer { get; set; } = new ReportServer<TaskUnitOfWork>();
+        private ReportServer ReportServer { get; set; } = new ReportServer();
 
-        private ClientController<TaskUnitOfWork> ClientController { get; set; } = new ClientController<TaskUnitOfWork>();
+        private ClientController ClientController { get; set; } = new ClientController();
 
         public Queue<TaskUnitOfWork> TaskQueue { get; } = new Queue<TaskUnitOfWork>();
 
         public IList<TaskUnitOfWork> UnitOfWorks { get; } = new List<TaskUnitOfWork>();
+
+        private List<ITaskAction> TaskActions { get; } = new List<ITaskAction>();
 
         public IProgress<TaskUnitOfWork> Progress { get; set; }
 
@@ -47,10 +50,25 @@ namespace RevitJournal.Tasks
                 : family.Metadata.HasProduct(out revit);
         }
 
+        public void SetTaskActions(IEnumerable<ITaskAction> taskActions)
+        {
+            TaskActions.Clear();
+            TaskActions.AddRange(taskActions);
+        }
+
+        internal ActionManager GetActionManager()
+        {
+            var manager = new ActionManager();
+            var dialogActions = TaskActions.Select(task => new TaskDialogAction(task.ActionId, task.Name, task.DialogHandlers));
+            manager.AddTaskActions(dialogActions);
+            return manager;
+        }
+
         public void AddTask(RevitTask task, TaskOptions options)
         {
             if (task is null) { return; }
 
+            task.AddActions(TaskActions);
             var unitOfWork = new TaskUnitOfWork(task, options)
             {
                 DisconnectAction = ClientController.Remove
@@ -63,6 +81,7 @@ namespace RevitJournal.Tasks
         {
             UnitOfWorks.Clear();
             TaskQueue.Clear();
+            TaskActions.Clear();
         }
 
         private void CreateAddinFile(TaskOptions options)
@@ -110,7 +129,7 @@ namespace RevitJournal.Tasks
 
         public void StartServer(TaskOptions options)
         {
-            ClientController.FindReport = ByTaskId;
+            ClientController.TaskManager = this;
             ReportServer.AddClient = ClientController.AddClient;
             ReportServer.StartListening(options);
         }

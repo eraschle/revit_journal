@@ -69,7 +69,7 @@ namespace RevitJournal.Revit.Journal
 
             return new string[]
             {
-                $"Jrn.RibbonEvent \"Execute external command:{command.Id}:{command.TaskInfo.TaskNamespace}\"",
+                $"Jrn.RibbonEvent \"Execute external command:{command.ActionId}:{command.TaskInfo.TaskNamespace}\"",
                 journalData.ToString()
             };
         }

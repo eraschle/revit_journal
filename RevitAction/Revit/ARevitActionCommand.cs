@@ -2,6 +2,7 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using RevitAction.Action;
+using RevitAction.Report;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,13 +29,13 @@ namespace RevitAction.Revit
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            TaskApp.Reporter.ActionId = Action.Id;
-            TaskApp.Reporter.StatusReport($"Action started");
+            TaskApp.Reporter.SetCostumAction(Action);
+            TaskApp.Reporter.CustomStartReport();
             if (commandData is null)
             {
                 message = "No command data";
-                TaskApp.Reporter.ActionId = Action.Id;
-                TaskApp.Reporter.Error(message);
+                TaskApp.Reporter.ErrorReport(message);
+                TaskApp.Reporter.CustomFinishReport();
                 return Result.Failed;
             }
 
@@ -44,8 +45,8 @@ namespace RevitAction.Revit
             if (UIDocument is null)
             {
                 message = "UIDocument is NULL";
-                TaskApp.Reporter.ActionId = Action.Id;
-                TaskApp.Reporter.Error(message);
+                TaskApp.Reporter.ErrorReport(message);
+                TaskApp.Reporter.CustomFinishReport();
                 return Result.Failed;
             }
 
@@ -53,26 +54,24 @@ namespace RevitAction.Revit
             if (Document is null)
             {
                 message = "Document is NULL";
-                TaskApp.Reporter.ActionId = Action.Id;
-                TaskApp.Reporter.Error(message);
+                TaskApp.Reporter.ErrorReport(message);
+                TaskApp.Reporter.CustomFinishReport();
                 return Result.Failed;
             }
 
             SetJournalData(commandData.JournalData);
-
+            var result = Result.Succeeded;
             try
             {
-                var result = ExecuteRevitCommand(commandData, ref message, elements);
-                TaskApp.Reporter.ActionId = Action.Id;
-                TaskApp.Reporter.StatusReport(message ?? "Successfully executed");
-                return result;
+                result = ExecuteRevitCommand(commandData, ref message, elements);
             }
             catch (Exception exp)
             {
-                TaskApp.Reporter.ActionId = Action.Id;
-                TaskApp.Reporter.Error(message ?? "Revit Execute-Method", exp);
-                return Result.Failed;
+                TaskApp.Reporter.ErrorReport(message ?? $"Action {nameof(ExecuteRevitCommand)}", exp);
+                result = Result.Failed;
             }
+            TaskApp.Reporter.CustomFinishReport();
+            return result;
         }
 
         private void SetJournalData(IDictionary<string, string> journalData)

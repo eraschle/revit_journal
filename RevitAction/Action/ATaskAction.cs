@@ -10,11 +10,11 @@ namespace RevitAction.Action
         protected ATaskAction(string name, Guid actionId)
         {
             Name = name;
-            Id = actionId;
+            ActionId = actionId;
         }
 
-        public Guid Id { get; }
-     
+        public Guid ActionId { get; }
+
         public string Name { get; private set; }
 
         public IList<IActionParameter> Parameters { get; } = new List<IActionParameter>();
@@ -34,6 +34,14 @@ namespace RevitAction.Action
 
         [JsonIgnore]
         public bool MakeChanges { get; protected set; } = false;
+
+        public ICollection<DialogHandler> DialogHandlers { get; } = new List<DialogHandler>();
+
+        [JsonIgnore]
+        public bool HasDialogHandlers
+        {
+            get { return DialogHandlers is object && DialogHandlers.Count > 0; }
+        }
 
         public virtual bool DependsOn(ITaskAction action)
         {

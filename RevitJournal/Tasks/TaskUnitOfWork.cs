@@ -69,27 +69,6 @@ namespace RevitJournal.Tasks
 
         public int ExecutedActions { get; private set; } = 0;
 
-        public Guid GetNextAction(Guid actionId)
-        {
-            var nextActionId = Guid.Empty;
-            if (ActionManager.IsOpenAction(actionId))
-            {
-                nextActionId = ActionManager.JournalActionId;
-            }
-            else
-            {
-                if (ActionManager.IsJournalAction(actionId))
-                {
-                    actionId = ActionManager.OpenActionId;
-                }
-                if (Task.HasNextAction(actionId, out var nextAction))
-                {
-                    nextActionId = nextAction.Id;
-                }
-            }
-            return nextActionId;
-        }
-
         public void MakeReport(ReportMessage report)
         {
             if (report is null) { return; }
@@ -99,7 +78,7 @@ namespace RevitJournal.Tasks
             ReportManager.AddReport(report);
             switch (report.Kind)
             {
-                case ReportKind.Status:
+                case ReportKind.DefaultAction:
                     if (ActionManager.IsOpenAction(report.ActionId)
                         || ActionManager.IsSaveAction(report.ActionId))
                     {
@@ -124,7 +103,7 @@ namespace RevitJournal.Tasks
 
         private void SetNewAction(ReportMessage report)
         {
-            if (CurrentAction.Id.Equals(report.ActionId) == false
+            if (CurrentAction.ActionId.Equals(report.ActionId) == false
                 && Task.HasActionById(report.ActionId, out var action))
             {
                 ExecutedActions += 1;
@@ -137,7 +116,7 @@ namespace RevitJournal.Tasks
             var status = TaskAppStatus.Started;
             switch (report.Kind)
             {
-                case ReportKind.Status:
+                case ReportKind.DefaultAction:
                 case ReportKind.Warning:
                     status = TaskAppStatus.Running;
                     break;

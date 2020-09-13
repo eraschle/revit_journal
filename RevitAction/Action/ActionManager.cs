@@ -1,10 +1,26 @@
-﻿using System;
+﻿using RevitAction.Action;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Utilities;
 
 namespace RevitAction.Report
 {
     public class ActionManager
     {
+        public const string CustomStartMessage = "Custom_Action_Started";
+        public const string CustomFinishMessage = "Custom_Action_Finished";
+
+        public static bool IsCustomStart(string message)
+        {
+            return StringUtils.Equals(CustomStartMessage, message);
+        }
+
+        public static bool IsCustomFinish(string message)
+        {
+            return StringUtils.Equals(CustomFinishMessage, message);
+        }
+
         public static Guid InitialActionId { get; } = new Guid("df82cb97-c5b9-4fa8-a84c-6da99eb05b71");
 
         public static bool IsInitialAction(Guid actionId)
@@ -33,43 +49,83 @@ namespace RevitAction.Report
             return JournalActionId.Equals(actionId);
         }
 
-        public bool IsAppAction(Guid actionId)
+        public bool IsCostumAction(Guid actionId)
         {
-            return IsInitialAction(actionId)
-                || IsJournalAction(actionId);
+            return TaskActions.Any(act => act.ActionId.Equals(actionId));
         }
 
-        public bool IsCustomAction(Guid actionId)
+        public string GetActionName(Guid actionId)
         {
-            return IsAppAction(actionId) == false
-                && IsDefaultAction(actionId) == false;
-        }
-
-        public bool IsDefaultAction(Guid actionId)
-        {
-            return IsOpenAction(actionId) 
-                || IsSaveAction(actionId);
-        }
-
-        public IList<string> AllowedDialogs
-        {
-            get
+            if (IsCostumAction(actionId))
             {
-                return new List<string>
-                {
-                    "TaskDialog_Replace_Existing_File",
-                    "TaskDialog_Newer_File_Exists"
-                };
+                return TaskActions.First(act => act.ActionId.Equals(actionId)).Name;
+            }
+            if (IsOpenAction(actionId))
+            {
+                return "Open";
+            }
+            if (IsJournalAction(actionId))
+            {
+                return "Journal";
+            }
+            if (IsSaveAction(actionId))
+            {
+                return "Save";
+            }
+            else
+            {
+                return "Initial";
             }
         }
 
-        public bool IsActionId(string actionId, out Guid action)
+        public List<TaskDialogAction> TaskActions { get; } = new List<TaskDialogAction>();
+
+        public void AddTaskActions(IEnumerable<TaskDialogAction> taskActions)
         {
-            if (Guid.TryParse(actionId, out action) == false)
+            TaskActions.Clear();
+            TaskActions.AddRange(taskActions);
+        }
+
+        public bool IsAllowedDialogs(string dialogId, out DialogHandler dialogHandler)
+        {
+            dialogHandler = null;
+            foreach (var taskAction in TaskActions)
             {
-                action = Guid.Empty;
+                if (taskAction.HasDialogHandler(dialogId, out var handler) == false) { continue; }
+
+                handler.ActionId = taskAction.ActionId;
+                dialogHandler = handler;
+                break;
             }
-            return action.Equals(Guid.Empty) == false;
+            return dialogHandler is object;
+        }
+
+
+        public Guid GetNextAction(Guid actionId)
+        {
+            if (IsOpenAction(actionId))
+            {
+                return JournalActionId;
+            }
+            if (IsJournalAction(actionId))
+            {
+                actionId = OpenActionId;
+            }
+            return HasNextAction(actionId, out var nextAction)
+                ? nextAction.ActionId
+                : TaskActions.Last().ActionId;
+        }
+
+
+        public bool HasNextAction(Guid actionId, out TaskDialogAction nextAction)
+        {
+            nextAction = null;
+            if (TaskActions.Any(act => act.ActionId.Equals(actionId)))
+            {
+                var index = TaskActions.FindIndex(act => act.ActionId.Equals(actionId)) + 1;
+                nextAction = index < TaskActions.Count ? TaskActions[index] : null;
+            }
+            return nextAction != null;
         }
     }
 }

@@ -28,13 +28,31 @@ namespace RevitAction.Report.Network
                 _buffer = new byte[4];
                 _socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, ReceiveCallback, null);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Debug.WriteLine($"StartReceiving: {ex.Message}");
+                DebugMessage(nameof(StartReceiving), exception);
             }
         }
 
-        public string ReceivedResponse()
+        public string GetReceivedResponse()
+        {
+            if (_socket.Connected == false) { return string.Empty; }
+            try
+            {
+                _buffer = new byte[4];
+                _socket.Receive(_buffer, _buffer.Length, SocketFlags.None);
+                _buffer = new byte[BitConverter.ToInt32(_buffer, 0)];
+                _socket.Receive(_buffer, _buffer.Length, SocketFlags.None);
+                return Encoding.Default.GetString(_buffer);
+            }
+            catch (Exception exception)
+            {
+                DebugMessage(nameof(GetReceivedResponse), exception);
+                throw;
+            }
+        }
+
+        public string GetTaskActionsResponse()
         {
             if (_socket.Connected == false) { return null; }
             try
@@ -43,13 +61,12 @@ namespace RevitAction.Report.Network
                 _socket.Receive(_buffer, _buffer.Length, SocketFlags.None);
                 _buffer = new byte[BitConverter.ToInt32(_buffer, 0)];
                 _socket.Receive(_buffer, _buffer.Length, SocketFlags.None);
-                var response = Encoding.Default.GetString(_buffer);
-                return response;
+                return Encoding.Default.GetString(_buffer);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Debug.WriteLine($"ReceivedResponse: {ex.Message}");
-                return null;
+                DebugMessage(nameof(GetTaskActionsResponse), exception);
+                throw;
             }
         }
 
@@ -71,13 +88,13 @@ namespace RevitAction.Report.Network
 
                 // Convert the bytes to object
                 string data = Encoding.Default.GetString(_buffer);
-                var report = MessageUtils.Read(data);
+                var report = MessageUtils.ReadReport(data);
 
                 ReportAction.Invoke(report);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Debug.WriteLine($"ReceiveCallback: {ex.Message}");
+                DebugMessage(nameof(ReceiveCallback), exception);
             }
             finally
             {
@@ -99,10 +116,15 @@ namespace RevitAction.Report.Network
             {
                 _socket.Disconnect(true);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Debug.WriteLine($"StopReceiving: {ex.Message}");
+                DebugMessage(nameof(StopReceiving), exception);
             }
+        }
+
+        private void DebugMessage(string methodName, Exception exception)
+        {
+            Debug.WriteLine($"{nameof(ReceivePacket)} {methodName}: {exception.Message}");
         }
     }
 }

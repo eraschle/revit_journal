@@ -8,7 +8,7 @@ namespace RevitCommand.Families.ImageExport
     {
         public TwoDImageAction() : base("2D Image Export", new Guid("52f427dd-6db4-43bd-b4d2-c7327ae274fa"))
         {
-            TaskInfo = new TaskActionInfo<TwoDImageAction>(Id, nameof(TwoDImageRevitCommand));
+            TaskInfo = new TaskActionInfo<TwoDImageAction>(ActionId, nameof(TwoDImageRevitCommand));
         }
 
         public ITaskInfo TaskInfo { get; }

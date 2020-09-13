@@ -331,6 +331,7 @@ namespace RevitJournalUI.JournalManagerUI
         private void CreateCommandAction(FamilyOverviewViewModel model)
         {
             TaskManager.ClearTasks();
+            TaskManager.SetTaskActions(Actions);
 
             foreach (var family in model.RecursiveRevitFamilies)
             {
@@ -338,11 +339,6 @@ namespace RevitJournalUI.JournalManagerUI
                     || TaskManager.IsExecutable(family, TaskOptions) == false) { continue; }
 
                 var task = new RevitTask(family);
-                foreach (var action in Actions)
-                {
-                    task.AddAction(action);
-                }
-
                 TaskManager.AddTask(task, TaskOptions);
             }
 

@@ -6,6 +6,8 @@ namespace RevitAction.Report.Message
     {
         public Guid ActionId { get; set; }
 
+        public string ActionName { get; set; }
+
         public ReportKind Kind { get; set; }
 
         public string Message { get; set; }

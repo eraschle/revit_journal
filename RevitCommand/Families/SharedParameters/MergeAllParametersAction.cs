@@ -13,7 +13,7 @@ namespace RevitCommand.Families.SharedParameters
       
         public MergeAllParametersAction() : base("Merge Shared [ALL]", new Guid("af072261-088e-42d3-bf5e-39fc99ea5736"))
         {
-            TaskInfo = new TaskActionInfo<MergeAllParametersAction>(Id, nameof(MergeAllParametersCommand));
+            TaskInfo = new TaskActionInfo<MergeAllParametersAction>(ActionId, nameof(MergeAllParametersCommand));
             SharedFile = new SharedFileActionParameter("Shared Parameter File");
             Parameters.Add(SharedFile);
             MakeChanges = true;

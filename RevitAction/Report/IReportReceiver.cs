@@ -10,7 +10,5 @@ namespace RevitAction.Report
         void MakeReport(ReportMessage report);
 
         Action<string> DisconnectAction { get; set; }
-
-        Guid GetNextAction(Guid actionId);
     }
 }

@@ -13,7 +13,7 @@ namespace RevitCommand.RevitData
 
         public RevitDataExportAction() : base("Revit Data Export", new Guid("6d6b38cf-cb70-4a73-9e2d-56fc23cd9cbf"))
         {
-            TaskInfo = new TaskActionInfo<RevitDataExportAction>(Id, nameof(RevitDataExportCommand));
+            TaskInfo = new TaskActionInfo<RevitDataExportAction>(ActionId, nameof(RevitDataExportCommand));
             ExportDirectory = ActionParameter.Create("Export Directory", "ExportDir", ParameterKind.SelectFolder);
             Parameters.Add(ExportDirectory);
         }

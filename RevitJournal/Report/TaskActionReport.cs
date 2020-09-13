@@ -24,12 +24,12 @@ namespace RevitJournal.Report
 
         public IEnumerable<string> StatusReports()
         {
-            return messages[ReportKind.Status];
+            return messages[ReportKind.DefaultAction];
         }
 
         public bool HasStatusReports()
         {
-            return messages.ContainsKey(ReportKind.Status); 
+            return messages.ContainsKey(ReportKind.DefaultAction); 
         }
 
         public IEnumerable<string> WarningReports()

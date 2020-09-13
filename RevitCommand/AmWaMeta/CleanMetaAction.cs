@@ -9,7 +9,7 @@ namespace RevitCommand.AmWaMeta
         public CleanMetaAction() : base("Clean Metadata", new Guid("776755a1-9976-4087-9bad-94474e56b1ad"))
         {
             MakeChanges = false;
-            TaskInfo = new TaskActionInfo<CleanMetaAction>(Id, nameof(CleanMetaCommand));
+            TaskInfo = new TaskActionInfo<CleanMetaAction>(ActionId, nameof(CleanMetaCommand));
         }
 
         public ITaskInfo TaskInfo { get; }

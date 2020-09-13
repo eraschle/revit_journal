@@ -51,6 +51,8 @@ namespace RevitJournal.Helper
 
         public string CreatePath(AFile file)
         {
+            if(file is null) { return string.Empty; }
+
             var rootPath = RootPath;
             if (HasNewRootFolder())
             {
@@ -84,6 +86,11 @@ namespace RevitJournal.Helper
             }
             rootPath = Path.Combine(rootPath, fileName);
             return rootPath;
+        }
+
+        public TFile CreatePath<TFile>(AFile file) where TFile : AFile, new()
+        {
+            return file is null ? null : new TFile { FullPath = CreatePath(file) };
         }
 
         private string GetLibraryPath(AFile file)

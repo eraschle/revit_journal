@@ -2,6 +2,6 @@
 {
     public enum ReportKind
     {
-        Status, Warning, Error
+        DefaultAction, CustomAction, Warning, Error
     }
 }

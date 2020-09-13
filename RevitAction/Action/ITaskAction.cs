@@ -7,7 +7,7 @@ namespace RevitAction.Action
 {
     public interface ITaskAction
     {
-        Guid Id { get; }
+        Guid ActionId { get; }
 
         string Name { get; }
 
@@ -22,5 +22,9 @@ namespace RevitAction.Action
         void SetLibraryRoot(string libraryRoot);
 
         void PreTask(RevitFamily family);
+
+        ICollection<DialogHandler> DialogHandlers { get; }
+
+        bool HasDialogHandlers { get; }
     }
 }

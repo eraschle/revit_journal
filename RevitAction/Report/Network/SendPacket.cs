@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
 
@@ -25,7 +26,15 @@ namespace RevitAction.Report.Network
             {
                 _socket.Send(fullPacket.ToArray());
             }
-            catch (Exception) { }
+            catch (Exception exception)
+            {
+                DebugMessage(nameof(Send), exception);
+            }
+        }
+
+        private void DebugMessage(string methodName, Exception exception)
+        {
+            Debug.WriteLine($"{nameof(SendPacket)} {methodName}: {exception.Message}");
         }
     }
 }

@@ -7,13 +7,13 @@ using System.Net.Sockets;
 
 namespace RevitJournal.Report.Network
 {
-    public class ReportServer<TResult> where TResult : class, IReportReceiver
+    public class ReportServer
     {
         public const int Port = 8888;
 
         private Socket ServerSocket { get; set; }
 
-        public Func<Socket, ReportClient<TResult>> AddClient{ get; set; }
+        public Func<Socket, ReportClient> AddClient { get; set; }
 
         public void StartListening(TaskOptions options)
         {
@@ -27,15 +27,15 @@ namespace RevitJournal.Report.Network
                 ServerSocket.Listen(options.Parallel.ParallelProcesses);
                 ServerSocket.BeginAccept(AcceptCallback, ServerSocket);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                throw new Exception("start listening error" + ex);
+                throw new Exception("start listening error" + exception);
             }
         }
 
         public void AcceptCallback(IAsyncResult result)
         {
-            if(ServerSocket is null) { return; }
+            if (ServerSocket is null) { return; }
             try
             {
                 Debug.WriteLine($"Accept CallBack port:{Port} protocol type: {ProtocolType.Tcp}");
@@ -45,9 +45,9 @@ namespace RevitJournal.Report.Network
 
                 ServerSocket.BeginAccept(AcceptCallback, ServerSocket);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Debug.WriteLine("Base Accept error" + ex);
+                DebugMessage(nameof(AcceptCallback), exception);
             }
         }
 
@@ -58,10 +58,15 @@ namespace RevitJournal.Report.Network
                 ServerSocket.Close();
                 ServerSocket = null;
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Debug.WriteLine("stop listening error: " + ex.Message);
+                DebugMessage(nameof(StopListening), exception);
             }
+        }
+
+        private void DebugMessage(string methodName, Exception exception)
+        {
+            Debug.WriteLine($"{nameof(ReportServer)} {methodName}: {exception.Message}");
         }
     }
 }

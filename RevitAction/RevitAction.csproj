@@ -62,6 +62,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Action\TaskDialogAction.cs" />
+    <Compile Include="Action\DialogHandler.cs" />
     <Compile Include="Action\ITaskActionJournal.cs" />
     <Compile Include="Action\ITaskActionCommand.cs" />
     <Compile Include="Action\Parameter\ActionParameterSelect.cs" />

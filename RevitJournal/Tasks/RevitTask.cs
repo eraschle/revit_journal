@@ -33,14 +33,13 @@ namespace RevitJournal.Tasks
             get { return BackupFile != null; }
         }
 
-        public IList<ITaskAction> Actions { get; private set; }
+        public List<ITaskAction> Actions { get; } = new List<ITaskAction>();
 
         public RevitTask(RevitFamily family)
         {
             if (family is null) { throw new ArgumentNullException(nameof(family)); }
 
             Family = family;
-            Actions = new List<ITaskAction>();
         }
 
         public string Name
@@ -53,29 +52,16 @@ namespace RevitJournal.Tasks
             Actions.Clear();
         }
 
-        public void AddAction(ITaskAction command)
+        public void AddActions(IEnumerable<ITaskAction> actions)
         {
-            if (Actions.Contains(command)) { return; }
-
-            Actions.Add(command);
+            Actions.Clear();
+            Actions.AddRange(actions);
         }
 
         internal bool HasActionById(Guid actionId, out ITaskAction action)
         {
-            action = Actions.FirstOrDefault(act => act.Id == actionId);
+            action = Actions.FirstOrDefault(act => act.ActionId == actionId);
             return action != null;
-        }
-
-
-        internal bool HasNextAction(Guid actionId, out ITaskAction nextAction)
-        {
-            nextAction = null;
-            if (HasActionById(actionId, out var action))
-            {
-                var index = Actions.IndexOf(action) + 1;
-                nextAction = index < Actions.Count ? Actions[index] : null;
-            }
-            return nextAction != null;
         }
 
         public bool HasCommands(out ICollection<ITaskActionCommand> actionCommands)

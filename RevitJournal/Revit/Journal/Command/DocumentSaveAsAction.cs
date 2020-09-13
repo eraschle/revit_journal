@@ -5,7 +5,6 @@ using RevitJournal.Helper;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 
 namespace RevitJournal.Revit.Journal.Command
 {
@@ -19,7 +18,7 @@ namespace RevitJournal.Revit.Journal.Command
         private readonly ActionParameter currentRoot;
         private readonly ActionParameter newRoot;
 
-        private RevitFamilyFile familyFile;
+        private RevitFamilyFile revitFile;
 
         private readonly PathCreator pathCreator = new PathCreator();
 
@@ -41,6 +40,9 @@ namespace RevitJournal.Revit.Journal.Command
 
             newRoot = ActionParameter.Create("Library Folder [New]", null, ParameterKind.SelectFolder);
             AddParameter(newRoot);
+
+            DialogHandlers.Add(new DialogHandler(ActionId, "TaskDialog_Replace_Existing_File", DialogHandler.YES));
+            DialogHandlers.Add(new DialogHandler(ActionId, "TaskDialog_Newer_File_Exists", DialogHandler.YES));
         }
 
         private string GetDate()
@@ -53,18 +55,12 @@ namespace RevitJournal.Revit.Journal.Command
         {
             get
             {
-                var saveAsPath = pathCreator.CreatePath(familyFile);
-                var commands = new List<string>
+                var saveAsPath = pathCreator.CreatePath(revitFile);
+                return new string[]
                 {
                     JournalBuilder.Build("Ribbon", "ID_REVIT_SAVE_AS_FAMILY"),
                     string.Concat("Jrn.Data \"File Name\" , \"IDOK\", \"", saveAsPath, "\"")
                 };
-
-                if (File.Exists(saveAsPath))
-                {
-                    commands.Add("Jrn.Data \"TaskDialogResult\" , \"\" , \"Yes\", \"IDYES\"");
-                }
-                return commands.ToArray();
             }
         }
 
@@ -82,7 +78,9 @@ namespace RevitJournal.Revit.Journal.Command
         {
             if (family is null) { return; }
 
-            familyFile = family.RevitFile;
+            revitFile = family.RevitFile;
+            var saveAsFile = pathCreator.CreatePath<RevitFamilyFile>(revitFile);
+            saveAsFile?.Delete();
         }
 
         public override void SetLibraryRoot(string libraryRoot)

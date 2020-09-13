@@ -19,35 +19,27 @@ namespace RevitCommand.AmWaMeta
             Schema schema = Schema.Lookup(schemaGuid);
             if (schema == null)
             {
-                TaskApp.Reporter.ActionId = Action.Id;
-                TaskApp.Reporter.StatusReport($"No schema {schemaGuid}");
+                TaskApp.Reporter.WarningReport($"No schema {schemaGuid}");
                 return Result.Succeeded;
             }
 
-            var makesChanges = false;
             using (Transaction transaction = new Transaction(Document))
             {
+                transaction.Start("Extensible storage deleted");
                 try
                 {
-                    transaction.Start("Extensible storage deleted");
                     Schema.EraseSchemaAndAllEntities(schema, true);
                     transaction.Commit();
-                    makesChanges = true;
-                    TaskApp.Reporter.ActionId = Action.Id;
-                    TaskApp.Reporter.StatusReport(transaction.GetName());
+                    TaskApp.Reporter.CustomReport(transaction.GetName());
                 }
-                catch (Exception ex)
+                catch (Exception exception)
                 {
-                    makesChanges = false;
-                    TaskApp.Reporter.ActionId = Action.Id;
-                    TaskApp.Reporter.Error(transaction.GetName(), ex);
                     transaction.RollBack();
+                    throw new Exception(transaction.GetName(), exception);
                 }
             }
-            if (makesChanges)
-            {
-                Document.Save();
-            }
+            Document.Save();
+            TaskApp.Reporter.CustomReport($"Saved changes to {Document.PathName}");
             return Result.Succeeded;
         }
     }

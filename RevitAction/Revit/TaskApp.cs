@@ -1,8 +1,11 @@
-﻿using Autodesk.Revit.DB;
+﻿using Autodesk.Revit.ApplicationServices;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 using RevitAction.Report;
+using System;
+using System.Diagnostics;
 
 namespace RevitAction.Revit
 {
@@ -10,38 +13,54 @@ namespace RevitAction.Revit
     {
         public static ReportManager Reporter { get; private set; }
 
-        public Result OnStartup(UIControlledApplication application)
+        private ControlledApplication application;
+
+        public Result OnStartup(UIControlledApplication uiApplication)
         {
-            if (application is null) { return Result.Failed; }
+            if (uiApplication is null) { return Result.Failed; }
 
-            application.DialogBoxShowing += Application_DialogBoxShowing;
-            try
+            application = uiApplication.ControlledApplication;
+
+            Reporter = new ReportManager();
+            Reporter.Connect();
+            if (Reporter.InitialReport() == false)
             {
-                Reporter = new ReportManager();
-                Reporter.Connect();
-                Reporter.InitialReport();
-            }
-            catch
-            {
-                return Result.Failed;
+                JournalComment(nameof(Reporter.InitialReport), "No action manager received");
             }
 
-            application.ControlledApplication.FailuresProcessing += ControlledApplication_FailuresProcessing;
+            uiApplication.ApplicationClosing += Application_ApplicationClosing;
+            uiApplication.DialogBoxShowing += Application_DialogBoxShowing;
 
-            application.ControlledApplication.DocumentOpened += ControlledApplication_DocumentOpened;
+            application.DocumentOpened += ControlledApplication_DocumentOpened;
 
-            application.ControlledApplication.DocumentSaved += ControlledApplication_DocumentSaved;
-            application.ControlledApplication.DocumentSavedAs += ControlledApplication_DocumentSavedAs;
+            application.DocumentSaved += ControlledApplication_DocumentSaved;
+            application.DocumentSavedAs += ControlledApplication_DocumentSavedAs;
 
-            application.ControlledApplication.DocumentClosed += ControlledApplication_DocumentClosed;
+            application.FailuresProcessing += ControlledApplication_FailuresProcessing;
             return Result.Succeeded;
         }
 
-        public Result OnShutdown(UIControlledApplication application)
+        public Result OnShutdown(UIControlledApplication uiApplication)
         {
-            //Reporter.Disconnect();
+
+            uiApplication.ApplicationClosing -= Application_ApplicationClosing;
+            uiApplication.DialogBoxShowing -= Application_DialogBoxShowing;
+
+            var application = uiApplication.ControlledApplication;
+            application.DocumentOpened -= ControlledApplication_DocumentOpened;
+
+            application.DocumentSaved -= ControlledApplication_DocumentSaved;
+            application.DocumentSavedAs -= ControlledApplication_DocumentSavedAs;
+
+            application.FailuresProcessing -= ControlledApplication_FailuresProcessing;
             return Result.Succeeded;
         }
+
+        private void JournalComment(string methodName, string message)
+        {
+            application.WriteJournalComment($"{nameof(TaskApp)}: {methodName} >> {message}", true);
+        }
+
 
         #region Default Action Events
 
@@ -55,7 +74,9 @@ namespace RevitAction.Revit
             }
             else
             {
-                Reporter.Error("Server could not find task");
+                var message = $"Server could not find task for {args.Document.PathName}";
+                JournalComment(nameof(Reporter.OpenReport), message);
+                Reporter.ErrorReport(message);
             }
         }
 
@@ -77,9 +98,18 @@ namespace RevitAction.Revit
 
         #region Close Events
 
-        private void ControlledApplication_DocumentClosed(object sender, DocumentClosedEventArgs e)
+        private void Application_ApplicationClosing(object sender, ApplicationClosingEventArgs e)
         {
-            Reporter.Disconnect();
+            var message = "Disconnected from server";
+            try
+            {
+                Reporter.Disconnect();
+            }
+            catch (Exception exception)
+            {
+                message += $" Exception: {exception.Message}";
+            }
+            JournalComment(nameof(Application_ApplicationClosing), message);
         }
 
         #endregion
@@ -88,10 +118,21 @@ namespace RevitAction.Revit
 
         private void Application_DialogBoxShowing(object sender, DialogBoxShowingEventArgs args)
         {
-            if (Reporter.IsAllowdDialog(args.DialogId)) { return; }
-            
-            args.OverrideResult(-1);
-            Reporter.Error(args.DialogId);
+            if (Reporter.IsAllowdDialog(args.DialogId, out var handler))
+            {
+                Reporter.CurrentActionId = handler.ActionId;
+                var result = args.OverrideResult(handler.ButtonId);
+                if (result == false)
+                {
+                    JournalComment(nameof(Application_DialogBoxShowing), $"\"{args.DialogId}\" result code not accepted: Action: {handler.ActionId} >> {handler.ButtonId}");
+                }
+            }
+            else
+            {
+                var result = args.OverrideResult(-1);
+                JournalComment(nameof(Reporter.OpenReport), $"No handler for Dialog \"{ args.DialogId}\" result code accepted?: {result}");
+                Reporter.ErrorReport(args.DialogId);
+            }
         }
 
         private void ControlledApplication_FailuresProcessing(object sender, FailuresProcessingEventArgs args)
@@ -99,7 +140,7 @@ namespace RevitAction.Revit
             var result = args.GetProcessingResult();
             if (result == FailureProcessingResult.WaitForUserInput)
             {
-                Reporter.Error(result.ToString());
+                Reporter.ErrorReport(result.ToString());
             }
         }
 

@@ -15,7 +15,7 @@ namespace RevitCommand.Families
             if (Document.IsFamilyDocument == false)
             {
                 message = "Is NOT a Revit Family file";
-                TaskApp.Reporter.Error(message);
+                TaskApp.Reporter.ErrorReport(message);
                 return Result.Failed;
             }
             Family = Document.OwnerFamily;
