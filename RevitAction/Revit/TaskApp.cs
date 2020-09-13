@@ -5,7 +5,6 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 using RevitAction.Report;
 using System;
-using System.Diagnostics;
 
 namespace RevitAction.Revit
 {
@@ -21,11 +20,11 @@ namespace RevitAction.Revit
 
             application = uiApplication.ControlledApplication;
 
-            Reporter = new ReportManager();
+            Reporter = new ReportManager(application);
             Reporter.Connect();
             if (Reporter.InitialReport() == false)
             {
-                JournalComment(nameof(Reporter.InitialReport), "No action manager received");
+               Reporter.AddJournalComment<TaskApp>("No action manager received");
             }
 
             uiApplication.ApplicationClosing += Application_ApplicationClosing;
@@ -56,10 +55,6 @@ namespace RevitAction.Revit
             return Result.Succeeded;
         }
 
-        private void JournalComment(string methodName, string message)
-        {
-            application.WriteJournalComment($"{nameof(TaskApp)}: {methodName} >> {message}", true);
-        }
 
 
         #region Default Action Events
@@ -75,7 +70,7 @@ namespace RevitAction.Revit
             else
             {
                 var message = $"Server could not find task for {args.Document.PathName}";
-                JournalComment(nameof(Reporter.OpenReport), message);
+                Reporter.AddJournalComment<TaskApp>(message);
                 Reporter.ErrorReport(message);
             }
         }
@@ -109,7 +104,7 @@ namespace RevitAction.Revit
             {
                 message += $" Exception: {exception.Message}";
             }
-            JournalComment(nameof(Application_ApplicationClosing), message);
+            Reporter.AddJournalComment<TaskApp>(message);
         }
 
         #endregion
@@ -124,13 +119,13 @@ namespace RevitAction.Revit
                 var result = args.OverrideResult(handler.ButtonId);
                 if (result == false)
                 {
-                    JournalComment(nameof(Application_DialogBoxShowing), $"\"{args.DialogId}\" result code not accepted: Action: {handler.ActionId} >> {handler.ButtonId}");
+                    Reporter.AddJournalComment<TaskApp>($"\"{args.DialogId}\" result code not accepted: Action: {handler.ActionId} >> {handler.ButtonId}");
                 }
             }
             else
             {
                 var result = args.OverrideResult(-1);
-                JournalComment(nameof(Reporter.OpenReport), $"No handler for Dialog \"{ args.DialogId}\" result code accepted?: {result}");
+                Reporter.AddJournalComment<TaskApp>($"No handler for Dialog \"{args.DialogId}\" result code accepted?: {result}");
                 Reporter.ErrorReport(args.DialogId);
             }
         }

@@ -1,18 +1,26 @@
 ﻿using Autodesk.Revit.ApplicationServices;
 using RevitAction.Action;
 using RevitAction.Report.Message;
+using RevitAction.Revit;
 using System;
 using System.Net;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace RevitAction.Report
 {
     public class ReportManager
     {
+        private const string JournalPrefix = "Task Actions";
+
         private readonly IPAddress _serverAddress;
         private readonly short _serverPort;
 
-        public ReportManager(IPAddress address = null, short port = 8888)
+        private readonly ControlledApplication _application;
+
+        public ReportManager(ControlledApplication application, IPAddress address = null, short port = 8888)
         {
+            _application = application;
             _serverAddress = address ?? IPAddress.Loopback;
             _serverPort = port;
         }
@@ -36,8 +44,20 @@ namespace RevitAction.Report
             CurrentActionId = ActionManager.InitialActionId;
             var report = GetReport(ActionManager.InitialMessage, ReportKind.DefaultAction);
             Publisher.SendReport(report);
-            TaskActions = Publisher.GetResponsedTaskActions();
+            TaskActions = Publisher.GetActionManagerResponse();
             return TaskActions is object;
+        }
+
+        public void AddJournalComment<TSource>(string message, Exception exception = null, 
+                                               [CallerMemberName] string memberName = "",
+                                               [CallerLineNumber] int lineNumber = 0) where TSource : class
+        {
+            var comment = $"{JournalPrefix}: [{lineNumber}] {nameof(TSource)}.{memberName} >> {message}";
+            if(exception is object)
+            {
+                comment += $" Exception: {exception.Message}";
+            }
+            _application.WriteJournalComment(comment, true);
         }
 
         internal bool OpenReport(string message)
@@ -91,7 +111,7 @@ namespace RevitAction.Report
         {
             var report = GetReport(message, reportKind, exception);
             Publisher.SendReport(report);
-            CurrentActionId = Publisher.GetResponsedActionId();
+            CurrentActionId = Publisher.GetActionIdResponse();
         }
 
         private ReportMessage GetReport(string message, ReportKind reportKind, Exception exception = null)
