@@ -34,12 +34,7 @@ namespace RevitAction.Report
         internal bool InitialReport()
         {
             CurrentActionId = ActionManager.InitialActionId;
-            var report = new ReportMessage
-            {
-                ActionId = CurrentActionId,
-                Kind = ReportKind.DefaultAction,
-                Message = "Initial"
-            };
+            var report = GetReport(ActionManager.InitialMessage, ReportKind.DefaultAction);
             Publisher.SendReport(report);
             TaskActions = Publisher.GetResponsedTaskActions();
             return TaskActions is object;
@@ -64,15 +59,7 @@ namespace RevitAction.Report
         private void DefaultReport(Guid actionId, string message)
         {
             CurrentActionId = actionId;
-            var report = new ReportMessage
-            {
-                ActionId = GetActionId(),
-                ActionName = GetActionName(),
-                Kind = ReportKind.DefaultAction,
-                Message = message
-            };
-            Publisher.SendReport(report);
-            CurrentActionId = Publisher.GetResponsedActionId();
+            Report(message, ReportKind.DefaultAction);
         }
 
         public void CustomStartReport()
@@ -87,42 +74,36 @@ namespace RevitAction.Report
 
         public void CustomReport(string message)
         {
-            var report = new ReportMessage
-            {
-                ActionId = GetActionId(),
-                ActionName = GetActionName(),
-                Kind = ReportKind.CustomAction,
-                Message = message
-            };
-            Publisher.SendReport(report);
-            CurrentActionId = Publisher.GetResponsedActionId();
+            Report(message, ReportKind.CustomAction);
         }
 
         public void ErrorReport(string message, Exception exception = null)
         {
-            var report = new ReportMessage
-            {
-                ActionId = GetActionId(),
-                ActionName = GetActionName(),
-                Kind = ReportKind.Error,
-                Message = message,
-                Exception = exception
-            };
-            Publisher.SendReport(report);
-            CurrentActionId = Publisher.GetResponsedActionId();
+            Report(message, ReportKind.Error, exception);
         }
 
         public void WarningReport(string message)
         {
-            var report = new ReportMessage
+            Report(message, ReportKind.Warning);
+        }
+
+        private void Report(string message, ReportKind reportKind, Exception exception = null)
+        {
+            var report = GetReport(message, reportKind, exception);
+            Publisher.SendReport(report);
+            CurrentActionId = Publisher.GetResponsedActionId();
+        }
+
+        private ReportMessage GetReport(string message, ReportKind reportKind, Exception exception = null)
+        {
+            return new ReportMessage
             {
                 ActionId = GetActionId(),
                 ActionName = GetActionName(),
-                Kind = ReportKind.Warning,
-                Message = message
+                Kind = reportKind,
+                Message = message,
+                Exception = exception
             };
-            Publisher.SendReport(report);
-            CurrentActionId = Publisher.GetResponsedActionId();
         }
 
         private Guid GetActionId()
