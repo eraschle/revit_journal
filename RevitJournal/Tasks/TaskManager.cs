@@ -153,7 +153,7 @@ namespace RevitJournal.Tasks
             {
                 var task = GetNextTask(cancellation);
                 runningTasks.Add(task);
-                Task.Delay(TimeSpan.FromMilliseconds(100)).Wait();
+                Task.Delay(TimeSpan.FromMilliseconds(500)).Wait();
             }
             return runningTasks;
         }
