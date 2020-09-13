@@ -40,6 +40,7 @@ namespace RevitJournal.Report.Network
                     }
                     break;
                 case ReportKind.CustomAction:
+                case ReportKind.Warning:
                 case ReportKind.Error:
                 default:
                     break;
@@ -50,34 +51,34 @@ namespace RevitJournal.Report.Network
 
         private void SendResponseMessage(ReportMessage report)
         {
-            if (report is null || Reporter is null
-                || ActionManager.IsInitialAction(report.ActionId)) { return; }
+            if (report is null || Reporter is null) { return; }
 
-            var nextActionId = ActionManager.GetNextAction(report.ActionId);
             var responseMessage = string.Empty;
-            switch (report.Kind)
+            if (ActionManager.IsInitialAction(report.ActionId))
             {
-                case ReportKind.DefaultAction:
-                    if (ActionManager.IsInitialAction(report.ActionId))
-                    {
-                        ActionManager = TaskManager.GetActionManager();
-                        responseMessage = MessageUtils.Write(ActionManager);
-                    }
-                    break;
-                case ReportKind.CustomAction:
-                case ReportKind.Error:
-                case ReportKind.Warning:
-                default:
-                    if (ActionManager.IsCustomFinish(report.Message) == false)
-                    {
-                        nextActionId = report.ActionId;
-                    }
-                    break;
+                ActionManager = TaskManager.GetActionManager();
+                responseMessage = MessageUtils.Write(ActionManager);
             }
-            if (string.IsNullOrEmpty(responseMessage))
+            else if (ActionManager is object)
             {
+                var nextActionId = ActionManager.GetNextAction(report.ActionId);
+                switch (report.Kind)
+                {
+                    case ReportKind.DefaultAction:
+                    case ReportKind.CustomAction:
+                    case ReportKind.Warning:
+                    case ReportKind.Error:
+                    default:
+                        if (ActionManager.IsCustomFinish(report.Message) == false)
+                        {
+                            nextActionId = report.ActionId;
+                        }
+                        break;
+                }
                 responseMessage = nextActionId.ToString();
             }
+            if (string.IsNullOrEmpty(responseMessage)) { return; }
+
             _sendPacket.Send(responseMessage);
         }
 
