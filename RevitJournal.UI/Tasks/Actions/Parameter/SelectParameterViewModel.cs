@@ -15,17 +15,17 @@ namespace RevitJournalUI.Tasks.Actions.Parameter
             AddValues();
         }
 
-        public ObservableCollection<string> ParameterValues { get; } = new ObservableCollection<string>();
+        public ObservableCollection<string> Values { get; } = new ObservableCollection<string>();
 
         private void AddValues()
         {
             if (ParameterSelect.Values is null 
                 || ParameterSelect.Values.Count == 0) { return; }
 
-            ParameterValues.Clear();
+            Values.Clear();
             foreach (var value in ParameterSelect.Values)
             {
-                ParameterValues.Add(value);
+                Values.Add(value);
             }
         }
     }
