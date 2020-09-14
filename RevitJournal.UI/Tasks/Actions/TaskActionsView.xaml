@@ -87,7 +87,7 @@
                                           VerticalContentAlignment="Center">
                                 </CheckBox>
                                 <ListBox ItemsSource="{Binding Parameters}"
-                                         Visibility="{Binding Converter={StaticResource parameterVisibility}, ElementName=CbxAction}"
+                                         Visibility="{Binding Converter={StaticResource parameterVisibility}, ElementName=CbxAction, Path=}"
                                          Style="{StaticResource StyleListView}"
                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                                     <ListBox.Resources>
