@@ -53,6 +53,13 @@ namespace RevitJournalUI.Tasks.Actions
                 {
                     Action = action
                 };
+                if (action is DocumentOpenAction)
+                {
+                    model = new OpenActionViewModel
+                    {
+                        Action = action
+                    };
+                }
                 model.PropertyChanged += new PropertyChangedEventHandler(OnActionChecked);
                 model.UpdateParameters();
 
@@ -95,7 +102,19 @@ namespace RevitJournalUI.Tasks.Actions
 
         private bool AreChangeActionsChecked()
         {
-            return ActionViewModels.Any(model => model.Action.MakeChanges && model.Checked);
+            return ActionViewModels.Any(model => IsModelChecked(model));
+        }
+
+        private static bool IsModelChecked(ActionViewModel model)
+        {
+            if(model.Action is DocumentOpenAction)
+            {
+                return model is object && model.Action.MakeChanges;
+            }
+            else
+            {
+                return model is object && model.Action.MakeChanges && model.Checked;
+            }
         }
 
         private bool IsSaveActionChecked()
@@ -113,12 +132,12 @@ namespace RevitJournalUI.Tasks.Actions
             return GetSaveActions().FirstOrDefault(model => IsSave(model));
         }
 
-        private bool IsSave(ActionViewModel model)
+        private static bool IsSave(ActionViewModel model)
         {
             return model != null && model.Action is DocumentSaveAction;
         }
 
-        private bool IsSaveOrSaveAs(ActionViewModel model)
+        private static bool IsSaveOrSaveAs(ActionViewModel model)
         {
             return IsSave(model) || (model != null && model.Action is DocumentSaveAsAction);
         }

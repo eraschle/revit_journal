@@ -22,6 +22,12 @@ namespace RevitJournal.Revit.Journal.Command
             get { return Audit.GetBoolValue() ? OpenAuditCommand : OpenCommand; }
         }
 
+        public override bool MakeChanges
+        {
+            get { return Audit.GetBoolValue(); }
+            protected set { }
+        }
+
         private string[] OpenCommand
         {
             get

@@ -62,6 +62,155 @@
             <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
+        <Grid x:Key="infoParamerter">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource ParameterNameWidth}"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="{Binding Name}"
+                    Style="{StaticResource StyleLabelItem}"
+                    Grid.Column="0"/>
+            <TextBlock Text="{Binding Value}" 
+                        IsEnabled="{Binding IsEnable}"
+                        Style="{StaticResource StyleTextBlockItem}"
+                        Grid.Column="1"/>
+        </Grid>
+        <Grid x:Key="paramerter">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource ParameterNameWidth}"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="{Binding Name}"
+                    Style="{StaticResource StyleLabelItem}"
+                    Grid.Column="0"/>
+            <TextBox Text="{Binding Value}" 
+                        IsEnabled="{Binding IsEnable}"
+                        Style="{StaticResource StyleTextBoxItem}"
+                        Grid.Column="1"/>
+            <Button Content="Clear"
+                    IsEnabled="{Binding IsEnable}"
+                    Visibility="{Binding ClearVisibility}"
+                    Command="{Binding ClearCommand}"
+                    Style="{StaticResource StyleButtonItem}"
+                    Grid.Column="2"/>
+            <Button Content="Default"
+                    IsEnabled="{Binding IsEnable}"
+                    Visibility="{Binding DefaultVisibility}"
+                    Command="{Binding DefaultCommand}"
+                    Style="{StaticResource StyleButtonItem}"
+                    Grid.Column="3"/>
+        </Grid>
+        <Grid x:Key="fileParamerter">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource ParameterNameWidth}"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="{Binding Name}" 
+                    Style="{StaticResource StyleLabelItem}"
+                    Grid.Column="0"/>
+            <TextBlock x:Name="FilePath"
+                        Text="{Binding Value}" 
+                        IsEnabled="{Binding IsEnable}"
+                        Style="{StaticResource StyleTextBlockItem}"
+                        Grid.Column="1"/>
+            <Button Content="Choose"
+                    IsEnabled="{Binding IsEnable}"
+                    Command="{Binding ChooseCommandFile}"
+                    CommandParameter="{Binding ElementName=FilePath, Path=Text}"
+                    Style="{StaticResource StyleButtonItem}"
+                    Grid.Column="2"/>
+            <Button Content="Default"
+                    IsEnabled="{Binding IsEnable}"
+                    Visibility="{Binding DefaultVisibility}"
+                    Command="{Binding DefaultCommand}"
+                    Style="{StaticResource StyleButtonItem}"
+                    Grid.Column="3"/>
+        </Grid>
+        <Grid x:Key="folderParamerter">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource ParameterNameWidth}"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="{Binding Name}" 
+                    Style="{StaticResource StyleLabelItem}"
+                    Grid.Column="0"/>
+            <TextBlock x:Name="FolderPath"
+                        Text="{Binding Value}" 
+                        IsEnabled="{Binding IsEnable}"
+                        Style="{StaticResource StyleTextBlockItem}"
+                        Grid.Column="1"/>
+            <Button Content="Choose"
+                    IsEnabled="{Binding IsEnable}"
+                    Command="{Binding ChooseFolderCommand}"
+                    CommandParameter="{Binding ElementName=FolderPath, Path=Text}"
+                    Style="{StaticResource StyleButtonItem}"
+                    Grid.Column="2"/>
+            <Button Content="Default"
+                    IsEnabled="{Binding IsEnable}"
+                    Visibility="{Binding DefaultVisibility}"
+                    Command="{Binding DefaultCommand}"
+                    Style="{StaticResource StyleButtonItem}"
+                    Grid.Column="3"/>
+        </Grid>
+        <Grid x:Key="boolParamerter">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource ParameterNameWidth}"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="{Binding Name}" 
+                    Style="{StaticResource StyleLabelItem}"
+                    Grid.Column="0"/>
+            <CheckBox IsChecked="{Binding Value, Converter={StaticResource BooleanToString}}" 
+                    IsEnabled="{Binding IsEnable}"
+                    Style="{StaticResource StyleCheckBoxItem}"
+                    Grid.Column="1"/>
+            <Button Content="Default"
+                    IsEnabled="{Binding IsEnable}"
+                    Visibility="{Binding DefaultVisibility}"
+                    Command="{Binding DefaultCommand}"
+                    Style="{StaticResource StyleButtonItem}"
+                    Grid.Column="2"/>
+        </Grid>
+        <!--<Grid x:Key="listParamerter">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource ParameterNameWidth}"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition MinWidth="{StaticResource MinWidthButton}" Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="{Binding Name}" 
+                    Style="{StaticResource StyleLabelItem}"
+                    Grid.Column="0"/>
+            <TextBlock Text="{Binding Value}" 
+                        IsEnabled="{Binding IsEnable}"
+                        Style="{StaticResource StyleTextBlockItem}"
+                        Grid.Column="1"/>
+            <Button Content="Choose"
+                    IsEnabled="{Binding IsEnable}"
+                    Command="{Binding ChooseParametersCommand}"
+                    Style="{StaticResource StyleButtonItem}"
+                    Grid.Column="2"/>
+        </Grid>-->
+        <Grid x:Key="selectParamerter">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource ParameterNameWidth}"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="{Binding Name}" 
+                    Style="{StaticResource StyleLabelItem}"
+                    Grid.Column="0"/>
+            <ComboBox ItemsSource="{Binding Values}" 
+                    SelectedItem="{Binding Value}"
+                    IsEnabled="{Binding IsEnable}"
+                    Style="{StaticResource StyleComboBoxItem}"
+                    Grid.Column="1"/>
+        </Grid>
     </Window.Resources>
     <Window.DataContext>
         <local:TaskActionsViewModel/>
@@ -75,7 +224,7 @@
                  Grid.Row="0"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  Style="{StaticResource StyleListView}">
-            <ListBox.ItemTemplate>
+            <ListBox.Resources>
                 <DataTemplate DataType="{x:Type local:ActionViewModel}">
                     <ContentPresenter>
                         <ContentPresenter.Content>
@@ -91,195 +240,25 @@
                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                                     <ListBox.Resources>
                                         <DataTemplate DataType="{x:Type par:InfoParameterViewModel}">
-                                            <ContentPresenter>
-                                                <ContentPresenter.Content>
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="{StaticResource ParameterNameWidth}"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Label Content="{Binding Name}"
-                                                               Style="{StaticResource StyleLabelItem}"
-                                                               Grid.Column="0"/>
-                                                        <TextBlock Text="{Binding Value}" 
-                                                                   IsEnabled="{Binding IsEnable}"
-                                                                   Style="{StaticResource StyleTextBlockItem}"
-                                                                   Grid.Column="1"/>
-                                                    </Grid>
-                                                </ContentPresenter.Content>
-                                            </ContentPresenter>
+                                            <ContentPresenter Content="{StaticResource infoParamerter}"/>
                                         </DataTemplate>
                                         <DataTemplate DataType="{x:Type par:ParameterViewModel}">
-                                            <ContentPresenter>
-                                                <ContentPresenter.Content>
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="{StaticResource ParameterNameWidth}"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Label Content="{Binding Name}"
-                                                               Style="{StaticResource StyleLabelItem}"
-                                                               Grid.Column="0"/>
-                                                        <TextBox Text="{Binding Value}" 
-                                                                 IsEnabled="{Binding IsEnable}"
-                                                                 Style="{StaticResource StyleTextBoxItem}"
-                                                                 Grid.Column="1"/>
-                                                        <Button Content="Clear"
-                                                                IsEnabled="{Binding IsEnable}"
-                                                                Visibility="{Binding ClearVisibility}"
-                                                                Command="{Binding ClearCommand}"
-                                                                Style="{StaticResource StyleButtonItem}"
-                                                                Grid.Column="2"/>
-                                                        <Button Content="Default"
-                                                                IsEnabled="{Binding IsEnable}"
-                                                                Visibility="{Binding DefaultVisibility}"
-                                                                Command="{Binding DefaultCommand}"
-                                                                Style="{StaticResource StyleButtonItem}"
-                                                                Grid.Column="3"/>
-                                                    </Grid>
-                                                </ContentPresenter.Content>
-                                            </ContentPresenter>
+                                            <ContentPresenter Content="{StaticResource paramerter}"/>
                                         </DataTemplate>
                                         <DataTemplate DataType="{x:Type par:FileParameterViewModel}">
-                                            <ContentPresenter>
-                                                <ContentPresenter.Content>
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="{StaticResource ParameterNameWidth}"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Label Content="{Binding Name}" 
-                                                               Style="{StaticResource StyleLabelItem}"
-                                                               Grid.Column="0"/>
-                                                        <TextBlock x:Name="FilePath"
-                                                                   Text="{Binding Value}" 
-                                                                   IsEnabled="{Binding IsEnable}"
-                                                                   Style="{StaticResource StyleTextBlockItem}"
-                                                                   Grid.Column="1"/>
-                                                        <Button Content="Choose"
-                                                                IsEnabled="{Binding IsEnable}"
-                                                                Command="{Binding ChooseCommandFile}"
-                                                                CommandParameter="{Binding ElementName=FilePath, Path=Text}"
-                                                                Style="{StaticResource StyleButtonItem}"
-                                                                Grid.Column="2"/>
-                                                        <Button Content="Default"
-                                                                IsEnabled="{Binding IsEnable}"
-                                                                Visibility="{Binding DefaultVisibility}"
-                                                                Command="{Binding DefaultCommand}"
-                                                                Style="{StaticResource StyleButtonItem}"
-                                                                Grid.Column="3"/>
-                                                    </Grid>
-                                                </ContentPresenter.Content>
-                                            </ContentPresenter>
+                                            <ContentPresenter Content="{StaticResource fileParamerter}"/>
                                         </DataTemplate>
                                         <DataTemplate DataType="{x:Type par:FolderParameterViewModel}">
-                                            <ContentPresenter>
-                                                <ContentPresenter.Content>
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="{StaticResource ParameterNameWidth}"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Label Content="{Binding Name}" 
-                                                               Style="{StaticResource StyleLabelItem}"
-                                                               Grid.Column="0"/>
-                                                        <TextBlock x:Name="FilePath"
-                                                                   Text="{Binding Value}" 
-                                                                   IsEnabled="{Binding IsEnable}"
-                                                                   Style="{StaticResource StyleTextBlockItem}"
-                                                                   Grid.Column="1"/>
-                                                        <Button Content="Choose"
-                                                                IsEnabled="{Binding IsEnable}"
-                                                                Command="{Binding ChooseFolderCommand}"
-                                                                CommandParameter="{Binding ElementName=FilePath, Path=Text}"
-                                                                Style="{StaticResource StyleButtonItem}"
-                                                                Grid.Column="2"/>
-                                                        <Button Content="Default"
-                                                                IsEnabled="{Binding IsEnable}"
-                                                                Visibility="{Binding DefaultVisibility}"
-                                                                Command="{Binding DefaultCommand}"
-                                                                Style="{StaticResource StyleButtonItem}"
-                                                                Grid.Column="3"/>
-                                                    </Grid>
-                                                </ContentPresenter.Content>
-                                            </ContentPresenter>
+                                            <ContentPresenter Content="{StaticResource folderParamerter}"/>
                                         </DataTemplate>
                                         <DataTemplate DataType="{x:Type par:BoolParameterViewModel}">
-                                            <ContentPresenter>
-                                                <ContentPresenter.Content>
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="{StaticResource ParameterNameWidth}"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Label Content="{Binding Name}" 
-                                                               Style="{StaticResource StyleLabelItem}"
-                                                               Grid.Column="0"/>
-                                                        <CheckBox IsChecked="{Binding Value, Converter={StaticResource BooleanToString}}" 
-                                                                  IsEnabled="{Binding IsEnable}"
-                                                                  Style="{StaticResource StyleCheckBoxItem}"
-                                                                  Grid.Column="1"/>
-                                                        <Button Content="Default"
-                                                                IsEnabled="{Binding IsEnable}"
-                                                                Visibility="{Binding DefaultVisibility}"
-                                                                Command="{Binding DefaultCommand}"
-                                                                Style="{StaticResource StyleButtonItem}"
-                                                                Grid.Column="2"/>
-                                                    </Grid>
-                                                </ContentPresenter.Content>
-                                            </ContentPresenter>
+                                            <ContentPresenter Content="{StaticResource boolParamerter}"/>
                                         </DataTemplate>
                                         <!--<DataTemplate DataType="{x:Type par:CmdParameterListViewModel}">
-                                            <ContentPresenter>
-                                                <ContentPresenter.Content>
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="{StaticResource ParameterNameWidth}"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition MinWidth="{StaticResource MinWidthButton}" Width="Auto"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Label Content="{Binding Name}" 
-                                                               Style="{StaticResource StyleLabelItem}"
-                                                               Grid.Column="0"/>
-                                                        <TextBlock Text="{Binding Value}" 
-                                                                   IsEnabled="{Binding IsEnable}"
-                                                                   Style="{StaticResource StyleTextBlockItem}"
-                                                                   Grid.Column="1"/>
-                                                        <Button Content="Choose"
-                                                                IsEnabled="{Binding IsEnable}"
-                                                                Command="{Binding ChooseParametersCommand}"
-                                                                Style="{StaticResource StyleButtonItem}"
-                                                                Grid.Column="2"/>
-                                                    </Grid>
-                                                </ContentPresenter.Content>
-                                            </ContentPresenter>
+                                            <ContentPresenter Content="{StaticResource listParamerter}"/>
                                         </DataTemplate>-->
                                         <DataTemplate DataType="{x:Type par:SelectParameterViewModel}">
-                                            <ContentPresenter>
-                                                <ContentPresenter.Content>
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="{StaticResource ParameterNameWidth}"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Label Content="{Binding Name}" 
-                                                               Style="{StaticResource StyleLabelItem}"
-                                                               Grid.Column="0"/>
-                                                        <ComboBox ItemsSource="{Binding Values}" 
-                                                                  SelectedItem="{Binding Value}"
-                                                                  IsEnabled="{Binding IsEnable}"
-                                                                  Style="{StaticResource StyleComboBoxItem}"
-                                                                  Grid.Column="1"/>
-                                                    </Grid>
-                                                </ContentPresenter.Content>
-                                            </ContentPresenter>
+                                            <ContentPresenter Content="{StaticResource selectParamerter}"/>
                                         </DataTemplate>
                                     </ListBox.Resources>
                                 </ListBox>
@@ -287,7 +266,48 @@
                         </ContentPresenter.Content>
                     </ContentPresenter>
                 </DataTemplate>
-            </ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:OpenActionViewModel}">
+                    <ContentPresenter>
+                        <ContentPresenter.Content>
+                            <StackPanel>
+                                <CheckBox Content="{Binding Name}"
+                                          IsChecked="{Binding Checked}"
+                                          IsEnabled="{Binding Enabled}"
+                                          VerticalContentAlignment="Center">
+                                </CheckBox>
+                                <ListBox ItemsSource="{Binding Parameters}"
+                                         Visibility="{Binding ParameterVisibility}"
+                                         Style="{StaticResource StyleListView}"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                    <ListBox.Resources>
+                                        <DataTemplate DataType="{x:Type par:InfoParameterViewModel}">
+                                            <ContentPresenter Content="{StaticResource infoParamerter}"/>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type par:ParameterViewModel}">
+                                            <ContentPresenter Content="{StaticResource paramerter}"/>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type par:FileParameterViewModel}">
+                                            <ContentPresenter Content="{StaticResource fileParamerter}"/>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type par:FolderParameterViewModel}">
+                                            <ContentPresenter Content="{StaticResource folderParamerter}"/>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type par:BoolParameterViewModel}">
+                                            <ContentPresenter Content="{StaticResource boolParamerter}"/>
+                                        </DataTemplate>
+                                        <!--<DataTemplate DataType="{x:Type par:CmdParameterListViewModel}">
+                                            <ContentPresenter Content="{StaticResource listParamerter}"/>
+                                        </DataTemplate>-->
+                                        <DataTemplate DataType="{x:Type par:SelectParameterViewModel}">
+                                            <ContentPresenter Content="{StaticResource selectParamerter}"/>
+                                        </DataTemplate>
+                                    </ListBox.Resources>
+                                </ListBox>
+                            </StackPanel>
+                        </ContentPresenter.Content>
+                    </ContentPresenter>
+                </DataTemplate>
+            </ListBox.Resources>
         </ListBox>
         <WrapPanel Grid.Row="1" HorizontalAlignment="Right">
             <Button x:Name="OK" Content="_OK" IsDefault="True" 

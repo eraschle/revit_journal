@@ -33,7 +33,7 @@ namespace RevitAction.Action
         }
 
         [JsonIgnore]
-        public bool MakeChanges { get; protected set; } = false;
+        public virtual bool MakeChanges { get; protected set; } = false;
 
         public ICollection<DialogHandler> DialogHandlers { get; } = new List<DialogHandler>();
 
