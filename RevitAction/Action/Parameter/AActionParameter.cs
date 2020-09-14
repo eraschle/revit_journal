@@ -37,6 +37,18 @@ namespace RevitAction.Action
             return value;
         }
 
+        public int GetIntValue()
+        {
+            if (int.TryParse(Value, out var value) == false)
+            {
+                if (int.TryParse(DefaultValue, out value) == false)
+                {
+                    value = 1;
+                }
+            }
+            return value;
+        }
+
         public virtual string GetJournalValue()
         {
             return Value;

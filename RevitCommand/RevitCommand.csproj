@@ -91,7 +91,8 @@
     <Compile Include="Families\RevitFamilyManagerReport.cs" />
     <Compile Include="Families\SharedParameterManager.cs" />
     <Compile Include="Families\RevitFamilyParameterManager.cs" />
-    <None Include="JournalCommand\DocumentPurgeUnusedCommand.cs" />
+    <Compile Include="JournalCommand\PurgeUnusedAction.cs" />
+    <Compile Include="JournalCommand\PurgeUnusedCommand.cs" />
     <Compile Include="Families\SharedParameters\MergeSelectParameterAction.cs" />
     <Compile Include="Families\SharedParameters\SharedFileActionParameter.cs" />
     <Compile Include="Families\SharedParameters\SharedParameterActionParameter.cs" />
