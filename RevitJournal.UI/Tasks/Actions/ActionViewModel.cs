@@ -32,7 +32,8 @@ namespace RevitJournalUI.Tasks.Actions
 
         public virtual void UpdateParameters()
         {
-            if (Action.HasParameters == false) { return; }
+            var parametes = Action.Parameters;
+            if (parametes is null || parametes.Count == 0) { return; }
 
             Parameters.Clear();
             foreach (var parameter in Action.Parameters)

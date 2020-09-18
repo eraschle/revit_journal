@@ -1,8 +1,8 @@
 ﻿using RevitAction.Report.Message;
 using System;
-using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
+using Utilities;
 
 namespace RevitAction.Report.Network
 {
@@ -30,7 +30,7 @@ namespace RevitAction.Report.Network
             }
             catch (Exception exception)
             {
-                DebugMessage(nameof(StartReceiving), exception);
+                DebugUtils.DebugException<ReceivePacket>(exception);
             }
         }
 
@@ -47,7 +47,7 @@ namespace RevitAction.Report.Network
             }
             catch (Exception exception)
             {
-                DebugMessage(nameof(GetReceivedResponse), exception);
+                DebugUtils.DebugException<ReceivePacket>(exception);
                 throw;
             }
         }
@@ -65,7 +65,7 @@ namespace RevitAction.Report.Network
             }
             catch (Exception exception)
             {
-                DebugMessage(nameof(GetTaskActionsResponse), exception);
+                DebugUtils.DebugException<ReceivePacket>(exception);
                 throw;
             }
         }
@@ -94,7 +94,7 @@ namespace RevitAction.Report.Network
             }
             catch (Exception exception)
             {
-                DebugMessage(nameof(ReceiveCallback), exception);
+                DebugUtils.DebugException<ReceivePacket>(exception);
             }
             finally
             {
@@ -118,13 +118,8 @@ namespace RevitAction.Report.Network
             }
             catch (Exception exception)
             {
-                DebugMessage(nameof(StopReceiving), exception);
+                DebugUtils.DebugException<ReceivePacket>(exception);
             }
-        }
-
-        private void DebugMessage(string methodName, Exception exception)
-        {
-            Debug.WriteLine($"{nameof(ReceivePacket)} {methodName}: {exception.Message}");
         }
     }
 }

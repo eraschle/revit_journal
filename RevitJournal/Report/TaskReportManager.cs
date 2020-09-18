@@ -94,7 +94,7 @@ namespace RevitJournal.Report
 
             switch (report.Kind)
             {
-                case ReportKind.DefaultAction:
+                case ReportKind.Message:
                 case ReportKind.Warning:
                     if (HasActionReport(report.ActionId, out var actionReport))
                     {

@@ -1,10 +1,8 @@
 ﻿using Autodesk.Revit.ApplicationServices;
 using RevitAction.Action;
 using RevitAction.Report.Message;
-using RevitAction.Revit;
 using System;
 using System.Net;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace RevitAction.Report
@@ -42,18 +40,18 @@ namespace RevitAction.Report
         internal bool InitialReport()
         {
             CurrentActionId = ActionManager.InitialActionId;
-            var report = GetReport(ActionManager.InitialMessage, ReportKind.DefaultAction);
+            var report = GetReport(ActionManager.InitialMessage, ReportKind.Message);
             Publisher.SendReport(report);
             TaskActions = Publisher.GetActionManagerResponse();
             return TaskActions is object;
         }
 
-        public void AddJournalComment<TSource>(string message, Exception exception = null, 
+        public void AddJournalComment<TSource>(string message, Exception exception = null,
                                                [CallerMemberName] string memberName = "",
                                                [CallerLineNumber] int lineNumber = 0) where TSource : class
         {
-            var comment = $"{JournalPrefix}: [{lineNumber}] {nameof(TSource)}.{memberName} >> {message}";
-            if(exception is object)
+            var comment = $"{JournalPrefix}: [{lineNumber}] {typeof(TSource).Name}.{memberName} >> {message}";
+            if (exception is object)
             {
                 comment += $" Exception: {exception.Message}";
             }
@@ -79,7 +77,7 @@ namespace RevitAction.Report
         private void DefaultReport(Guid actionId, string message)
         {
             CurrentActionId = actionId;
-            Report(message, ReportKind.DefaultAction);
+            Report(message, ReportKind.Message);
         }
 
         public void CustomStartReport()
@@ -94,7 +92,7 @@ namespace RevitAction.Report
 
         public void CustomReport(string message)
         {
-            Report(message, ReportKind.CustomAction);
+            Report(message, ReportKind.Message);
         }
 
         public void ErrorReport(string message, Exception exception = null)
@@ -128,14 +126,16 @@ namespace RevitAction.Report
 
         private Guid GetActionId()
         {
-            return TaskActions.IsCostumAction(CurrentActionId)
-                ? CostumAction.ActionId
-                : CurrentActionId;
+            return TaskActions is null || TaskActions.HasDialogAction(CurrentActionId, out var action) == false
+                ? CurrentActionId
+                : action.ActionId;
         }
 
         private string GetActionName()
         {
-            return TaskActions.GetActionName(CurrentActionId);
+            return TaskActions is null 
+                ? ActionManager.InitialActionName 
+                : TaskActions.GetActionName(CurrentActionId);
         }
 
         public bool IsAllowdDialog(string dialogId, out DialogHandler dialogHandler)

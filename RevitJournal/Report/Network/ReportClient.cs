@@ -16,7 +16,7 @@ namespace RevitJournal.Report.Network
 
         public IReportReceiver Reporter { get; private set; }
 
-        public ActionManager ActionManager { get; private set; }
+        public ActionManager ActionManager { get; internal set; }
 
         public ReportClient(Socket socket)
         {
@@ -31,19 +31,9 @@ namespace RevitJournal.Report.Network
         {
             if (report is null) { return; }
 
-            switch (report.Kind)
+            if (ActionManager.IsOpenAction(report.ActionId))
             {
-                case ReportKind.DefaultAction:
-                    if (ActionManager.IsOpenAction(report.ActionId))
-                    {
-                        Reporter = TaskManager.ByTaskId(report.Message);
-                    }
-                    break;
-                case ReportKind.CustomAction:
-                case ReportKind.Warning:
-                case ReportKind.Error:
-                default:
-                    break;
+                Reporter = TaskManager.ByTaskId(report.Message);
             }
             SendResponseMessage(report);
             Reporter?.MakeReport(report);
@@ -51,34 +41,32 @@ namespace RevitJournal.Report.Network
 
         private void SendResponseMessage(ReportMessage report)
         {
-            if (report is null || Reporter is null) { return; }
+            if (report is null) { return; }
 
-            var responseMessage = string.Empty;
+            string responseMessage;
             if (ActionManager.IsInitialAction(report.ActionId))
             {
-                ActionManager = TaskManager.GetActionManager();
                 responseMessage = MessageUtils.Write(ActionManager);
             }
-            else if (ActionManager is object)
+            else
             {
                 var nextActionId = ActionManager.GetNextAction(report.ActionId);
                 switch (report.Kind)
                 {
-                    case ReportKind.DefaultAction:
-                    case ReportKind.CustomAction:
+                    case ReportKind.Message:
                     case ReportKind.Warning:
-                    case ReportKind.Error:
-                    default:
-                        if (ActionManager.IsCustomFinish(report.Message) == false)
+                        if (ActionManager.IsCostumnAction(report.ActionId) 
+                            && ActionManager.IsCustomFinish(report.Message) == false)
                         {
                             nextActionId = report.ActionId;
                         }
                         break;
+                    case ReportKind.Error:
+                    default:
+                        break;
                 }
                 responseMessage = nextActionId.ToString();
             }
-            if (string.IsNullOrEmpty(responseMessage)) { return; }
-
             _sendPacket.Send(responseMessage);
         }
 

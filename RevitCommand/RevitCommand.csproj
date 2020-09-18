@@ -91,11 +91,11 @@
     <Compile Include="Families\RevitFamilyManagerReport.cs" />
     <Compile Include="Families\SharedParameterManager.cs" />
     <Compile Include="Families\RevitFamilyParameterManager.cs" />
-    <Compile Include="JournalCommand\PurgeUnusedAction.cs" />
-    <Compile Include="JournalCommand\PurgeUnusedCommand.cs" />
     <Compile Include="Families\SharedParameters\MergeSelectParameterAction.cs" />
     <Compile Include="Families\SharedParameters\SharedFileActionParameter.cs" />
     <Compile Include="Families\SharedParameters\SharedParameterActionParameter.cs" />
+    <Compile Include="Performance\PerformanceAdviserAction.cs" />
+    <Compile Include="Performance\PerformanceAdviserCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

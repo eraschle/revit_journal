@@ -1,9 +1,9 @@
 ﻿using RevitAction.Report.Message;
 using RevitAction.Report.Network;
 using System;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using Utilities;
 
 namespace RevitAction.Report
 {
@@ -36,7 +36,7 @@ namespace RevitAction.Report
             }
             catch (Exception exception)
             {
-                DebugMessage(nameof(GetActionIdResponse), exception);
+                DebugUtils.DebugException<ReportPublisher>(exception);
                 return Guid.Empty;
             }
         }
@@ -50,7 +50,7 @@ namespace RevitAction.Report
             }
             catch (Exception exception)
             {
-                DebugMessage(nameof(GetActionManagerResponse), exception);
+                DebugUtils.DebugException<ReportPublisher>(exception);
                 return null;
             }
         }
@@ -64,7 +64,7 @@ namespace RevitAction.Report
             }
             catch (Exception exception)
             {
-                DebugMessage(nameof(Connect), exception);
+                DebugUtils.DebugException<ReportPublisher>(exception);
             }
         }
 
@@ -77,14 +77,9 @@ namespace RevitAction.Report
             }
             catch (Exception exception)
             {
-                DebugMessage(nameof(Disconnect), exception);
+                DebugUtils.DebugException<ReportPublisher>(exception);
                 throw;
             }
-        }
-
-        private void DebugMessage(string methodName, Exception exception)
-        {
-            Debug.WriteLine($"{nameof(ReportPublisher)} {methodName}: {exception.Message}");
         }
     }
 }

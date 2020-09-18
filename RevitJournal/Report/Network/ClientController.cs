@@ -19,7 +19,8 @@ namespace RevitJournal.Report.Network
         {
             var client = new ReportClient(socket)
             {
-                TaskManager = TaskManager
+                TaskManager = TaskManager,
+                ActionManager = TaskManager.GetActionManager()
             };
 
             lock (lockObject)

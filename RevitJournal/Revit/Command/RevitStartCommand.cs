@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RevitJournal.Revit.Journal.Command
+namespace RevitJournal.Revit.Command
 {
     public class RevitStartCommand
     {

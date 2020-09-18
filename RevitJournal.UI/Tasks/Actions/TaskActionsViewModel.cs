@@ -1,5 +1,5 @@
 ﻿using RevitAction.Action;
-using RevitJournal.Revit.Journal.Command;
+using RevitJournal.Revit.Command;
 using RevitJournal.Tasks.Options;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

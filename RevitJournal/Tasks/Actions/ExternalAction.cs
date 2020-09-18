@@ -1,6 +1,6 @@
 ﻿using RevitAction;
 using RevitAction.Action;
-using RevitJournal.Revit.Journal.Command;
+using RevitJournal.Revit.Command;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -47,7 +47,7 @@ namespace RevitJournal.Tasks.Actions
             {
                 externalActions.AddRange(extneral.GetTaskActions());
             }
-            externalActions.Sort(new TaskActionComparer());
+            externalActions.Sort();
             externalActions.Insert(0, new DocumentOpenAction());
             externalActions.Add(new DocumentSaveAction());
             externalActions.Add(new DocumentSaveAsAction());

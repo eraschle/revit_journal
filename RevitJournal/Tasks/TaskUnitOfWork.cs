@@ -76,27 +76,16 @@ namespace RevitJournal.Tasks
             SetNewAction(report);
             Status.SetStatus(GetTaskStatus(report));
             ReportManager.AddReport(report);
-            switch (report.Kind)
+            if (ActionManager.IsOpenAction(report.ActionId)
+                || ActionManager.IsSaveAction(report.ActionId))
             {
-                case ReportKind.DefaultAction:
-                    if (ActionManager.IsOpenAction(report.ActionId)
-                        || ActionManager.IsSaveAction(report.ActionId))
-                    {
-                        var resultFile = CreateFile<RevitFamilyFile>(report);
-                        Task.ResultFile = resultFile;
-                    }
-                    else if (ActionManager.IsJournalAction(report.ActionId))
-                    {
-                        var journalFile = CreateFile<RecordeJournalFile>(report);
-                        RecordeJournal = journalFile;
-                    }
-                    break;
-                case ReportKind.Error:
-                    KillProcess();
-                    break;
-                case ReportKind.Warning:
-                default:
-                    break;
+                var resultFile = CreateFile<RevitFamilyFile>(report);
+                Task.ResultFile = resultFile;
+            }
+            else if (ActionManager.IsJournalAction(report.ActionId))
+            {
+                var journalFile = CreateFile<RecordeJournalFile>(report);
+                RecordeJournal = journalFile;
             }
             Progress?.Report(this);
         }
@@ -113,20 +102,16 @@ namespace RevitJournal.Tasks
 
         private int GetTaskStatus(ReportMessage report)
         {
-            var status = TaskAppStatus.Started;
             switch (report.Kind)
             {
-                case ReportKind.DefaultAction:
+                case ReportKind.Message:
                 case ReportKind.Warning:
-                    status = TaskAppStatus.Running;
-                    break;
+                    return TaskAppStatus.Running;
                 case ReportKind.Error:
-                    status = TaskAppStatus.Error;
-                    break;
+                    return TaskAppStatus.Error;
                 default:
-                    break;
+                    return TaskAppStatus.Started;
             }
-            return status;
         }
 
         private TFile CreateFile<TFile>(ReportMessage report) where TFile : AFile, new()

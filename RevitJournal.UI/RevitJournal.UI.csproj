@@ -147,7 +147,6 @@
     <Compile Include="JournalTaskUI\Converter\FamilyIsEnabledMetadataConverter.cs" />
     <Compile Include="JournalTaskUI\FamilyFilter\FilterManager.cs" />
     <Compile Include="JournalTaskUI\FamilyFilter\FilterViewModel.cs" />
-    <Compile Include="Tasks\Actions\Converter\ParametersVisibiltyConverter.cs" />
     <Compile Include="Tasks\Actions\OpenActionViewModel.cs" />
     <Compile Include="Tasks\Converter\TaskResultVisibleConverter.cs" />
     <Compile Include="Tasks\Converter\TaskExecuteVisibleConverter.cs" />

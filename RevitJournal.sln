@@ -14,8 +14,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitCommand", "RevitComman
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataSource", "DataSource\DataSource.csproj", "{241F97FA-369A-49FE-8D6A-BF61B2050AD9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MasterMetadata", "MasterMetadata\MasterMetadata.csproj", "{48AE1D76-BB2F-49C7-B679-4DD1D58F7FEF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitAction", "RevitAction\RevitAction.csproj", "{E89E17ED-9AD7-4562-B5F6-8D0121FBDA10}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Utilities\Utilities.csproj", "{C32F0DC7-ACBA-4802-90D1-BD7641CA851E}"
@@ -42,10 +40,6 @@ Global
 		{241F97FA-369A-49FE-8D6A-BF61B2050AD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{241F97FA-369A-49FE-8D6A-BF61B2050AD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{241F97FA-369A-49FE-8D6A-BF61B2050AD9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{48AE1D76-BB2F-49C7-B679-4DD1D58F7FEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{48AE1D76-BB2F-49C7-B679-4DD1D58F7FEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{48AE1D76-BB2F-49C7-B679-4DD1D58F7FEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48AE1D76-BB2F-49C7-B679-4DD1D58F7FEF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E89E17ED-9AD7-4562-B5F6-8D0121FBDA10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E89E17ED-9AD7-4562-B5F6-8D0121FBDA10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E89E17ED-9AD7-4562-B5F6-8D0121FBDA10}.Release|Any CPU.ActiveCfg = Release|Any CPU

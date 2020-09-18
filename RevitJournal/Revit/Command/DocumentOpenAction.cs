@@ -1,9 +1,10 @@
 ﻿using DataSource.Model.FileSystem;
 using RevitAction.Action;
 using RevitAction.Report;
+using RevitJournal.Revit.Journal;
 using System.Collections.Generic;
 
-namespace RevitJournal.Revit.Journal.Command
+namespace RevitJournal.Revit.Command
 {
     public class DocumentOpenAction : ATaskAction, ITaskActionJournal
     {

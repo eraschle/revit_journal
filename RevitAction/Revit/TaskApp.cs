@@ -69,6 +69,7 @@ namespace RevitAction.Revit
             }
             else
             {
+                Reporter.CurrentActionId = ActionManager.OpenActionId;
                 var message = $"Server could not find task for {args.Document.PathName}";
                 Reporter.AddJournalComment<TaskApp>(message);
                 Reporter.ErrorReport(message);

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
+using Utilities;
 
 namespace RevitAction.Report.Network
 {
@@ -28,13 +28,8 @@ namespace RevitAction.Report.Network
             }
             catch (Exception exception)
             {
-                DebugMessage(nameof(Send), exception);
+                DebugUtils.DebugException<SendPacket>(exception);
             }
-        }
-
-        private void DebugMessage(string methodName, Exception exception)
-        {
-            Debug.WriteLine($"{nameof(SendPacket)} {methodName}: {exception.Message}");
         }
     }
 }

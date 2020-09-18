@@ -10,7 +10,9 @@ namespace RevitAction.Report
     {
         public const string CustomStartMessage = "Custom_Action_Started";
         public const string CustomFinishMessage = "Custom_Action_Finished";
+
         public const string InitialMessage = "Initial_Action_Message";
+        public const string InitialActionName = "Initial Action";
 
         public static bool IsCustomStart(string message)
         {
@@ -50,33 +52,38 @@ namespace RevitAction.Report
             return JournalActionId.Equals(actionId);
         }
 
-        public bool IsCostumAction(Guid actionId)
+        public bool IsDefaultAction(Guid actionId)
         {
-            return TaskActions.Any(act => act.ActionId.Equals(actionId));
+            return IsInitialAction(actionId) 
+                || IsJournalAction(actionId) 
+                || IsOpenAction(actionId) 
+                || IsSaveAction(actionId);
+        }
+
+        public bool IsCostumnAction(Guid actionId)
+        {
+            return IsDefaultAction(actionId) == false
+                && TaskActions.Any(action => action.ActionId.Equals(actionId));
+        }
+
+        public bool HasDialogAction(Guid actionId, out TaskDialogAction dialogAction)
+        {
+            dialogAction = TaskActions.FirstOrDefault(act => act.ActionId.Equals(actionId));
+            return dialogAction is object;
         }
 
         public string GetActionName(Guid actionId)
         {
-            if (IsCostumAction(actionId))
+            if (HasDialogAction(actionId, out var dialogAction))
             {
-                return TaskActions.First(act => act.ActionId.Equals(actionId)).Name;
+                return dialogAction.Name;
             }
-            if (IsOpenAction(actionId))
-            {
-                return "Open";
-            }
+            var actionName = InitialActionName;
             if (IsJournalAction(actionId))
             {
-                return "Journal";
+                actionName = "Journal";
             }
-            if (IsSaveAction(actionId))
-            {
-                return "Save";
-            }
-            else
-            {
-                return "Initial";
-            }
+            return actionName;
         }
 
         public List<TaskDialogAction> TaskActions { get; } = new List<TaskDialogAction>();

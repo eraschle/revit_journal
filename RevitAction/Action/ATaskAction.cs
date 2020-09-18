@@ -27,26 +27,9 @@ namespace RevitAction.Action
         }
 
         [JsonIgnore]
-        public bool HasParameters
-        {
-            get { return Parameters != null && Parameters.Count > 0; }
-        }
-
-        [JsonIgnore]
         public virtual bool MakeChanges { get; protected set; } = false;
 
         public ICollection<DialogHandler> DialogHandlers { get; } = new List<DialogHandler>();
-
-        [JsonIgnore]
-        public bool HasDialogHandlers
-        {
-            get { return DialogHandlers is object && DialogHandlers.Count > 0; }
-        }
-
-        public virtual bool DependsOn(ITaskAction action)
-        {
-            return false;
-        }
 
         public virtual void PreTask(RevitFamily family) { }
 
@@ -62,5 +45,11 @@ namespace RevitAction.Action
         {
             return 539060726 + EqualityComparer<string>.Default.GetHashCode(Name);
         }
+
+        public int CompareTo(ITaskAction other)
+        {
+            return other is null ? 1 : Name.CompareTo(other.Name);
+        }
+
     }
 }

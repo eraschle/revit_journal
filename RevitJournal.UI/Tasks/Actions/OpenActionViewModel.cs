@@ -1,4 +1,4 @@
-﻿using RevitJournal.Revit.Journal.Command;
+﻿using RevitJournal.Revit.Command;
 using System.ComponentModel;
 using System.Linq;
 using Utilities;
