@@ -1,6 +1,5 @@
 ﻿using DataSource;
 using RevitAction.Action;
-using RevitJournal.Revit.Journal.Command;
 using RevitJournal.Tasks;
 using RevitJournal.Tasks.Actions;
 using RevitJournal.Tasks.Options;
@@ -9,7 +8,6 @@ using RevitJournalUI.JournalTaskUI.FamilyFilter;
 using RevitJournalUI.JournalTaskUI.Models;
 using RevitJournalUI.JournalTaskUI.Options;
 using RevitJournalUI.MetadataUI;
-using RevitJournalUI.Tasks;
 using RevitJournalUI.Tasks.Actions;
 using System;
 using System.Collections.ObjectModel;
