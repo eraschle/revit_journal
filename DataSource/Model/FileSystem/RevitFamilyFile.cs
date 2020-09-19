@@ -11,6 +11,11 @@ namespace DataSource.Model.FileSystem
     {
         public const string FileExtension = "rfa";
 
+        public RevitFamilyFile()
+        {
+
+        }
+
         protected override string GetExtension()
         {
             return FileExtension;

@@ -100,6 +100,10 @@
     <Compile Include="Duplicate\Comparer\ParameterComparer\ParameterNameDublicateComparer.cs" />
     <Compile Include="Duplicate\DuplicateManager.cs" />
     <Compile Include="Helper\PathCreator.cs" />
+    <Compile Include="Library\FilterManager.cs" />
+    <Compile Include="Library\LibraryManager.cs" />
+    <Compile Include="Library\SelectFolderHandler.cs" />
+    <Compile Include="Library\SelectFileHandler.cs" />
     <Compile Include="Report\TaskReportManager.cs" />
     <Compile Include="Report\TaskReportDataSource.cs" />
     <Compile Include="Revit\Journal\NullRecordeJournalFile.cs" />

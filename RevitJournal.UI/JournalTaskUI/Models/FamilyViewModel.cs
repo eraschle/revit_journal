@@ -3,8 +3,8 @@ using System;
 using System.ComponentModel;
 using System.Windows.Input;
 using DataSource.Metadata;
-using DataSource.Model.FileSystem;
 using Utilities.UI.Helper;
+using RevitJournal.Library;
 
 namespace RevitJournalUI.JournalTaskUI.Models
 {
@@ -12,36 +12,34 @@ namespace RevitJournalUI.JournalTaskUI.Models
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly DirectoryViewModel Parent;
-        
-        public RevitFamily RevitFamily { get; private set; }
+        public SelectFileHandler FileHandler { get; private set; }
 
-        public FamilyViewModel(DirectoryViewModel parent, RevitFamily family)
+        public FamilyViewModel(SelectFileHandler fileHandler)
         {
-            Parent = parent;
-            RevitFamily = family;
+            FileHandler = fileHandler;
             ViewMetadataCommand = new RelayCommand<object>(ViewMetadataCommandAction);
         }
 
         public MetadataStatus MetadataStatus
         {
-            get { return RevitFamily.MetadataStatus; }
+            get { return FileHandler.File.MetadataStatus; }
             set { OnPropertyChanged(nameof(MetadataStatus)); }
         }
 
-        public string RevitFileName { get { return RevitFamily.RevitFile.Name; } }
+        public string RevitFileName
+        {
+            get { return FileHandler.File.RevitFile.Name; }
+        }
 
-        private bool _Checked = true;
         public bool Checked
         {
-            get { return _Checked; }
+            get { return FileHandler.IsSelected; }
             set
             {
-                if(_Checked == value) { return; }
+                if (FileHandler.IsSelected == value) { return; }
 
-                _Checked = value;
+                FileHandler.IsSelected = value;
                 OnPropertyChanged(nameof(Checked));
-                Parent.UpdateParent();
             }
         }
 
@@ -75,7 +73,7 @@ namespace RevitJournalUI.JournalTaskUI.Models
 
         private void ViewMetadataCommandAction(object parameter)
         {
-            var dialog = new MetadataDialogView(RevitFamily.Metadata);
+            var dialog = new MetadataDialogView(FileHandler.File.Metadata);
             dialog.ShowDialog();
         }
 

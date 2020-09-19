@@ -8,65 +8,66 @@ namespace DataSource.Model.FileSystem
 {
     public class RevitDirectory : ANode
     {
-        public override bool Exist { get { return Directory.Exists(FullPath); } }
-
-        public bool IsRoot { get { return Parent is null; } }
+        public override bool Exist
+        {
+            get { return Directory.Exists(FullPath); }
+        }
 
         public RevitDirectory Parent { get; private set; }
 
-        public RevitDirectory Root { get { return GetRootDirectory(this); } }
+        public List<RevitDirectory> Subfolder { get; } = new List<RevitDirectory>();
 
-        private RevitDirectory GetRootDirectory(RevitDirectory directory)
+        public List<RevitFamily> Files { get; } = new List<RevitFamily>();
+
+
+        public RevitDirectory(RevitDirectory parent, string fullPath, string libraryPath)
         {
-            if (directory.IsRoot) { return directory; }
+            if (string.IsNullOrWhiteSpace(fullPath)) { throw new ArgumentNullException(nameof(fullPath)); }
 
-            return GetRootDirectory(directory.Parent);
-        }
-
-        public IList<RevitDirectory> SubDirectories { get { return GetSubDirectories(); } }
-
-        public RevitDirectory(RevitDirectory parent, string fullPath)
-        {
             Parent = parent;
-            var separator = Path.DirectorySeparatorChar.ToString();
-            if (fullPath.EndsWith(separator, StringComparison.CurrentCulture))
+            FullPath = GetFolderPath(fullPath);
+            Name = GetName(fullPath);
+            Subfolder.AddRange(GetSubfolders(fullPath, libraryPath));
+            Files.AddRange(GetRevitFamilies(libraryPath));
+        }
+
+        private string GetFolderPath(string fullPath)
+        {
+            if (fullPath.Last() == Path.DirectorySeparatorChar)
             {
-                fullPath = fullPath.Replace(separator, string.Empty);
+                fullPath = fullPath.Remove(fullPath.Length - 1);
             }
-            FullPath = fullPath;
-            Name = FullPath.Split(Path.DirectorySeparatorChar).Last();
+            return fullPath;
         }
 
-        private IList<RevitDirectory> GetSubDirectories()
+        private string GetName(string fullPath)
         {
-            var dirs = Directory.GetDirectories(FullPath)
-                                .Select(dir => new RevitDirectory(this, dir))
-                                .Where(dir => dir.HasFiles(true))
-                                .ToList();
-            return dirs;
+            return fullPath.Split(Path.DirectorySeparatorChar).Last();
         }
 
-        private bool HasFiles(bool includeSubDirectories)
+        private IEnumerable<RevitDirectory> GetSubfolders(string fullPath, string libraryPath)
         {
-            return GetFiles(RevitFamilyFile.FileExtension, includeSubDirectories).Count > 0;
+            return Directory.GetDirectories(fullPath)
+                            .Where(dir => HasFiles(dir))
+                            .Select(dir => new RevitDirectory(this, dir, libraryPath));
         }
 
-        public IList<RevitFamily> GetRevitFamilies(string libraryPath, bool includeSubDirectories)
+        private bool HasFiles(string fullPath)
         {
-            return GetFiles(RevitFamilyFile.FileExtension, includeSubDirectories)
-                .Select(file => new RevitFamily(file, libraryPath))
-                .ToList();
+            return Directory.GetFiles(fullPath, GetSearchPattern(), SearchOption.AllDirectories).Length > 0;
         }
 
-        private IList<RevitFamilyFile> GetFiles(string extention, bool recursive)
+        public IEnumerable<RevitFamily> GetRevitFamilies(string libraryPath)
         {
-            var search = string.Concat(string.Concat(Constant.Star, Constant.Point), extention);
-            var options = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-            var files = Directory.GetFiles(FullPath, search, options)
-                                 .Select(file => AFile.Create<RevitFamilyFile>(file))
-                                 .Where(file => file.IsBackup == false)
-                                 .ToList();
-            return files;
+            return Directory.GetFiles(FullPath, GetSearchPattern(), SearchOption.TopDirectoryOnly)
+                            .Select(filePath => new RevitFamilyFile { FullPath = filePath })
+                            .Where(famFile => famFile.IsBackup == false)
+                            .Select(famFile => new RevitFamily(famFile, libraryPath));
+        }
+
+        private string GetSearchPattern()
+        {
+            return string.Concat(Constant.Star, Constant.Point, RevitFamilyFile.FileExtension);
         }
     }
 }

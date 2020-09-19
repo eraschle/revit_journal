@@ -37,26 +37,27 @@ namespace RevitJournalUI.JournalTaskUI
         {
             if (args is null || !(args.UserState is FamilyViewModel viewModel)) { return; }
 
-            var revitFamily = viewModel.RevitFamily;
-            viewModel.MetadataStatus = revitFamily.MetadataStatus;
-            var lastUpdate = DateHelper.AsString(revitFamily.Metadata.Updated);
+            var revitFamily = viewModel.FileHandler;
+            viewModel.MetadataStatus = revitFamily.File.MetadataStatus;
+            var lastUpdate = DateHelper.AsString(revitFamily.File.Metadata.Updated);
             viewModel.LastUpdate = lastUpdate;
         }
 
         private static void UpdateMetadata(BackgroundWorker worker, DirectoryViewModel model)
         {
-            var familyViewModels = model.RecursiveFamilyViewModel;
-            var filesCount = familyViewModels.Count;
+            var directory = model.FolderHandler;
+            var files = directory.RecusiveFiles;
+            var filesCount = files.Count;
             var currentCount = 0;
             Parallel.For(0, filesCount, (idx) =>
             {
                 if (worker.CancellationPending) { return; }
 
-                var familyModel = familyViewModels[idx];
-                familyModel.RevitFamily.UpdateStatus();
+                var file = files[idx];
+                file.File.UpdateStatus();
                 currentCount++;
                 var percent = currentCount * 100 / filesCount;
-                worker.ReportProgress(percent, familyModel);
+                worker.ReportProgress(percent, model);
             });
         }
 

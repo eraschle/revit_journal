@@ -26,7 +26,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
         private readonly SortedSet<string> SortedOmniClasses = new SortedSet<string>();
         private readonly SortedSet<string> SortedFamilyParameters = new SortedSet<string>();
 
-        private FilterManager FilterManager;
+        private FilterManagerViewModel FilterManager;
 
         #region Filter
 
@@ -272,7 +272,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
             SortedFamilyParameters.Clear();
         }
 
-        public void LoadFamilyMetadata(ObservableCollection<DirectoryViewModel> viewModels, FilterManager configuredFilter)
+        public void LoadFamilyMetadata(ObservableCollection<DirectoryViewModel> viewModels, FilterManagerViewModel configuredFilter)
         {
             LoadedVisibility = Visibility.Hidden;
             LoadingVisibility = Visibility.Visible;
@@ -302,7 +302,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
         private bool HasRevitMetadata(FamilyViewModel model, out Family family)
         {
             family = null;
-            var container = model.RevitFamily;
+            var container = model.FileHandler.File;
             if (container.HasValidMetadata)
             {
                 family = container.Metadata;

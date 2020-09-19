@@ -11,7 +11,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
     {
         internal RevitFamilyFilterViewModel ViewModel { get { return DataContext as RevitFamilyFilterViewModel; } }
 
-        public RevitFamilyFilterView(ObservableCollection<DirectoryViewModel> viewModels, FilterManager filterManager)
+        public RevitFamilyFilterView(ObservableCollection<DirectoryViewModel> viewModels, FilterManagerViewModel filterManager)
         {
             InitializeComponent();
             ViewModel.LoadFamilyMetadata(viewModels, filterManager);

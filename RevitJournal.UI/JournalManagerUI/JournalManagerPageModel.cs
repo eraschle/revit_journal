@@ -1,5 +1,6 @@
 ﻿using DataSource;
 using RevitAction.Action;
+using RevitJournal.Library;
 using RevitJournal.Tasks;
 using RevitJournal.Tasks.Actions;
 using RevitJournal.Tasks.Options;
@@ -31,17 +32,21 @@ namespace RevitJournalUI.JournalManagerUI
         public const string PrefixDuplicateButton = "Duplicate";
         public const string PrefixEditButton = "Edit";
 
+        public LibraryManager LibraryManager { get; private set; }
+
         public TaskManager TaskManager { get; private set; }
 
         public TaskOptions TaskOptions { get; private set; }
 
         public JournalManagerPageModel()
         {
+            LibraryManager = new LibraryManager();
             TaskManager = new TaskManager();
             TaskOptions = new TaskOptions();
             ProductManager.UpdateVersions();
             TaskOptionViewModel = new TaskOptionViewModel { Options = TaskOptions };
-            FamiliesViewModel = new FamilyOverviewViewModel { FilterManager = FilterManager };
+            FamiliesViewModel = new FamilyOverviewViewModel { LibraryManager = LibraryManager };
+
             PropertyChanged += FamiliesViewModel.OnContentDirectoryChanged;
 
             CreateCommand = new RelayCommand<FamilyOverviewViewModel>(CreateCommandAction, CreateCommandPredicate);
@@ -205,27 +210,26 @@ namespace RevitJournalUI.JournalManagerUI
 
         public ICommand SetupFilterCommand { get; }
 
-        private FilterManager FilterManager { get; } = new FilterManager();
-
         private void SetupFilterCommandAction(ObservableCollection<DirectoryViewModel> viewModels)
         {
-            FilterManager.ClearFilter();
-            var dialog = new RevitFamilyFilterView(viewModels, FilterManager);
+            var managerViewModel = new FilterManagerViewModel { Manager = LibraryManager.FilterManager };
+            managerViewModel.ClearFilter();
+            var dialog = new RevitFamilyFilterView(viewModels, managerViewModel);
             if (dialog.ShowDialog() == true)
             {
-                FilterManager.UpdateFilter(dialog.ViewModel);
-                UpdateCheckedFilters();
-                FamiliesViewModel.FilterUpdated(FilterManager);
+                managerViewModel.UpdateFilter(dialog.ViewModel);
+                UpdateCheckedFilters(managerViewModel);
+                FamiliesViewModel.FilterUpdated(managerViewModel.Manager);
             }
         }
 
         public ObservableCollection<FilterViewModel> FilterViewModels { get; }
             = new ObservableCollection<FilterViewModel>();
 
-        public void UpdateCheckedFilters()
+        private void UpdateCheckedFilters(FilterManagerViewModel managerViewModel)
         {
             FilterViewModels.Clear();
-            foreach (var filter in FilterManager.CheckedFilterViewModels())
+            foreach (var filter in managerViewModel.CheckedFilterViewModels())
             {
                 FilterViewModels.Add(filter);
             }
@@ -331,7 +335,7 @@ namespace RevitJournalUI.JournalManagerUI
             TaskManager.ClearTasks();
             TaskManager.SetTaskActions(Actions);
 
-            foreach (var family in model.RecursiveRevitFamilies)
+            foreach (var family in LibraryManager.GetCheckedFiles())
             {
                 if ((TaskOptions.UseMetadata && TaskManager.IsRevitInstalled(family, out _) == false)
                     || TaskManager.IsExecutable(family, TaskOptions) == false) { continue; }
@@ -408,8 +412,7 @@ namespace RevitJournalUI.JournalManagerUI
 
         private void DuplicateCommandAction(FamilyOverviewViewModel model)
         {
-            var validModels = model.ValidRecursiveRevitFamilies;
-            var dialog = new MetadataDuplicateDialog(validModels)
+            var dialog = new MetadataDuplicateDialog(LibraryManager)
             {
                 SizeToContent = SizeToContent.WidthAndHeight
             };
@@ -447,7 +450,7 @@ namespace RevitJournalUI.JournalManagerUI
 
         private void EditCommandAction(FamilyOverviewViewModel model)
         {
-            var validModels = model.EditableRecursiveRevitFamilies;
+            var validModels = LibraryManager.GetEditableRecursiveFiles();
             var dialog = new MetadataEditDialogView(validModels)
             {
                 SizeToContent = SizeToContent.WidthAndHeight

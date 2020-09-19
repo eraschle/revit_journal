@@ -6,6 +6,7 @@ using RevitJournalUI.MetadataUI.Models;
 using RevitJournalUI.MetadataUI.Converter;
 using RevitJournal.Duplicate.Comparer;
 using DataSource.Model.FileSystem;
+using RevitJournal.Library;
 
 namespace RevitJournalUI.MetadataUI
 {
@@ -25,10 +26,10 @@ namespace RevitJournalUI.MetadataUI
 
         private MetadataDuplicateDialogModel ViewModel { get { return DataContext as MetadataDuplicateDialogModel; } }
 
-        public MetadataDuplicateDialog(IList<RevitFamily> families)
+        public MetadataDuplicateDialog(LibraryManager libraryManager)
         {
             InitializeComponent();
-            ViewModel.SetRevitFiles(families);
+            ViewModel.SetRevitFiles(libraryManager);
         }
 
         private void LstRevitFiles_SelectionChanged(object sender, SelectionChangedEventArgs args)

@@ -5,6 +5,7 @@ using RevitJournal.Duplicate;
 using RevitJournal.Duplicate.Comparer;
 using RevitJournal.Duplicate.Comparer.FamilyComparer;
 using RevitJournal.Duplicate.Comparer.FamilyTypeComparer;
+using RevitJournal.Library;
 using RevitJournalUI.MetadataUI.Comparer;
 using RevitJournalUI.MetadataUI.Models;
 using RevitJournalUI.Models;
@@ -23,7 +24,7 @@ namespace RevitJournalUI.MetadataUI
         public event PropertyChangedEventHandler PropertyChanged;
 
         private readonly FamilyDuplicateComparer FamilyComparer = new FamilyDuplicateComparer();
-        private IList<RevitFamily> RevitFamilies;
+        private LibraryManager libraryManager;
 
         public MetadataDuplicateDialogModel()
         {
@@ -36,17 +37,17 @@ namespace RevitJournalUI.MetadataUI
             UseFilterCommand = new RelayCommand<object>(UseFilterCommandAction, UseFilterCommandPredicate);
         }
 
-        public void SetRevitFiles(IList<RevitFamily> families)
+        public void SetRevitFiles(LibraryManager manager)
         {
-            if (families is null) { throw new ArgumentNullException(nameof(families)); }
+            if (manager is null) { throw new ArgumentNullException(nameof(manager)); }
 
-            RevitFamilies = families;
+            libraryManager = manager;
         }
 
         private void CreateDupublicatedModels()
         {
             Models.Clear();
-            var dublicatedMap = DuplicateManager.Create(RevitFamilies, FamilyComparer);
+            var dublicatedMap = DuplicateManager.Create(libraryManager, FamilyComparer);
             foreach (var metadataKey in dublicatedMap.Keys)
             {
                 var dublicated = dublicatedMap[metadataKey];

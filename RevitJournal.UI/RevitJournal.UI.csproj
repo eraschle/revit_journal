@@ -145,7 +145,7 @@
     <Compile Include="JournalTaskUI\Converter\FamilyStatusToolTipMetadataConverter.cs" />
     <Compile Include="JournalTaskUI\Converter\FamilyStatusColorMetadataConverter.cs" />
     <Compile Include="JournalTaskUI\Converter\FamilyIsEnabledMetadataConverter.cs" />
-    <Compile Include="JournalTaskUI\FamilyFilter\FilterManager.cs" />
+    <Compile Include="JournalTaskUI\FamilyFilter\FilterManagerViewModel.cs" />
     <Compile Include="JournalTaskUI\FamilyFilter\FilterViewModel.cs" />
     <Compile Include="Tasks\Actions\OpenActionViewModel.cs" />
     <Compile Include="Tasks\Converter\TaskResultVisibleConverter.cs" />

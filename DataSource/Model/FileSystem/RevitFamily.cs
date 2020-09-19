@@ -1,11 +1,12 @@
 ﻿using DataSource.Helper;
 using DataSource.Metadata;
+using System;
 using System.Collections.Generic;
 using DS = DataSource.Model.Family;
 
 namespace DataSource.Model.FileSystem
 {
-    public class RevitFamily : System.IEquatable<RevitFamily>
+    public class RevitFamily : IEquatable<RevitFamily>
     {
         private readonly MetadataFamilyJsonContainer MetaDataContainer;
         public const string EditedSuffix = "edited";
@@ -16,7 +17,7 @@ namespace DataSource.Model.FileSystem
 
         public RevitFamily(RevitFamilyFile revitFile, string libraryPath)
         {
-            RevitFile = revitFile;
+            RevitFile = revitFile ?? throw new ArgumentNullException(nameof(revitFile));
             var editedFileName = string.Join(Constant.Underline, revitFile.Name, EditedSuffix);
             EditedMetadataFile = revitFile.ChangeExtension<JsonFile>(JsonFile.FileExtension)
                                           .ChangeFileName<JsonFile>(editedFileName);

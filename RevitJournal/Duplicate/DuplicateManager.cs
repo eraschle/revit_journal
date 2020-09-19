@@ -1,20 +1,22 @@
 ﻿using DataSource.Model.Family;
 using DataSource.Model.FileSystem;
 using RevitJournal.Duplicate.Comparer;
+using RevitJournal.Library;
 using System.Collections.Generic;
 
 namespace RevitJournal.Duplicate
 {
     public static class DuplicateManager
     {
-        public static Dictionary<Family, HashSet<Family>> Create(IList<RevitFamily> families, FamilyDuplicateComparer comparer)
+        public static Dictionary<Family, HashSet<Family>> Create(LibraryManager manager, FamilyDuplicateComparer comparer)
         {
             var added = new HashSet<Family>();
 
             var duplicateMap = new Dictionary<Family, HashSet<Family>>(comparer);
-            for (var idx = 0; idx < families.Count; idx++)
+            var libraryFiles = manager.GetCheckedValidFiles();
+            for (var idx = 0; idx < libraryFiles.Count; idx++)
             {
-                var family = families[idx];
+                var family = libraryFiles[idx];
                 var metadata = family.Metadata;
                 if (metadata is null || added.Contains(metadata)) { continue; }
 
@@ -23,9 +25,9 @@ namespace RevitJournal.Duplicate
                     duplicateMap.Add(metadata, new HashSet<Family>());
                     added.Add(metadata);
                 }
-                for (var idxDuplicate = idx + 1; idxDuplicate < families.Count; idxDuplicate++)
+                for (var idxDuplicate = idx + 1; idxDuplicate < libraryFiles.Count; idxDuplicate++)
                 {
-                    var duplicateFamily = families[idxDuplicate];
+                    var duplicateFamily = libraryFiles[idxDuplicate];
                     var duplicateMetadata = duplicateFamily.Metadata;
 
                     if (duplicateMetadata is null || added.Contains(duplicateMetadata)) { continue; }
