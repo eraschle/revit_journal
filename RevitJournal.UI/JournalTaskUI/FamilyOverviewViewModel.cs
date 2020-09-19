@@ -107,7 +107,7 @@ namespace RevitJournalUI.JournalTaskUI
 
         private bool IsFilteredAndCheckedModel(FamilyViewModel model)
         {
-            return model.Checked && FilterManager.FileFilter(model);
+            return model.Checked == true && FilterManager.FileFilter(model);
         }
 
         public ObservableCollection<DirectoryViewModel> DirectoryViewModels { get; }

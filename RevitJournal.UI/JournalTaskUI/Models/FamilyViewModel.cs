@@ -8,17 +8,12 @@ using Utilities.UI.Helper;
 
 namespace RevitJournalUI.JournalTaskUI.Models
 {
-    public class FamilyViewModel : INotifyPropertyChanged
+    public class FamilyViewModel : PathViewModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private readonly DirectoryViewModel Parent;
-        
         public RevitFamily RevitFamily { get; private set; }
 
-        public FamilyViewModel(DirectoryViewModel parent, RevitFamily family)
+        public FamilyViewModel(DirectoryViewModel parent, RevitFamily family) : base(parent)
         {
-            Parent = parent;
             RevitFamily = family;
             ViewMetadataCommand = new RelayCommand<object>(ViewMetadataCommandAction);
         }
@@ -29,20 +24,9 @@ namespace RevitJournalUI.JournalTaskUI.Models
             set { OnPropertyChanged(nameof(MetadataStatus)); }
         }
 
-        public string RevitFileName { get { return RevitFamily.RevitFile.Name; } }
-
-        private bool _Checked = true;
-        public bool Checked
+        public string RevitFileName
         {
-            get { return _Checked; }
-            set
-            {
-                if(_Checked == value) { return; }
-
-                _Checked = value;
-                OnPropertyChanged(nameof(Checked));
-                Parent.UpdateParent();
-            }
+            get { return RevitFamily.RevitFile.Name; }
         }
 
         private bool _Enabled = true;
@@ -77,11 +61,6 @@ namespace RevitJournalUI.JournalTaskUI.Models
         {
             var dialog = new MetadataDialogView(RevitFamily.Metadata);
             dialog.ShowDialog();
-        }
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

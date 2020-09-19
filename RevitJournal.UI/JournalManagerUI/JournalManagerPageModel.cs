@@ -65,7 +65,7 @@ namespace RevitJournalUI.JournalManagerUI
             ChooseActionDirectoryCommand = new RelayCommand<string>(ChooseActionDirectoryAction);
 
 #if DEBUG
-            FamilyDirectory = @"C:\develop\workspace\Content\Blob\Elektro\Akustischer_Alarmgeber";
+            FamilyDirectory = @"C:\develop\workspace\Content\Blob";
             JournalDirectory = @"C:\develop\workspace\Content\journal";
 #endif
             TaskOptionViewModel.SelectedRevitApp = ProductManager.UseMetadata;

@@ -9,19 +9,15 @@ using System.Windows;
 
 namespace RevitJournalUI.JournalTaskUI.Models
 {
-    public class DirectoryViewModel : INotifyPropertyChanged
+    public class DirectoryViewModel : PathViewModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private readonly List<FamilyViewModel> RecursiveFamilies = new List<FamilyViewModel>();
-        private readonly DirectoryViewModel Parent;
         private FilterManager FilterManager;
 
-        public DirectoryViewModel(RevitDirectory directory, DirectoryViewModel parent, FilterManager filter)
+        public DirectoryViewModel(RevitDirectory directory, DirectoryViewModel parent, FilterManager filter) : base(parent)
         {
             if (directory is null) { throw new ArgumentNullException(nameof(directory)); }
 
-            Parent = parent;
             FilterManager = filter;
             CreateDirectoryModels(directory);
             CreateFamilyModels(directory);
@@ -77,23 +73,6 @@ namespace RevitJournalUI.JournalTaskUI.Models
             }
         }
 
-        private bool? _Checked = true;
-        public bool? Checked
-        {
-            get { return _Checked; }
-            set
-            {
-                if (_Checked == value) { return; }
-
-                _Checked = value;
-                OnPropertyChanged(nameof(Checked));
-
-                if (Checked is null) { return; }
-
-                UpdateFamilies((bool)Checked);
-            }
-        }
-
         private Visibility _Visibility = Visibility.Visible;
         public Visibility Visibility
         {
@@ -107,28 +86,10 @@ namespace RevitJournalUI.JournalTaskUI.Models
             }
         }
 
-        private void UpdateFamilies(bool isChecked)
-        {
-            for (var idx = RecursiveFamilies.Count - 1; idx >= 0; idx--)
-            {
-                RecursiveFamilies[idx].Checked = isChecked;
-            }
-        }
-
-        private void UpdateCheckedFileCount()
+        public void UpdateCheckedCount()
         {
             var filteredModels = RecursiveFamilies.Where(file => FilterManager.FileFilter(file));
-            FilesCount = $"[{filteredModels.Count(file => file.Checked)}/{filteredModels.Count()}]";
-        }
-
-        public void UpdateParent()
-        {
-            var checkedRevitViewModels = GetRevitFamiliesCheckedStatus();
-            Checked = checkedRevitViewModels;
-            UpdateCheckedFileCount();
-            if (Parent is null) { return; }
-
-            Parent.UpdateParent();
+            FilesCount = $"[{filteredModels.Count(file => file.Checked == true)}/{filteredModels.Count()}]";
         }
 
         public void FilterUpdated(FilterManager filter)
@@ -138,24 +99,40 @@ namespace RevitJournalUI.JournalTaskUI.Models
             {
                 child.FilterUpdated(FilterManager);
             }
-            UpdateCheckedFileCount();
+            UpdateCheckedCount();
         }
 
-        private bool? GetRevitFamiliesCheckedStatus()
+        protected override void UpdateChildren(bool isChecked)
         {
-            var allChecked = true;
-            var allUnchecked = true;
-            foreach (var family in RecursiveFamilies)
+            base.UpdateChildren(isChecked);
+            foreach (var family in FamilyViewModels)
             {
-                allChecked &= family.Checked == true;
-                allUnchecked &= family.Checked == false;
-
-                if (allChecked == false && allUnchecked == false) { break; }
+                family.SetChecked(isChecked, false, false);
             }
+            foreach (var directory in SubDirectories)
+            {
+                directory.SetChecked(isChecked, true, false);
+            }
+            UpdateCheckedCount();
+        }
 
-            if(allChecked == true) { return true; }
-            if(allUnchecked == true) { return false; }
-            return null;
+        internal void UpdateCheckState()
+        {
+            bool? state = null;
+            for (int idx = 0; idx < RecursiveFamilies.Count; ++idx)
+            {
+                bool? current = RecursiveFamilies[idx].Checked;
+                if (idx == 0)
+                {
+                    state = current;
+                }
+                else if (state != current)
+                {
+                    state = null;
+                    break;
+                }
+            }
+            SetChecked(state, false, true);
         }
 
         internal IList<FamilyViewModel> CreateRecursiveChildren()
@@ -166,7 +143,7 @@ namespace RevitJournalUI.JournalTaskUI.Models
             {
                 RecursiveFamilies.AddRange(directory.CreateRecursiveChildren());
             }
-            UpdateCheckedFileCount();
+            UpdateCheckedCount();
             return RecursiveFamilies;
         }
 
@@ -178,9 +155,5 @@ namespace RevitJournalUI.JournalTaskUI.Models
         public ObservableCollection<FamilyViewModel> FamilyViewModels { get; }
             = new ObservableCollection<FamilyViewModel>();
 
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
     }
 }
