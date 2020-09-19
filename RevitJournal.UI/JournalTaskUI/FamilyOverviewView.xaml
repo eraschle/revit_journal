@@ -80,13 +80,18 @@
 
         <CollectionViewSource x:Key="Files" 
                               Filter="FileFilter" 
-                              Source="{Binding DirectoryFamilies}"/>
+                              Source="{Binding DirectoryFiles}"/>
     </UserControl.Resources>
-    <DockPanel LastChildFill="True">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         <TreeView x:Name="trvDirectories"
+                  Grid.Column="0"
                   ItemsSource="{Binding Source={StaticResource Directories}}"
                   Margin="{StaticResource DefaultMargin}"
-                  DockPanel.Dock="Left"
                   MinWidth="200"
                   HorizontalAlignment="Stretch"
                   HorizontalContentAlignment="Stretch"
@@ -100,7 +105,7 @@
             </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type models:DirectoryViewModel}" 
-                                          ItemsSource="{Binding SubDirectories}">
+                                          ItemsSource="{Binding Subfolders}">
                     <Grid Width="{Binding RelativeSource={RelativeSource 
                                           AncestorType={x:Type TreeViewItem}},
                                           Path=ActualWidth, Mode=OneTime}">
@@ -123,8 +128,9 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
+        <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" Width="5"/>
         <ListBox x:Name="lbxRevitFiles"
-                 DockPanel.Dock="Right"
+                 Grid.Column="2"
                  ItemsSource="{Binding Source={StaticResource Files}}"
                  Margin="{StaticResource DefaultMargin}"
                  SelectionMode="Multiple"
@@ -158,5 +164,5 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-    </DockPanel>
+    </Grid>
 </UserControl>

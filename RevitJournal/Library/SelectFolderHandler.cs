@@ -46,12 +46,12 @@ namespace RevitJournal.Library
             Files.AddRange(directory.Files.Select(file => new SelectFileHandler(file, this)));
         }
 
-        public void Setup()
+        public void Setup(FilterManager manager)
         {
             AddRecursiveFiles(ref recusiveFiles);
             foreach (var folder in Subfolders)
             {
-                folder.Setup();
+                folder.Setup(manager);
             }
         }
 
@@ -92,7 +92,7 @@ namespace RevitJournal.Library
 
         private bool IsFileFilter(SelectFileHandler fileHandler, FilterManager manager)
         {
-            return manager is object && manager.FileFilter(fileHandler.File);
+            return manager is null || manager.FileFilter(fileHandler.File);
         }
 
         private void AddRecursiveFiles(ref List<SelectFileHandler> revitFamilies)

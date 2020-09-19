@@ -116,21 +116,20 @@ namespace RevitJournalUI.JournalTaskUI
 
         public DirectoryViewModel SelectedDirectory { get; internal set; }
 
-        public ObservableCollection<FamilyViewModel> DirectoryFamilies { get; }
+        public ObservableCollection<FamilyViewModel> DirectoryFiles { get; }
             = new ObservableCollection<FamilyViewModel>();
 
         public void UpdateFamilyViewModels(DirectoryViewModel model)
         {
             if (model is null) { return; }
 
-            DirectoryFamilies.Clear();
+            DirectoryFiles.Clear();
             foreach (var file in model.FolderHandler.Files)
             {
                 var viewModel = new FamilyViewModel(file);
                 viewModel.PropertyChanged += ViewModel_PropertyChanged;
-                DirectoryFamilies.Add(viewModel);
+                DirectoryFiles.Add(viewModel);
             }
-            SelectedDirectory.UpdateCheckedFileCount(LibraryManager.FilterManager);
         }
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -138,7 +137,7 @@ namespace RevitJournalUI.JournalTaskUI
             FamilyViewModel model;
             if (StringUtils.Equals(e.PropertyName, nameof(model.Checked)) == false) { return; }
 
-            SelectedDirectory.UpdateCheckedFileCount(LibraryManager.FilterManager);
+            UpdateSelectedModel();
         }
 
         public bool FileFilter(object parameter)
@@ -166,10 +165,19 @@ namespace RevitJournalUI.JournalTaskUI
             DirectoryViewModels.Clear();
             var root = LibraryManager.CreateRoot(model.TaskOptions);
             RootModel = new DirectoryViewModel(root);
-            root.Setup();
+            root.Setup(LibraryManager.FilterManager);
             UpdateCheckedFamilyCount();
+            RootModel.UpdateCheckedFileCount(LibraryManager.FilterManager);
             RootModel.PropertyChanged += new PropertyChangedEventHandler(OnAllCheckedChanged);
             DirectoryViewModels.Add(RootModel);
+        }
+
+        private void UpdateSelectedModel()
+        {
+            if (SelectedDirectory is null) { return; }
+
+            SelectedDirectory.UpdateCheckedFileCount(LibraryManager.FilterManager);
+            SelectedDirectory.UpdateCheckedStatus();
         }
 
         public void FilterUpdated(FilterManager manager)

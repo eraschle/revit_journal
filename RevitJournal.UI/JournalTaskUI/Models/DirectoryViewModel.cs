@@ -15,15 +15,16 @@ namespace RevitJournalUI.JournalTaskUI.Models
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly List<FamilyViewModel> RecursiveFamilies = new List<FamilyViewModel>();
+        private readonly DirectoryViewModel parent;
 
         internal SelectFolderHandler FolderHandler { get; private set; }
 
-        public DirectoryViewModel(SelectFolderHandler folderHandler)
+        public DirectoryViewModel(SelectFolderHandler folderHandler, DirectoryViewModel parentViewModel)
         {
             if (folderHandler is null) { throw new ArgumentNullException(nameof(folderHandler)); }
 
             FolderHandler = folderHandler;
+            parent = parentViewModel;
             CreateDirectoryModels();
         }
 
@@ -32,35 +33,9 @@ namespace RevitJournalUI.JournalTaskUI.Models
             Subfolders.Clear();
             foreach (var folder in FolderHandler.Subfolders)
             {
-                var folderModel = new DirectoryViewModel(folder);
-                folderModel.PropertyChanged += FolderModel_PropertyChanged;
+                var folderModel = new DirectoryViewModel(folder, this);
                 Subfolders.Add(folderModel);
             }
-        }
-
-        private void FolderModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            DirectoryViewModel model;
-            if (StringUtils.Equals(e.PropertyName, nameof(model.Checked)) == false) { return; }
-
-            Checked = GetRevitFamiliesCheckedStatus();
-        }
-
-        private bool? GetRevitFamiliesCheckedStatus()
-        {
-            var allChecked = true;
-            var allUnchecked = true;
-            foreach (var family in RecursiveFamilies)
-            {
-                allChecked &= family.Checked == true;
-                allUnchecked &= family.Checked == false;
-
-                if (allChecked == false && allUnchecked == false) { break; }
-            }
-
-            if (allChecked == true) { return true; }
-            if (allUnchecked == true) { return false; }
-            return null;
         }
 
         private bool _Selected = false;
@@ -97,13 +72,66 @@ namespace RevitJournalUI.JournalTaskUI.Models
         public bool? Checked
         {
             get { return FolderHandler.IsSelected; }
-            set
-            {
-                if (FolderHandler.IsSelected == value) { return; }
+            set { SetIsChecked(value, true, true); }
+        }
 
-                FolderHandler.IsSelected = value;
-                OnPropertyChanged(nameof(Checked));
+        void SetIsChecked(bool? value, bool updateChildren, bool updateParent)
+        {
+            if (value == FolderHandler.IsSelected) { return; }
+
+            FolderHandler.IsSelected = value;
+
+            if (updateChildren && FolderHandler.IsSelected.HasValue)
+            {
+                foreach (var folder in Subfolders)
+                {
+                    folder.SetIsChecked(value, true, false);
+                }
             }
+
+            if (updateParent && parent != null)
+            {
+                parent.VerifyCheckState();
+            }
+
+            OnPropertyChanged(nameof(Checked));
+        }
+
+        void VerifyCheckState()
+        {
+            bool? state = null;
+            for (int idx = 0; idx < FolderHandler.RecusiveFiles.Count; ++idx)
+            {
+                bool? current = FolderHandler.RecusiveFiles[idx].IsSelected;
+                if (idx == 0)
+                {
+                    state = current;
+                }
+                else if (state != current)
+                {
+                    state = null;
+                    break;
+                }
+            }
+            SetIsChecked(state, false, true);
+        }
+
+
+        internal void UpdateCheckedStatus()
+        {
+            var allChecked = true;
+            var allUnchecked = true;
+            foreach (var family in FolderHandler.RecusiveFiles)
+            {
+                allChecked &= family.IsSelected == true;
+                allUnchecked &= family.IsSelected == false;
+
+                if (allChecked == false && allUnchecked == false) { break; }
+            }
+
+            if (allChecked == true) { Checked = true; }
+            if (allUnchecked == true) { Checked = false; }
+            Checked = null;
         }
 
         private Visibility _Visibility = Visibility.Visible;
