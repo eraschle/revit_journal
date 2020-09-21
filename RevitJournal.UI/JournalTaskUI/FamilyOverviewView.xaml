@@ -8,19 +8,6 @@
              xmlns:models="clr-namespace:RevitJournalUI.JournalTaskUI.Models"
              mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-
-        <!--<converter:FamilyIsEnabledMetadataConverter x:Key="FamilyEnableCheckBoxConverter"/>
-        <Style x:Key="FamilyItemStyle" TargetType="{x:Type CheckBox}">
-            <Setter Property="IsEnabled">
-                <Setter.Value>
-                    <MultiBinding Converter="{StaticResource FamilyEnableCheckBoxConverter}">
-                        <Binding Path="MetadataStatus"/>
-                    </MultiBinding>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>-->
-
         <converter:FamilyStatusColorMetadataConverter x:Key="FamilyColorMetadataConverter"/>
         <converter:FamilyStatusToolTipMetadataConverter x:Key="FamilyToolTipMetadataConverter"/>
         <Style x:Key="FamilyItemEllipseStyle" TargetType="{x:Type Ellipse}">
@@ -73,6 +60,9 @@
             <Setter Property="Margin" Value="0,0,10,0"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
+        
+        <converter:DirectoryVisibilityConverter x:Key="VisibilityConverter" />
+        
 
         <CollectionViewSource x:Key="Directories" 
                               Filter="DirectoryFilter" 
@@ -84,7 +74,6 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -99,8 +88,9 @@
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="True"/>
-                    <Setter Property="IsSelected" Value="{Binding Selected}"/>
-                    <Setter Property="Visibility" Value="{Binding Visibility}"/>
+                    <!--<Setter Property="IsSelected" Value="{Binding Selected}"/>-->
+                    <Setter Property="Visibility" Value="{Binding Path=FilteredCount, 
+                                                                  Converter={StaticResource VisibilityConverter}}"/>
                 </Style>
             </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
@@ -120,7 +110,7 @@
                         <TextBlock Text="{Binding DirectoryName}"
                                    Grid.Column="1"
                                    VerticalAlignment="Center"/>
-                        <Label Content="{Binding FilesCount}"
+                        <Label Content="{Binding FilesCountValue}"
                                Grid.Column="2"
                                HorizontalContentAlignment="Right"
                                VerticalAlignment="Center"/>
@@ -128,16 +118,16 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
-        <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" Width="5"/>
         <ListBox x:Name="lbxRevitFiles"
-                 Grid.Column="2"
+                 Grid.Column="1"
                  ItemsSource="{Binding Source={StaticResource Files}}"
                  Margin="{StaticResource DefaultMargin}"
                  SelectionMode="Multiple"
                  HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:FamilyViewModel}">
-                    <CheckBox IsChecked="{Binding Checked}"
+                    <CheckBox x:Name="CbxFileChecked"
+                              IsChecked="{Binding Checked}"
                               VerticalContentAlignment="Center">
                         <CheckBox.Content>
                             <Grid HorizontalAlignment="{Binding HorizontalAlignment,

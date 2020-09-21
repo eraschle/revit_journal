@@ -1,6 +1,4 @@
-﻿using RevitJournalUI.JournalTaskUI.Models;
-using System.Collections.ObjectModel;
-using System.Windows;
+﻿using System.Windows;
 
 namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 {
@@ -11,10 +9,9 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
     {
         internal RevitFamilyFilterViewModel ViewModel { get { return DataContext as RevitFamilyFilterViewModel; } }
 
-        public RevitFamilyFilterView(ObservableCollection<DirectoryViewModel> viewModels, FilterManagerViewModel filterManager)
+        public RevitFamilyFilterView()
         {
             InitializeComponent();
-            ViewModel.LoadFamilyMetadata(viewModels, filterManager);
         }
 
         private void Ok_Click(object sender, RoutedEventArgs e)

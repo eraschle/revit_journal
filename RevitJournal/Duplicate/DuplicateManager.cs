@@ -13,7 +13,7 @@ namespace RevitJournal.Duplicate
             var added = new HashSet<Family>();
 
             var duplicateMap = new Dictionary<Family, HashSet<Family>>(comparer);
-            var libraryFiles = manager.GetCheckedValidFiles();
+            var libraryFiles = manager.CheckedValidFiles();
             for (var idx = 0; idx < libraryFiles.Count; idx++)
             {
                 var family = libraryFiles[idx];

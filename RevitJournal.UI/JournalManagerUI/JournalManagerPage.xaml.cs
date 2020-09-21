@@ -10,7 +10,10 @@ namespace RevitJournalUI.JournalManagerUI
     /// </summary>
     public partial class JournalManagerPage : Page
     {
-        public JournalManagerPageModel ViewModel { get { return DataContext as JournalManagerPageModel; } }
+        public JournalManagerPageModel ViewModel
+        {
+            get { return DataContext as JournalManagerPageModel; }
+        }
 
         public JournalManagerPage()
         {

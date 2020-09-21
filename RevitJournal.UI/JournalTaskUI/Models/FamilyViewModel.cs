@@ -1,46 +1,28 @@
 ﻿using RevitJournalUI.MetadataUI;
-using System;
-using System.ComponentModel;
 using System.Windows.Input;
 using DataSource.Metadata;
 using Utilities.UI.Helper;
 using RevitJournal.Library;
+using DataSource.Helper;
 
 namespace RevitJournalUI.JournalTaskUI.Models
 {
-    public class FamilyViewModel : INotifyPropertyChanged
+    public class FamilyViewModel : PathViewModel<LibraryFile>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public SelectFileHandler FileHandler { get; private set; }
-
-        public FamilyViewModel(SelectFileHandler fileHandler)
+        public FamilyViewModel(LibraryFile fileHandler, DirectoryViewModel parent) : base(fileHandler, parent)
         {
-            FileHandler = fileHandler;
             ViewMetadataCommand = new RelayCommand<object>(ViewMetadataCommandAction);
         }
 
         public MetadataStatus MetadataStatus
         {
-            get { return FileHandler.File.MetadataStatus; }
+            get { return Handler.File.MetadataStatus; }
             set { OnPropertyChanged(nameof(MetadataStatus)); }
         }
 
         public string RevitFileName
         {
-            get { return FileHandler.File.RevitFile.Name; }
-        }
-
-        public bool Checked
-        {
-            get { return FileHandler.IsSelected; }
-            set
-            {
-                if (FileHandler.IsSelected == value) { return; }
-
-                FileHandler.IsSelected = value;
-                OnPropertyChanged(nameof(Checked));
-            }
+            get { return Handler.File.RevitFile.Name; }
         }
 
         private bool _Enabled = true;
@@ -56,16 +38,14 @@ namespace RevitJournalUI.JournalTaskUI.Models
             }
         }
 
-        private string _LastUpdate = string.Empty;
         public string LastUpdate
         {
-            get { return _LastUpdate; }
-            set
+            get
             {
-                if (_LastUpdate.Equals(value, StringComparison.CurrentCulture)) { return; }
-
-                _LastUpdate = value;
-                OnPropertyChanged(nameof(LastUpdate));
+                var metadata = Handler.File.Metadata;
+                return metadata is object 
+                    ? DateHelper.AsString(metadata.Updated)
+                    : string.Empty;
             }
         }
 
@@ -73,13 +53,8 @@ namespace RevitJournalUI.JournalTaskUI.Models
 
         private void ViewMetadataCommandAction(object parameter)
         {
-            var dialog = new MetadataDialogView(FileHandler.File.Metadata);
+            var dialog = new MetadataDialogView(Handler.File.Metadata);
             dialog.ShowDialog();
-        }
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

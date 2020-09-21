@@ -4,7 +4,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:RevitJournalUI.JournalTaskUI.FamilyFilter"
-        xmlns:models="clr-namespace:RevitJournalUI.Models"
         mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800">
     <Window.Resources>
         <Style x:Key="GroupStyle" TargetType="{x:Type GroupBox}">
@@ -13,7 +12,7 @@
         </Style>
 
         <DataTemplate x:Key="CheckedItemTemplate" 
-                      DataType="{x:Type models:CheckedDisplayViewModel}">
+                      DataType="{x:Type local:CheckedFilterViewModel}">
             <ContentPresenter>
                 <ContentPresenter.Content>
                     <CheckBox IsChecked="{Binding Checked}" 
@@ -30,27 +29,7 @@
         <local:RevitFamilyFilterViewModel/>
     </Window.DataContext>
     <Grid>
-        <Grid Visibility="{Binding LoadingVisibility}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="500"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <ProgressBar Value="{Binding LoadingProgess}" 
-                         Minimum="0" Maximum="100"
-                         Grid.Column="1" Grid.Row="1"/>
-            <Label Content="{Binding LoadingProgessText}"
-                   HorizontalAlignment="Center"
-                   Grid.Column="1" Grid.Row="2"/>
-        </Grid>
-        <Grid Visibility="{Binding LoadedVisibility}"
-              ScrollViewer.CanContentScroll="True">
+        <Grid ScrollViewer.CanContentScroll="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -75,47 +54,47 @@
                     <CheckBox Content="External file not exist" 
                               IsChecked="{Binding MetadataFileNotExist}"
                               Grid.Column="0"/>
-                    <CheckBox Content="Valid" 
+                    <CheckBox Content="{Binding ValidName}" 
                               IsChecked="{Binding IsValid}"
                               Grid.Column="1"/>
-                    <CheckBox Content="Repairable"
+                    <CheckBox Content="{Binding RepairableName}"
                               IsChecked="{Binding IsRepairable}"
                               Grid.Column="2"/>
-                    <CheckBox Content="Error"
+                    <CheckBox Content="{Binding ErrorName}"
                               IsChecked="{Binding IsError}"
                               Grid.Column="3"/>
                 </Grid>
             </GroupBox>
-            <GroupBox Header="Revit Version" 
+            <GroupBox Header="{Binding ProductRuleName}" 
                       Style="{StaticResource GroupStyle}"
                       Grid.Column="0" Grid.Row="1">
-                <ListBox ItemsSource="{Binding RevitApps}"
+                <ListBox ItemsSource="{Binding Products}"
                          Style="{StaticResource ListStyle}">
                 </ListBox>
             </GroupBox>
-            <GroupBox Header="Basis" 
+            <GroupBox Header="{Binding ComponentRuleName}" 
                       Style="{StaticResource GroupStyle}"
                       Grid.Column="0" Grid.Row="2">
-                <ListBox ItemsSource="{Binding FamilyBasis}"
+                <ListBox ItemsSource="{Binding BasicComponents}"
                          Style="{StaticResource ListStyle}"/>
             </GroupBox>
-            <GroupBox Header="Categories" 
+            <GroupBox Header="{Binding CategoryRuleName}" 
                       Style="{StaticResource GroupStyle}"
                       Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
                 <ListBox ItemsSource="{Binding Categories}"
                          Style="{StaticResource ListStyle}"/>
             </GroupBox>
-            <GroupBox Header="Omni Class" 
+            <GroupBox Header="{Binding OmniClassRuleName}" 
                       Style="{StaticResource GroupStyle}"
                       Grid.Column="0" Grid.Row="3">
                 <ListBox ItemsSource="{Binding OmniClasses}"
                          Style="{StaticResource ListStyle}"/>
             </GroupBox>
-            <GroupBox Header="Family Parameters"
+            <GroupBox Header="{Binding ParameterRuleName}"
                       Style="{StaticResource GroupStyle}"
                       Grid.Column="1" Grid.Row="3">
                 <ListBox x:Name="lbxBoolParameters"
-                         ItemsSource="{Binding FamilyParameters}"
+                         ItemsSource="{Binding Parameters}"
                          Style="{StaticResource ListStyle}"/>
             </GroupBox>
             <WrapPanel HorizontalAlignment="Right"

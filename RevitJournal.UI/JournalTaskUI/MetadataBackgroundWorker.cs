@@ -1,4 +1,6 @@
 ﻿using DataSource.Helper;
+using DataSource.Model.FileSystem;
+using RevitJournal.Library;
 using RevitJournalUI.JournalTaskUI.Models;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -35,17 +37,14 @@ namespace RevitJournalUI.JournalTaskUI
 
         private static void OnProgressChanged(object sender, ProgressChangedEventArgs args)
         {
-            if (args is null || !(args.UserState is FamilyViewModel viewModel)) { return; }
+            if (args is null || !(args.UserState is RevitFamily family)) { return; }
 
-            var revitFamily = viewModel.FileHandler;
-            viewModel.MetadataStatus = revitFamily.File.MetadataStatus;
-            var lastUpdate = DateHelper.AsString(revitFamily.File.Metadata.Updated);
-            viewModel.LastUpdate = lastUpdate;
+            LibraryManager.FilterManager.AddValue(family);
         }
 
         private static void UpdateMetadata(BackgroundWorker worker, DirectoryViewModel model)
         {
-            var directory = model.FolderHandler;
+            var directory = model.Handler;
             var files = directory.RecusiveFiles;
             var filesCount = files.Count;
             var currentCount = 0;
@@ -53,11 +52,11 @@ namespace RevitJournalUI.JournalTaskUI
             {
                 if (worker.CancellationPending) { return; }
 
-                var file = files[idx];
-                file.File.UpdateStatus();
+                var handler = files[idx];
+                handler.File.UpdateStatus();
                 currentCount++;
                 var percent = currentCount * 100 / filesCount;
-                worker.ReportProgress(percent, model);
+                worker.ReportProgress(percent, handler.File);
             });
         }
 

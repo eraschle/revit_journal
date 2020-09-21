@@ -113,7 +113,6 @@
                                    VerticalAlignment="Center"/>
                             <Button Content="Setup"
                                     Command="{Binding SetupFilterCommand}"
-                                    CommandParameter="{Binding FamiliesViewModel.DirectoryViewModels}"
                                     Visibility="{Binding FileFilterVisibility }"
                                     Margin="{StaticResource DefaultMargin}"
                                     Grid.Column="1"/>

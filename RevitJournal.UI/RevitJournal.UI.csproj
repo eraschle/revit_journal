@@ -141,12 +141,14 @@
     </Compile>
     <Compile Include="Helper\ListViewHelper.cs" />
     <Compile Include="Helper\TimeSpanHelper.cs" />
+    <Compile Include="JournalTaskUI\Converter\DirectoryVisibilityConverter.cs" />
     <Compile Include="JournalTaskUI\Converter\FamilyStatusVisibilityMetadataConverter.cs" />
     <Compile Include="JournalTaskUI\Converter\FamilyStatusToolTipMetadataConverter.cs" />
     <Compile Include="JournalTaskUI\Converter\FamilyStatusColorMetadataConverter.cs" />
     <Compile Include="JournalTaskUI\Converter\FamilyIsEnabledMetadataConverter.cs" />
-    <Compile Include="JournalTaskUI\FamilyFilter\FilterManagerViewModel.cs" />
+    <Compile Include="JournalTaskUI\FamilyFilter\CheckedFilterViewModel.cs" />
     <Compile Include="JournalTaskUI\FamilyFilter\FilterViewModel.cs" />
+    <Compile Include="JournalTaskUI\Models\PathViewModel.cs" />
     <Compile Include="Tasks\Actions\OpenActionViewModel.cs" />
     <Compile Include="Tasks\Converter\TaskResultVisibleConverter.cs" />
     <Compile Include="Tasks\Converter\TaskExecuteVisibleConverter.cs" />

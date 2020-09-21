@@ -4,45 +4,54 @@ using DataSource.Model.FileSystem;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Linq;
+using RevitJournal.Revit.Filtering;
+using RevitJournal.Library.Filtering;
 
 namespace RevitJournal.Library
 {
     public class LibraryManager
     {
-        public FilterManager FilterManager { get; set; } = new FilterManager();
+        public static bool HasFilterManager(out RevitFilterManager manager)
+        {
+            manager = FilterManager;
+            return manager is object;
+        }
 
-        public SelectFolderHandler Root { get; private set; }
+        public static RevitFilterManager FilterManager { get; } = new RevitFilterManager();
 
-        public SelectFolderHandler CreateRoot(TaskOptions options)
+        public LibraryRoot Root { get; private set; }
+
+        public void CreateRoot(TaskOptions options)
         {
             if (options is null) { throw new ArgumentNullException(nameof(options)); }
 
             var rootDirectory = new RevitDirectory(null, options.RootDirectory, options.RootDirectory);
-            Root = new SelectFolderHandler(rootDirectory);
-            return Root;
+            Root = new LibraryRoot(rootDirectory);
         }
 
-        public IList<RevitFamily> GetCheckedValidFiles()
+        public bool HasRoot(out LibraryRoot rootHandler)
         {
-            return Root.SelectedRecusiveFiles(FilterManager)
-                       .Where(handler => handler.File.HasValidMetadata)
-                       .Select(handler => handler.File)
+            rootHandler = Root;
+            return rootHandler is object;
+        }
+
+        public IList<RevitFamily> CheckedValidFiles()
+        {
+            return Root.CheckedFiles()
+                       .Where(file => file.HasValidMetadata)
                        .ToList();
         }
 
-        public IList<RevitFamily> GetEditableRecursiveFiles()
+        public IList<RevitFamily> EditableFiles()
         {
-            return Root.SelectedRecusiveFiles(FilterManager)
-                       .Where(handler => handler.File.HasFileMetadata)
-                       .Select(handler => handler.File)
+            return Root.CheckedFiles()
+                       .Where(file => file.HasFileMetadata)
                        .ToList();
         }
 
         public IList<RevitFamily> GetCheckedFiles()
         {
-            return Root.SelectedRecusiveFiles(FilterManager)
-                       .Select(handler => handler.File)
-                       .ToList();
+            return Root.CheckedFiles().ToList();
         }
     }
 }

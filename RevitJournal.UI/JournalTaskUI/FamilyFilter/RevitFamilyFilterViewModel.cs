@@ -1,13 +1,9 @@
 ﻿using DataSource.Metadata;
-using DataSource.Model.Family;
-using RevitJournalUI.JournalTaskUI.Models;
-using RevitJournalUI.Models;
-using System;
-using System.Collections.Generic;
+using RevitJournal.Library;
+using RevitJournal.Revit.Filtering;
+using RevitJournal.Revit.Filtering.Rules;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Windows;
 
 namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 {
@@ -15,18 +11,17 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        internal const string DefaultNoValue = "No Value";
-        private const string PrefixLoadingProgress = "Loading";
+        private readonly RevitFilterManager manager = LibraryManager.FilterManager;
 
-        private BackgroundWorker WorkerMetadata;
-
-        private readonly SortedSet<string> SortedRevitApps = new SortedSet<string>();
-        private readonly SortedSet<string> SortedCategories = new SortedSet<string>();
-        private readonly SortedSet<string> SortedFamilyBasis = new SortedSet<string>();
-        private readonly SortedSet<string> SortedOmniClasses = new SortedSet<string>();
-        private readonly SortedSet<string> SortedFamilyParameters = new SortedSet<string>();
-
-        private FilterManagerViewModel FilterManager;
+        public RevitFamilyFilterViewModel()
+        {
+            UpdateMetadataStatus();
+            UpdateRevitApps();
+            UpdateCategories();
+            UpdateOmniClasses();
+            UpdateFamilyBasis();
+            UpdateFamilyParameters();
+        }
 
         #region Filter
 
@@ -43,355 +38,161 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
             }
         }
 
-        private bool _IsValid = false;
+        public string ValidName
+        {
+            get { return isValid.Name; }
+        }
+
+        private MetadataStatusValue isValid;
         public bool IsValid
         {
-            get { return _IsValid; }
+            get { return isValid.IsChecked; }
             set
             {
-                if (_IsValid == value) { return; }
+                if (isValid.IsChecked == value) { return; }
 
-                _IsValid = value;
+                isValid.IsChecked = value;
                 OnPropertyChanged(nameof(IsValid));
             }
         }
 
-        private bool _IsRepairable = false;
+        public string RepairableName
+        {
+            get { return isRepairable.Name; }
+        }
+
+        private MetadataStatusValue isRepairable;
         public bool IsRepairable
         {
-            get { return _IsRepairable; }
+            get { return isRepairable.IsChecked; }
             set
             {
-                if (_IsRepairable == value) { return; }
+                if (isRepairable.IsChecked == value) { return; }
 
-                _IsRepairable = value;
+                isRepairable.IsChecked = value;
                 OnPropertyChanged(nameof(IsRepairable));
             }
         }
 
-        private bool _IsError = false;
+        public string ErrorName
+        {
+            get { return isError.Name; }
+        }
+
+        private MetadataStatusValue isError;
         public bool IsError
         {
-            get { return _IsError; }
+            get { return isError.IsChecked; }
             set
             {
-                if (_IsError == value) { return; }
+                if (isError.IsChecked == value) { return; }
 
-                _IsError = value;
+                isError.IsChecked = value;
                 OnPropertyChanged(nameof(IsError));
             }
         }
 
-        public ICollection<MetadataStatus> CheckedMetadataStatus
+        internal void UpdateMetadataStatus()
         {
-            get
+            foreach (var status in manager.GetValues(MetadataStatusRule.RuleKey))
             {
-                var metadata = new List<MetadataStatus>();
-                if (IsValid) { metadata.Add(MetadataStatus.Valid); }
-                if (IsRepairable) { metadata.Add(MetadataStatus.Repairable); }
-                if (IsError) { metadata.Add(MetadataStatus.Error); }
-                return metadata;
+                if(!(status is MetadataStatusValue statusValue)) { continue; }
+
+                switch (statusValue.Status)
+                {
+                    case MetadataStatus.Valid:
+                        isValid = statusValue;
+                        break;
+                    case MetadataStatus.Repairable:
+                        isRepairable = statusValue;
+                        break;
+                    case MetadataStatus.Error:
+                        isError = statusValue;
+                        break;
+                    case MetadataStatus.Initial:
+                        break;
+                }
             }
         }
 
-        private void UpdateMetadataStatus()
+        public string ProductRuleName { get; set; } = string.Empty;
+        public ObservableCollection<CheckedFilterViewModel> Products { get; }
+            = new ObservableCollection<CheckedFilterViewModel>();
+
+        public void UpdateRevitApps()
         {
-            var metadata = FilterManager.CheckedMetadataStatus;
-            if(metadata.Count == 0) { return; }
-
-            MetadataFileNotExist = FilterManager.CheckedMetadatFileNotExist;
-            IsValid = metadata.Contains(MetadataStatus.Valid);
-            IsRepairable = metadata.Contains(MetadataStatus.Repairable);
-            IsError = metadata.Contains(MetadataStatus.Error);
-        }
-
-        public ObservableCollection<CheckedDisplayViewModel> RevitApps { get; }
-            = new ObservableCollection<CheckedDisplayViewModel>();
-
-        public void UpdateRevitApps(ICollection<string> revitApps)
-        {
-            if (revitApps is null || revitApps.Count == 0) { return; }
-
-            RevitApps.Clear();
-            foreach (var revitApp in revitApps)
+            Products.Clear();
+            var rule = manager.GetRule(ProductRule.RuleKey);
+            ProductRuleName = rule.Name;
+            foreach (var product in rule.Values)
             {
-                var isChecked = FilterManager.CheckedApps.Contains(revitApp);
-                var model = new CheckedDisplayViewModel { DisplayName = revitApp, Checked = isChecked };
-                RevitApps.Add(model);
+                var model = new CheckedFilterViewModel { FilterValue = product };
+                Products.Add(model);
             }
         }
 
-        public ICollection<string> CheckedRevitApps { get { return GetChecked(RevitApps); } }
+        public string ComponentRuleName { get; set; } = string.Empty;
+        public ObservableCollection<CheckedFilterViewModel> BasicComponents { get; }
+            = new ObservableCollection<CheckedFilterViewModel>();
 
-        public ObservableCollection<CheckedDisplayViewModel> FamilyBasis { get; }
-            = new ObservableCollection<CheckedDisplayViewModel>();
-
-        public void UpdateFamilyBasis(ICollection<string> familyBasis)
+        internal void UpdateFamilyBasis()
         {
-            if (familyBasis is null || familyBasis.Count == 0) { return; }
-
-            FamilyBasis.Clear();
-            foreach (var basis in familyBasis)
+            BasicComponents.Clear();
+            var rule = manager.GetRule(BasicComponentRule.RuleKey);
+            ComponentRuleName = rule.Name;
+            foreach (var basis in rule.Values)
             {
-                var isChecked = FilterManager.CheckedFamilyBasis.Contains(basis);
-                var model = new CheckedDisplayViewModel { DisplayName = basis, Checked = isChecked };
-                FamilyBasis.Add(model);
+                var model = new CheckedFilterViewModel { FilterValue = basis };
+                BasicComponents.Add(model);
             }
         }
 
-        public ICollection<string> CheckedFamilyBasis { get { return GetChecked(FamilyBasis); } }
+        public string CategoryRuleName { get; set; } = string.Empty;
+        public ObservableCollection<CheckedFilterViewModel> Categories { get; }
+            = new ObservableCollection<CheckedFilterViewModel>();
 
-        public ObservableCollection<CheckedDisplayViewModel> Categories { get; }
-            = new ObservableCollection<CheckedDisplayViewModel>();
-
-        public void UpdateCategories(ICollection<string> categories)
+        internal void UpdateCategories()
         {
-            if (categories is null || categories.Count == 0) { return; }
-
             Categories.Clear();
-            foreach (var category in categories)
+            var rule = manager.GetRule(CategoryRule.RuleKey);
+            CategoryRuleName = rule.Name;
+            foreach (var category in rule.Values)
             {
-                var isChecked = FilterManager.CheckedCategories.Contains(category);
-                var model = new CheckedDisplayViewModel { DisplayName = category, Checked = isChecked };
+                var model = new CheckedFilterViewModel { FilterValue = category };
                 Categories.Add(model);
             }
         }
 
-        public ICollection<string> CheckedCategories { get { return GetChecked(Categories); } }
+        public string OmniClassRuleName { get; set; } = string.Empty;
+        public ObservableCollection<CheckedFilterViewModel> OmniClasses { get; }
+            = new ObservableCollection<CheckedFilterViewModel>();
 
-        public ObservableCollection<CheckedDisplayViewModel> OmniClasses { get; }
-            = new ObservableCollection<CheckedDisplayViewModel>();
-
-        public void UpdateOmniClasses(ICollection<string> omniClasses)
+        internal void UpdateOmniClasses()
         {
-            if (omniClasses is null || omniClasses.Count == 0) { return; }
-
             OmniClasses.Clear();
-            foreach (var omniClass in omniClasses)
+            var rule = manager.GetRule(OmniClassRule.RuleKey);
+            OmniClassRuleName = rule.Name;
+            foreach (var omniClass in rule.Values)
             {
-                var isChecked = FilterManager.CheckedOmniClasses.Contains(omniClass);
-                var model = new CheckedDisplayViewModel { DisplayName = omniClass, Checked = isChecked };
+                var model = new CheckedFilterViewModel { FilterValue = omniClass };
                 OmniClasses.Add(model);
             }
         }
 
-        public ICollection<string> CheckedOmniClasses { get { return GetChecked(OmniClasses); } }
+        public string ParameterRuleName { get; set; } = string.Empty;
+        public ObservableCollection<CheckedFilterViewModel> Parameters { get; }
+            = new ObservableCollection<CheckedFilterViewModel>();
 
-
-        public ObservableCollection<CheckedDisplayViewModel> FamilyParameters { get; }
-            = new ObservableCollection<CheckedDisplayViewModel>();
-
-        public void UpdateFamilyParameters(ICollection<string> omniClasses)
+        internal void UpdateFamilyParameters()
         {
-            if (omniClasses is null || omniClasses.Count == 0) { return; }
-
-            FamilyParameters.Clear();
-            foreach (var parameter in omniClasses)
+            Parameters.Clear();
+            var rule = manager.GetRule(ParameterRule.RuleKey);
+            ParameterRuleName = rule.Name;
+            foreach (var parameter in rule.Values)
             {
-                var isChecked = FilterManager.CheckedFamilyParameters.Contains(parameter);
-                var model = new CheckedDisplayViewModel { DisplayName = parameter, Checked = isChecked };
-                FamilyParameters.Add(model);
+                var model = new CheckedFilterViewModel { FilterValue = parameter };
+                Parameters.Add(model);
             }
-        }
-        
-        public ICollection<string> CheckedFamilyParameters { get { return GetChecked(FamilyParameters); } }
-
-        private static ICollection<string> GetChecked(ObservableCollection<CheckedDisplayViewModel> models)
-        {
-            return models.Where(model => model.Checked)
-                         .Select(model => model.DisplayName)
-                         .ToList();
-        }
-
-        #endregion
-
-        #region Loading Filter
-
-        private Visibility _LoadedVisibility = Visibility.Hidden;
-        public Visibility LoadedVisibility
-        {
-            get { return _LoadedVisibility; }
-            set
-            {
-                if (_LoadedVisibility == value) { return; }
-
-                _LoadedVisibility = value;
-                OnPropertyChanged(nameof(LoadedVisibility));
-            }
-        }
-
-        private Visibility _LoadingVisibility = Visibility.Visible;
-        public Visibility LoadingVisibility
-        {
-            get { return _LoadingVisibility; }
-            set
-            {
-                if (_LoadingVisibility == value) { return; }
-
-                _LoadingVisibility = value;
-                OnPropertyChanged(nameof(LoadingVisibility));
-            }
-        }
-
-        private string _LoadingProgessText = PrefixLoadingProgress;
-        public string LoadingProgessText
-        {
-            get { return _LoadingProgessText; }
-            set
-            {
-                if (_LoadingProgessText.Equals(value, StringComparison.CurrentCulture)) { return; }
-
-                _LoadingProgessText = value;
-                OnPropertyChanged(nameof(LoadingProgessText));
-            }
-        }
-
-        private int _LoadingProgess = 0;
-        public int LoadingProgess
-        {
-            get { return _LoadingProgess; }
-            set
-            {
-                if (_LoadingProgess == value) { return; }
-
-                _LoadingProgess = value;
-                OnPropertyChanged(nameof(LoadingProgess));
-            }
-        }
-
-        #endregion
-
-        #region Update Filters
-
-        public void ClearFilterCollections()
-        {
-            SortedRevitApps.Clear();
-            SortedCategories.Clear();
-            SortedFamilyBasis.Clear();
-            SortedOmniClasses.Clear();
-            SortedFamilyParameters.Clear();
-        }
-
-        public void LoadFamilyMetadata(ObservableCollection<DirectoryViewModel> viewModels, FilterManagerViewModel configuredFilter)
-        {
-            LoadedVisibility = Visibility.Hidden;
-            LoadingVisibility = Visibility.Visible;
-            ClearFilterCollections();
-            FilterManager = configuredFilter;
-
-            WorkerMetadata = MetadataBackgroundWorker.CreateWorker();
-            WorkerMetadata.ProgressChanged += new ProgressChangedEventHandler(OnProgressChangedMetadata);
-            WorkerMetadata.ProgressChanged += new ProgressChangedEventHandler(OnProgressChangedVersions);
-            WorkerMetadata.ProgressChanged += new ProgressChangedEventHandler(OnProgressChangedCategories);
-            WorkerMetadata.ProgressChanged += new ProgressChangedEventHandler(OnProgressChangedComponents);
-            WorkerMetadata.ProgressChanged += new ProgressChangedEventHandler(OnProgressChangedOmniClasses);
-            WorkerMetadata.ProgressChanged += new ProgressChangedEventHandler(OnProgressChangedBoolParameters);
-            WorkerMetadata.RunWorkerCompleted += new RunWorkerCompletedEventHandler(OnProgressChangedMetadataCompleted);
-
-            WorkerMetadata.RunWorkerAsync(viewModels);
-        }
-
-        private void OnProgressChangedMetadata(object sender, ProgressChangedEventArgs args)
-        {
-            if (args is null) { return; }
-
-            LoadingProgess = args.ProgressPercentage;
-            LoadingProgessText = PrefixLoadingProgress + " [" + LoadingProgess + "%]";
-        }
-
-        private bool HasRevitMetadata(FamilyViewModel model, out Family family)
-        {
-            family = null;
-            var container = model.FileHandler.File;
-            if (container.HasValidMetadata)
-            {
-                family = container.Metadata;
-            }
-            return family != null;
-        }
-
-        public void OnProgressChangedVersions(object sender, ProgressChangedEventArgs args)
-        {
-            if (args is null || !(args.UserState is FamilyViewModel model)
-                || HasRevitMetadata(model, out var metadata) == false
-                || metadata.HasProduct(out var product) == false
-                || SortedRevitApps.Contains(product.ProductName)) { return; }
-
-            SortedRevitApps.Add(product.ProductName);
-        }
-
-        private void OnProgressChangedCategories(object sender, ProgressChangedEventArgs args)
-        {
-            if (args is null || !(args.UserState is FamilyViewModel model)
-                || HasRevitMetadata(model, out var metadata) == false
-                || metadata.HasCategory(out var category) == false
-                || SortedCategories.Contains(category.Name)) { return; }
-
-            SortedCategories.Add(category.Name);
-        }
-
-        private void OnProgressChangedComponents(object sender, ProgressChangedEventArgs args)
-        {
-            if (args is null || !(args.UserState is FamilyViewModel model)
-                || HasRevitMetadata(model, out var metadata) == false
-                || metadata.HasByName(Family.BasicComponent, out Parameter parameter) == false
-                || SortedFamilyBasis.Contains(parameter.Value)) { return; }
-
-            SortedFamilyBasis.Add(parameter.Value);
-        }
-
-        private void OnProgressChangedOmniClasses(object sender, ProgressChangedEventArgs args)
-        {
-            if (args is null || !(args.UserState is FamilyViewModel model)
-                || HasRevitMetadata(model, out var metadata) == false) { return; }
-
-            var omniClassValue = DefaultNoValue;
-            if(metadata.HasOmniClass(out var omniClass))
-            {
-                omniClassValue = omniClass.NumberAndName;
-            }
-
-            if (SortedOmniClasses.Contains(omniClassValue)) { return; }
-
-            SortedOmniClasses.Add(omniClassValue);
-        }
-
-        private void OnProgressChangedBoolParameters(object sender, ProgressChangedEventArgs args)
-        {
-            if (args is null
-                || !(args.UserState is FamilyViewModel model)
-                || HasRevitMetadata(model, out var metadata) == false) { return; }
-
-            var booleanParameters = metadata.Parameters.Where(par => IsBoolType(par));
-            foreach (var parameter in booleanParameters)
-            {
-                if (SortedFamilyParameters.Contains(parameter.Name)) { continue; }
-
-                SortedFamilyParameters.Add(parameter.Name);
-            }
-        }
-
-        private bool IsBoolType(Parameter parameter)
-        {
-            if (parameter is null) { return false; }
-
-            var valueType = parameter.ValueType;
-            return valueType != null && valueType.Equals(Parameter.BooleanValueType, StringComparison.CurrentCulture);
-        }
-
-        private void OnProgressChangedMetadataCompleted(object sender, RunWorkerCompletedEventArgs args)
-        {
-            UpdateMetadataStatus();
-            UpdateRevitApps(SortedRevitApps);
-            UpdateCategories(SortedCategories);
-            UpdateOmniClasses(SortedOmniClasses);
-            UpdateFamilyBasis(SortedFamilyBasis);
-            UpdateFamilyParameters(SortedFamilyParameters);
-
-            WorkerMetadata.Dispose();
-
-            LoadingVisibility = Visibility.Collapsed;
-            LoadedVisibility = Visibility.Visible;
         }
 
         #endregion

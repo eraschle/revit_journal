@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace DataSource.Model.Product
 {
@@ -47,7 +48,7 @@ namespace DataSource.Model.Product
         {
             get
             {
-                var suffix = UseMetadata ? Metadata : Version.ToString();
+                var suffix = UseMetadata ? Metadata : Version.ToString(CultureInfo.CurrentCulture);
                 return string.Concat(Name, Constant.Space, suffix);
             }
         }

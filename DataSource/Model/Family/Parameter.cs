@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataSource.Model.Family
 {
-    public class Parameter : IComparable<Parameter>, IEquatable<Parameter>
+    public class Parameter : IModel, IComparable<Parameter>, IEquatable<Parameter>
     {
         public const string SystemParameterType = "system";
         public const string SharedParameterType = "shared";

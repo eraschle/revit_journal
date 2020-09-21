@@ -1,4 +1,5 @@
-﻿using RevitJournalUI.JournalTaskUI.Models;
+﻿using RevitJournal.Library;
+using RevitJournalUI.JournalTaskUI.Models;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,14 +21,8 @@ namespace RevitJournalUI.JournalTaskUI
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> args)
         {
-            if (args.OldValue is DirectoryViewModel oldModel)
-            {
-                oldModel.Selected = false;
-            }
             if (args.NewValue is DirectoryViewModel newModel)
             {
-                newModel.Selected = true;
-
                 ViewModel.SelectedDirectory = newModel;
                 ViewModel.UpdateFamilyViewModels(newModel);
                 args.Handled = true;
@@ -36,12 +31,18 @@ namespace RevitJournalUI.JournalTaskUI
 
         private void DirectoryFilter(object sender, FilterEventArgs args)
         {
-            args.Accepted &= ViewModel.DirectoryFilter(args.Item);
+            if (!(args.Item is DirectoryViewModel model)) { return; }
+
+            var folder = model.Handler.Folder;
+            args.Accepted &= LibraryManager.FilterManager.DirectoryFilter(folder);
         }
 
         private void FileFilter(object sender, FilterEventArgs args)
         {
-            args.Accepted &= ViewModel.FileFilter(args.Item);
+            if (!(args.Item is FamilyViewModel model)) { return; }
+
+            var file = model.Handler.File;
+            args.Accepted &= LibraryManager.FilterManager.FileFilter(file);
         }
 
         private void Combobox_Filter_SelectionChanged(object sender, SelectionChangedEventArgs args)

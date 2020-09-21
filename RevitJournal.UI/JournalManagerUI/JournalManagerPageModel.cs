@@ -56,8 +56,6 @@ namespace RevitJournalUI.JournalManagerUI
             ExecuteCommand = new RelayCommand<object>(ExecuteCommandAction, ExecuteCommandPredicate);
             CancelCommand = new RelayCommand<object>(CancelCommandAction, CancelCommandPredicate);
 
-            FamiliesViewModel.PropertyChanged += new PropertyChangedEventHandler(OnCheckedChanged);
-
             SetupFilterCommand = new RelayCommand<ObservableCollection<DirectoryViewModel>>(SetupFilterCommandAction);
             TaskActionsCommand = new RelayCommand<object>(TaskActionsCommandAction, TaskActionsCommandPredicate);
 
@@ -75,12 +73,6 @@ namespace RevitJournalUI.JournalManagerUI
 #endif
             TaskOptionViewModel.SelectedRevitApp = ProductManager.UseMetadata;
         }
-
-        private void JournalManagerPageModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
 
         #region Common Settings
 
@@ -210,28 +202,29 @@ namespace RevitJournalUI.JournalManagerUI
 
         public ICommand SetupFilterCommand { get; }
 
-        private void SetupFilterCommandAction(ObservableCollection<DirectoryViewModel> viewModels)
+        private void SetupFilterCommandAction(object parameter)
         {
-            var managerViewModel = new FilterManagerViewModel { Manager = LibraryManager.FilterManager };
-            managerViewModel.ClearFilter();
-            var dialog = new RevitFamilyFilterView(viewModels, managerViewModel);
+            var dialog = new RevitFamilyFilterView();
             if (dialog.ShowDialog() == true)
             {
-                managerViewModel.UpdateFilter(dialog.ViewModel);
-                UpdateCheckedFilters(managerViewModel);
-                FamiliesViewModel.FilterUpdated(managerViewModel.Manager);
+                UpdateCheckedFilters();
+                FamiliesViewModel.FilterUpdated();
             }
         }
 
         public ObservableCollection<FilterViewModel> FilterViewModels { get; }
             = new ObservableCollection<FilterViewModel>();
 
-        private void UpdateCheckedFilters(FilterManagerViewModel managerViewModel)
+        private void UpdateCheckedFilters()
         {
             FilterViewModels.Clear();
-            foreach (var filter in managerViewModel.CheckedFilterViewModels())
+            foreach (var rule in LibraryManager.FilterManager.GetCheckedRules())
             {
-                FilterViewModels.Add(filter);
+                foreach (var value in rule.CheckedValues)
+                {
+                    var model = new FilterViewModel(rule, value);
+                    FilterViewModels.Add(model);
+                }
             }
         }
 
@@ -310,13 +303,13 @@ namespace RevitJournalUI.JournalManagerUI
             }
         }
 
-        private void OnCheckedChanged(object sender, PropertyChangedEventArgs args)
+        internal void OnCheckedChanged(object sender, PropertyChangedEventArgs args)
         {
             if (args is null) { return; }
-            if (StringUtils.Equals(args.PropertyName, nameof(FamiliesViewModel.CheckedRevitFilesCount)) == false
-                && StringUtils.Equals(args.PropertyName, nameof(FamiliesViewModel.ValidCheckedRevitFilesCount)) == false) { return; }
+            if (StringUtils.Equals(args.PropertyName, nameof(DirectoryViewModel.FilesCountValue)) == false
+                || LibraryManager.HasRoot(out var rootModel) == false) { return; }
 
-            CreateName = $"{PrefixCreateButton} [{FamiliesViewModel.CheckedRevitFilesCount}]";
+            CreateName = $"{PrefixCreateButton} [{rootModel.CheckedCount}]";
             UpdateDuplicateName();
             UpdateEditName();
         }
@@ -325,8 +318,8 @@ namespace RevitJournalUI.JournalManagerUI
 
         private bool CreateCommandPredicate(FamilyOverviewViewModel model)
         {
-            return model != null
-                && model.HasCheckedRevitFiles
+            return LibraryManager.HasRoot(out var root)
+                && root.CheckedCount > 0
                 && Actions.Count > 0;
         }
 
@@ -400,14 +393,17 @@ namespace RevitJournalUI.JournalManagerUI
 
         public void UpdateDuplicateName()
         {
-            DuplicateName = $"{PrefixDuplicateButton} [{FamiliesViewModel.ValidCheckedRevitFilesCount}]";
+            if (LibraryManager.HasRoot(out var root) == false) { return; }
+
+            DuplicateName = $"{PrefixDuplicateButton} [{root.ValidMetadataCount}]";
         }
 
         public ICommand DuplicateCommand { get; private set; }
 
         private bool DuplicateCommandPredicate(FamilyOverviewViewModel model)
         {
-            return model != null && model.HasCheckedAndValidRevitFiles;
+            return LibraryManager.HasRoot(out var root)
+                && root.ValidMetadataCount > 0;
         }
 
         private void DuplicateCommandAction(FamilyOverviewViewModel model)
@@ -438,19 +434,22 @@ namespace RevitJournalUI.JournalManagerUI
 
         public void UpdateEditName()
         {
-            EditName = $"{PrefixEditButton} [{FamiliesViewModel.EditableRevitFilesCount}]";
+            if (LibraryManager.HasRoot(out var root) == false) { return; }
+
+            EditName = $"{PrefixEditButton} [{root.EditMetadataCount}]";
         }
 
         public ICommand EditCommand { get; private set; }
 
         private bool EditCommandPredicate(FamilyOverviewViewModel model)
         {
-            return model != null && model.HasEditableRevitFiles;
+            return LibraryManager.HasRoot(out var root)
+                && root.EditMetadataCount > 0;
         }
 
         private void EditCommandAction(FamilyOverviewViewModel model)
         {
-            var validModels = LibraryManager.GetEditableRecursiveFiles();
+            var validModels = LibraryManager.EditableFiles();
             var dialog = new MetadataEditDialogView(validModels)
             {
                 SizeToContent = SizeToContent.WidthAndHeight

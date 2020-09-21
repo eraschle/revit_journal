@@ -1,13 +1,9 @@
-﻿using DataSource.Model.FileSystem;
-using RevitJournal.Library;
+﻿using RevitJournal.Library;
 using RevitJournalUI.JournalManagerUI;
-using RevitJournalUI.JournalTaskUI.FamilyFilter;
 using RevitJournalUI.JournalTaskUI.Models;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using Utilities;
 
@@ -20,60 +16,6 @@ namespace RevitJournalUI.JournalTaskUI
         public LibraryManager LibraryManager { get; set; }
 
         #region Revit Files
-
-        public bool HasCheckedRevitFiles
-        {
-            get { return CheckedRevitFilesCount > 0; }
-        }
-
-        private int checkedRevitFilesCount = 0;
-        public int CheckedRevitFilesCount
-        {
-            get { return checkedRevitFilesCount; }
-            set
-            {
-                if (checkedRevitFilesCount == value) { return; }
-
-                checkedRevitFilesCount = value;
-                OnPropertyChanged(nameof(CheckedRevitFilesCount));
-            }
-        }
-
-        public bool HasCheckedAndValidRevitFiles
-        {
-            get { return ValidCheckedRevitFilesCount > 0; }
-        }
-
-        private int validCheckedRevitFilesCount = 0;
-        public int ValidCheckedRevitFilesCount
-        {
-            get { return validCheckedRevitFilesCount; }
-            set
-            {
-                if (validCheckedRevitFilesCount == value) { return; }
-
-                validCheckedRevitFilesCount = value;
-                OnPropertyChanged(nameof(ValidCheckedRevitFilesCount));
-            }
-        }
-
-        public bool HasEditableRevitFiles
-        {
-            get { return EditableRevitFilesCount > 0; }
-        }
-
-        private int editableRevitFilesCount = 0;
-        public int EditableRevitFilesCount
-        {
-            get { return editableRevitFilesCount; }
-            set
-            {
-                if (editableRevitFilesCount == value) { return; }
-
-                editableRevitFilesCount = value;
-                OnPropertyChanged(nameof(EditableRevitFilesCount));
-            }
-        }
 
         public ObservableCollection<DirectoryViewModel> DirectoryViewModels { get; }
             = new ObservableCollection<DirectoryViewModel>();
@@ -90,24 +32,14 @@ namespace RevitJournalUI.JournalTaskUI
         {
             if (IsPropertyChanged(args) == false) { return; }
 
-            UpdateCheckedFamilyCount();
             UpdateFamilyViewModels(SelectedDirectory);
-        }
-
-        private void UpdateCheckedFamilyCount()
-        {
-            if (RootModel is null) { return; }
-
-            CheckedRevitFilesCount = LibraryManager.GetCheckedFiles().Count;
-            ValidCheckedRevitFilesCount = LibraryManager.GetCheckedValidFiles().Count;
-            EditableRevitFilesCount = LibraryManager.GetEditableRecursiveFiles().Count;
         }
 
         private bool IsPropertyChanged(PropertyChangedEventArgs args)
         {
             DirectoryViewModel model;
             return args != null
-                   || args.PropertyName.Equals(nameof(model.FilesCount), StringComparison.CurrentCulture);
+                   || args.PropertyName.Equals(nameof(model.FilesCountValue), StringComparison.CurrentCulture);
         }
 
         #endregion
@@ -124,9 +56,9 @@ namespace RevitJournalUI.JournalTaskUI
             if (model is null) { return; }
 
             DirectoryFiles.Clear();
-            foreach (var file in model.FolderHandler.Files)
+            foreach (var file in model.Handler.Files)
             {
-                var viewModel = new FamilyViewModel(file);
+                var viewModel = new FamilyViewModel(file, model);
                 viewModel.PropertyChanged += ViewModel_PropertyChanged;
                 DirectoryFiles.Add(viewModel);
             }
@@ -135,25 +67,11 @@ namespace RevitJournalUI.JournalTaskUI
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             FamilyViewModel model;
-            if (StringUtils.Equals(e.PropertyName, nameof(model.Checked)) == false) { return; }
+            if (StringUtils.Equals(e.PropertyName, nameof(model.Checked)) == false
+                || SelectedDirectory is null) { return; }
 
-            UpdateSelectedModel();
-        }
-
-        public bool FileFilter(object parameter)
-        {
-            if (!(parameter is FamilyViewModel model)) { return false; }
-
-            var file = model.FileHandler.File;
-            return LibraryManager.FilterManager.FileFilter(file);
-        }
-
-        public bool DirectoryFilter(object parameter)
-        {
-            if (!(parameter is DirectoryViewModel model)) { return false; }
-
-            var folder = model.FolderHandler.Folder;
-            return LibraryManager.FilterManager.DirectoryFilter(folder);
+            SelectedDirectory.UpdateCheckedStatus(true);
+            SelectedDirectory.UpdateCheckedCount(true);
         }
 
         private DirectoryViewModel RootModel;
@@ -163,44 +81,35 @@ namespace RevitJournalUI.JournalTaskUI
             if (model is null) { return; }
 
             DirectoryViewModels.Clear();
-            var root = LibraryManager.CreateRoot(model.TaskOptions);
-            RootModel = new DirectoryViewModel(root);
-            root.Setup(LibraryManager.FilterManager);
-            UpdateCheckedFamilyCount();
-            RootModel.UpdateCheckedFileCount(LibraryManager.FilterManager);
-            RootModel.PropertyChanged += new PropertyChangedEventHandler(OnAllCheckedChanged);
+            LibraryManager.CreateRoot(model.TaskOptions);
+            LibraryManager.Root.Setup();
+            RootModel = new DirectoryViewModel(LibraryManager.Root, null);
+            RootModel.PropertyChanged += model.OnCheckedChanged;
+            RootModel.PropertyChanged += OnAllCheckedChanged;
             DirectoryViewModels.Add(RootModel);
+            model.UpdateDuplicateName();
+            model.UpdateEditName();
         }
 
-        private void UpdateSelectedModel()
+        public void FilterUpdated()
         {
-            if (SelectedDirectory is null) { return; }
-
-            SelectedDirectory.UpdateCheckedFileCount(LibraryManager.FilterManager);
-            SelectedDirectory.UpdateCheckedStatus();
-        }
-
-        public void FilterUpdated(FilterManager manager)
-        {
-            if (RootModel is null || manager is null) { return; }
+            if (RootModel is null) { return; }
 
             var selected = SelectedDirectory;
             foreach (var directory in DirectoryViewModels)
             {
-                directory.FilterUpdated(manager);
+                directory.FilterUpdated();
             }
             DirectoryViewModels.Clear();
             DirectoryViewModels.Add(RootModel);
-            UpdateCheckedFamilyCount();
 
             if (selected is null && RootModel is null) { return; }
 
-            if (selected is null || selected.Visibility == Visibility.Collapsed)
+            if (selected is null)
             {
                 selected = RootModel;
             }
             SelectedDirectory = selected;
-            SelectedDirectory.Selected = true;
         }
 
         #endregion
