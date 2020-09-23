@@ -1,7 +1,9 @@
 ﻿using DataSource.Helper;
 using DataSource.Model.FileSystem;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Utilities;
 
 namespace RevitJournal.Helper
@@ -49,54 +51,46 @@ namespace RevitJournal.Helper
             return path;
         }
 
-        public string CreatePath(AFile file)
+        public TFile CreatePath<TFile>(TFile file) where TFile : AFileNode, new()
         {
-            if(file is null) { return string.Empty; }
+            if (file is null) { throw new ArgumentNullException(nameof(file)); }
 
-            var rootPath = RootPath;
+            var factory = PathFactory.Instance;
+            var directories = file.GetDirectoriesToRoot();
+            DirectoryNode rootNode = factory.GetRoot(RootPath);
             if (HasNewRootFolder())
             {
-                rootPath = NewRootPath;
+                directories.Remove(rootNode);
+                var newRootNode = factory.GetRoot(NewRootPath);
+                directories.Insert(0, newRootNode);
+                factory.Update(directories);
             }
-            var library = GetLibraryPath(file);
-            if (string.IsNullOrWhiteSpace(BackupFolder))
-            {
-                rootPath = Path.Combine(rootPath, library);
-            }
-            else
+            if (string.IsNullOrWhiteSpace(BackupFolder) == false)
             {
                 if (AddBackupAtEnd)
                 {
-                    rootPath = Path.Combine(rootPath, library, BackupFolder);
+                    var backupNode = factory.Create(BackupFolder, directories.Last());
+                    directories.Add(backupNode);
                 }
                 else
                 {
-                    rootPath = Path.Combine(rootPath, BackupFolder, library);
+                    var backupNode = factory.Create(BackupFolder, directories.First());
+                    directories.Insert(1, backupNode);
+                    factory.Update(directories);
                 }
             }
-            if (Directory.Exists(rootPath) == false)
+            var newFile = factory.Create<TFile>(file.FullPath, directories.Last());
+            if (newFile.HasParent(out var parent) 
+                && parent.Exists() == false)
             {
-                Directory.CreateDirectory(rootPath);
+                parent.Create();
             }
 
-            var fileName = string.Concat(file.Name, Constant.Point, file.Extension);
             if (string.IsNullOrWhiteSpace(FileSuffix) == false)
             {
-                fileName = string.Concat(file.Name, Constant.Underline, FileSuffix, Constant.Point, file.Extension);
+                newFile.NameSuffixes.Add(FileSuffix);
             }
-            rootPath = Path.Combine(rootPath, fileName);
-            return rootPath;
-        }
-
-        public TFile CreatePath<TFile>(AFile file) where TFile : AFile, new()
-        {
-            return file is null ? null : new TFile { FullPath = CreatePath(file) };
-        }
-
-        private string GetLibraryPath(AFile file)
-        {
-            var library = file.ParentFolder.Replace(RootPath, string.Empty);
-            return RemoveSlases(library);
+            return newFile;
         }
 
         public string CreateSymbolic()

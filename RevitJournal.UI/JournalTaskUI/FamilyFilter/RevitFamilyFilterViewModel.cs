@@ -11,7 +11,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly RevitFilterManager manager = LibraryManager.FilterManager;
+        private readonly RevitFilterManager manager = RevitFilterManager.Instance;
 
         public RevitFamilyFilterViewModel()
         {
@@ -121,8 +121,9 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 
         public void UpdateRevitApps()
         {
+            if(manager.HasRule(ProductRule.RuleKey, out var rule) == false) { return; }
+
             Products.Clear();
-            var rule = manager.GetRule(ProductRule.RuleKey);
             ProductRuleName = rule.Name;
             foreach (var product in rule.Values)
             {
@@ -137,8 +138,9 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 
         internal void UpdateFamilyBasis()
         {
+            if(manager.HasRule(BasicComponentRule.RuleKey, out var rule) == false) { return; }
+
             BasicComponents.Clear();
-            var rule = manager.GetRule(BasicComponentRule.RuleKey);
             ComponentRuleName = rule.Name;
             foreach (var basis in rule.Values)
             {
@@ -153,8 +155,9 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 
         internal void UpdateCategories()
         {
+            if(manager.HasRule(CategoryRule.RuleKey, out var rule) == false) { return; }
+
             Categories.Clear();
-            var rule = manager.GetRule(CategoryRule.RuleKey);
             CategoryRuleName = rule.Name;
             foreach (var category in rule.Values)
             {
@@ -169,8 +172,9 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 
         internal void UpdateOmniClasses()
         {
+            if(manager.HasRule(OmniClassRule.RuleKey, out var rule) == false) { return; }
+
             OmniClasses.Clear();
-            var rule = manager.GetRule(OmniClassRule.RuleKey);
             OmniClassRuleName = rule.Name;
             foreach (var omniClass in rule.Values)
             {
@@ -185,8 +189,9 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 
         internal void UpdateFamilyParameters()
         {
+            if(manager.HasRule(ParameterRule.RuleKey, out var rule) == false) { return; }
+
             Parameters.Clear();
-            var rule = manager.GetRule(ParameterRule.RuleKey);
             ParameterRuleName = rule.Name;
             foreach (var parameter in rule.Values)
             {

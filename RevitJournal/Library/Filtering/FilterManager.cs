@@ -34,9 +34,14 @@ namespace RevitJournal.Library.Filtering
             }
         }
 
-        public IFilterRule<TSource> GetRule(string key)
+        public bool HasRule(string key, out IFilterRule<TSource> filter)
         {
-            return FilterRules.ContainsKey(key) ? FilterRules[key] : null;
+            filter = null;
+            if (FilterRules.ContainsKey(key))
+            {
+                filter = FilterRules[key];
+            }
+            return filter is object;
         }
 
         public IEnumerable<FilterValue> GetValues(string key)
@@ -49,20 +54,21 @@ namespace RevitJournal.Library.Filtering
             FilterRules.Clear();
         }
 
-        public bool NoFilter()
+        public bool HasFilters()
         {
-            return FilterRules.Values.All(rule => rule.HasCheckedValues == false);
+            return FilterRules.Values.Any(rule => rule.HasCheckedValues);
         }
 
         public bool FileFilter(TSource source)
         {
             if (source is null) { throw new ArgumentNullException(nameof(source)); }
+            if(HasFilters() == false) { return true; }
 
             var allowed = true;
-            var iterator = FilterRules.Values.GetEnumerator();
-            while (allowed && iterator.MoveNext())
+            var rules = FilterRules.Values.GetEnumerator();
+            while (allowed && rules.MoveNext())
             {
-                allowed &= iterator.Current.Allowed(source);
+                allowed &= rules.Current.Allowed(source);
             }
             return allowed;
         }

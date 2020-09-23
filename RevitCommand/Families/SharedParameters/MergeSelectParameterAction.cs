@@ -22,6 +22,8 @@ namespace RevitCommand.Families.SharedParameters
 
         public ActionParameter ParameterGroup { get; set; }
      
+        public ActionParameter RootDirectory { get; set; }
+       
         public ITaskInfo TaskInfo { get; }
 
         public MergeSelectParameterAction() : base("Merge Shared [Selectable]", new Guid("2c0ddb9f-ec48-4c34-bc96-1105eb3a1637"))
@@ -42,6 +44,9 @@ namespace RevitCommand.Families.SharedParameters
             ParameterGroups = new ActionParameterSelect("Parameter Group", "ParameterGroup", GetGroupNames());
             Parameters.Add(ParameterGroups);
 
+            RootDirectory = ActionParameter.Create("Root Directory", "Root", ParameterKind.ImageFile);
+            Parameters.Add(RootDirectory);
+
             MakeChanges = true;
         }
 
@@ -50,6 +55,11 @@ namespace RevitCommand.Families.SharedParameters
             return ProductDataManager.Get().ParameterGroups()
                                      .Select(grp => grp.Name)
                                      .ToList();
+        }
+
+        public override void SetLibraryRoot(string libraryRoot)
+        {
+            RootDirectory.Value = libraryRoot;
         }
     }
 }

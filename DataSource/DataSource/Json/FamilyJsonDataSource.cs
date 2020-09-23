@@ -19,9 +19,9 @@ namespace DataSource.Json
             JsonDataSource.AddFileNameSuffix(suffixes);
         }
 
-        public override bool Exist { get { return JsonDataSource.JsonFile.Exist; } }
+        public override bool Exist { get { return JsonDataSource.JsonFile.Exists(); } }
 
-        public override Family Read(AFile source = null)
+        public override Family Read(AFileNode source = null)
         {
             JsonFile jsonFile = null;
             if(source is JsonFile json)
@@ -33,7 +33,7 @@ namespace DataSource.Json
 
         public override void UpdateStatus()
         {
-            if (JsonDataSource.JsonFile.Exist == false)
+            if (JsonDataSource.JsonFile.Exists() == false)
             {
                 Status = MetadataStatus.Error;
             }
@@ -57,7 +57,7 @@ namespace DataSource.Json
             }
         }
 
-        public override void Write(Family model, AFile destination = null)
+        public override void Write(Family model, AFileNode destination = null)
         {
             if (destination is null)
             {

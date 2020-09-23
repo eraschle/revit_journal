@@ -12,7 +12,7 @@ namespace DataSource
     {
         private const string AutodeskProgram = @"C:\Program Files\Autodesk";
 
-        public static RevitApp UseMetadata = RevitApp.DefaultApp;
+        public static RevitApp UseMetadata { get; } = RevitApp.DefaultApp;
 
         private static Dictionary<int, RevitApp> RevitVersions { get; } = new Dictionary<int, RevitApp>();
 
@@ -20,12 +20,11 @@ namespace DataSource
         {
             if (ExecutableRevitApps.Any()) { return; }
 
-            var search = string.Concat(Constant.Star, RevitAppFile.FileNameWithExtension);
-            var versionPaths = Directory.GetFiles(rootDirectory, search, SearchOption.AllDirectories);
-            foreach (var file in versionPaths)
+            var factory = PathFactory.Instance;
+            var root = factory.GetRoot(rootDirectory);
+            foreach (var file in root.GetFiles<RevitAppFile>(true, RevitAppFile.RevitFileName))
             {
-                var revitFile = AFile.Create<RevitAppFile>(file);
-                AddInstalled(revitFile);
+                AddInstalled(file);
             }
         }
 

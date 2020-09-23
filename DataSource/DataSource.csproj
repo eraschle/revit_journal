@@ -55,6 +55,11 @@
   <ItemGroup>
     <Compile Include="DataSource\Json\ProductDataJsonDataSource.cs" />
     <Compile Include="Model\Catalog\RevitEnumModels.cs" />
+    <Compile Include="Model\FileSystem\DirectoryPathNode.cs" />
+    <Compile Include="Model\FileSystem\IPathBuilder.cs" />
+    <Compile Include="Model\FileSystem\TextFile.cs" />
+    <Compile Include="Model\FileSystem\PathFactory.cs" />
+    <Compile Include="Model\FileSystem\DirectoryNode.cs" />
     <Compile Include="Model\SharedParameters\SharedGroup.cs" />
     <Compile Include="Model\SharedParameters\SharedParameter.cs" />
     <Compile Include="Model\SharedParameters\SharedParameterNameReader.cs" />
@@ -92,11 +97,10 @@
     <Compile Include="Model\Catalog\ACatalog.cs" />
     <Compile Include="Model\Catalog\Category.cs" />
     <Compile Include="Model\Catalog\OmniClass.cs" />
-    <Compile Include="Model\FileSystem\RevitDirectory.cs" />
     <Compile Include="Model\FileSystem\RevitFamily.cs" />
     <Compile Include="Model\FileSystem\RevitFamilyFile.cs" />
-    <Compile Include="Model\FileSystem\AFile.cs" />
-    <Compile Include="Model\FileSystem\ANode.cs" />
+    <Compile Include="Model\FileSystem\AFileNode.cs" />
+    <Compile Include="Model\FileSystem\APathNode.cs" />
     <Compile Include="Model\Family\Family.cs" />
     <Compile Include="Model\Family\FamilyType.cs" />
     <Compile Include="Model\Family\Parameter.cs" />
@@ -116,6 +120,12 @@
     <Analyzer Include="..\packages\Microsoft.NetCore.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetCore.CSharp.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.NetFramework.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetFramework.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.NetFramework.Analyzers.2.9.8\analyzers\dotnet\cs\Microsoft.NetFramework.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{C32F0DC7-ACBA-4802-90D1-BD7641CA851E}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -1,17 +1,9 @@
 ﻿namespace DataSource.Model.FileSystem
 {
-    public class JsonFile : AFile
+    public class JsonFile : AFileNode
     {
-        public const string FileExtension = "json";
+        public const string JsonExtension = "json";
 
-        protected override string GetExtension()
-        {
-            return FileExtension;
-        }
-
-        protected override string GetTypeName()
-        {
-            return nameof(JsonFile);
-        }
+        public override string FileExtension { get; } = JsonExtension;
     }
 }

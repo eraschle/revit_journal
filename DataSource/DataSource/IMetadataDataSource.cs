@@ -8,11 +8,11 @@ namespace DataSource.Metadata
 
         bool Exist { get; }
 
-        TModel Read(AFile source = null);
+        TModel Read(AFileNode source = null);
 
         void AddFileNameSuffix(params string[] suffixes);
 
-        void Write(TModel model, AFile destination = null);
+        void Write(TModel model, AFileNode destination = null);
 
         void UpdateStatus();
     }

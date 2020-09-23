@@ -9,7 +9,7 @@ namespace RevitJournal.Tasks.Options
 
         public bool CreateBackup { get; set; } = false;
 
-        public string CreateBackupFile(RevitFamilyFile file)
+        public RevitFamilyFile CreateBackupFile(RevitFamilyFile file)
         {
             return PathCreator.CreatePath(file);
         }

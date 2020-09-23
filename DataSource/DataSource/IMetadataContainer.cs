@@ -12,6 +12,6 @@ namespace DataSource.Metadata
 
         bool HasFileMetadata { get; }
 
-        void WriteMetaData(TModel model = null, AFile destination = null);
+        void WriteMetaData(TModel model = null, AFileNode destination = null);
     }
 }

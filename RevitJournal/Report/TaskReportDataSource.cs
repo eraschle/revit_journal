@@ -14,15 +14,8 @@ namespace RevitJournal.Report
                 NullValueHandling = NullValueHandling.Ignore
             };
             var content = JsonConvert.SerializeObject(result, Formatting.Indented, setting);
-            var resultFile = GetResultFile(result);
+            var resultFile = result.SourceFile.ChangeExtension<TaskReportFile>();
             File.WriteAllText(resultFile.FullPath, content);
-        }
-
-        private TaskReportFile GetResultFile(TaskReport result)
-        {
-            return result.SourceFile
-                         .ChangeExtension<TaskReportFile>(TaskReportFile.TaskResultExtension)
-                         .ChangeFileName<TaskReportFile>(result.SourceFile.Name + "_Result");
         }
     }
 }

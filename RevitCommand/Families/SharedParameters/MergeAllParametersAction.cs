@@ -8,6 +8,8 @@ namespace RevitCommand.Families.SharedParameters
     public class MergeAllParametersAction : ATaskAction, ITaskActionCommand
     {
         public SharedFileActionParameter SharedFile { get; set; }
+
+        public ActionParameter RootDirectory { get; set; }
      
         public ITaskInfo TaskInfo { get; }
       
@@ -15,8 +17,15 @@ namespace RevitCommand.Families.SharedParameters
         {
             TaskInfo = new TaskActionInfo<MergeAllParametersAction>(ActionId, nameof(MergeAllParametersCommand));
             SharedFile = new SharedFileActionParameter("Shared Parameter File");
-            Parameters.Add(SharedFile);
+            Parameters.Add(SharedFile); 
+            RootDirectory = ActionParameter.Create("Root Directory", "Root", ParameterKind.ImageFile);
+            Parameters.Add(RootDirectory);
             MakeChanges = true;
+        }
+
+        public override void SetLibraryRoot(string libraryRoot)
+        {
+            RootDirectory.Value = libraryRoot;
         }
     }
 }

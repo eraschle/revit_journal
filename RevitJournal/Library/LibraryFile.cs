@@ -1,4 +1,5 @@
 ﻿using DataSource.Model.FileSystem;
+using RevitJournal.Revit.Filtering;
 using System;
 
 namespace RevitJournal.Library
@@ -19,8 +20,7 @@ namespace RevitJournal.Library
 
         public bool IsAllowed()
         {
-            return LibraryManager.HasFilterManager(out var manager) == false
-                || manager.FileFilter(File);
+            return RevitFilterManager.Instance.FileFilter(File);
         }
 
         internal override void SetChecked(bool? value, bool updateChildren, bool updateParent)

@@ -20,7 +20,7 @@ namespace DataSource.Xml
         public FamilyXmlReader(RevitFamilyFile revitFile)
         {
             if (revitFile is null) { throw new ArgumentNullException(nameof(revitFile)); }
-            if (revitFile.Exist == false) { throw new ArgumentException("File does not exist: " + revitFile); }
+            if (revitFile.Exists() == false) { throw new ArgumentException("File does not exist: " + revitFile); }
 
             RevitFile = revitFile;
         }

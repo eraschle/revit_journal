@@ -2,23 +2,14 @@
 
 namespace RevitJournal.Revit.Journal
 {
-    public class RecordeJournalFile : AFile
+    public class RecordeJournalFile : TextFile { }
+
+
+    public class RecordeJournalNullFile : RecordeJournalFile
     {
-        public const string TaskJournalExtension = "txt";
-
-        public override string ToString()
+        public RecordeJournalNullFile()
         {
-            return Name;
-        }
-
-        protected override string GetExtension()
-        {
-            return TaskJournalExtension;
-        }
-
-        protected override string GetTypeName()
-        {
-            return nameof(TaskJournalFile);
+            Name = "No Record Journal file";
         }
     }
 }

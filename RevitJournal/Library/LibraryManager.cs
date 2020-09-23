@@ -2,31 +2,24 @@
 using RevitJournal.Tasks.Options;
 using DataSource.Model.FileSystem;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
 using System.Linq;
-using RevitJournal.Revit.Filtering;
-using RevitJournal.Library.Filtering;
+using System.Diagnostics;
 
 namespace RevitJournal.Library
 {
     public class LibraryManager
     {
-        public static bool HasFilterManager(out RevitFilterManager manager)
-        {
-            manager = FilterManager;
-            return manager is object;
-        }
-
-        public static RevitFilterManager FilterManager { get; } = new RevitFilterManager();
-
         public LibraryRoot Root { get; private set; }
 
         public void CreateRoot(TaskOptions options)
         {
             if (options is null) { throw new ArgumentNullException(nameof(options)); }
 
-            var rootDirectory = new RevitDirectory(null, options.RootDirectory, options.RootDirectory);
+            var rootDirectory = PathFactory.Instance.GetRoot(options.RootDirectory);
+            var start = DateTime.Now;
+            Debug.WriteLine($"Start: {start}");
             Root = new LibraryRoot(rootDirectory);
+            Debug.WriteLine($"End  : {DateTime.Now - start}");
         }
 
         public bool HasRoot(out LibraryRoot rootHandler)

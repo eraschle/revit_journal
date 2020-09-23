@@ -91,8 +91,8 @@ namespace RevitJournalUI.Tasks
 
             TaskStatus = TaskUoW.Status;
 
-            JournalTask = TaskUoW.TaskJournal.Name;
-            JournalRecorde = TaskUoW.RecordeJournal.Name;
+            JournalTask = TaskUoW.TaskJournal.NameWithoutExtension;
+            JournalRecorde = TaskUoW.RecordeJournal.NameWithoutExtension;
 
             CurrentAction = TaskUoW.CurrentAction.Name;
             ExecutedActions = TaskUoW.ExecutedActions;

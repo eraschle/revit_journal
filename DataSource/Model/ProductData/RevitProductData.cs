@@ -8,13 +8,13 @@ namespace DataSource.Model.ProductData
     {
         public const string NoData = "No data available";
 
-        public static OmniClass DefaultOmniClass = new OmniClass { IdArray = new int[] { 0 }, Name = NoData };
+        public static OmniClass DefaultOmniClass { get; } = new OmniClass { IdArray = new int[] { 0 }, Name = NoData };
 
-        public static Category DefaultCategory = new Category { Id = "-1", Name = NoData };
+        public static Category DefaultCategory { get; } = new Category { Id = "-1", Name = NoData };
 
-        public static RevitParameterGroup DefaultParameterGroup = new RevitParameterGroup { Id = "-1", Name = NoData };
+        public static RevitParameterGroup DefaultParameterGroup { get; } = new RevitParameterGroup { Id = "-1", Name = NoData };
 
-        public static RevitEnum DefaultRevitEnum = new RevitEnum { Id = "-1", Name = NoData };
+        public static RevitEnum DefaultRevitEnum { get; } = new RevitEnum { Id = "-1", Name = NoData };
 
         public string Name { get; set; }
 

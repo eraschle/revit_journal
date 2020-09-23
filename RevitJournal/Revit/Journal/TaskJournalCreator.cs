@@ -12,30 +12,14 @@ namespace RevitJournal.Revit.Journal
     {
         private const string SuffixFormatString = "HHmmssfff";
 
-        internal static TaskJournalFile Create(RevitTask journalTask, string journalDirectory)
+        internal static TaskJournalFile Create(RevitTask journalTask, DirectoryNode directory)
         {
-            var journalFile = GetJournalFile(journalTask.Family, journalDirectory);
+            var journalFile = journalTask.SourceFile.ChangeDirectory<TaskJournalFile>(directory);
+            var suffix = DateTime.Now.ToString(SuffixFormatString, CultureInfo.CurrentCulture);
+            journalFile.NameSuffixes.Add(suffix);
             var content = JournalBuilder.Build(journalTask.Actions);
             File.WriteAllText(journalFile.FullPath, content, Encoding.Default);
             return journalFile;
-        }
-
-
-        private static TaskJournalFile GetJournalFile(RevitFamily family, string journalDirectory)
-        {
-            var journalName = GetJournalFileName(family.RevitFile);
-            var journalFile = family.RevitFile
-                .ChangeFileName<RevitFamilyFile>(journalName)
-                .ChangeDirectory<RevitFamilyFile>(journalDirectory)
-                .ChangeExtension<TaskJournalFile>(TaskJournalFile.JournalProcessExtension);
-            return journalFile;
-        }
-
-        private static string GetJournalFileName(RevitFamilyFile revitFile)
-        {
-            var suffix = DateTime.Now.ToString(SuffixFormatString, CultureInfo.CurrentCulture);
-            var fileName = string.Concat(revitFile.Name, Constant.Underline, suffix);
-            return fileName.Replace(Constant.Space, Constant.Underline);
         }
     }
 }

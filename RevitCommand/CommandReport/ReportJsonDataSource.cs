@@ -20,7 +20,7 @@ namespace RevitCommand.CommandReport
 
         public bool DataSourceExist
         {
-            get { return JsonDataSource.JsonFile.Exist; }
+            get { return JsonDataSource.JsonFile.Exists(); }
         }
 
         public Report Read()

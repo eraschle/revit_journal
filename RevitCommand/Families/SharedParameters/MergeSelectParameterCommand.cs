@@ -43,7 +43,12 @@ namespace RevitCommand.Families.SharedParameters
             var sharedManager = new SharedParameterManager(Application, Action.SharedFile.Value);
             var managerFamily = new RevitFamilyParameterManager(Document);
             var managerReport = new RevitFamilyManagerReport(managerFamily);
-            var report = new Report(AFile.Create<RevitFamilyFile>(Document.PathName));
+
+            var root = PathFactory.Instance.GetRoot(Action.RootDirectory.Value);
+            var reportFile = PathFactory.Instance.Create<RevitFamilyFile>(Document.PathName, root);
+            reportFile.NameSuffixes.AddRange(new string[] { "merge", "shared", "parameter" });
+
+            var report = new Report(reportFile);
             foreach (var ifcParameter in Action.SharedParameters.ParameterNames)
             {
                 MessageReportLine line = null;
@@ -70,7 +75,7 @@ namespace RevitCommand.Families.SharedParameters
 
             if (report.IsEmpty == false)
             {
-                report.Write(new string[] { "merge", "ifc", "parameter" });
+                report.Write();
             }
             return Result.Succeeded;
         }

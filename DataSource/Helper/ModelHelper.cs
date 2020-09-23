@@ -84,17 +84,5 @@ namespace DataSource.Helper
                 && value.ToCharArray().All(character => char.IsUpper(character)) 
                 && value.Length == AmWaShortCategoryLength;
         }
-
-        public static string GetLibraryPath(RevitFamilyFile revitFile, string rootPath)
-        {
-            if (revitFile is null || string.IsNullOrEmpty(rootPath)) { return null; }
-
-            var library = revitFile.ParentFolder.Replace(rootPath, string.Empty);
-            if (library.StartsWith(Constant.FolderSeperator, StringComparison.CurrentCulture))
-            {
-                library = library.Remove(0, 1);
-            }
-            return library;
-        }
     }
 }

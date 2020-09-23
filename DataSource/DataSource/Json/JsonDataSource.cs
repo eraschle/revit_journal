@@ -1,6 +1,7 @@
 ﻿using DataSource.Helper;
 using DataSource.Model.FileSystem;
 using Newtonsoft.Json;
+using System;
 using System.IO;
 
 namespace DataSource.DataSource.Json
@@ -11,7 +12,9 @@ namespace DataSource.DataSource.Json
 
         public JsonDataSource(RevitFamilyFile revitFile)
         {
-            JsonFile = revitFile.ChangeExtension<JsonFile>(JsonFile.FileExtension);
+            if(revitFile is null) { throw new ArgumentNullException(nameof(revitFile)); }
+
+            JsonFile = revitFile.ChangeExtension<JsonFile>();
         }
 
         public JsonDataSource(JsonFile jsonFile)
@@ -23,9 +26,7 @@ namespace DataSource.DataSource.Json
         {
             if (suffixes is null || suffixes.Length == 0) { return; }
 
-            var suffix = string.Join(Constant.Underline, suffixes);
-            var newFileName = string.Concat(JsonFile.Name, Constant.Underline, suffix);
-            JsonFile = JsonFile.ChangeFileName<JsonFile>(newFileName);
+            JsonFile.NameSuffixes.AddRange(suffixes);
         }
 
         public TModel Read(JsonFile source = null)
@@ -34,7 +35,7 @@ namespace DataSource.DataSource.Json
             {
                 source = JsonFile;
             }
-            if(source.Exist == false)
+            if(source.Exists() == false)
             {
                 return null;
             }

@@ -1,7 +1,7 @@
-﻿using DataSource.Helper;
-using DataSource.Metadata;
+﻿using DataSource.Metadata;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using DS = DataSource.Model.Family;
 
 namespace DataSource.Model.FileSystem
@@ -15,15 +15,15 @@ namespace DataSource.Model.FileSystem
 
         public RevitFamilyFile RevitFile { get; private set; }
 
-        public RevitFamily(RevitFamilyFile revitFile, string libraryPath)
+        public RevitFamily(RevitFamilyFile revitFile)
         {
             RevitFile = revitFile ?? throw new ArgumentNullException(nameof(revitFile));
-            var editedFileName = string.Join(Constant.Underline, revitFile.Name, EditedSuffix);
-            EditedMetadataFile = revitFile.ChangeExtension<JsonFile>(JsonFile.FileExtension)
-                                          .ChangeFileName<JsonFile>(editedFileName);
+
+            EditedMetadataFile = revitFile.ChangeExtension<JsonFile>();
+            EditedMetadataFile.NameSuffixes.Add(EditedSuffix);
             MetaDataContainer = new MetadataFamilyJsonContainer(revitFile)
             {
-                LibraryPath = libraryPath
+                LibraryPath = Path.Combine(revitFile.GetPathToRoot())
             };
         }
 

@@ -2,18 +2,11 @@
 
 namespace RevitJournal.Report
 {
-    public class TaskReportFile : AFile
+    public class TaskReportFile : JsonFile
     {
-        public const string TaskResultExtension = "json";
-
-        protected override string GetExtension()
+        public TaskReportFile()
         {
-            return TaskResultExtension;
-        }
-
-        protected override string GetTypeName()
-        {
-            return nameof(TaskReportFile);
+            NameSuffixes.Add("Result");
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using DataSource.DataSource.Json;
 using DataSource.Json;
 using DataSource.Model.Catalog;
+using DataSource.Model.FileSystem;
 using DataSource.Model.Product;
 using DataSource.Model.ProductData;
 using System;
@@ -21,7 +22,8 @@ namespace DataSource
             {
                 throw new ArgumentNullException($"{nameof(directory)} is null or does not exists");
             }
-            Instance = new ProductDataManager { ProductDataDirectory = directory };
+            var root = PathFactory.Instance.GetRoot(directory);
+            Instance = new ProductDataManager { ProductDataDirectory = root };
         }
 
         public static ProductDataManager Get()
@@ -41,13 +43,13 @@ namespace DataSource
 
         private JsonDataSource<RevitProductData> JsonDataSource;
 
-        private string ProductDataDirectory { get; set; } = string.Empty;
+        private DirectoryNode ProductDataDirectory { get; set; }
 
         private IList<RevitParameterGroup> _ParameterGroups = new List<RevitParameterGroup>();
         public IList<RevitParameterGroup> ParameterGroups()
         {
             var oldest = ProductManager.OldestVersion();
-            if(HasByVersion(oldest, out var productdata))
+            if (HasByVersion(oldest, out var productdata))
             {
                 return productdata.ParameterGroups;
             }
@@ -81,7 +83,7 @@ namespace DataSource
         public RevitProductData ByVersion(RevitApp revitApp)
         {
             RevitProductData productData = null;
-            if (RevitProductDatas.ContainsKey(revitApp.Version)== false)
+            if (RevitProductDatas.ContainsKey(revitApp.Version) == false)
             {
                 AddData(revitApp);
             }
@@ -89,7 +91,7 @@ namespace DataSource
             if (RevitProductDatas.ContainsKey(revitApp.Version))
             {
                 productData = RevitProductDatas[revitApp.Version];
-                if(productData != null)
+                if (productData != null)
                 {
                     productData.SetDefaultData(revitApp);
                 }

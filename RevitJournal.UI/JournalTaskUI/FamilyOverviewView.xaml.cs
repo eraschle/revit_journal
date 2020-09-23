@@ -1,4 +1,5 @@
 ﻿using RevitJournal.Library;
+using RevitJournal.Revit.Filtering;
 using RevitJournalUI.JournalTaskUI.Models;
 using System.ComponentModel;
 using System.Windows;
@@ -7,9 +8,6 @@ using System.Windows.Data;
 
 namespace RevitJournalUI.JournalTaskUI
 {
-    /// <summary>
-    /// Interaction logic for RevitFileOverviewView.xaml
-    /// </summary>
     public partial class FamilyOverviewView : UserControl
     {
         private FamilyOverviewViewModel ViewModel { get { return DataContext as FamilyOverviewViewModel; } }
@@ -34,7 +32,7 @@ namespace RevitJournalUI.JournalTaskUI
             if (!(args.Item is DirectoryViewModel model)) { return; }
 
             var folder = model.Handler.Folder;
-            args.Accepted &= LibraryManager.FilterManager.DirectoryFilter(folder);
+            args.Accepted &= RevitFilterManager.Instance.DirectoryFilter(folder);
         }
 
         private void FileFilter(object sender, FilterEventArgs args)
@@ -42,7 +40,7 @@ namespace RevitJournalUI.JournalTaskUI
             if (!(args.Item is FamilyViewModel model)) { return; }
 
             var file = model.Handler.File;
-            args.Accepted &= LibraryManager.FilterManager.FileFilter(file);
+            args.Accepted &= RevitFilterManager.Instance.FileFilter(file);
         }
 
         private void Combobox_Filter_SelectionChanged(object sender, SelectionChangedEventArgs args)

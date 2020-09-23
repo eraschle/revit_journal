@@ -66,12 +66,13 @@ namespace DataSource
                 revitApp = ProductManager.GetVersion(revitApp.Version, true);
             }
 
-            if (HasAppFile(revitApp) == false || HasOmniClassDirectory(revitApp.AppFile, out var directory) == false) { return false; }
+            if (revitApp is null || HasAppFile(revitApp) == false 
+                || HasOmniClassDirectory(revitApp.AppFile, out var directory) == false) { return false; }
 
-            var omniClassFile = revitApp.AppFile.ChangeExtension<OmniClassFile>(OmniClassFile.FileExtension)
-                                                .ChangeFileName<OmniClassFile>(OmniClassFile.FileName)
-                                                .ChangeDirectory<OmniClassFile>(directory);
-            if (omniClassFile.Exist)
+            var rootNode = PathFactory.Instance.GetRoot(directory);
+            var omniClassFile = revitApp.AppFile.ChangeFileName<OmniClassFile>(OmniClassFile.FileName)
+                                                .ChangeDirectory<OmniClassFile>(rootNode);
+            if (omniClassFile.Exists())
             {
                 omniClass = omniClassFile;
             }
@@ -80,7 +81,7 @@ namespace DataSource
 
         private static bool HasAppFile(RevitApp app)
         {
-            return app.AppFile != null && app.AppFile.Exist;
+            return app.AppFile != null && app.AppFile.Exists();
         }
 
         public static bool HasOmniClassDirectory(RevitAppFile revitApp, out string directory)
@@ -97,7 +98,7 @@ namespace DataSource
 
         private static IList<OmniClass> Create(OmniClassFile omniClassFile)
         {
-            if (omniClassFile.Exist == false) { return null; }
+            if (omniClassFile.Exists() == false) { return null; }
 
             var content = File.ReadAllText(omniClassFile.FullPath);
             var lines = content.Split(new string[] { Environment.NewLine },

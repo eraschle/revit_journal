@@ -21,7 +21,7 @@ namespace DataSource.Xml
             FamilyTypeBuilder = new FamilyTypeBuilder();
         }
 
-        public override Family Read(AFile source = null)
+        public override Family Read(AFileNode source = null)
         {
             if (source != null && source is RevitFamilyFile rvtSource)
             {
@@ -30,7 +30,10 @@ namespace DataSource.Xml
             }
 
             var family = FamilyBuilder.Build(Repository);
-            family.LibraryPath = ModelHelper.GetLibraryPath(RevitFile, LibraryPath);
+            if (RevitFile is object)
+            {
+                family.LibraryPath = RevitFile.GetPathToRoot();
+            }
             var types = FamilyTypeBuilder.Build(Repository);
             family.AddFamilyTypes(types);
             return family;
@@ -61,7 +64,7 @@ namespace DataSource.Xml
             }
         }
 
-        public override void Write(Family model, AFile destination = null) { }
+        public override void Write(Family model, AFileNode destination = null) { }
 
         public override void AddFileNameSuffix(params string[] suffixes) { }
     }

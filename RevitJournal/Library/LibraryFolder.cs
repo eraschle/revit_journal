@@ -1,60 +1,113 @@
 ﻿using DataSource.Model.FileSystem;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace RevitJournal.Library
 {
     public class LibraryFolder : ALibraryNode
     {
-        public RevitDirectory Folder { get; private set; }
+        public DirectoryNode Folder { get; private set; }
 
         public List<LibraryFolder> Subfolders { get; } = new List<LibraryFolder>();
 
         public List<LibraryFile> Files { get; } = new List<LibraryFile>();
 
-        private List<LibraryFile> recusiveFiles = new List<LibraryFile>();
-        public List<LibraryFile> RecusiveFiles { get { return recusiveFiles; } }
+        public List<LibraryFile> RecusiveFiles { get; } = new List<LibraryFile>();
+
+        private readonly List<Action<object>> resetActions = new List<Action<object>>();
+        private readonly List<Action<LibraryFile>> countActions = new List<Action<LibraryFile>>();
 
         public int FilteredCount { get; private set; } = 0;
 
         public int CheckedCount { get; private set; } = 0;
 
-        public LibraryFolder(RevitDirectory directory, LibraryFolder parent) : base(parent)
+        public LibraryFolder(DirectoryNode directory, LibraryFolder parent) : base(parent)
         {
             Folder = directory ?? throw new ArgumentNullException(nameof(directory));
-            Subfolders.AddRange(directory.Subfolder.Select(dir => new LibraryFolder(dir, this)));
-            Files.AddRange(directory.Files.Select(file => new LibraryFile(file, this)));
+            Subfolders.AddRange(directory.GetSubfolders<RevitFamilyFile>().Select(dir => new LibraryFolder(dir, this)));
+            Files.AddRange(GetRevitFamilies(directory).Select(file => new LibraryFile(file, this)));
+
+            AddCountAction(AllowedResetAction, AllowedCountAction);
+            AddCountAction(CheckedAllowedResetAction, CheckedAllowedCountAction);
         }
 
         public void Setup()
         {
-            AddRecursiveFiles(ref recusiveFiles);
+            RecusiveFiles.AddRange(Files);
             foreach (var folder in Subfolders)
             {
                 folder.Setup();
+                RecusiveFiles.AddRange(folder.RecusiveFiles);
             }
             UpdateFileCounts();
         }
 
-        public virtual void UpdateFileCounts()
+        public static IEnumerable<RevitFamily> GetRevitFamilies(DirectoryNode directory)
         {
-            FilteredCount = 0;
-            CheckedCount = 0;
+            if (directory is null) { throw new ArgumentNullException(nameof(directory)); }
+
+            var families = directory.GetFiles<RevitFamilyFile>(false)
+                .Where(famFile => famFile.IsBackup() == false)
+                .Select(famFile => new RevitFamily(famFile));
+            return families;
+        }
+
+        public void UpdateFileCounts()
+        {
+            InvokeResetActions();
             foreach (var handler in RecusiveFiles)
             {
-                if (handler.IsAllowed())
-                {
-                    FilteredCount += 1;
-                }
-                if (handler.IsCheckedAndAllowed())
-                {
-                    CheckedCount += 1;
-                }
-                UpdateCountAction(handler);
+                InvokeCountActions(handler);
             }
         }
 
+        private void InvokeResetActions()
+        {
+            foreach (var action in resetActions)
+            {
+                action.Invoke(null);
+            }
+        }
+
+        private void InvokeCountActions(LibraryFile handler)
+        {
+            foreach (var action in countActions)
+            {
+                action.Invoke(handler);
+            }
+        }
+
+        private void AllowedResetAction(object handler)
+        {
+            FilteredCount = 0;
+        }
+
+        private void AllowedCountAction(LibraryFile handler)
+        {
+            if (handler is null || handler.IsAllowed() == false) { return; }
+
+            FilteredCount += 1;
+        }
+
+        private void CheckedAllowedResetAction(object handler)
+        {
+            CheckedCount = 0;
+        }
+
+        private void CheckedAllowedCountAction(LibraryFile handler)
+        {
+            if (handler is null || handler.IsCheckedAndAllowed() == false) { return; }
+
+            CheckedCount += 1;
+        }
+
+        protected void AddCountAction(Action<object> resetAction, Action<LibraryFile> countAction)
+        {
+            resetActions.Add(resetAction);
+            countActions.Add(countAction);
+        }
 
 
         protected override void UpdateChildren()
@@ -73,8 +126,6 @@ namespace RevitJournal.Library
 
             UpdateFileCounts();
         }
-
-        protected virtual void UpdateCountAction(LibraryFile handler) { }
 
         internal void UpdateCheckedStatus()
         {
@@ -97,22 +148,11 @@ namespace RevitJournal.Library
 
         public IEnumerable<RevitFamily> CheckedFiles()
         {
-            foreach (var handler in recusiveFiles)
+            foreach (var handler in RecusiveFiles)
             {
                 if (handler.IsCheckedAndAllowed() == false) { continue; }
 
                 yield return handler.File;
-            }
-        }
-
-        private void AddRecursiveFiles(ref List<LibraryFile> revitFamilies)
-        {
-            if (revitFamilies is null) { throw new ArgumentNullException(nameof(revitFamilies)); }
-
-            revitFamilies.AddRange(Files);
-            foreach (var folder in Subfolders)
-            {
-                folder.AddRecursiveFiles(ref revitFamilies);
             }
         }
     }

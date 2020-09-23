@@ -13,13 +13,13 @@ namespace DataSource.Metadata
 
         public MetadataStatus Status { get; protected set; } = MetadataStatus.Initial;
 
-        public virtual bool Exist { get { return RevitFile.Exist; } }
+        public virtual bool Exist { get { return RevitFile.Exists(); } }
 
-        public abstract TModel Read(AFile source = null);
+        public abstract TModel Read(AFileNode source = null);
 
         public abstract void AddFileNameSuffix(params string[] suffixes);
 
-        public abstract void Write(TModel model, AFile destination = null);
+        public abstract void Write(TModel model, AFileNode destination = null);
 
         public abstract void UpdateStatus();
     }

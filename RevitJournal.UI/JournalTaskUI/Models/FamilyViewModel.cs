@@ -22,7 +22,7 @@ namespace RevitJournalUI.JournalTaskUI.Models
 
         public string RevitFileName
         {
-            get { return Handler.File.RevitFile.Name; }
+            get { return Handler.File.RevitFile.NameWithoutExtension; }
         }
 
         private bool _Enabled = true;

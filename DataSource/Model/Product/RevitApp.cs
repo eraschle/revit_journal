@@ -10,7 +10,7 @@ namespace DataSource.Model.Product
     {
         public const string Metadata = "of File";
 
-        public static RevitApp DefaultApp { get; } = new RevitApp(RevitAppFile.FileName, 1);
+        public static RevitApp DefaultApp { get; } = new RevitApp(RevitAppFile.RevitFileName, 1);
 
         [JsonIgnore]
         public RevitAppFile AppFile { get; }
@@ -32,8 +32,8 @@ namespace DataSource.Model.Product
 
         public RevitApp(RevitAppFile appFile)
         {
-            AppFile = appFile;
-            Name = AppFile.Name;
+            AppFile = appFile ?? throw new ArgumentNullException(nameof(appFile));
+            Name = AppFile.NameWithoutExtension;
             Version = AppFile.Version;
         }
 
@@ -59,7 +59,7 @@ namespace DataSource.Model.Product
         [JsonIgnore]
         public bool Executable
         {
-            get { return AppFile != null && AppFile.Exist; }
+            get { return AppFile != null && AppFile.Exists(); }
         }
 
         public override string ToString()

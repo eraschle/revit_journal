@@ -35,7 +35,11 @@ namespace RevitJournal.Revit
 
         public string WorkingDirectory
         {
-            get { return RevitApp.AppFile.ParentFolder; }
+            get
+            {
+                return RevitApp.AppFile.HasParent(out var parent) == false 
+                    ? string.Empty : parent.FullPath;
+            }
         }
 
         public static TimeSpan MinimumTimeout { get { return TimeSpan.FromMinutes(1); } }

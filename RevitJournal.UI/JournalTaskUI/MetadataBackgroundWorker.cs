@@ -1,6 +1,7 @@
 ﻿using DataSource.Helper;
 using DataSource.Model.FileSystem;
 using RevitJournal.Library;
+using RevitJournal.Revit.Filtering;
 using RevitJournalUI.JournalTaskUI.Models;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -39,7 +40,7 @@ namespace RevitJournalUI.JournalTaskUI
         {
             if (args is null || !(args.UserState is RevitFamily family)) { return; }
 
-            LibraryManager.FilterManager.AddValue(family);
+            RevitFilterManager.Instance.AddValue(family);
         }
 
         private static void UpdateMetadata(BackgroundWorker worker, DirectoryViewModel model)

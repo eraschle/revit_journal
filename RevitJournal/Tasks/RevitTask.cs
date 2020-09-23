@@ -44,7 +44,7 @@ namespace RevitJournal.Tasks
 
         public string Name
         {
-            get { return Family.RevitFile.Name; }
+            get { return Family.RevitFile.NameWithoutExtension; }
         }
 
         public void ClearActions()
@@ -82,8 +82,8 @@ namespace RevitJournal.Tasks
 
             if (options.CreateBackup)
             {
-                var backupPath = options.CreateBackupFile(SourceFile);
-                BackupFile = SourceFile.CopyTo<RevitFamilyFile>(backupPath, true);
+                var backupFile = options.CreateBackupFile(SourceFile);
+                BackupFile = SourceFile.CopyTo<RevitFamilyFile>(backupFile, true);
             }
 
             foreach (var command in Actions)

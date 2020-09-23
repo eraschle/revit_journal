@@ -17,8 +17,8 @@ namespace RevitJournal.Tasks
 {
     public class TaskUnitOfWork : IReportReceiver, IEquatable<TaskUnitOfWork>
     {
-        private static readonly NullRecordeJournalFile nullRecorde = new NullRecordeJournalFile();
-        private static readonly NullTaskJournalFile nullTask = new NullTaskJournalFile();
+        private static readonly RecordeJournalNullFile nullRecorde = new RecordeJournalNullFile();
+        private static readonly TaskJournalNullFile nullTask = new TaskJournalNullFile();
         private static readonly ITaskAction nullAction = new NullTaskAction();
 
         public RevitTask Task { get; private set; }
@@ -54,7 +54,8 @@ namespace RevitJournal.Tasks
 
         private TaskJournalFile CreateTaskJournal()
         {
-            var journal = Options.JournalDirectory;
+            var journalPath = Options.JournalDirectory;
+            var journal = PathFactory.Instance.GetRoot(journalPath);
             return TaskJournalCreator.Create(Task, journal);
         }
 
@@ -79,12 +80,12 @@ namespace RevitJournal.Tasks
             if (ActionManager.IsOpenAction(report.ActionId)
                 || ActionManager.IsSaveAction(report.ActionId))
             {
-                var resultFile = CreateFile<RevitFamilyFile>(report);
+                var resultFile = PathFactory.Instance.Create<RevitFamilyFile>(report.Message);
                 Task.ResultFile = resultFile;
             }
             else if (ActionManager.IsJournalAction(report.ActionId))
             {
-                var journalFile = CreateFile<RecordeJournalFile>(report);
+                var journalFile = PathFactory.Instance.Create<RecordeJournalFile>(report.Message);
                 RecordeJournal = journalFile;
             }
             Progress?.Report(this);
@@ -112,11 +113,6 @@ namespace RevitJournal.Tasks
                 default:
                     return TaskAppStatus.Started;
             }
-        }
-
-        private TFile CreateFile<TFile>(ReportMessage report) where TFile : AFile, new()
-        {
-            return new TFile { FullPath = report.Message };
         }
 
         #region Process

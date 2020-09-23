@@ -15,11 +15,11 @@ namespace DataSource.Json
             return new JsonDataSource<RevitProductData>(jsonFile);
         }        
 
-        public static JsonFile CreateJsonFile(string directory, int version)
+        public static JsonFile CreateJsonFile(DirectoryNode directory, int version)
         {
-            var fileName = string.Concat(JsonFileName, Constant.Underline, version, Constant.Point, JsonFile.FileExtension);
-            var filePath = Path.Combine(directory, fileName);
-            return AFile.Create<JsonFile>(filePath);
+            var fileName = string.Concat(JsonFileName, Constant.Underline, version, Constant.Point, JsonFile.JsonExtension);
+            var filePath = Path.Combine(directory.FullPath, fileName);
+            return PathFactory.Instance.Create<JsonFile>(filePath, directory);
         }
     }
 }

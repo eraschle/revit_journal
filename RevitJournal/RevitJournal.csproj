@@ -121,8 +121,6 @@
     <Compile Include="Revit\Filtering\Rules\ParameterRule.cs" />
     <Compile Include="Revit\Filtering\Rules\ProductRule.cs" />
     <Compile Include="Revit\Filtering\Rules\CategoryRule.cs" />
-    <Compile Include="Revit\Journal\NullRecordeJournalFile.cs" />
-    <Compile Include="Revit\Journal\NullTaskJournalFile.cs" />
     <Compile Include="Tasks\Actions\NullTaskAction.cs" />
     <Compile Include="Tasks\Actions\TypeLoaderExtensions.cs" />
     <Compile Include="Revit\Command\DocumentOpenAction.cs" />

@@ -8,28 +8,34 @@ namespace RevitJournal.Library
 
         public int EditMetadataCount { get; private set; } = 0;
 
-        public LibraryRoot(RevitDirectory directory) : base(directory, null) { }
-
-        public override void UpdateFileCounts()
+        public LibraryRoot(DirectoryNode directory) : base(directory, null)
         {
-            ValidMetadataCount = 0;
-            EditMetadataCount = 0;
-            base.UpdateFileCounts();
+            AddCountAction(ValidResetAction, ValidCountAction);
+            AddCountAction(EditResetAction, EditCountAction);
         }
 
-        protected override void UpdateCountAction(LibraryFile handler)
+        private void ValidResetAction(object handler)
         {
-            base.UpdateCountAction(handler);
-            if(handler is null || handler.IsCheckedAndAllowed() == false) { return; }
+            ValidMetadataCount = 0;
+        }
 
-            if (handler.File.HasValidMetadata)
-            {
-                ValidMetadataCount += 1;
-            }
-            if (handler.File.HasFileMetadata)
-            {
-                EditMetadataCount += 1;
-            }
+        private void ValidCountAction(LibraryFile handler)
+        {
+            if (handler is null || handler.File.HasValidMetadata == false) { return; }
+
+            ValidMetadataCount += 1;
+        }
+
+        private void EditResetAction(object handler)
+        {
+            EditMetadataCount = 0;
+        }
+
+        private void EditCountAction(LibraryFile handler)
+        {
+            if (handler is null || handler.File.HasFileMetadata == false) { return; }
+
+            EditMetadataCount += 1;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using RevitAction;
+﻿using DataSource.Model.FileSystem;
+using RevitAction;
 using RevitAction.Action;
 using RevitJournal.Revit.Command;
 using System;
@@ -40,7 +41,7 @@ namespace RevitJournal.Tasks.Actions
             return action;
         }
 
-        public static IEnumerable<ITaskAction> GetTaskActions(string directory)
+        public static IEnumerable<ITaskAction> GetTaskActions(DirectoryNode directory)
         {
             var externalActions = new List<ITaskAction>();
             foreach (var extneral in GetExternalActions(directory))
@@ -54,10 +55,9 @@ namespace RevitJournal.Tasks.Actions
             return externalActions;
         }
 
-        private static IEnumerable<ExternalAction> GetExternalActions(string directory)
+        private static IEnumerable<ExternalAction> GetExternalActions(DirectoryNode directory)
         {
-            var files = Directory.GetFiles(directory, $"*.{ExternalActionFile.FileExtension}")
-                                 .Select(path => new ExternalActionFile { FullPath = path });
+            var files = directory.GetFiles<ExternalActionFile>(true);
             var externalActions = files.Select(path => dataSource.Read(path));
 
 #if DEBUG

@@ -1,6 +1,8 @@
 ﻿using DataSource;
+using DataSource.Model.FileSystem;
 using RevitAction.Action;
 using RevitJournal.Library;
+using RevitJournal.Revit.Filtering;
 using RevitJournal.Tasks;
 using RevitJournal.Tasks.Actions;
 using RevitJournal.Tasks.Options;
@@ -218,7 +220,7 @@ namespace RevitJournalUI.JournalManagerUI
         private void UpdateCheckedFilters()
         {
             FilterViewModels.Clear();
-            foreach (var rule in LibraryManager.FilterManager.GetCheckedRules())
+            foreach (var rule in RevitFilterManager.Instance.GetCheckedRules())
             {
                 foreach (var value in rule.CheckedValues)
                 {
@@ -247,7 +249,8 @@ namespace RevitJournalUI.JournalManagerUI
 
         private void TaskActionsCommandAction(object parameter)
         {
-            var actions = ExternalAction.GetTaskActions(ActionDirectory);
+            var actionDirectory = PathFactory.Instance.GetRoot(ActionDirectory);
+            var actions = ExternalAction.GetTaskActions(actionDirectory);
             var dialog = new TaskActionsView(actions, TaskOptions);
             if (Actions.Count > 0)
             {

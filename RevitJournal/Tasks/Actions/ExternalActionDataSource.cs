@@ -8,7 +8,7 @@ namespace RevitJournal.Tasks.Actions
     {
         public ExternalAction Read(ExternalActionFile actionFile)
         {
-            if (actionFile is null || actionFile.Exist == false)
+            if (actionFile is null || actionFile.Exists() == false)
             {
                 throw new ArgumentException($"File does not exists {actionFile}");
             }

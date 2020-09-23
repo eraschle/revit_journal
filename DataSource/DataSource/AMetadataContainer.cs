@@ -65,7 +65,7 @@ namespace DataSource.Metadata
             }
         }
 
-        public void WriteMetaData(TModel model = null, AFile destination = null)
+        public void WriteMetaData(TModel model = null, AFileNode destination = null)
         {
             if (model is null && RevitMetadataStatus == MetadataStatus.Valid)
             {
@@ -84,7 +84,7 @@ namespace DataSource.Metadata
             }
         }
 
-        public TModel ReadMetaData(AFile source)
+        public TModel ReadMetaData(AFileNode source)
         {
             return FileDataSource.Read(source);
         }

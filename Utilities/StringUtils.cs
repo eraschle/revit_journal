@@ -15,7 +15,22 @@ namespace Utilities
 
         public static bool Starts(string value, string starts)
         {
+            if (string.IsNullOrWhiteSpace(value)
+                || string.IsNullOrWhiteSpace(starts))
+            {
+                return false;
+            }
             return value.StartsWith(starts, StringComparison.CurrentCulture);
+        }
+
+        public static bool Ends(string value, string end)
+        {
+            if (string.IsNullOrWhiteSpace(value)
+                 || string.IsNullOrWhiteSpace(end))
+            {
+                return false;
+            }
+            return value.EndsWith(end, StringComparison.CurrentCulture);
         }
 
         public static int Compare(string value, string other)
