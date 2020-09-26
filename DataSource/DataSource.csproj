@@ -89,7 +89,6 @@
     <Compile Include="DataSource\Xml\FamilyXmlReader.cs" />
     <Compile Include="DataSource\Xml\FamilyXmlReadException.cs" />
     <Compile Include="DataSource\Xml\FamilyXmlRepository.cs" />
-    <Compile Include="Helper\DateHelper.cs" />
     <Compile Include="Helper\ModelHelper.cs" />
     <Compile Include="Helper\Constant.cs" />
     <Compile Include="Model\Catalog\ACatalog.cs" />

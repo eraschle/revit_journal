@@ -48,7 +48,7 @@ namespace RevitJournal.Revit.Command
         private string GetDate()
         {
             var formats = new string[] { DateUtils.YearLong, DateUtils.MonthShort, DateUtils.Day };
-            return DateUtils.GetDate(Constant.Minus, formats);
+            return DateUtils.AsString(Constant.Minus, formats);
         }
 
 

@@ -5,6 +5,7 @@ using RevitJournal.Library;
 using DataSource.Helper;
 using System;
 using DataSource.Model;
+using Utilities;
 
 namespace RevitJournalUI.JournalTaskUI.Models
 {
@@ -55,7 +56,7 @@ namespace RevitJournalUI.JournalTaskUI.Models
             {
                 var metadata = Handler.File.Metadata;
                 return metadata is object
-                    ? DateHelper.AsString(metadata.Updated)
+                    ? DateUtils.AsString(metadata.Updated)
                     : string.Empty;
             }
         }

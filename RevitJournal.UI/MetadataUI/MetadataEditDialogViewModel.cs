@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Utilities;
 
 namespace RevitJournalUI.MetadataUI
 {
@@ -93,7 +94,7 @@ namespace RevitJournalUI.MetadataUI
                 Product = product.ProductName;
             }
 
-            Updated = DateHelper.AsString(Family.Updated);
+            Updated = DateUtils.AsString(Family.Updated);
 
             FamilyParameters.Clear();
             foreach (var parameter in Family.Parameters)

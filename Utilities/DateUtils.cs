@@ -19,16 +19,27 @@ namespace Utilities
         public const string Milliseconds = "ffff";
 
 
-        public static string GetDate(string separator, params string[] format)
+        public static string AsString(string separator, params string[] format)
+        {
+            return AsString(DateTime.Now, separator, format);
+        }
+
+        public static string AsString(DateTime dateTime, string separator = "", params string[] format)
         {
             if (format is null || format.Length == 0)
             {
-                return DateTime.Now.ToString(CultureInfo.CurrentCulture);
+                return dateTime.ToString(CultureInfo.CurrentCulture);
             }
-            string formatString = string.IsNullOrWhiteSpace(separator) 
-                ? string.Concat(format) 
+            string formatString = string.IsNullOrWhiteSpace(separator)
+                ? string.Concat(format)
                 : string.Join(separator, format);
-            return DateTime.Now.ToString(formatString, CultureInfo.CurrentCulture);
+            return dateTime.ToString(formatString, CultureInfo.CurrentCulture);
+        }
+
+
+        public static DateTime AsDate(string datetime)
+        {
+            return DateTime.TryParse(datetime, out var date) ? date : DateTime.MinValue;
         }
     }
 }

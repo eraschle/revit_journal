@@ -5,6 +5,7 @@ using DataSource.Model.Product;
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using Utilities;
 
 namespace DataSource.Xml
 {
@@ -65,7 +66,7 @@ namespace DataSource.Xml
 
             familyData = Repository.Next(familyData);
             var updated = Repository.Value(familyData);
-            Family.Updated = DateHelper.AsDate(updated);
+            Family.Updated = DateUtils.AsDate(updated);
         }
 
         private void BuildCommonParameters()

@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
+using Utilities;
 using Utilities.UI.Helper;
 
 namespace RevitJournalUI.MetadataUI
@@ -286,7 +287,7 @@ namespace RevitJournalUI.MetadataUI
             {
                 OriginalProduct = product.ProductName;
             }
-            OriginalUpdated = DateHelper.AsString(Original.Updated);
+            OriginalUpdated = DateUtils.AsString(Original.Updated);
 
             OriginalFamilyParameters.Clear();
             foreach (var parameter in Original.Parameters)
@@ -474,7 +475,7 @@ namespace RevitJournalUI.MetadataUI
                 SourceProductDistance = GetDistance(nameof(Source.Product.ProductName));
             }
 
-            SourceUpdated = DateHelper.AsString(Source.Updated);
+            SourceUpdated = DateUtils.AsString(Source.Updated);
             SourceUpdatedDistance = GetDistance(nameof(Source.Updated));
 
             SourceLibraryPath = Source.LibraryPath;

@@ -1,5 +1,7 @@
 ﻿using DataSource.Helper;
 using DataSource.Model.Family;
+using System;
+using Utilities;
 
 namespace RevitJournal.Duplicate.Comparer.FamilyComparer
 {
@@ -14,7 +16,9 @@ namespace RevitJournal.Duplicate.Comparer.FamilyComparer
 
         public override string GetProperty(Family model)
         {
-            return DateHelper.AsString(model.Updated);
+            if(model is null) { throw new ArgumentNullException(nameof(model)); }
+
+            return DateUtils.AsString(model.Updated);
         }
     }
 }

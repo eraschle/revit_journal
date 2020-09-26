@@ -35,7 +35,7 @@ namespace RevitJournal.Revit.Journal
             if (fileNode is null) { throw new ArgumentNullException(nameof(fileNode)); }
 
             var formats = new string[] { DateUtils.Hour, DateUtils.Minute, DateUtils.Seconds, DateUtils.Milliseconds };
-            fileNode.AddSuffixes(DateUtils.GetDate(Constant.Minus, formats));
+            fileNode.AddSuffixes(DateUtils.AsString(Constant.Minus, formats));
             base.SetFile(fileNode);
         }
 
