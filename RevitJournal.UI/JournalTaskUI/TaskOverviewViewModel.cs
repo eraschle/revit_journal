@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Threading;
+using Utilities.System;
 
 namespace RevitJournalUI.JournalTaskUI
 {
@@ -109,7 +110,8 @@ namespace RevitJournalUI.JournalTaskUI
 
             TaskModels.Clear();
             MaxTasks = 0;
-            var totalTime = TimeSpanHelper.GetMinuteAndSeconds(options.Arguments.Timeout);
+            var formats = new string[] { DateUtils.Minute, DateUtils.Seconds };
+            var totalTime = DateUtils.AsString(options.Arguments.Timeout, Constant.Point, formats);
             foreach (var unitOfWork in manager.UnitOfWorks)
             {
                 MaxTasks += 1;

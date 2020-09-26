@@ -3,8 +3,8 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
-using Utilities;
-using Utilities.UI.Helper;
+using Utilities.System;
+using Utilities.UI;
 
 namespace RevitJournalUI.Tasks.Actions.Parameter
 {

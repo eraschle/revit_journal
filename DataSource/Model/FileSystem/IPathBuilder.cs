@@ -4,8 +4,6 @@ namespace DataSource.Model.FileSystem
 {
     public interface IPathBuilder
     {
-        string PathSeparator { get; }
-
         bool HasRoot(string path, out DirectoryRootNode rootNode);
 
         DirectoryRootNode CreateRoot(string path);

@@ -140,7 +140,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Helper\ListViewHelper.cs" />
-    <Compile Include="Helper\TimeSpanHelper.cs" />
     <Compile Include="JournalTaskUI\Converter\DirectoryVisibilityConverter.cs" />
     <Compile Include="JournalTaskUI\Converter\FamilyStatusVisibilityMetadataConverter.cs" />
     <Compile Include="JournalTaskUI\Converter\FamilyStatusToolTipMetadataConverter.cs" />

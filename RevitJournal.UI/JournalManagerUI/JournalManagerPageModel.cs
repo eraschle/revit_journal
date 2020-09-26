@@ -21,8 +21,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
-using Utilities;
-using Utilities.UI.Helper;
+using Utilities.System;
+using Utilities.UI;
 
 namespace RevitJournalUI.JournalManagerUI
 {

@@ -1,11 +1,11 @@
 ﻿using RevitJournalUI.MetadataUI;
 using System.Windows.Input;
-using Utilities.UI.Helper;
 using RevitJournal.Library;
 using DataSource.Helper;
 using System;
 using DataSource.Model;
-using Utilities;
+using Utilities.System;
+using Utilities.UI;
 
 namespace RevitJournalUI.JournalTaskUI.Models
 {

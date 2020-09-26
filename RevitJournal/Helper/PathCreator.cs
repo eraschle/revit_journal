@@ -1,8 +1,8 @@
-﻿using DataSource.Helper;
-using DataSource.Model.FileSystem;
+﻿using DataSource.Model.FileSystem;
 using System;
 using System.Linq;
-using Utilities;
+using Utilities.System;
+using Utilities.System.FileSystem;
 
 namespace RevitJournal.Helper
 {
@@ -34,26 +34,12 @@ namespace RevitJournal.Helper
 
         public void SetRoot(string path)
         {
-            RootPath = string.IsNullOrEmpty(path) ? string.Empty : RemoveSlases(path);
+            RootPath = string.IsNullOrEmpty(path) ? string.Empty : DirUtils.RemoveSlases(path);
         }
 
         public void SetNewRoot(string path)
         {
-            NewRootPath = string.IsNullOrEmpty(path) ? string.Empty : RemoveSlases(path);
-        }
-
-        private string RemoveSlases(string path)
-        {
-            if (StringUtils.Starts(path, builder.PathSeparator))
-            {
-                path = path.Substring(1);
-            }
-
-            if (StringUtils.Ends(path, builder.PathSeparator))
-            {
-                path = path.Remove(path.Length - 1);
-            }
-            return path;
+            NewRootPath = string.IsNullOrEmpty(path) ? string.Empty : DirUtils.RemoveSlases(path);
         }
 
         public TFile CreatePath<TFile>(TFile file) where TFile : AFileNode, new()

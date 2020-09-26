@@ -5,12 +5,14 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Threading;
-using Utilities;
+using Utilities.System;
 
 namespace RevitJournalUI.Tasks
 {
     public class TaskViewModel : INotifyPropertyChanged
     {
+        private static string[] formatString = new string[] { DateUtils.Minute, DateUtils.Seconds };
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private TimeSpan timerInterval;
@@ -109,7 +111,7 @@ namespace RevitJournalUI.Tasks
             if (TaskUoW.Status.IsStarted && TaskUoW.Status.IsExecuted == false)
             {
                 executionTime += timerInterval;
-                var runTime = TimeSpanHelper.GetMinuteAndSeconds(executionTime);
+                var runTime = DateUtils.AsString(executionTime, Constant.Point, formatString);
                 TaskTime = $"{runTime} / {TotalTime}";
             }
         }

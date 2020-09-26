@@ -6,7 +6,7 @@ using RevitJournalUI.Helper;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using Utilities;
+using Utilities.System;
 
 namespace RevitJournalUI.JournalTaskUI.Options
 {
@@ -55,7 +55,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
 
         private string CreateTimeoutTitle()
         {
-            return string.Concat(prefixTimeoutTitle, " [", TimeSpanHelper.GetMinutes(Options.Timeout), " min]");
+            return string.Concat(prefixTimeoutTitle, " [", DateUtils.AsString(Options.Timeout, format: DateUtils.Minute), " min]");
         }
 
         public static int TimeoutMinimum

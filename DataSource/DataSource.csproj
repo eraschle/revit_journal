@@ -73,7 +73,6 @@
     <Compile Include="DataSource\IMetadataContainer.cs" />
     <Compile Include="DataSource\Json\JsonDataSource.cs" />
     <Compile Include="DataSource\Json\FamilyJsonDataSource.cs" />
-    <Compile Include="Helper\BoolHelper.cs" />
     <Compile Include="Model\FileSystem\OmniClassFile.cs" />
     <Compile Include="Model\IModel.cs" />
     <Compile Include="Model\Catalog\RevitEnum.cs" />
@@ -90,7 +89,6 @@
     <Compile Include="DataSource\Xml\FamilyXmlReadException.cs" />
     <Compile Include="DataSource\Xml\FamilyXmlRepository.cs" />
     <Compile Include="Helper\ModelHelper.cs" />
-    <Compile Include="Helper\Constant.cs" />
     <Compile Include="Model\Catalog\ACatalog.cs" />
     <Compile Include="Model\Catalog\Category.cs" />
     <Compile Include="Model\Catalog\OmniClass.cs" />

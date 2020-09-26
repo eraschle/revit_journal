@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using Utilities;
+using Utilities.System;
+using Utilities.System.FileSystem;
 
 namespace DataSource.Model.FileSystem
 {
@@ -21,10 +21,6 @@ namespace DataSource.Model.FileSystem
                 return instance;
             }
         }
-
-        private static char Separator { get; } = Path.DirectorySeparatorChar;
-
-        public string PathSeparator { get; } = Separator.ToString(CultureInfo.CurrentCulture);
 
         private readonly Dictionary<string, DirectoryNode> directories = new Dictionary<string, DirectoryNode>();
         private readonly Dictionary<string, DirectoryRootNode> rootDirectories = new Dictionary<string, DirectoryRootNode>();
@@ -73,20 +69,12 @@ namespace DataSource.Model.FileSystem
 
         public string GetParentPath(string path)
         {
-            var lastName = GetLastNodeName(path);
-            return path.Remove(path.Length - (lastName.Length + 1));
+            return DirUtils.GetParentPath(path);
         }
 
         public string GetLastNodeName(string path)
         {
-            if (string.IsNullOrWhiteSpace(path)) { throw new ArgumentNullException(nameof(path)); }
-
-            var split = path.Split(Separator);
-            if (split.Length <= 1)
-            {
-                throw new ArgumentException($"Path not valid: {path}");
-            }
-            return split[split.Length - 1];
+            return DirUtils.GetLastPathName(path);
         }
 
         public DirectoryNode CreateWithPath(string path)
@@ -205,7 +193,7 @@ namespace DataSource.Model.FileSystem
 
         private TPathNode CreateNode<TPathNode>(string nodeName) where TPathNode : APathNode, new()
         {
-            if (string.IsNullOrWhiteSpace(nodeName) || nodeName.Contains(Separator))
+            if (string.IsNullOrWhiteSpace(nodeName) || nodeName.Contains(Constant.PathSeparator))
             {
                 throw new ArgumentException($"expected name, but get empty name or path: {nodeName}");
             }

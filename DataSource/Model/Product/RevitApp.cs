@@ -1,8 +1,8 @@
-﻿using DataSource.Helper;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Utilities.System;
 
 namespace DataSource.Model.Product
 {
