@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Utilities
+namespace Utilities.System
 {
     public static class DebugUtils
     {

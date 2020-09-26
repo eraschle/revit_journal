@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Windows.Forms;
-using Utilities.System;
+using Utilities.System.FileSystem;
 
-namespace Utilities.UI.Helper
+namespace Utilities.UI
 {
     public static class PathDialog
     {

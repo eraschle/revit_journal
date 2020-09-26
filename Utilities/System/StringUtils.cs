@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Utilities
+namespace Utilities.System
 {
     public static class StringUtils
     {

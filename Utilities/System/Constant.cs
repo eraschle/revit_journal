@@ -1,18 +1,18 @@
 ﻿using System.IO;
 
-namespace DataSource.Helper
+namespace Utilities.System
 {
     public static class Constant
     {
         public const char UnderlineChar = '_';
         public readonly static string Underline = UnderlineChar.ToString();
-        
+
         public const char MinusChar = '-';
         public readonly static string Minus = MinusChar.ToString();
 
         public const char SpaceChar = ' ';
         public readonly static string Space = SpaceChar.ToString();
-        
+
         public const string Star = "*";
 
         public const char PointChar = '.';
@@ -23,7 +23,8 @@ namespace DataSource.Helper
         public const char BackSlashChar = '\\';
         public readonly static string BackSlash = BackSlashChar.ToString();
 
-        public static string FolderSeperator = Path.DirectorySeparatorChar.ToString();
+        public static char PathSeparatorChar = Path.DirectorySeparatorChar;
+        public static string PathSeparator = PathSeparatorChar.ToString();
 
         public static char Tabulator = '\t';
     }

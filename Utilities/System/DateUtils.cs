@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Utilities
+namespace Utilities.System
 {
     public static class DateUtils
     {
@@ -19,7 +19,7 @@ namespace Utilities
         public const string Milliseconds = "ffff";
 
 
-        public static string AsString(string separator, params string[] format)
+        public static string AsString(string separator = "", params string[] format)
         {
             return AsString(DateTime.Now, separator, format);
         }
@@ -30,16 +30,27 @@ namespace Utilities
             {
                 return dateTime.ToString(CultureInfo.CurrentCulture);
             }
-            string formatString = string.IsNullOrWhiteSpace(separator)
+            string formatString = GetFormatString(separator, format);
+            return dateTime.ToString(formatString, CultureInfo.CurrentCulture);
+        }
+
+        private static string GetFormatString(string separator = "", params string[] format)
+        {
+            return string.IsNullOrWhiteSpace(separator)
                 ? string.Concat(format)
                 : string.Join(separator, format);
-            return dateTime.ToString(formatString, CultureInfo.CurrentCulture);
         }
 
 
         public static DateTime AsDate(string datetime)
         {
             return DateTime.TryParse(datetime, out var date) ? date : DateTime.MinValue;
+        }
+
+        public static string AsString(TimeSpan timeSpan, string separator = "", params string[] format)
+        {
+            string formatString = GetFormatString(separator, format);
+            return timeSpan.ToString(formatString, CultureInfo.CurrentCulture.DateTimeFormat);
         }
     }
 }

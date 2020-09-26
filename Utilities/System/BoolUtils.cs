@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 
-namespace DataSource.Helper
+namespace Utilities.System
 {
-    public static class BoolHelper
+    public static class BoolUtils
     {
         public static string Get(bool value, CultureInfo culture = null)
         {
