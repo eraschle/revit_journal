@@ -1,6 +1,7 @@
 ﻿using RevitJournal.Revit.Journal;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Management;
 using System.Text;
 using System.Threading;
@@ -70,7 +71,7 @@ namespace RevitJournal.Revit
             {
                 foreach (var managmentObject in searcher.Get())
                 {
-                    var subPid = Convert.ToInt32(managmentObject["ProcessID"]);
+                    var subPid = Convert.ToInt32(managmentObject["ProcessID"], CultureInfo.CurrentCulture);
                     try
                     {
                         var proc = Process.GetProcessById(subPid);
