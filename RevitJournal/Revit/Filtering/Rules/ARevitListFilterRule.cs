@@ -22,9 +22,9 @@ namespace RevitJournal.Revit.Filtering.Rules
 
             foreach (var value in values)
             {
-                if (filterValues.Contains(value)) { continue; }
+                if (FilterValues.Contains(value)) { continue; }
 
-                filterValues.Add(value);
+                FilterValues.Add(value);
             }
         }
 

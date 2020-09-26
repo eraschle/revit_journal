@@ -19,8 +19,8 @@ namespace RevitCommand.Families.Metadata
 #if DEBUG
             Action.Library.Value = debugLibraryPath;
 #endif
-            var rootDirectory = PathFactory.Instance.GetRoot(Action.Library.Value);
-            var revitFile = PathFactory.Instance.Create<RevitFamilyFile>(Document.PathName, rootDirectory);
+            var rootDirectory = PathFactory.Instance.CreateRoot(Action.Library.Value);
+            var revitFile = PathFactory.Instance.Create<RevitFamilyFile>(Document.PathName);
             var revitFamily = new RevitFamily(revitFile);
             var metaFamily = revitFamily.ReadEditedMetaData();
 

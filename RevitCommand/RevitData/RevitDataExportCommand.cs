@@ -26,7 +26,7 @@ namespace RevitCommand.RevitData
 #if DEBUG
             Action.ExportDirectory.Value = ProductDataDirectory;
 #endif
-            var root = PathFactory.Instance.GetRoot(Action.ExportDirectory.Value);
+            var root = PathFactory.Instance.CreateRoot(Action.ExportDirectory.Value);
             var jsonFile = ProductDataJsonDataSource.CreateJsonFile(root, version);
             var datasource = ProductDataJsonDataSource.CreateDataSource(jsonFile);
             var productData = new RevitProductData

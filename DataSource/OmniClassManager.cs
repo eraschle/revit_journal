@@ -69,7 +69,7 @@ namespace DataSource
             if (revitApp is null || HasAppFile(revitApp) == false 
                 || HasOmniClassDirectory(revitApp.AppFile, out var directory) == false) { return false; }
 
-            var rootNode = PathFactory.Instance.GetRoot(directory);
+            var rootNode = PathFactory.Instance.CreateRoot(directory);
             var omniClassFile = revitApp.AppFile.ChangeFileName<OmniClassFile>(OmniClassFile.FileName)
                                                 .ChangeDirectory<OmniClassFile>(rootNode);
             if (omniClassFile.Exists())

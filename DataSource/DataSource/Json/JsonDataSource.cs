@@ -26,7 +26,7 @@ namespace DataSource.DataSource.Json
         {
             if (suffixes is null || suffixes.Length == 0) { return; }
 
-            JsonFile.NameSuffixes.AddRange(suffixes);
+            JsonFile.AddSuffixes(suffixes);
         }
 
         public TModel Read(JsonFile source = null)

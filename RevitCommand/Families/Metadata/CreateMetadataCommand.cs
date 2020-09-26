@@ -18,8 +18,8 @@ namespace RevitCommand.Families.Metadata
     {
         protected override Result ExecuteRevitCommand(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            var rootDirectory = PathFactory.Instance.GetRoot(Action.Library.Value);
-            var revitFile = PathFactory.Instance.Create<RevitFamilyFile>(Document.PathName, rootDirectory);
+            var rootDirectory = PathFactory.Instance.CreateRoot(Action.Library.Value);
+            var revitFile = PathFactory.Instance.Create<RevitFamilyFile>(Document.PathName);
             var dataSource = new MetadataJsonDataSource(revitFile);
             var metaFamily = new DS.Family.Family();
             if (dataSource.Exist)

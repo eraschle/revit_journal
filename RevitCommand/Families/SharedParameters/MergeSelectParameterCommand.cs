@@ -44,9 +44,9 @@ namespace RevitCommand.Families.SharedParameters
             var managerFamily = new RevitFamilyParameterManager(Document);
             var managerReport = new RevitFamilyManagerReport(managerFamily);
 
-            var root = PathFactory.Instance.GetRoot(Action.RootDirectory.Value);
-            var reportFile = PathFactory.Instance.Create<RevitFamilyFile>(Document.PathName, root);
-            reportFile.NameSuffixes.AddRange(new string[] { "merge", "shared", "parameter" });
+            var root = PathFactory.Instance.CreateRoot(Action.RootDirectory.Value);
+            var reportFile = PathFactory.Instance.Create<RevitFamilyFile>(Document.PathName);
+            reportFile.AddSuffixes("merge", "shared", "parameter");
 
             var report = new Report(reportFile);
             foreach (var ifcParameter in Action.SharedParameters.ParameterNames)

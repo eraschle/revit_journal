@@ -1,8 +1,6 @@
 ﻿using DataSource.Helper;
 using DataSource.Model.FileSystem;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Utilities;
 
@@ -17,6 +15,13 @@ namespace RevitJournal.Helper
         public const string REVITFILENAME = "[File Name]";
         public const string SUFFIXNAME = "[Save As Suffix]";
 
+        private readonly IPathBuilder builder;
+
+        public PathCreator(IPathBuilder pathBuilder)
+        {
+            builder = pathBuilder ?? throw new ArgumentNullException(nameof(pathBuilder));
+        }
+
         public string RootPath { get; private set; }
 
         public string FileSuffix { get; set; } = string.Empty;
@@ -29,24 +34,24 @@ namespace RevitJournal.Helper
 
         public void SetRoot(string path)
         {
-            RootPath = RemoveSlases(path is null ? string.Empty : path);
+            RootPath = string.IsNullOrEmpty(path) ? string.Empty : RemoveSlases(path);
         }
 
         public void SetNewRoot(string path)
         {
-            NewRootPath = RemoveSlases(path is null ? string.Empty : path);
+            NewRootPath = string.IsNullOrEmpty(path) ? string.Empty : RemoveSlases(path);
         }
 
         private string RemoveSlases(string path)
         {
-            if (path.StartsWith(Constant.BackSlash, StringComparison.CurrentCulture))
+            if (StringUtils.Starts(path, builder.PathSeparator))
             {
                 path = path.Substring(1);
             }
 
-            if (path.EndsWith(Constant.BackSlash, StringComparison.CurrentCulture))
+            if (StringUtils.Ends(path, builder.PathSeparator))
             {
-                path = path.Substring(path.Length - 1);
+                path = path.Remove(path.Length - 1);
             }
             return path;
         }
@@ -55,32 +60,33 @@ namespace RevitJournal.Helper
         {
             if (file is null) { throw new ArgumentNullException(nameof(file)); }
 
-            var factory = PathFactory.Instance;
-            var directories = file.GetDirectoriesToRoot();
-            DirectoryNode rootNode = factory.GetRoot(RootPath);
+            var directories = file.Parent.GetRootParentNodes();
+            DirectoryNode rootNode = builder.CreateRoot(RootPath);
             if (HasNewRootFolder())
             {
                 directories.Remove(rootNode);
-                var newRootNode = factory.GetRoot(NewRootPath);
+                var newRootNode = builder.CreateRoot(NewRootPath);
                 directories.Insert(0, newRootNode);
-                factory.Update(directories);
             }
             if (string.IsNullOrWhiteSpace(BackupFolder) == false)
             {
+                var backupNode = builder.CreateWithName(BackupFolder);
+                DirectoryNode parentNode;
                 if (AddBackupAtEnd)
                 {
-                    var backupNode = factory.Create(BackupFolder, directories.Last());
+                    parentNode = directories.Last();
                     directories.Add(backupNode);
                 }
                 else
                 {
-                    var backupNode = factory.Create(BackupFolder, directories.First());
+                    parentNode = directories.First();
                     directories.Insert(1, backupNode);
-                    factory.Update(directories);
                 }
+                builder.InsertFolder(parentNode, backupNode);
             }
-            var newFile = factory.Create<TFile>(file.FullPath, directories.Last());
-            if (newFile.HasParent(out var parent) 
+            builder.UpdateOrInsert(directories);
+            var newFile = builder.Create<TFile>(file.FullPath);
+            if (newFile.HasParent(out var parent)
                 && parent.Exists() == false)
             {
                 parent.Create();
@@ -88,7 +94,7 @@ namespace RevitJournal.Helper
 
             if (string.IsNullOrWhiteSpace(FileSuffix) == false)
             {
-                newFile.NameSuffixes.Add(FileSuffix);
+                newFile.AddSuffixes(FileSuffix);
             }
             return newFile;
         }

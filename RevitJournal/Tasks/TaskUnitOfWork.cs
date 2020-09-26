@@ -55,7 +55,7 @@ namespace RevitJournal.Tasks
         private TaskJournalFile CreateTaskJournal()
         {
             var journalPath = Options.JournalDirectory;
-            var journal = PathFactory.Instance.GetRoot(journalPath);
+            var journal = PathFactory.Instance.CreateRoot(journalPath);
             return TaskJournalCreator.Create(Task, journal);
         }
 

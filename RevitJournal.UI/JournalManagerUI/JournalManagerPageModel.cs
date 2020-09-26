@@ -42,7 +42,7 @@ namespace RevitJournalUI.JournalManagerUI
 
         public JournalManagerPageModel()
         {
-            LibraryManager = new LibraryManager();
+            LibraryManager = new LibraryManager { PathBuilder = PathFactory.Instance };
             TaskManager = new TaskManager();
             TaskOptions = new TaskOptions();
             ProductManager.UpdateVersions();
@@ -249,7 +249,7 @@ namespace RevitJournalUI.JournalManagerUI
 
         private void TaskActionsCommandAction(object parameter)
         {
-            var actionDirectory = PathFactory.Instance.GetRoot(ActionDirectory);
+            var actionDirectory = PathFactory.Instance.CreateRoot(ActionDirectory);
             var actions = ExternalAction.GetTaskActions(actionDirectory);
             var dialog = new TaskActionsView(actions, TaskOptions);
             if (Actions.Count > 0)

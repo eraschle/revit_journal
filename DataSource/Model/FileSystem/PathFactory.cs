@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Utilities;
@@ -22,115 +22,184 @@ namespace DataSource.Model.FileSystem
             }
         }
 
+        private static char Separator { get; } = Path.DirectorySeparatorChar;
+
+        public string PathSeparator { get; } = Separator.ToString(CultureInfo.CurrentCulture);
+
         private readonly Dictionary<string, DirectoryNode> directories = new Dictionary<string, DirectoryNode>();
-        private readonly Dictionary<string, DirectoryPathNode> rootDirectories = new Dictionary<string, DirectoryPathNode>();
+        private readonly Dictionary<string, DirectoryRootNode> rootDirectories = new Dictionary<string, DirectoryRootNode>();
 
         private PathFactory() { }
 
-        public bool HasRoot(string path)
+        public bool HasRoot(string path, out DirectoryRootNode rootNode)
         {
-            return rootDirectories.Keys.Any(key => StringUtils.Starts(path, key));
+            rootNode = null;
+            var rootKey = rootDirectories.Keys.FirstOrDefault(key => StringUtils.Starts(path, key));
+            if (string.IsNullOrWhiteSpace(rootKey) == false)
+            {
+                rootNode = rootDirectories[rootKey];
+            }
+            return rootNode is object;
         }
 
-        public DirectoryPathNode GetRoot(string path)
+        public DirectoryRootNode CreateRoot(string path)
         {
-            CreateRoot(path);
+            if (HasRoot(path, out var rootNode))
+            {
+                throw new ArgumentException($"Root with parent folder already exists {rootNode.FullPath}");
+            }
+
+            if (rootDirectories.ContainsKey(path) == false)
+            {
+                var node = new DirectoryRootNode(path, this);
+                rootDirectories.Add(path, node);
+            }
             return rootDirectories[path];
         }
 
-        public void CreateRoot(string path)
+        public IEnumerable<TFile> CreateFiles<TFile>(DirectoryRootNode rootNode, string pattern = null) where TFile : AFileNode, new()
         {
-            if (rootDirectories.ContainsKey(path)) { return; }
+            if (rootNode is null) { throw new ArgumentNullException(nameof(rootNode)); }
 
-            var rootNode = CreateNode<DirectoryPathNode>(path, null);
-            rootDirectories.Add(path, rootNode);
-        }
-
-        public static string RemoveLast(string path, string removeName)
-        {
-            if (string.IsNullOrWhiteSpace(path)) { throw new ArgumentNullException(nameof(path)); }
-            if (string.IsNullOrWhiteSpace(removeName)) { throw new ArgumentNullException(nameof(removeName)); }
-
-            return path.Remove(path.Length - (removeName.Length + 1));
-        }
-
-        public string GetLastRemoved(string path, string removeName)
-        {
-            return RemoveLast(path, removeName);
-        }
-
-        public static string GetLastName(string path)
-        {
-            if (string.IsNullOrWhiteSpace(path)) { throw new ArgumentNullException(nameof(path)); }
-
-            var splitPath = path.Split(Path.DirectorySeparatorChar);
-            if (splitPath.Length == 1)
+            var search = new TFile().GetSearchPattern(pattern);
+            var option = SearchOption.AllDirectories;
+            var files = new List<TFile>();
+            foreach (var file in Directory.GetFiles(rootNode.FullPath, search, option))
             {
-                throw new ArgumentException($"Not valid path: {path}");
+                files.Add(Create<TFile>(file));
             }
-            return splitPath.Last();
+            return files;
         }
 
-        public string GetLast(string path)
+        public string GetParentPath(string path)
         {
-            return GetLastName(path);
+            var lastName = GetLastNodeName(path);
+            return path.Remove(path.Length - (lastName.Length + 1));
         }
 
-        public DirectoryNode Create(string path)
+        public string GetLastNodeName(string path)
         {
+            if (string.IsNullOrWhiteSpace(path)) { throw new ArgumentNullException(nameof(path)); }
+
+            var split = path.Split(Separator);
+            if (split.Length <= 1)
+            {
+                throw new ArgumentException($"Path not valid: {path}");
+            }
+            return split[split.Length - 1];
+        }
+
+        public DirectoryNode CreateWithPath(string path)
+        {
+            if (IsDirectory(path, out var directory))
+            {
+                return directory;
+            }
             var parent = CreateParent(path);
             return Create(path, parent);
         }
 
-        public DirectoryNode Create(string path, DirectoryNode parent)
+        public DirectoryNode CreateWithName(string nodeName)
         {
-            if (HasRoot(path) == false) { throw new ArgumentException($"No Root created {path}"); }
+            return CreateNode<DirectoryNode>(nodeName);
+        }
+
+        public bool IsDirectory(string path, out DirectoryNode directory)
+        {
+            directory = null;
+            if (rootDirectories.ContainsKey(path))
+            {
+                directory = rootDirectories[path];
+            }
+            else if (directories.ContainsKey(path))
+            {
+                directory = directories[path];
+            }
+            return directory is object;
+        }
+
+        private DirectoryNode CreateParent(string path)
+        {
+            if (IsDirectory(path, out var directory))
+            {
+                return directory;
+            }
+            var parentPath = GetParentPath(path);
+            return CreateWithPath(parentPath);
+        }
+
+        private DirectoryNode Create(string path, DirectoryNode parent)
+        {
+            if (HasRoot(path, out _) == false) { throw new ArgumentException($"No Root for {path}"); }
 
             if (directories.ContainsKey(path) == false)
             {
-                var current = CreateNode<DirectoryNode>(path, parent);
+                var nodeName = GetLastNodeName(path);
+                var current = CreateNode<DirectoryNode>(nodeName, parent);
                 directories.Add(path, current);
             }
             return directories[path];
         }
 
-        public IList<DirectoryNode> Update(IList<DirectoryNode> directories)
+        public void InsertFolder(DirectoryNode directory, DirectoryNode toInsert)
+        {
+            if (directory is null || toInsert is null) { return; }
+
+            foreach (var folder in directory.DirectoryNodes)
+            {
+                var newFolder = CreateWithName(folder.Name);
+                newFolder.SetParent(toInsert);
+            }
+            foreach (var file in directory.FileNodes)
+            {
+                var newFile = (AFileNode)Activator.CreateInstance(file.GetType());
+                newFile.Name = string.Copy(file.Name);
+                newFile.SetParent(toInsert);
+            }
+
+            toInsert.SetParent(directory);
+        }
+
+        public IList<DirectoryNode> UpdateOrInsert(IList<DirectoryNode> directories)
         {
             if (directories is null) { throw new ArgumentNullException(nameof(directories)); }
 
             for (int idx = 1; idx < directories.Count; idx++)
             {
-                var current = directories[idx];
-                var parent = directories[idx - 1];
-                directories[idx] = Create(current.FullPath, parent);
+                var parentIdx = idx - 1;
+                var parent = directories[parentIdx];
+                var parentPath = parent.FullPath;
+                parent = parentIdx == 0 ? CreateRoot(parentPath) : CreateParent(parentPath);
+
+                var current = CreateNode<DirectoryNode>(directories[idx].Name, parent);
+                directories[idx] = CreateWithPath(current.FullPath);
             }
             return directories;
         }
 
-
         public TFile Create<TFile>(string path) where TFile : AFileNode, new()
         {
             var parent = CreateParent(path);
-            return CreateNode<TFile>(path, parent);
+            var nodeName = GetLastNodeName(path);
+            return CreateNode<TFile>(nodeName, parent);
         }
 
-        public TFile Create<TFile>(string path, DirectoryNode parent) where TFile : AFileNode, new()
+        private TPathNode CreateNode<TPathNode>(string nodeName, DirectoryNode parent) where TPathNode : APathNode, new()
         {
-            return CreateNode<TFile>(path, parent);
+            if (parent is null) { throw new ArgumentNullException(nameof(parent)); }
+
+            var pathNode = CreateNode<TPathNode>(nodeName);
+            pathNode.SetParent(parent);
+            return pathNode;
         }
 
-        private DirectoryNode CreateParent(string path)
+        private TPathNode CreateNode<TPathNode>(string nodeName) where TPathNode : APathNode, new()
         {
-            var parentName = GetLast(path);
-            var parentPath = GetLastRemoved(path, parentName);
-            return Create(parentPath);
-        }
-
-        private TPathNode CreateNode<TPathNode>(string path, DirectoryNode parent) where TPathNode : APathNode, new()
-        {
-            var current = new TPathNode();
-            current.SetPath(path, parent, this);
-            return current;
+            if (string.IsNullOrWhiteSpace(nodeName) || nodeName.Contains(Separator))
+            {
+                throw new ArgumentException($"expected name, but get empty name or path: {nodeName}");
+            }
+            return new TPathNode { Name = nodeName };
         }
     }
 

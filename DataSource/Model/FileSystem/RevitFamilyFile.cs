@@ -23,8 +23,8 @@ namespace DataSource.Model.FileSystem
 
         public IEnumerable<RevitFamilyFile> GetRevitBackups()
         {
-            var pattern = string.Concat(NameWithoutExtension, Constant.Point, Constant.Star);
-            return Parent.GetFiles<RevitFamilyFile>(false, GetSearchPattern(pattern))
+            var search = new FileSearch<RevitFamilyFile> { Name = NameWithoutExtension, StartsWith = true };
+            return Parent.GetFiles(false, search)
                          .Where(rvt => rvt.IsBackup());
         }
 

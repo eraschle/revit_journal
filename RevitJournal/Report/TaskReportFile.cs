@@ -6,7 +6,7 @@ namespace RevitJournal.Report
     {
         public TaskReportFile()
         {
-            NameSuffixes.Add("Result");
+            AddSuffixes("Result");
         }
     }
 }

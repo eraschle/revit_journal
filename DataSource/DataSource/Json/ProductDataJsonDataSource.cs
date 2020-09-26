@@ -19,7 +19,7 @@ namespace DataSource.Json
         {
             var fileName = string.Concat(JsonFileName, Constant.Underline, version, Constant.Point, JsonFile.JsonExtension);
             var filePath = Path.Combine(directory.FullPath, fileName);
-            return PathFactory.Instance.Create<JsonFile>(filePath, directory);
+            return PathFactory.Instance.Create<JsonFile>(filePath);
         }
     }
 }

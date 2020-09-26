@@ -21,7 +21,7 @@ namespace RevitJournal.Revit.Command
 
         private RevitFamilyFile revitFile;
 
-        private readonly PathCreator pathCreator = new PathCreator();
+        private readonly PathCreator pathCreator = new PathCreator(PathFactory.Instance);
 
         public DocumentSaveAsAction() : base("Save As", ActionManager.SaveActionId)
         {
@@ -60,7 +60,7 @@ namespace RevitJournal.Revit.Command
                 return new string[]
                 {
                     JournalBuilder.Build("Ribbon", "ID_REVIT_SAVE_AS_FAMILY"),
-                    string.Concat("Jrn.Data \"File Name\" , \"IDOK\", \"", saveAsPath, "\"")
+                    string.Concat("Jrn.Data \"File Name\" , \"IDOK\", \"", saveAsPath.FullPath, "\"")
                 };
             }
         }

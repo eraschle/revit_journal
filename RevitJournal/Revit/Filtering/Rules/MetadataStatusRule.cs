@@ -10,9 +10,9 @@ namespace RevitJournal.Revit.Filtering.Rules
 
         public MetadataStatusRule(string name) : base(name)
         {
-            filterValues.Add(GetFilterValue(MetadataStatus.Valid));
-            filterValues.Add(GetFilterValue(MetadataStatus.Repairable));
-            filterValues.Add(GetFilterValue(MetadataStatus.Error));
+            FilterValues.Add(GetFilterValue(MetadataStatus.Valid));
+            FilterValues.Add(GetFilterValue(MetadataStatus.Repairable));
+            FilterValues.Add(GetFilterValue(MetadataStatus.Error));
         }
 
         //public override bool Allowed(RevitFamily source)

@@ -22,7 +22,7 @@ namespace DataSource
             {
                 throw new ArgumentNullException($"{nameof(directory)} is null or does not exists");
             }
-            var root = PathFactory.Instance.GetRoot(directory);
+            var root = PathFactory.Instance.CreateRoot(directory);
             Instance = new ProductDataManager { ProductDataDirectory = root };
         }
 

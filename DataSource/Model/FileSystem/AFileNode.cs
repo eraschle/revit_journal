@@ -9,59 +9,104 @@ namespace DataSource.Model.FileSystem
 {
     public abstract class AFileNode : APathNode
     {
-        public override string Name
-        {
-            get { return GetFileName(); }
-            protected set { SetFileName(value); }
-        }
+        [JsonIgnore]
+        public string NameWithoutExtension { get; private set; }
 
-        private void SetFileName(string fileName)
+        protected override void SetNodeName(string name)
         {
-            if (StringUtils.Ends(fileName, FileExtension))
+            if (string.IsNullOrWhiteSpace(name)) { return; }
+
+            if (HasFileExtension(name))
             {
-                fileName = PathFactory.RemoveLast(fileName, FileExtension);
+                name = RemoveFileExtension(name);
             }
-            NameWithoutExtension = fileName;
+            NameWithoutExtension = name;
         }
 
-        private string GetFileName()
+        protected bool HasFileExtension(string filename)
+        {
+            return string.IsNullOrEmpty(filename) == false
+                && StringUtils.Ends(filename, $"{Constant.Point}{FileExtension}");
+        }
+
+        protected string RemoveFileExtension(string filename)
+        {
+            if (string.IsNullOrEmpty(filename) || HasFileExtension(filename) == false)
+            {
+                return filename;
+            }
+            var extLength = FileExtension.Length;
+            var nameLength = filename.Length;
+            if (filename.Length > extLength)
+            {
+                var pointIdx = extLength + 1;
+                var point = filename[nameLength - pointIdx];
+                if (point == Constant.PointChar)
+                {
+                    extLength += 1;
+                }
+            }
+            var removeIdx = nameLength - extLength;
+            return filename.Remove(removeIdx);
+        }
+
+        protected override string GetNodeName()
         {
             var fileName = NameWithoutExtension;
             if (NameSuffixes.Count > 0)
             {
-                NameSuffixes.Insert(0, NameWithoutExtension);
-                fileName = string.Join(Constant.Underline, NameSuffixes);
+                var names = new List<string> { NameWithoutExtension };
+                names.AddRange(NameSuffixes);
+                fileName = string.Join(Constant.Underline, names);
             }
             return string.Join(Constant.Point, fileName, FileExtension);
         }
 
-        [JsonIgnore]
-        public string NameWithoutExtension { get; private set; }
-
         public abstract string FileExtension { get; }
 
-        public List<string> NameSuffixes { get; } = new List<string>();
+        private List<string> NameSuffixes { get; } = new List<string>();
+
+        public void AddSuffixes(params string[] suffixes)
+        {
+            if (suffixes is null || suffixes.Length == 0) { return; }
+
+            NameSuffixes.AddRange(suffixes);
+        }
+
+        public override void SetParent(DirectoryNode parent)
+        {
+            if (parent is null) { return; }
+
+            RemoveParent();
+            Parent = parent;
+            parent.AddFile(this);
+        }
+
+        public override void RemoveParent()
+        {
+            if (HasParent(out var parent) == false) { return; }
+
+            parent.RemoveFile(this);
+            Parent = null;
+        }
 
         public override bool Exists()
         {
-            return File.Exists(GetPath());
+            return File.Exists(FullPath);
         }
 
         public override void Create()
         {
             if (Exists()) { return; }
 
-            using (var stream = File.Create(GetPath()))
-            {
-                stream.Close();
-            }
+            File.WriteAllText(FullPath, string.Empty);
         }
 
         public override void Delete()
         {
             if (Exists() == false) { return; }
 
-            File.Delete(GetPath());
+            File.Delete(FullPath);
         }
 
         public string GetSearchPattern(string pattern = null)
@@ -78,17 +123,9 @@ namespace DataSource.Model.FileSystem
             return new TFile { Parent = Parent, NameWithoutExtension = NameWithoutExtension };
         }
 
-        public TFile ChangeFileName<TFile>(string newFileName) where TFile : AFileNode, new()
+        public TFile ChangeFileName<TFile>(string fileName) where TFile : AFileNode, new()
         {
-            return new TFile() { Parent = Parent, NameWithoutExtension = newFileName };
-        }
-
-        public TFile ChangeDirectory<TFile>(string newDirectory, IPathBuilder builder) where TFile : AFileNode, new()
-        {
-            if (builder is null) { throw new ArgumentNullException(nameof(builder)); }
-
-            var parent = builder.Create(newDirectory);
-            return ChangeDirectory<TFile>(parent);
+            return new TFile() { Parent = Parent, Name = fileName };
         }
 
         public TFile ChangeDirectory<TFile>(DirectoryNode newDirectory) where TFile : AFileNode, new()
@@ -102,19 +139,8 @@ namespace DataSource.Model.FileSystem
         {
             if (destination is null) { throw new ArgumentNullException(nameof(destination)); }
 
-            File.Copy(GetPath(), destination.FullPath, overrideFile);
+            File.Copy(FullPath, destination.FullPath, overrideFile);
             return destination;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is AFileNode file &&
-                   FullPath == file.FullPath;
-        }
-
-        public override int GetHashCode()
-        {
-            return 2018552787 + EqualityComparer<string>.Default.GetHashCode(FullPath);
         }
     }
 }

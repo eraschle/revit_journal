@@ -23,7 +23,7 @@ namespace RevitJournal.Revit.Filtering
         {
             AddRule(CategoryRule.RuleKey, new CategoryRule("Categories"));
             AddRule(ProductRule.RuleKey, new ProductRule("Product Versions"));
-            AddRule(OmniClassRule.RuleKey, new OmniClassRule("Omni Classes"));
+            AddRule(OmniClassRule.RuleKey, new OmniClassRule("Omni Classes", OmniClassRule.NoValue));
             AddRule(MetadataStatusRule.RuleKey, new MetadataStatusRule("Metadata Status"));
             AddRule(BasicComponentRule.RuleKey, new BasicComponentRule("Basic Component"));
             AddRule(ParameterRule.RuleKey, new ParameterRule("Family Parameter"));
@@ -34,7 +34,7 @@ namespace RevitJournal.Revit.Filtering
             if (directory is null) { return true; }
             if (HasFilters() == false) { return true; }
 
-            foreach (var folder in directory.GetSubfolders<RevitFamilyFile>())
+            foreach (var folder in directory.GetDirectories<RevitFamilyFile>(false))
             {
                 DirectoryFilter(folder);
             }

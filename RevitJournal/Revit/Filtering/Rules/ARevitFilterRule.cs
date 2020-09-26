@@ -1,7 +1,9 @@
 ﻿using RevitJournal.Library.Filtering;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using Utilities;
 
 namespace RevitJournal.Revit.Filtering.Rules
 {
@@ -9,21 +11,29 @@ namespace RevitJournal.Revit.Filtering.Rules
     {
         public string Name { get; set; }
 
-        protected HashSet<FilterValue> filterValues { get; } = new HashSet<FilterValue>();
+        private readonly IComparer<string> comparer;
+
+        protected HashSet<FilterValue> FilterValues { get; } = new HashSet<FilterValue>();
 
         public IEnumerable<FilterValue> Values
         {
-            get { return filterValues.OrderBy(value => value.Name); }
+            get { return FilterValues.OrderBy(value => value.Name, comparer); }
         }
 
         public IEnumerable<FilterValue> CheckedValues
         {
-            get { return filterValues.Where(value => value.IsChecked); }
+            get { return FilterValues.Where(value => value.IsChecked); }
         }
 
         public bool HasCheckedValues
         {
-            get { return filterValues.Any(value => value.IsChecked); }
+            get { return FilterValues.Any(value => value.IsChecked); }
+        }
+
+        protected ARevitFilterRule(string name, string defaultValue = null)
+        {
+            Name = name;
+            comparer = new ValueComparer(defaultValue);
         }
 
         public abstract void AddValue(TSource source);
@@ -51,11 +61,6 @@ namespace RevitJournal.Revit.Filtering.Rules
             return 539060726 + EqualityComparer<string>.Default.GetHashCode(Name);
         }
 
-        protected ARevitFilterRule(string name)
-        {
-            Name = name;
-        }
-
         public static bool operator ==(ARevitFilterRule<TSource> left, ARevitFilterRule<TSource> right)
         {
             return EqualityComparer<ARevitFilterRule<TSource>>.Default.Equals(left, right);
@@ -64,6 +69,35 @@ namespace RevitJournal.Revit.Filtering.Rules
         public static bool operator !=(ARevitFilterRule<TSource> left, ARevitFilterRule<TSource> right)
         {
             return !(left == right);
+        }
+
+        internal class ValueComparer : IComparer<string>
+        {
+            private readonly string defaultValue;
+
+            internal ValueComparer(string defaultValue)
+            {
+                this.defaultValue = defaultValue;
+            }
+
+            public int Compare(string value, string other)
+            {
+                var compare = 0;
+                if (string.IsNullOrWhiteSpace(defaultValue) == false)
+                {
+                    if (StringUtils.Equals(value, defaultValue))
+                    {
+                        compare = -1;
+                    }
+                    else if (StringUtils.Equals(other, defaultValue))
+                    {
+                        compare = 1;
+                    }
+                }
+                if (compare != 0) { return compare; }
+
+                return StringUtils.Compare(value, other);
+            }
         }
     }
 }

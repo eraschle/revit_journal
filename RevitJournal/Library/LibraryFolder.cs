@@ -1,7 +1,6 @@
 ﻿using DataSource.Model.FileSystem;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace RevitJournal.Library
@@ -26,7 +25,7 @@ namespace RevitJournal.Library
         public LibraryFolder(DirectoryNode directory, LibraryFolder parent) : base(parent)
         {
             Folder = directory ?? throw new ArgumentNullException(nameof(directory));
-            Subfolders.AddRange(directory.GetSubfolders<RevitFamilyFile>().Select(dir => new LibraryFolder(dir, this)));
+            Subfolders.AddRange(directory.GetDirectories<RevitFamilyFile>(true).Select(dir => new LibraryFolder(dir, this)));
             Files.AddRange(GetRevitFamilies(directory).Select(file => new LibraryFile(file, this)));
 
             AddCountAction(AllowedResetAction, AllowedCountAction);

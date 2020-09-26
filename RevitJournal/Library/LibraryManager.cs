@@ -11,15 +11,15 @@ namespace RevitJournal.Library
     {
         public LibraryRoot Root { get; private set; }
 
+        public IPathBuilder PathBuilder { get; set; }
+
         public void CreateRoot(TaskOptions options)
         {
             if (options is null) { throw new ArgumentNullException(nameof(options)); }
 
-            var rootDirectory = PathFactory.Instance.GetRoot(options.RootDirectory);
-            var start = DateTime.Now;
-            Debug.WriteLine($"Start: {start}");
+            var rootDirectory = PathBuilder.CreateRoot(options.RootDirectory);
+            PathBuilder.CreateFiles<RevitFamilyFile>(rootDirectory);
             Root = new LibraryRoot(rootDirectory);
-            Debug.WriteLine($"End  : {DateTime.Now - start}");
         }
 
         public bool HasRoot(out LibraryRoot rootHandler)

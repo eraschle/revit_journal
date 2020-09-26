@@ -5,7 +5,7 @@ namespace RevitJournal.Tasks.Options
 {
     public class BackupOptions
     {
-        private PathCreator PathCreator { get; } = new PathCreator();
+        private PathCreator PathCreator { get; } = new PathCreator(PathFactory.Instance);
 
         public bool CreateBackup { get; set; } = false;
 

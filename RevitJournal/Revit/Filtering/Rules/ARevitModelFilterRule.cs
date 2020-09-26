@@ -7,7 +7,7 @@ namespace RevitJournal.Revit.Filtering.Rules
 {
     public abstract class ARevitModelFilterRule<TSource> : ARevitFilterRule<TSource>
     {
-        protected ARevitModelFilterRule(string name) : base(name) { }
+        protected ARevitModelFilterRule(string name, string defaultValue = null) : base(name, defaultValue) { }
 
         protected bool HasChecked(out ISet<FilterValue> values)
         {
@@ -18,9 +18,9 @@ namespace RevitJournal.Revit.Filtering.Rules
         public override void AddValue(TSource source)
         {
             var value = GetValue(source);
-            if (value is null || filterValues.Contains(value)) { return; }
+            if (value is null || FilterValues.Contains(value)) { return; }
 
-            filterValues.Add(value);
+            FilterValues.Add(value);
         }
 
         public override bool Allowed(TSource source)

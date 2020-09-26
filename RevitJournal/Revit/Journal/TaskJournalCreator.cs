@@ -16,7 +16,7 @@ namespace RevitJournal.Revit.Journal
         {
             var journalFile = journalTask.SourceFile.ChangeDirectory<TaskJournalFile>(directory);
             var suffix = DateTime.Now.ToString(SuffixFormatString, CultureInfo.CurrentCulture);
-            journalFile.NameSuffixes.Add(suffix);
+            journalFile.AddSuffixes(suffix);
             var content = JournalBuilder.Build(journalTask.Actions);
             File.WriteAllText(journalFile.FullPath, content, Encoding.Default);
             return journalFile;

@@ -8,15 +8,15 @@ namespace RevitJournal.Revit.Filtering.Rules
     {
         public const string RuleKey = "RevitOmniClass";
 
-        internal const string DefaultNoValue = "No Value";
+        internal const string NoValue = "No Value";
 
-        public OmniClassRule(string name) : base(name) { }
+        public OmniClassRule(string name, string defaultValue) : base(name, defaultValue) { }
 
         protected override FilterValue GetValue(RevitFamily family)
         {
             return HasOmniClass(family, out var omniClass)
                 ? new FilterValue(omniClass)
-                : new FilterValue(DefaultNoValue);
+                : new FilterValue(NoValue);
         }
 
         private bool HasOmniClass(RevitFamily family, out OmniClass omniClass)

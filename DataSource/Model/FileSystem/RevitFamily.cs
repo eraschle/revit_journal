@@ -9,7 +9,6 @@ namespace DataSource.Model.FileSystem
     public class RevitFamily : IEquatable<RevitFamily>
     {
         private readonly MetadataFamilyJsonContainer MetaDataContainer;
-        public const string EditedSuffix = "edited";
 
         public JsonFile EditedMetadataFile { get; }
 
@@ -20,10 +19,10 @@ namespace DataSource.Model.FileSystem
             RevitFile = revitFile ?? throw new ArgumentNullException(nameof(revitFile));
 
             EditedMetadataFile = revitFile.ChangeExtension<JsonFile>();
-            EditedMetadataFile.NameSuffixes.Add(EditedSuffix);
+            EditedMetadataFile.AddSuffixes("edited");
             MetaDataContainer = new MetadataFamilyJsonContainer(revitFile)
             {
-                LibraryPath = Path.Combine(revitFile.GetPathToRoot())
+                LibraryPath = revitFile.RootPath
             };
         }
 

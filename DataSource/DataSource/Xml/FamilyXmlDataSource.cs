@@ -32,7 +32,7 @@ namespace DataSource.Xml
             var family = FamilyBuilder.Build(Repository);
             if (RevitFile is object)
             {
-                family.LibraryPath = RevitFile.GetPathToRoot();
+                family.LibraryPath = RevitFile.RootPath;
             }
             var types = FamilyTypeBuilder.Build(Repository);
             family.AddFamilyTypes(types);

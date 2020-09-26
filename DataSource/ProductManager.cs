@@ -21,8 +21,9 @@ namespace DataSource
             if (ExecutableRevitApps.Any()) { return; }
 
             var factory = PathFactory.Instance;
-            var root = factory.GetRoot(rootDirectory);
-            foreach (var file in root.GetFiles<RevitAppFile>(true, RevitAppFile.RevitFileName))
+            var root = factory.CreateRoot(rootDirectory);
+            var search = new FileSearch<RevitAppFile> { Name = RevitAppFile.RevitFileName };
+            foreach (var file in root.GetFiles(true, search))
             {
                 AddInstalled(file);
             }
@@ -40,7 +41,7 @@ namespace DataSource
 
         public static RevitApp OldestVersion()
         {
-            if(RevitApps.Count == 0)
+            if (RevitApps.Count == 0)
             {
                 UpdateVersions();
             }
@@ -81,7 +82,7 @@ namespace DataSource
             {
                 RevitVersions[app.Version] = app;
             }
-            else if(RevitVersions.ContainsKey(app.Version) == false)
+            else if (RevitVersions.ContainsKey(app.Version) == false)
             {
                 RevitVersions.Add(app.Version, app);
             }
@@ -89,8 +90,8 @@ namespace DataSource
 
         public static RevitApp CreateCustom(string name, int version)
         {
-            return HasVersion(version, false) 
-                ? GetVersion(version, false) 
+            return HasVersion(version, false)
+                ? GetVersion(version, false)
                 : new RevitApp(name, version);
         }
 
