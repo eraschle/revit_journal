@@ -45,7 +45,7 @@ namespace RevitJournalUI.JournalTaskUI.Models
                 if (enabled == value) { return; }
 
                 enabled = value;
-                OnPropertyChanged(nameof(Enabled));
+                NotifyPropertyChanged();
             }
         }
 
@@ -62,8 +62,8 @@ namespace RevitJournalUI.JournalTaskUI.Models
 
         private void UpdateMetadata()
         {
-            OnPropertyChanged(nameof(MetadataStatus));
-            OnPropertyChanged(nameof(LastUpdate));
+            NotifyPropertyChanged(nameof(MetadataStatus));
+            NotifyPropertyChanged(nameof(LastUpdate));
         }
 
         public ICommand ViewMetadataCommand { get; }

@@ -41,7 +41,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
                 if (Options.Arguments.RevitApp != null && Options.Arguments.RevitApp.Equals(value)) { return; }
 
                 Options.Arguments.RevitApp = value;
-                OnPropertyChanged(nameof(SelectedRevitApp));
+                NotifyPropertyChanged();
             }
         }
 

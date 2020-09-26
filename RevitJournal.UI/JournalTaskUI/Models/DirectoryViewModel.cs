@@ -36,7 +36,7 @@ namespace RevitJournalUI.JournalTaskUI.Models
                 if (filteredCount == value) { return; }
 
                 filteredCount = value;
-                OnPropertyChanged(nameof(FilteredCount));
+                NotifyPropertyChanged();
             }
         }
 
@@ -49,7 +49,7 @@ namespace RevitJournalUI.JournalTaskUI.Models
                 if (StringUtils.Equals(filesCountValue, value)) { return; }
 
                 filesCountValue = value;
-                OnPropertyChanged(nameof(FilesCountValue));
+                NotifyPropertyChanged();
             }
         }
 
