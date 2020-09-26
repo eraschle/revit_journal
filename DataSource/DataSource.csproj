@@ -81,7 +81,7 @@
     <Compile Include="Model\Product\RevitApp.cs" />
     <Compile Include="Model\FileSystem\JsonFile.cs" />
     <Compile Include="DataSource\AMetadataContainer.cs" />
-    <Compile Include="DataSource\MetadataStatus.cs" />
+    <Compile Include="Model\MetadataStatus.cs" />
     <Compile Include="DataSource\Xml\FamilyBuilder.cs" />
     <Compile Include="DataSource\Xml\FamilyTypeBuilder.cs" />
     <Compile Include="DataSource\Xml\ParameterBuilder.cs" />
