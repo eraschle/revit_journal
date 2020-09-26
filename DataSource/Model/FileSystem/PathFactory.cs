@@ -184,6 +184,16 @@ namespace DataSource.Model.FileSystem
             return CreateNode<TFile>(nodeName, parent);
         }
 
+        public TFile Create<TFile>(string fileName, DirectoryNode directory) where TFile : AFileNode, new()
+        {
+            if (directory is null) { throw new ArgumentNullException(nameof(directory)); }
+            if (IsDirectory(directory.FullPath, out _) == false)
+            {
+                throw new ArgumentException($"Directory not created {directory.FullPath}");
+            }
+            return CreateNode<TFile>(fileName, directory);
+        }
+
         private TPathNode CreateNode<TPathNode>(string nodeName, DirectoryNode parent) where TPathNode : APathNode, new()
         {
             if (parent is null) { throw new ArgumentNullException(nameof(parent)); }

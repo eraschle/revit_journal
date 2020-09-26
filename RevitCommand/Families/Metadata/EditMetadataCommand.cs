@@ -22,8 +22,14 @@ namespace RevitCommand.Families.Metadata
             var rootDirectory = PathFactory.Instance.CreateRoot(Action.Library.Value);
             var revitFile = PathFactory.Instance.Create<RevitFamilyFile>(Document.PathName);
             var revitFamily = new RevitFamily(revitFile);
-            var metaFamily = revitFamily.ReadEditedMetaData();
-
+            if(revitFamily.HasEditMetadata == false)
+            {
+                message = "No Edited metadata file exists";
+                return Result.Failed;
+            }
+            revitFamily.SetExternalEditDataSource();
+            revitFamily.Read();
+            var metaFamily = revitFamily.Metadata;
             var manager = new RevitMetadataManager(Document);
 
             var updater = new RevitFamilyParameterUpdater(Document);

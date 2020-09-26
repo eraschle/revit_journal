@@ -1,92 +1,90 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.DataSource.Json;
+using DataSource.Metadata;
+using DataSource.Model.Family;
+using DataSource.Model.FileSystem;
+using DataSource.Xml;
 
-namespace DataSource.Metadata
+namespace DataSource.DataSource
 {
-    public abstract class AMetadataContainer<TModel, TRevitDataSource, TFileDataSource>
-        : IMetadataContainer<TModel>
-        where TModel : class, new()
-        where TRevitDataSource : AMetadataDataSource<TModel>
-        where TFileDataSource : AMetadataDataSource<TModel>
+    public abstract class AMetadataContainer
     {
-        protected AMetadataContainer(TRevitDataSource revitDataSource, TFileDataSource fileDataSource)
+        protected IMetadataDataSource DataSource { get; set; }
+
+        public MetadataStatus MetadataStatus { get; private set; }
+
+        public Family Metadata { get; private set; }
+
+        public bool HasValidMetadata
         {
-            RevitDataSource = revitDataSource;
-            Revit = new MetadataContainer<TModel>(RevitDataSource);
-            FileDataSource = fileDataSource;
-            File = new MetadataContainer<TModel>(FileDataSource);
+            get { return MetadataStatus == MetadataStatus.Valid; }
         }
 
-        protected TRevitDataSource RevitDataSource { get; }
-
-        protected MetadataContainer<TModel> Revit { get; set; }
-
-        protected TFileDataSource FileDataSource { get; }
-
-        protected MetadataContainer<TModel> File { get; set; }
-
-        protected TModel RevitMetadata { get { return Revit.Metadata; } }
-
-        protected MetadataStatus RevitMetadataStatus { get { return Revit.Status; } }
-
-        protected TModel FileMetadata { get { return File.Metadata; } }
-
-        protected MetadataStatus FileMetadataStatus { get { return File.Status; } }
-
-        public TModel Metadata
+        public bool AreMetadataRepairable
         {
-            get
+            get { return MetadataStatus == MetadataStatus.Repairable; }
+        }
+
+        public void Update()
+        {
+            MetadataStatus = DataSource.UpdateStatus();
+            Metadata = new Family();
+            if (MetadataStatus == MetadataStatus.Valid)
             {
-                if (HasFileMetadata)
-                {
-                    return FileMetadata;
-                }
-                return RevitMetadata;
+                Metadata = DataSource.Read();
             }
         }
 
-        public MetadataStatus MetadataStatus
+        public void Read()
         {
-            get { return RevitMetadataStatus; }
+            Update();
+        }
+
+        public void Write(Family model)
+        {
+            DataSource.Write(model);
+        }
+
+        public void SetRevitDataSource()
+        {
+            SetDataSource(new FamilyXmlDataSource());
+        }
+
+        public void SetExternalDataSource()
+        {
+            SetDataSource(new FamilyJsonDataSource());
+        }
+
+        public void SetExternalEditDataSource()
+        {
+            SetDataSource(new FamilyEditJsonDataSource());
+        }
+
+        private void SetDataSource(IMetadataDataSource dataSource)
+        {
+            dataSource.SetFamilyFile(GetFamilyFile());
+            DataSource = dataSource;
         }
 
         public bool HasFileMetadata
         {
-            get { return FileDataSource.Exist && FileMetadataStatus == MetadataStatus.Valid; }
+            get { return GetJsonFile().Exists(); }
         }
 
-        public TModel ReloadedFileMetadata { get { return FileDataSource.Read(); } }
-
-        public void UpdateStatus(bool reload = false)
+        public bool HasEditMetadata
         {
-            if (reload == true || RevitMetadataStatus == MetadataStatus.Initial)
+            get
             {
-                Revit.UpdateStatus(reload);
-                File.UpdateStatus(reload);
+                var jsonFile = GetJsonFile();
+                jsonFile.AddSuffixes(FamilyEditJsonDataSource.Suffix);
+                return jsonFile.Exists();
             }
         }
 
-        public void WriteMetaData(TModel model = null, AFileNode destination = null)
+        private JsonFile GetJsonFile()
         {
-            if (model is null && RevitMetadataStatus == MetadataStatus.Valid)
-            {
-                model = RevitMetadata;
-            }
-
-            if (model is null) { return; }
-
-            if (destination is null)
-            {
-                FileDataSource.Write(model);
-            }
-            else
-            {
-                FileDataSource.Write(model, destination);
-            }
+            return GetFamilyFile().ChangeExtension<JsonFile>();
         }
 
-        public TModel ReadMetaData(AFileNode source)
-        {
-            return FileDataSource.Read(source);
-        }
+        protected abstract RevitFamilyFile GetFamilyFile();
     }
 }

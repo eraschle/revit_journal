@@ -1,12 +1,10 @@
 ﻿using DataSource.DataSource.Json;
-using DataSource.Json;
 using DataSource.Model.Catalog;
 using DataSource.Model.FileSystem;
 using DataSource.Model.Product;
 using DataSource.Model.ProductData;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace DataSource
 {
@@ -16,14 +14,18 @@ namespace DataSource
 
         public static void Create(string directory)
         {
-            if (Instance != null) { return; }
+            if (Instance is object) { return; }
 
-            if (string.IsNullOrWhiteSpace(directory) || Directory.Exists(directory) == false)
+            if (string.IsNullOrWhiteSpace(directory))
             {
-                throw new ArgumentNullException($"{nameof(directory)} is null or does not exists");
+                throw new ArgumentNullException(nameof(directory));
             }
-            var root = PathFactory.Instance.CreateRoot(directory);
-            Instance = new ProductDataManager { ProductDataDirectory = root };
+            var dataDirectory = PathFactory.Instance.CreateRoot(directory);
+            if (dataDirectory.Exists() == false)
+            {
+                dataDirectory.Create();
+            }
+            Instance = new ProductDataManager { RootDataDirectory = dataDirectory };
         }
 
         public static ProductDataManager Get()
@@ -34,16 +36,14 @@ namespace DataSource
 #endif
             if (Instance is null)
             {
-                throw new ArgumentNullException("Product Manager has not been creaeted");
+                throw new ArgumentNullException(nameof(ProductDataManager));
             }
             return Instance;
         }
 
         private readonly Dictionary<int, RevitProductData> RevitProductDatas = new Dictionary<int, RevitProductData>();
 
-        private JsonDataSource<RevitProductData> JsonDataSource;
-
-        private DirectoryNode ProductDataDirectory { get; set; }
+        private DirectoryNode RootDataDirectory { get; set; }
 
         private IList<RevitParameterGroup> _ParameterGroups = new List<RevitParameterGroup>();
         public IList<RevitParameterGroup> ParameterGroups()
@@ -61,15 +61,19 @@ namespace DataSource
             if (revitApp is null) { return; }
 
             var version = revitApp.Version;
+            var fileName = RevitProductData.GetFileName(revitApp.Version);
+            var jsonFile = PathFactory.Instance.Create<JsonFile>(fileName, RootDataDirectory);
+            if (jsonFile.Exists() == false)
+            {
+                jsonFile.RemoveParent();
+                return;
+            }
+
             if (RevitProductDatas.ContainsKey(version) == false)
             {
-                var jsonFile = ProductDataJsonDataSource.CreateJsonFile(ProductDataDirectory, revitApp.Version);
-                if (JsonDataSource is null)
-                {
-                    JsonDataSource = new JsonDataSource<RevitProductData>(jsonFile);
-                }
-                JsonDataSource.JsonFile = jsonFile;
-                var productData = JsonDataSource.Read();
+                var dataSource = new JsonDataSource<RevitProductData>();
+                dataSource.SetFile(jsonFile);
+                var productData = dataSource.Read();
                 RevitProductDatas.Add(version, productData);
             }
         }

@@ -1,72 +1,50 @@
-﻿using DataSource.DataSource.Json;
-using DataSource.Metadata;
+﻿using DataSource.Metadata;
 using DataSource.Model.Family;
 using DataSource.Model.FileSystem;
+using System;
 
-namespace DataSource.Json
+namespace DataSource.DataSource.Json
 {
-    public class MetadataJsonDataSource : AMetadataDataSource<Family>
+    public class FamilyJsonDataSource : JsonDataSource<Family>, IMetadataDataSource
     {
-        public JsonDataSource<Family> JsonDataSource { get; private set; }
+        private JsonDataSource<Family> dataSource = new JsonDataSource<Family>();
 
-        public MetadataJsonDataSource(RevitFamilyFile revitFile) : base(revitFile)
+        public override Family Read()
         {
-            JsonDataSource = new JsonDataSource<Family>(revitFile);
+            return dataSource.Read();
         }
 
-        public override void AddFileNameSuffix(params string[] suffixes)
+        public MetadataStatus UpdateStatus()
         {
-            JsonDataSource.AddFileNameSuffix(suffixes);
-        }
-
-        public override bool Exist { get { return JsonDataSource.JsonFile.Exists(); } }
-
-        public override Family Read(AFileNode source = null)
-        {
-            JsonFile jsonFile = null;
-            if(source is JsonFile json)
+            var status = MetadataStatus.Valid;
+            try
             {
-                jsonFile = json;
-            }
-            return JsonDataSource.Read(jsonFile);
-        }
-
-        public override void UpdateStatus()
-        {
-            if (JsonDataSource.JsonFile.Exists() == false)
-            {
-                Status = MetadataStatus.Error;
-            }
-            else
-            {
-                try
+                if (FileNode is null
+                    || FileNode.Exists() == false
+                    || Read() is null)
                 {
-                    if (Read() != null)
-                    {
-                        Status = MetadataStatus.Valid;
-                    }
-                    else
-                    {
-                        Status = MetadataStatus.Error;
-                    }
-                }
-                catch
-                {
-                    Status = MetadataStatus.Error;
+                    status = MetadataStatus.Error;
                 }
             }
+            catch
+            {
+                status = MetadataStatus.Error;
+            }
+
+            return status;
         }
 
-        public override void Write(Family model, AFileNode destination = null)
+        public override void Write(Family model)
         {
-            if (destination is null)
-            {
-                JsonDataSource.Write(model);
-            }
-            else if(destination is JsonFile jsonFile)
-            {
-                JsonDataSource.Write(model, jsonFile);
-            }
+            dataSource.Write(model);
+        }
+
+        public virtual void SetFamilyFile(RevitFamilyFile fileNode)
+        {
+            if(fileNode is null) { throw new ArgumentNullException(nameof(fileNode)); }
+
+            var jsonFile = fileNode.ChangeExtension<JsonFile>();
+            dataSource.SetFile(jsonFile);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using DataSource.Json;
+using DataSource.DataSource.Json;
 using DataSource.Model.FileSystem;
 using RevitAction.Revit;
 using System;
@@ -18,11 +18,13 @@ namespace RevitCommand.Families.Metadata
     {
         protected override Result ExecuteRevitCommand(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            var rootDirectory = PathFactory.Instance.CreateRoot(Action.Library.Value);
+            PathFactory.Instance.CreateRoot(Action.Library.Value);
             var revitFile = PathFactory.Instance.Create<RevitFamilyFile>(Document.PathName);
-            var dataSource = new MetadataJsonDataSource(revitFile);
+            var jsonFile = revitFile.ChangeExtension<JsonFile>();
             var metaFamily = new DS.Family.Family();
-            if (dataSource.Exist)
+            var dataSource = new FamilyJsonDataSource();
+            dataSource.SetFamilyFile(revitFile);
+            if (jsonFile.Exists())
             {
                 metaFamily = dataSource.Read();
             }

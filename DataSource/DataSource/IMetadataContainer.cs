@@ -1,17 +1,22 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Metadata;
+using DataSource.Model.Family;
 
-namespace DataSource.Metadata
+namespace DataSource.DataSource
 {
-    public interface IMetadataContainer<TModel> where TModel : class
+    public interface IMetadataContainer
     {
-        TModel Metadata { get; }
+        void SetDataSource(IMetadataDataSource dataSource);
 
-        MetadataStatus MetadataStatus { get; }
+        Family Metadata { get; }
 
-        void UpdateStatus(bool reload);
+        MetadataStatus Status { get; }
 
-        bool HasFileMetadata { get; }
+        bool AreMetadataValid { get; }
 
-        void WriteMetaData(TModel model = null, AFileNode destination = null);
+        bool AreMetadataRepairable { get; }
+
+        void Update();
+
+        void Write(Family model);
     }
 }

@@ -1,11 +1,17 @@
-﻿using Newtonsoft.Json;
+﻿using DataSource.DataSource.Json;
+using Newtonsoft.Json;
 using System.IO;
 
 namespace RevitJournal.Report
 {
-    public class TaskReportDataSource
+    public class TaskReportDataSource : JsonDataSource<TaskReport>
     {
-        public void Write(TaskReport result)
+        public override TaskReport Read()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void Write(TaskReport result)
         {
             if (result is null) { return; }
 

@@ -2,9 +2,9 @@
 using Autodesk.Revit.UI;
 using DataSource.Model.ProductData;
 using Autodesk.Revit.Attributes;
-using DataSource.Json;
 using RevitAction.Revit;
 using DataSource.Model.FileSystem;
+using DataSource.DataSource.Json;
 
 namespace RevitCommand.RevitData
 {
@@ -26,14 +26,16 @@ namespace RevitCommand.RevitData
 #if DEBUG
             Action.ExportDirectory.Value = ProductDataDirectory;
 #endif
-            var root = PathFactory.Instance.CreateRoot(Action.ExportDirectory.Value);
-            var jsonFile = ProductDataJsonDataSource.CreateJsonFile(root, version);
-            var datasource = ProductDataJsonDataSource.CreateDataSource(jsonFile);
             var productData = new RevitProductData
             {
                 Name = Application.VersionName,
                 Version = version
             };
+            var root = PathFactory.Instance.CreateRoot(Action.ExportDirectory.Value);
+            var fileName = RevitProductData.GetFileName(productData.Version);
+            var datasource = new JsonDataSource<RevitProductData>();
+            var jsonFile = PathFactory.Instance.Create<JsonFile>(fileName, root);
+            datasource.SetFile(jsonFile);
 
             productData = Creator.GetBuiltInParameters(productData);
             productData = Creator.GetBuiltInParameterGroup(productData);

@@ -17,14 +17,6 @@ namespace DataSource.Xml
 
         public XElement Root { get { return Document.Root; } }
 
-        public FamilyXmlReader(RevitFamilyFile revitFile)
-        {
-            if (revitFile is null) { throw new ArgumentNullException(nameof(revitFile)); }
-            if (revitFile.Exists() == false) { throw new ArgumentException("File does not exist: " + revitFile); }
-
-            RevitFile = revitFile;
-        }
-
         public void ReadData()
         {
             var xmlData = GetFamilyXmlData();

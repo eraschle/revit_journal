@@ -53,7 +53,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataSource\Json\ProductDataJsonDataSource.cs" />
+    <Compile Include="DataSource\AFileDataSource.cs" />
+    <Compile Include="DataSource\IMetadataDataSource.cs" />
+    <Compile Include="DataSource\Json\FamilyEditJsonDataSource.cs" />
     <Compile Include="Model\Catalog\RevitEnumModels.cs" />
     <Compile Include="Model\FileSystem\FileSearch.cs" />
     <Compile Include="Model\FileSystem\DirectoryRootNode.cs" />
@@ -68,12 +70,7 @@
     <Compile Include="Comparer\FamilyTypeEditedComparer.cs" />
     <Compile Include="Comparer\ParameterEditedComparer.cs" />
     <Compile Include="Comparer\FamilyEditedComparer.cs" />
-    <Compile Include="DataSource\AMetadataContainer.cs" />
-    <Compile Include="DataSource\AMetadataDataSource.cs" />
-    <Compile Include="DataSource\AMetadataFamilyContainer.cs" />
-    <Compile Include="DataSource\MetadataFamilyJsonContainer.cs" />
     <Compile Include="DataSource\IMetadataContainer.cs" />
-    <Compile Include="DataSource\IMetadataDataSource.cs" />
     <Compile Include="DataSource\Json\JsonDataSource.cs" />
     <Compile Include="DataSource\Json\FamilyJsonDataSource.cs" />
     <Compile Include="Helper\BoolHelper.cs" />
@@ -83,7 +80,7 @@
     <Compile Include="Model\ProductData\RevitProductData.cs" />
     <Compile Include="Model\Product\RevitApp.cs" />
     <Compile Include="Model\FileSystem\JsonFile.cs" />
-    <Compile Include="DataSource\MetadataContainer.cs" />
+    <Compile Include="DataSource\AMetadataContainer.cs" />
     <Compile Include="DataSource\MetadataStatus.cs" />
     <Compile Include="DataSource\Xml\FamilyBuilder.cs" />
     <Compile Include="DataSource\Xml\FamilyTypeBuilder.cs" />

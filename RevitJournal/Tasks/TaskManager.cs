@@ -39,7 +39,7 @@ namespace RevitJournal.Tasks
             if (family is null) { throw new ArgumentNullException(nameof(family)); }
             if (options is null) { throw new ArgumentNullException(nameof(options)); }
 
-            return family.HasRepairableMetadata
+            return family.AreMetadataRepairable
                 || (family.HasValidMetadata && options.UseMetadata);
         }
 

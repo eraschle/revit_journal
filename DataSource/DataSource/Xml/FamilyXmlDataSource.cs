@@ -1,71 +1,55 @@
-﻿using DataSource.Helper;
+﻿using DataSource.DataSource;
 using DataSource.Metadata;
 using DataSource.Model.Family;
 using DataSource.Model.FileSystem;
 
 namespace DataSource.Xml
 {
-    public class FamilyXmlDataSource : AMetadataDataSource<Family>
+    public class FamilyXmlDataSource : AFileDataSource<Family, RevitFamilyFile>, IMetadataDataSource
     {
+        internal FamilyBuilder Builder { get; set; }
 
-        private readonly FamilyBuilder FamilyBuilder;
-        private readonly FamilyTypeBuilder FamilyTypeBuilder;
-        private readonly RevitXmlRepository Repository;
+        internal FamilyTypeBuilder TypeBuilder { get; set; }
 
-        public string LibraryPath { get; set; }
+        internal RevitXmlRepository Repository { get; set; }
 
-        public FamilyXmlDataSource(RevitFamilyFile revitFile) : base(revitFile)
+        public FamilyXmlDataSource() : base()
         {
-            Repository = new RevitXmlRepository(revitFile);
-            FamilyBuilder = new FamilyBuilder();
-            FamilyTypeBuilder = new FamilyTypeBuilder();
+            Repository = new RevitXmlRepository();
+            Builder = new FamilyBuilder();
+            TypeBuilder = new FamilyTypeBuilder();
         }
 
-        public override Family Read(AFileNode source = null)
+        public void SetFamilyFile(RevitFamilyFile revitFile)
         {
-            if (source != null && source is RevitFamilyFile rvtSource)
-            {
-                RevitFile = rvtSource;
-                Repository.SetRevitFile(RevitFile);
-            }
+            SetFile(revitFile);
+            Repository.SetRevitFile(revitFile);
+        }
 
-            var family = FamilyBuilder.Build(Repository);
-            if (RevitFile is object)
-            {
-                family.LibraryPath = RevitFile.RootPath;
-            }
-            var types = FamilyTypeBuilder.Build(Repository);
-            family.AddFamilyTypes(types);
+        public override Family Read()
+        {
+            var family = Builder.Build(Repository);
+            var familyTypes = TypeBuilder.Build(Repository);
+            family.AddFamilyTypes(familyTypes);
+            family.LibraryPath = FileNode.RootPath;
             return family;
         }
 
-        public override void UpdateStatus()
+        public MetadataStatus UpdateStatus()
         {
-            var status = MetadataStatus.Initial;
             try
             {
                 Repository.ReadMetaData();
-                status = MetadataStatus.Valid;
+                return MetadataStatus.Valid;
             }
             catch (FamilyXmlReadException exp)
             {
-                if (exp.IsRepairable)
-                {
-                    status = MetadataStatus.Repairable;
-                }
-                else
-                {
-                    status = MetadataStatus.Error;
-                }
-            }
-            finally
-            {
-                Status = status;
+                return exp.IsRepairable
+                    ? MetadataStatus.Repairable
+                    : MetadataStatus.Error;
             }
         }
 
-        public override void Write(Family model, AFileNode destination = null) { }
-
-        public override void AddFileNameSuffix(params string[] suffixes) { }
+        public override void Write(Family model) { }
     }
 }

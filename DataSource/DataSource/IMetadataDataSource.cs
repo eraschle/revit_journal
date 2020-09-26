@@ -1,19 +1,16 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Model.Family;
+using DataSource.Model.FileSystem;
 
 namespace DataSource.Metadata
 {
-    public interface IMetadataDataSource<TModel>
+    public interface IMetadataDataSource
     {
-        MetadataStatus Status { get; }
+        Family Read();
 
-        bool Exist { get; }
+        void Write(Family model);
 
-        TModel Read(AFileNode source = null);
+        MetadataStatus UpdateStatus();
 
-        void AddFileNameSuffix(params string[] suffixes);
-
-        void Write(TModel model, AFileNode destination = null);
-
-        void UpdateStatus();
+        void SetFamilyFile(RevitFamilyFile fileNode);
     }
 }

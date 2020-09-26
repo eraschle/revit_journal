@@ -27,10 +27,12 @@ namespace RevitJournalUI.MetadataUI
             foreach (var family in ViewModel.Families)
             {
                 var revitFamily = ViewModel.GetRevitFamily(family);
-                var reloaded = revitFamily.ReloadedFileMetadata;
+                revitFamily.Update();
+                var reloaded = revitFamily.Metadata;
                 if (revitFamily != null && EditedComparer.Equals(reloaded, family) == false)
                 {
-                    revitFamily.WriteEditedMetaData(family);
+                    revitFamily.SetExternalEditDataSource();
+                    revitFamily.Write(family);
                 }
             }
             DialogResult = true;

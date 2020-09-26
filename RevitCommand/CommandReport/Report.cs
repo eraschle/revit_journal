@@ -1,6 +1,7 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.DataSource.Json;
+using DataSource.Model.FileSystem;
 using Newtonsoft.Json;
-using RevitCommand.CommandReport;
+using System;
 using System.Collections.Generic;
 
 namespace RevitCommand.Reports
@@ -10,15 +11,18 @@ namespace RevitCommand.Reports
         private const string ErrorSuffix = "ERROR";
         private const string ReportSuffix = "report";
 
-        private readonly ReportJsonDataSource DataSource;
+        private readonly JsonDataSource<Report> dataSource;
 
         public Report(RevitFamilyFile revitFile)
         {
-            DataSource = new ReportJsonDataSource(revitFile);
+            if (revitFile is null) { throw new ArgumentNullException(nameof(revitFile)); }
+
+            dataSource = new JsonDataSource<Report>();
+            var jsonFile = revitFile.ChangeExtension<JsonFile>();
+            dataSource.SetFile(jsonFile);
         }
 
-        public List<MessageReportLine> ReportLines { set; get; }
-            = new List<MessageReportLine>();
+        public List<MessageReportLine> ReportLines { get; } = new List<MessageReportLine>();
 
         public void AddLine(MessageReportLine reportLine)
         {
@@ -40,21 +44,17 @@ namespace RevitCommand.Reports
         [JsonIgnore]
         public bool IsEmpty { get { return ReportLines.Count == 0; } }
 
-        public void Write(params string[] suffixes)
+        public void Write()
         {
             if (IsEmpty) { return; }
 
-            if (suffixes is null || suffixes.Length == 0)
-            {
-                suffixes = new string[1] { ReportSuffix };
-            }
+            var suffixes = new List<string> { ReportSuffix };
             if (ReportContainsError())
             {
-                var tmpSuffixes = new List<string>(suffixes) { ErrorSuffix };
-                suffixes = tmpSuffixes.ToArray();
+                suffixes.Add(ErrorSuffix);
             }
-            DataSource.AddFileNameSuffix(suffixes);
-            DataSource.Write(this);
+            dataSource.FileNode.AddSuffixes(suffixes.ToArray());
+            dataSource.Write(this);
         }
 
         private bool ReportContainsError()

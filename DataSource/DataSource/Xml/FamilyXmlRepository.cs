@@ -16,18 +16,11 @@ namespace DataSource.Xml
         private const string FamilyTypeNode = "part";
         private const string ParameterDisplayName = "displayName";
 
-        private readonly FamilyXmlReader Reader;
-
-        public RevitXmlRepository(RevitFamilyFile revitFile)
-        {
-            Reader = new FamilyXmlReader(revitFile);
-        }
+        private readonly FamilyXmlReader Reader = new FamilyXmlReader();
 
         internal void SetRevitFile(RevitFamilyFile revitFile)
         {
-            if(revitFile is null) { return; }
-
-            Reader.RevitFile = revitFile;
+            Reader.RevitFile = revitFile ?? throw new ArgumentNullException(nameof(revitFile));
         }
 
         public void ReadMetaData()

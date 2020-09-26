@@ -75,6 +75,8 @@ namespace RevitJournal.Report
                     }
                 }
             }
+            var jsonFile = Task.SourceFile.ChangeExtension<JsonFile>();
+            dataSource.SetFile(jsonFile);
             dataSource.Write(result);
         }
 

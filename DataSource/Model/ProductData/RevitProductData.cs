@@ -1,4 +1,5 @@
-﻿using DataSource.Model.Catalog;
+﻿using DataSource.Helper;
+using DataSource.Model.Catalog;
 using DataSource.Model.Product;
 using System.Collections.Generic;
 
@@ -7,6 +8,12 @@ namespace DataSource.Model.ProductData
     public class RevitProductData
     {
         public const string NoData = "No data available";
+        public const string FileNameData = "RevitProductData";
+
+        public static string GetFileName(int version)
+        {
+            return string.Join(Constant.Underline, FileNameData, version);
+        }
 
         public static OmniClass DefaultOmniClass { get; } = new OmniClass { IdArray = new int[] { 0 }, Name = NoData };
 

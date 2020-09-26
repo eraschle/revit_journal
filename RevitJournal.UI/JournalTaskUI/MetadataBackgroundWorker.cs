@@ -54,7 +54,7 @@ namespace RevitJournalUI.JournalTaskUI
                 if (worker.CancellationPending) { return; }
 
                 var handler = files[idx];
-                handler.File.UpdateStatus();
+                handler.File.Update();
                 currentCount++;
                 var percent = currentCount * 100 / filesCount;
                 worker.ReportProgress(percent, handler.File);

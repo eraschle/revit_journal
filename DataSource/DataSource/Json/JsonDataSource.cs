@@ -1,50 +1,21 @@
-﻿using DataSource.Helper;
-using DataSource.Model.FileSystem;
+﻿using DataSource.Model.FileSystem;
 using Newtonsoft.Json;
 using System;
 using System.IO;
 
 namespace DataSource.DataSource.Json
 {
-    public class JsonDataSource<TModel> where TModel : class
+    public class JsonDataSource<TModel> : AFileDataSource<TModel, JsonFile> where TModel : class
     {
-        public JsonFile JsonFile { get; internal set; }
-
-        public JsonDataSource(RevitFamilyFile revitFile)
+        public override TModel Read()
         {
-            if(revitFile is null) { throw new ArgumentNullException(nameof(revitFile)); }
+            if (FileNode.Exists() == false) { throw new ArgumentException($"File does not exists {FileNode.FullPath}"); }
 
-            JsonFile = revitFile.ChangeExtension<JsonFile>();
+            var content = File.ReadAllText(FileNode.FullPath);
+            return JsonConvert.DeserializeObject<TModel>(content, GetSettings());
         }
 
-        public JsonDataSource(JsonFile jsonFile)
-        {
-            JsonFile = jsonFile;
-        }
-
-        public void AddFileNameSuffix(params string[] suffixes)
-        {
-            if (suffixes is null || suffixes.Length == 0) { return; }
-
-            JsonFile.AddSuffixes(suffixes);
-        }
-
-        public TModel Read(JsonFile source = null)
-        {
-            if (source is null)
-            {
-                source = JsonFile;
-            }
-            if(source.Exists() == false)
-            {
-                return null;
-            }
-            var content = File.ReadAllText(source.FullPath);
-            var report = JsonConvert.DeserializeObject<TModel>(content, GetSettings());
-            return report;
-        }
-
-        private JsonSerializerSettings GetSettings()
+        protected virtual JsonSerializerSettings GetSettings()
         {
             return new JsonSerializerSettings
             {
@@ -53,17 +24,12 @@ namespace DataSource.DataSource.Json
             };
         }
 
-        public void Write(TModel model)
+        public override void Write(TModel model)
         {
-            Write(model, JsonFile);
-        }
-
-        public void Write(TModel model, JsonFile destination)
-        {
-            if (model is null) { return; }
+            if (model is null) { throw new ArgumentNullException(nameof(model)); }
 
             var jsonData = JsonConvert.SerializeObject(model, GetSettings());
-            File.WriteAllText(destination.FullPath, jsonData);
+            File.WriteAllText(FileNode.FullPath, jsonData);
         }
     }
 }
