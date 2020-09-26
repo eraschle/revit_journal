@@ -22,7 +22,7 @@ namespace DataSource.Model.FileSystem
 
         public override string ToString()
         {
-            return $"{base.ToString()} RootPath: {RootFullPath}";
+            return $"{base.ToString()} RootPath: {FullPath}";
         }
     }
 }

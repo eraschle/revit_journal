@@ -60,6 +60,7 @@
     <Compile Include="Model\FileSystem\FileSearch.cs" />
     <Compile Include="Model\FileSystem\DirectoryRootNode.cs" />
     <Compile Include="Model\FileSystem\IPathBuilder.cs" />
+    <Compile Include="Model\FileSystem\LogFile.cs" />
     <Compile Include="Model\FileSystem\TextFile.cs" />
     <Compile Include="Model\FileSystem\PathFactory.cs" />
     <Compile Include="Model\FileSystem\DirectoryNode.cs" />

@@ -83,7 +83,7 @@ namespace RevitJournal.Tasks
             if (options.CreateBackup)
             {
                 var backupFile = options.CreateBackupFile(SourceFile);
-                BackupFile = SourceFile.CopyTo<RevitFamilyFile>(backupFile, true);
+                BackupFile = SourceFile.CopyTo(backupFile, true);
             }
 
             foreach (var command in Actions)

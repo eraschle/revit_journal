@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace DataSource.Model.FileSystem
 {
     public abstract class APathNode : IEquatable<APathNode>
     {
-        public DirectoryNode Parent { get; protected set; }
+        protected DirectoryNode Parent { get; set; }
 
         public abstract void SetParent(DirectoryNode parent);
 
@@ -40,17 +41,12 @@ namespace DataSource.Model.FileSystem
         {
             get
             {
-                var parents = GetRootParentNodes(false);
+                var rootIncluded = false;
+                var parents = GetRootParentNodes(rootIncluded);
                 var names = parents.Select(node => node.Name)
                                    .Append(Name);
                 return Path.Combine(names.ToArray());
             }
-        }
-
-        public bool IsSame(string filePath)
-        {
-            return string.IsNullOrEmpty(filePath) == false
-                && StringUtils.Equals(filePath, FullPath);
         }
 
         public abstract bool Exists();
@@ -59,7 +55,7 @@ namespace DataSource.Model.FileSystem
 
         public abstract void Delete();
 
-        public IList<DirectoryNode> GetRootParentNodes(bool included = false)
+        public IList<DirectoryNode> GetRootParentNodes(bool included)
         {
             return HasParent(out var parent)
                 ? GetParentNodes(parent, included)

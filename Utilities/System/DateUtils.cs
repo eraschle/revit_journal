@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Utilities.System
@@ -49,6 +50,20 @@ namespace Utilities.System
 
         public static string AsString(TimeSpan timeSpan, string separator = "", params string[] format)
         {
+            if (separator.Contains(Constant.Point))
+            {
+                var separatorChars = new List<char>();
+                for (int idx = 0; idx < separator.Length; idx++)
+                {
+                    var current = separator[idx];
+                    if (current == Constant.PointChar)
+                    {
+                        separatorChars.Add(Constant.BackSlashChar);
+                    }
+                    separatorChars.Add(current);
+                }
+                separator = string.Concat(separatorChars);
+            }
             string formatString = GetFormatString(separator, format);
             return timeSpan.ToString(formatString, CultureInfo.CurrentCulture.DateTimeFormat);
         }

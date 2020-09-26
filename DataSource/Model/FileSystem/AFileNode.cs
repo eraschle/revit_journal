@@ -61,6 +61,7 @@ namespace DataSource.Model.FileSystem
             return string.Join(Constant.Point, fileName, FileExtension);
         }
 
+        [JsonIgnore]
         public abstract string FileExtension { get; }
 
         private List<string> NameSuffixes { get; } = new List<string>();
@@ -131,7 +132,9 @@ namespace DataSource.Model.FileSystem
         {
             if (newDirectory is null) { throw new ArgumentNullException(nameof(newDirectory)); }
 
-            return new TFile { Parent = newDirectory, NameWithoutExtension = NameWithoutExtension };
+            var changed = new TFile { NameWithoutExtension = NameWithoutExtension };
+            changed.SetParent(newDirectory);
+            return changed;
         }
 
         public TFile CopyTo<TFile>(TFile destination, bool overrideFile = false) where TFile : AFileNode, new()

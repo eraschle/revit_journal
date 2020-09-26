@@ -79,7 +79,7 @@ namespace RevitJournal.Revit.Command
             if (family is null) { return; }
 
             revitFile = family.RevitFile;
-            var saveAsFile = pathCreator.CreatePath<RevitFamilyFile>(revitFile);
+            var saveAsFile = pathCreator.CreatePath(revitFile);
             saveAsFile?.Delete();
         }
 

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Utilities.System;
 
 namespace RevitJournal.Tasks
 {
@@ -55,16 +56,11 @@ namespace RevitJournal.Tasks
         private TaskJournalFile CreateTaskJournal()
         {
             var dataSource = new TaskJournalDataSource();
-            dataSource.SetFile(GetJournalFile());
+            var workingDirectory = Options.GetJournalWorking(PathFactory.Instance);
+            var journalFile = Task.SourceFile.ChangeDirectory<TaskJournalFile>(workingDirectory);
+            dataSource.SetFile(journalFile);
             dataSource.Write(Task);
             return dataSource.FileNode;
-        }
-
-        private TaskJournalFile GetJournalFile()
-        {
-            var journalPath = Options.JournalDirectory;
-            var directory = PathFactory.Instance.CreateRoot(journalPath);
-            return Task.SourceFile.ChangeDirectory<TaskJournalFile>(directory);
         }
 
         public void DeleteJournalProcess()
@@ -82,18 +78,23 @@ namespace RevitJournal.Tasks
         {
             if (report is null) { return; }
 
+            var factory = PathFactory.Instance;
             SetNewAction(report);
             Status.SetStatus(GetTaskStatus(report));
             ReportManager.AddReport(report);
             if (ActionManager.IsOpenAction(report.ActionId)
                 || ActionManager.IsSaveAction(report.ActionId))
             {
-                var resultFile = PathFactory.Instance.Create<RevitFamilyFile>(report.Message);
+                var resultFile = factory.Create<RevitFamilyFile>(report.Message);
                 Task.ResultFile = resultFile;
             }
             else if (ActionManager.IsJournalAction(report.ActionId))
             {
-                var journalFile = PathFactory.Instance.Create<RecordeJournalFile>(report.Message);
+                var journalFile = factory.Create<RecordeJournalFile>(report.Message);
+                var journalRoot = Options.GetJournalWorking(factory);
+                var search = $"{journalFile.NameWithoutExtension}{Constant.Star}";
+                factory.CreateFiles<RecordeJournalFile>(journalRoot, search);
+                factory.CreateFiles<RecordeWorkerFile>(journalRoot, search);
                 RecordeJournal = journalFile;
             }
             Progress?.Report(this);

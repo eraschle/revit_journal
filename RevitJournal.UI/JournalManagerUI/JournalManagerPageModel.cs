@@ -68,7 +68,7 @@ namespace RevitJournalUI.JournalManagerUI
             ChooseActionDirectoryCommand = new RelayCommand<string>(ChooseActionDirectoryAction);
 
 #if DEBUG
-            FamilyDirectory = @"C:\develop\workspace\Content\Blob";
+            FamilyDirectory = @"C:\develop\workspace\revit_journal_test_data\families";
             JournalDirectory = @"C:\develop\workspace\Content\journal";
 #endif
             TaskOptionViewModel.SelectedRevitApp = ProductManager.UseMetadata;
@@ -489,6 +489,7 @@ namespace RevitJournalUI.JournalManagerUI
             CancelVisibility = Visibility.Visible;
             BackVisibility = Visibility.Collapsed;
 
+            TaskOptions.JournalTimeDirectory = DateTime.Now;
             TaskManager.StartServer(TaskOptions);
             TasksViewModel.AddEvents();
             using (var cancel = new CancellationTokenSource())

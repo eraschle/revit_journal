@@ -20,9 +20,13 @@ namespace DataSource.Model.FileSystem
 
         IList<DirectoryNode> UpdateOrInsert(IList<DirectoryNode> directories);
 
-        void InsertFolder(DirectoryNode directory, DirectoryNode toInsert);
+        DirectoryNode InsertFolder(DirectoryNode directory, DirectoryNode toInsert);
+
+        DirectoryNode InsertFolder(DirectoryNode directory, string toInsert);
 
         TFile Create<TFile>(string path) where TFile : AFileNode, new();
+
+        TFile Create<TFile>(string fileName, DirectoryNode directory) where TFile : AFileNode, new();
     }
 
 }

@@ -22,8 +22,8 @@ namespace DataSource
 
             var factory = PathFactory.Instance;
             var root = factory.CreateRoot(rootDirectory);
-            var search = new FileSearch<RevitAppFile> { Name = RevitAppFile.RevitFileName };
-            foreach (var file in root.GetFiles(true, search))
+            var appFiles = factory.CreateFiles<RevitAppFile>(root, $"{RevitAppFile.RevitFileName}");
+            foreach (var file in appFiles)
             {
                 AddInstalled(file);
             }

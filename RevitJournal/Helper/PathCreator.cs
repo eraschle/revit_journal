@@ -46,11 +46,11 @@ namespace RevitJournal.Helper
         {
             if (file is null) { throw new ArgumentNullException(nameof(file)); }
 
-            var directories = file.Parent.GetRootParentNodes();
-            DirectoryNode rootNode = builder.CreateRoot(RootPath);
+            var rootIncluded = true;
+            var directories = file.GetRootParentNodes(rootIncluded);
             if (HasNewRootFolder())
             {
-                directories.Remove(rootNode);
+                directories.Remove(directories.First());
                 var newRootNode = builder.CreateRoot(NewRootPath);
                 directories.Insert(0, newRootNode);
             }
@@ -70,8 +70,8 @@ namespace RevitJournal.Helper
                 }
                 builder.InsertFolder(parentNode, backupNode);
             }
-            builder.UpdateOrInsert(directories);
-            var newFile = builder.Create<TFile>(file.FullPath);
+            directories = builder.UpdateOrInsert(directories);
+            var newFile = builder.Create<TFile>(file.Name, directories.Last());
             if (newFile.HasParent(out var parent)
                 && parent.Exists() == false)
             {

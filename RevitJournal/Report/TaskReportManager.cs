@@ -7,6 +7,7 @@ using System;
 using RevitAction.Report.Message;
 using RevitJournal.Tasks;
 using RevitJournal.Tasks.Options;
+using DataSource.DataSource.Json;
 
 namespace RevitJournal.Report
 {
@@ -14,7 +15,6 @@ namespace RevitJournal.Report
     {
         private readonly TaskUnitOfWork UnitOfWork;
 
-        private readonly TaskReportDataSource dataSource = new TaskReportDataSource();
 
         private RevitTask Task
         {
@@ -45,39 +45,65 @@ namespace RevitJournal.Report
 
         public void CreateLogs()
         {
-            var result = new TaskReport
-            {
-                SourceFile = Task.SourceFile,
-                ResultFile = Task.ResultFile,
-                BackupFile = Task.BackupFile,
-                TaskJournal = UnitOfWork.TaskJournal,
-                RecordeJournal = UnitOfWork.RecordeJournal
-            };
             if (Options.LogError && ErrorAction is object)
             {
-                result.ErrorReport = ErrorAction;
-                result.ErrorMessage = ErrorMessage;
+                var errorReport = new TaskErrorReport(Task, UnitOfWork)
+                {
+                    ErrorReport = ErrorAction,
+                    ErrorMessage = ErrorMessage
+                };
+                errorReport.WarningReport.AddRange(GetWarnings());
+                var dataSource = GetDataSource<TaskErrorReport>("ERROR");
+                dataSource.Write(errorReport);
             }
 
             if (Options.LogSuccess || Options.LogResults)
             {
-                foreach (var action in Task.Actions)
-                {
-                    if (ActionReports.ContainsKey(action) == false) { continue; }
+                var successReport = new TaskSuccessReport(Task, UnitOfWork);
+                successReport.SuccessReport.AddRange(GetSuccess());
+                successReport.WarningReport.AddRange(GetWarnings());
+                var dataSource = GetDataSource<TaskSuccessReport>("Report");
+                dataSource.Write(successReport);
+            }
+        }
 
-                    if (ActionReports[action].HasStatusReports())
-                    {
-                        result.SuccessReport.AddRange(GetStatus(action));
-                    }
-                    if (ActionReports[action].HasWarningReports())
-                    {
-                        result.WarningReport.AddRange(GetWarnings(action));
-                    }
+        private JsonDataSource<TReport> GetDataSource<TReport>(params string[] suffixes) where TReport : ATaskReport
+        {
+            var dataSource = new JsonDataSource<TReport>();
+            var jsonFile = Task.SourceFile.ChangeExtension<JsonFile>();
+            jsonFile.AddSuffixes(suffixes);
+            dataSource.SetFile(jsonFile);
+            return dataSource;
+        }
+
+        private IList<string> GetWarnings()
+        {
+            var warnings = new List<string>();
+            foreach (var action in Task.Actions)
+            {
+                if (ActionReports.ContainsKey(action) == false) { continue; }
+
+                if (ActionReports[action].HasWarningReports())
+                {
+                    warnings.AddRange(GetWarnings(action));
                 }
             }
-            var jsonFile = Task.SourceFile.ChangeExtension<JsonFile>();
-            dataSource.SetFile(jsonFile);
-            dataSource.Write(result);
+            return warnings;
+        }
+
+        private IList<string> GetSuccess()
+        {
+            var success = new List<string>();
+            foreach (var action in Task.Actions)
+            {
+                if (ActionReports.ContainsKey(action) == false) { continue; }
+
+                if (ActionReports[action].HasStatusReports())
+                {
+                    success.AddRange(GetStatus(action));
+                }
+            }
+            return success;
         }
 
         private IEnumerable<string> GetWarnings(ITaskAction action)

@@ -40,10 +40,7 @@ namespace DataSource.Model.FileSystem
 
         public DirectoryRootNode CreateRoot(string path)
         {
-            if (HasRoot(path, out var rootNode))
-            {
-                throw new ArgumentException($"Root with parent folder already exists {rootNode.FullPath}");
-            }
+            if (HasRoot(path, out var rootNode)) { return rootNode; }
 
             if (rootDirectories.ContainsKey(path) == false)
             {
@@ -57,10 +54,17 @@ namespace DataSource.Model.FileSystem
         {
             if (rootNode is null) { throw new ArgumentNullException(nameof(rootNode)); }
 
+            return CreateFiles<TFile>(rootNode as DirectoryNode, pattern);
+        }
+
+        public IEnumerable<TFile> CreateFiles<TFile>(DirectoryNode directory, string pattern = null) where TFile : AFileNode, new()
+        {
+            if (directory is null) { throw new ArgumentNullException(nameof(directory)); }
+
             var search = new TFile().GetSearchPattern(pattern);
             var option = SearchOption.AllDirectories;
             var files = new List<TFile>();
-            foreach (var file in Directory.GetFiles(rootNode.FullPath, search, option))
+            foreach (var file in Directory.GetFiles(directory.FullPath, search, option))
             {
                 files.Add(Create<TFile>(file));
             }
@@ -129,9 +133,10 @@ namespace DataSource.Model.FileSystem
             return directories[path];
         }
 
-        public void InsertFolder(DirectoryNode directory, DirectoryNode toInsert)
+        public DirectoryNode InsertFolder(DirectoryNode directory, DirectoryNode toInsert)
         {
-            if (directory is null || toInsert is null) { return; }
+            if (directory is null) { throw new ArgumentNullException(nameof(directory)); }
+            if (toInsert is null) { throw new ArgumentNullException(nameof(toInsert)); }
 
             foreach (var folder in directory.DirectoryNodes)
             {
@@ -146,6 +151,13 @@ namespace DataSource.Model.FileSystem
             }
 
             toInsert.SetParent(directory);
+            return toInsert;
+        }
+
+        public DirectoryNode InsertFolder(DirectoryNode directory, string toInsert)
+        {
+            var toInsertDirectory = CreateWithName(toInsert);
+            return InsertFolder(directory, toInsertDirectory);
         }
 
         public IList<DirectoryNode> UpdateOrInsert(IList<DirectoryNode> directories)
