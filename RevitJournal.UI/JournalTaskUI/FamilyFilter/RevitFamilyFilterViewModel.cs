@@ -1,4 +1,4 @@
-﻿using DataSource.Metadata;
+﻿using DataSource.Model;
 using RevitJournal.Library;
 using RevitJournal.Revit.Filtering;
 using RevitJournal.Revit.Filtering.Rules;

@@ -1,4 +1,4 @@
-﻿using DataSource.Metadata;
+﻿using DataSource.Model;
 using System;
 using System.Globalization;
 using System.Windows.Media;

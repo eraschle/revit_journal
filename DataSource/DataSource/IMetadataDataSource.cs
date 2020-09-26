@@ -1,4 +1,5 @@
-﻿using DataSource.Model.Family;
+﻿using DataSource.Model;
+using DataSource.Model.Family;
 using DataSource.Model.FileSystem;
 
 namespace DataSource.Metadata
