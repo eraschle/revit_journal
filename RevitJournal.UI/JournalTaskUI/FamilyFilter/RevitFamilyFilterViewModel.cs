@@ -1,16 +1,13 @@
 ﻿using DataSource.Model;
-using RevitJournal.Library;
 using RevitJournal.Revit.Filtering;
 using RevitJournal.Revit.Filtering.Rules;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+using Utilities.UI;
 
 namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 {
-    public class RevitFamilyFilterViewModel : INotifyPropertyChanged
+    public class RevitFamilyFilterViewModel : ANotifyPropertyChangedModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private readonly RevitFilterManager manager = RevitFilterManager.Instance;
 
         public RevitFamilyFilterViewModel()
@@ -25,16 +22,16 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 
         #region Filter
 
-        private bool _MetadataFileNotExist = false;
+        private bool metadataFileNotExist = false;
         public bool MetadataFileNotExist
         {
-            get { return _MetadataFileNotExist; }
+            get { return metadataFileNotExist; }
             set
             {
-                if (_MetadataFileNotExist == value) { return; }
+                if (metadataFileNotExist == value) { return; }
 
-                _MetadataFileNotExist = value;
-                OnPropertyChanged(nameof(MetadataFileNotExist));
+                metadataFileNotExist = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -52,7 +49,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
                 if (isValid.IsChecked == value) { return; }
 
                 isValid.IsChecked = value;
-                OnPropertyChanged(nameof(IsValid));
+                NotifyPropertyChanged();
             }
         }
 
@@ -70,7 +67,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
                 if (isRepairable.IsChecked == value) { return; }
 
                 isRepairable.IsChecked = value;
-                OnPropertyChanged(nameof(IsRepairable));
+                NotifyPropertyChanged();
             }
         }
 
@@ -88,7 +85,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
                 if (isError.IsChecked == value) { return; }
 
                 isError.IsChecked = value;
-                OnPropertyChanged(nameof(IsError));
+                NotifyPropertyChanged();
             }
         }
 
@@ -96,7 +93,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
         {
             foreach (var status in manager.GetValues(MetadataStatusRule.RuleKey))
             {
-                if(!(status is MetadataStatusValue statusValue)) { continue; }
+                if (!(status is MetadataStatusValue statusValue)) { continue; }
 
                 switch (statusValue.Status)
                 {
@@ -121,7 +118,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 
         public void UpdateRevitApps()
         {
-            if(manager.HasRule(ProductRule.RuleKey, out var rule) == false) { return; }
+            if (manager.HasRule(ProductRule.RuleKey, out var rule) == false) { return; }
 
             Products.Clear();
             ProductRuleName = rule.Name;
@@ -138,7 +135,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 
         internal void UpdateFamilyBasis()
         {
-            if(manager.HasRule(BasicComponentRule.RuleKey, out var rule) == false) { return; }
+            if (manager.HasRule(BasicComponentRule.RuleKey, out var rule) == false) { return; }
 
             BasicComponents.Clear();
             ComponentRuleName = rule.Name;
@@ -155,7 +152,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 
         internal void UpdateCategories()
         {
-            if(manager.HasRule(CategoryRule.RuleKey, out var rule) == false) { return; }
+            if (manager.HasRule(CategoryRule.RuleKey, out var rule) == false) { return; }
 
             Categories.Clear();
             CategoryRuleName = rule.Name;
@@ -172,7 +169,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 
         internal void UpdateOmniClasses()
         {
-            if(manager.HasRule(OmniClassRule.RuleKey, out var rule) == false) { return; }
+            if (manager.HasRule(OmniClassRule.RuleKey, out var rule) == false) { return; }
 
             OmniClasses.Clear();
             OmniClassRuleName = rule.Name;
@@ -189,7 +186,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 
         internal void UpdateFamilyParameters()
         {
-            if(manager.HasRule(ParameterRule.RuleKey, out var rule) == false) { return; }
+            if (manager.HasRule(ParameterRule.RuleKey, out var rule) == false) { return; }
 
             Parameters.Clear();
             ParameterRuleName = rule.Name;
@@ -202,9 +199,5 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 
         #endregion
 
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
     }
 }

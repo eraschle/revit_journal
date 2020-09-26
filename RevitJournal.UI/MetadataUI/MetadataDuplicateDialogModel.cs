@@ -1,6 +1,4 @@
-﻿using DataSource.Helper;
-using DataSource.Model.Family;
-using DataSource.Model.FileSystem;
+﻿using DataSource.Model.Family;
 using RevitJournal.Duplicate;
 using RevitJournal.Duplicate.Comparer;
 using RevitJournal.Duplicate.Comparer.FamilyComparer;
@@ -12,7 +10,6 @@ using RevitJournalUI.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using Utilities.System;
@@ -20,10 +17,8 @@ using Utilities.UI;
 
 namespace RevitJournalUI.MetadataUI
 {
-    public class MetadataDuplicateDialogModel : INotifyPropertyChanged
+    public class MetadataDuplicateDialogModel : ANotifyPropertyChangedModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private readonly FamilyDuplicateComparer FamilyComparer = new FamilyDuplicateComparer();
         private LibraryManager libraryManager;
 
@@ -215,16 +210,16 @@ namespace RevitJournalUI.MetadataUI
             IsSearchOptionExpanded = false;
         }
 
-        private bool _IsSearchOptionExpanded = true;
+        private bool isSearchOptionExpanded = true;
         public bool IsSearchOptionExpanded
         {
-            get { return _IsSearchOptionExpanded; }
+            get { return isSearchOptionExpanded; }
             set
             {
-                if (_IsSearchOptionExpanded == value) { return; }
+                if (isSearchOptionExpanded == value) { return; }
 
-                _IsSearchOptionExpanded = value;
-                OnPropertyChanged(nameof(IsSearchOptionExpanded));
+                isSearchOptionExpanded = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -234,16 +229,16 @@ namespace RevitJournalUI.MetadataUI
             = new ObservableCollection<OriginalFamilyViewModel>();
 
 
-        private OriginalFamilyViewModel _SelectedModel;
+        private OriginalFamilyViewModel selectedModel;
         public OriginalFamilyViewModel SelectedModel
         {
-            get { return _SelectedModel; }
+            get { return selectedModel; }
             set
             {
-                if (_SelectedModel != null && _SelectedModel.Equals(value)) { return; }
+                if (selectedModel != null && selectedModel.Equals(value)) { return; }
 
-                _SelectedModel = value;
-                OnPropertyChanged(nameof(SelectedModel));
+                selectedModel = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -253,16 +248,16 @@ namespace RevitJournalUI.MetadataUI
 
         #region Original Metadata
 
-        private Family _Original;
+        private Family original;
         public Family Original
         {
-            get { return _Original; }
+            get { return original; }
             set
             {
-                if (_Original != null && _Original.Equals(value)) { return; }
+                if (original != null && original.Equals(value)) { return; }
 
-                _Original = value;
-                OnPropertyChanged(nameof(Original));
+                original = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -307,109 +302,108 @@ namespace RevitJournalUI.MetadataUI
         }
 
 
-        private string _OriginalName = string.Empty;
+        private string originalName = string.Empty;
         public string OriginalName
         {
-            get { return _OriginalName; }
+            get { return originalName; }
             set
             {
-                if (_OriginalName != null && _OriginalName.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (originalName != null && StringUtils.Equals(originalName, value)) { return; }
 
-                _OriginalName = value;
-                OnPropertyChanged(nameof(OriginalName));
+                originalName = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private string _OriginalDisplayName = string.Empty;
+        private string originalDisplayName = string.Empty;
         public string OriginalDisplayName
         {
-            get { return _OriginalDisplayName; }
+            get { return originalDisplayName; }
             set
             {
-                if (_OriginalDisplayName != null && _OriginalDisplayName.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (originalDisplayName != null && StringUtils.Equals(originalDisplayName, value)) { return; }
 
-                _OriginalDisplayName = value;
-                OnPropertyChanged(nameof(OriginalDisplayName));
+                originalDisplayName = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private string _OriginalLibraryPath = string.Empty;
+        private string originalLibraryPath = string.Empty;
         public string OriginalLibraryPath
         {
-            get { return _OriginalLibraryPath; }
+            get { return originalLibraryPath; }
             set
             {
-                if (_OriginalLibraryPath != null && _OriginalLibraryPath.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (originalLibraryPath != null && StringUtils.Equals(originalLibraryPath, value)) { return; }
 
-                _OriginalLibraryPath = value;
-                OnPropertyChanged(nameof(OriginalLibraryPath));
+                originalLibraryPath = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private string _OriginalCategory = string.Empty;
+        private string originalCategory = string.Empty;
         public string OriginalCategory
         {
-            get { return _OriginalCategory; }
+            get { return originalCategory; }
             set
             {
-                if (_OriginalCategory != null && _OriginalCategory.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (originalCategory != null && StringUtils.Equals(originalCategory, value)) { return; }
 
-                _OriginalCategory = value;
-                OnPropertyChanged(nameof(OriginalCategory));
+                originalCategory = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private string _OriginalOmniClass = string.Empty;
+        private string originalOmniClass = string.Empty;
         public string OriginalOmniClass
         {
-            get { return _OriginalOmniClass; }
+            get { return originalOmniClass; }
             set
             {
-                if (_OriginalOmniClass != null && _OriginalOmniClass.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (originalOmniClass != null && StringUtils.Equals(originalOmniClass, value)) { return; }
 
-                _OriginalOmniClass = value;
-                OnPropertyChanged(nameof(OriginalOmniClass));
+                originalOmniClass = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private string _OriginalUpdated = string.Empty;
+        private string originalUpdated = string.Empty;
         public string OriginalUpdated
         {
-            get { return _OriginalUpdated; }
+            get { return originalUpdated; }
             set
             {
-                if (_OriginalUpdated != null && _OriginalUpdated.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (originalUpdated != null && StringUtils.Equals(originalUpdated, value)) { return; }
 
-                _OriginalUpdated = value;
-                OnPropertyChanged(nameof(OriginalUpdated));
+                originalUpdated = value;
             }
         }
 
-        private string _OriginalProduct = string.Empty;
+        private string originalProduct = string.Empty;
         public string OriginalProduct
         {
-            get { return _OriginalProduct; }
+            get { return originalProduct; }
             set
             {
-                if (_OriginalProduct != null && _OriginalProduct.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (originalProduct != null && StringUtils.Equals(originalProduct, value)) { return; }
 
-                _OriginalProduct = value;
-                OnPropertyChanged(nameof(OriginalProduct));
+                originalProduct = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private FamilyType _OriginalSelectedFamilyType;
+        private FamilyType originalSelectedFamilyType;
         public FamilyType OriginalSelectedFamilyType
         {
-            get { return _OriginalSelectedFamilyType; }
+            get { return originalSelectedFamilyType; }
             set
             {
                 if (value is null ||
-                    _OriginalSelectedFamilyType != null &&
-                    _OriginalSelectedFamilyType.Equals(value)) { return; }
+                    originalSelectedFamilyType != null &&
+                    originalSelectedFamilyType.Equals(value)) { return; }
 
-                _OriginalSelectedFamilyType = value;
-                OnPropertyChanged(nameof(OriginalSelectedFamilyType));
+                originalSelectedFamilyType = value;
+                NotifyPropertyChanged();
                 UpdateOriginalFamilyTypeParameters();
                 UpdateSourceFamilyTypeParameterDistances();
             }
@@ -434,16 +428,16 @@ namespace RevitJournalUI.MetadataUI
 
         #region Source Metadata
 
-        private Family _Source;
+        private Family source;
         public Family Source
         {
-            get { return _Source; }
+            get { return source; }
             set
             {
-                if (_Source != null && _Source.Equals(value)) { return; }
+                if (source != null && source.Equals(value)) { return; }
 
-                _Source = value;
-                OnPropertyChanged(nameof(Source));
+                source = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -501,226 +495,226 @@ namespace RevitJournalUI.MetadataUI
             SourceSelectedFamilyType = SourceFamilyTypes[0];
         }
 
-        private string _SourceLevenstein = string.Empty;
+        private string sourceLevenstein = string.Empty;
         public string SourceLevenstein
         {
-            get { return _SourceLevenstein; }
+            get { return sourceLevenstein; }
             set
             {
-                if (_SourceLevenstein != null && _SourceLevenstein.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (sourceLevenstein != null && StringUtils.Equals(sourceLevenstein, value)) { return; }
 
-                _SourceLevenstein = value;
-                OnPropertyChanged(nameof(SourceLevenstein));
+                sourceLevenstein = value;
+                NotifyPropertyChanged();
             }
         }
 
 
-        private string _SourceName = string.Empty;
+        private string sourceName = string.Empty;
         public string SourceName
         {
-            get { return _SourceName; }
+            get { return sourceName; }
             set
             {
-                if (_SourceName != null && _SourceName.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (sourceName != null && StringUtils.Equals(sourceName, value)) { return; }
 
-                _SourceName = value;
-                OnPropertyChanged(nameof(SourceName));
+                sourceName = value;
+                NotifyPropertyChanged();
             }
         }
 
 
-        private string _SourceNameDistance = string.Empty;
+        private string sourceNameDistance = string.Empty;
         public string SourceNameDistance
         {
-            get { return _SourceNameDistance; }
+            get { return sourceNameDistance; }
             set
             {
-                if (_SourceNameDistance == value) { return; }
+                if (sourceNameDistance == value) { return; }
 
-                _SourceNameDistance = value;
-                OnPropertyChanged(nameof(SourceNameDistance));
+                sourceNameDistance = value;
+                NotifyPropertyChanged();
             }
         }
 
 
-        private string _SourceDisplayName = string.Empty;
+        private string sourceDisplayName = string.Empty;
         public string SourceDisplayName
         {
-            get { return _SourceDisplayName; }
+            get { return sourceDisplayName; }
             set
             {
-                if (_SourceDisplayName != null && _SourceDisplayName.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (sourceDisplayName != null && StringUtils.Equals(sourceDisplayName, value)) { return; }
 
-                _SourceDisplayName = value;
-                OnPropertyChanged(nameof(SourceDisplayName));
+                sourceDisplayName = value;
+                NotifyPropertyChanged();
             }
         }
 
 
-        private string _SourceDisplayNameDistance = string.Empty;
+        private string sourceDisplayNameDistance = string.Empty;
         public string SourceDisplayNameDistance
         {
-            get { return _SourceDisplayNameDistance; }
+            get { return sourceDisplayNameDistance; }
             set
             {
-                if (_SourceDisplayNameDistance == value) { return; }
+                if (sourceDisplayNameDistance == value) { return; }
 
-                _SourceDisplayNameDistance = value;
-                OnPropertyChanged(nameof(SourceDisplayNameDistance));
+                sourceDisplayNameDistance = value;
+                NotifyPropertyChanged();
             }
         }
 
 
-        private string _SourceLibraryPath = string.Empty;
+        private string sourceLibraryPath = string.Empty;
         public string SourceLibraryPath
         {
-            get { return _SourceLibraryPath; }
+            get { return sourceLibraryPath; }
             set
             {
-                if (_SourceLibraryPath != null && _SourceLibraryPath.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (sourceLibraryPath != null && StringUtils.Equals(sourceLibraryPath, value)) { return; }
 
-                _SourceLibraryPath = value;
-                OnPropertyChanged(nameof(SourceLibraryPath));
+                sourceLibraryPath = value;
+                NotifyPropertyChanged();
             }
         }
 
 
-        private string _SourceLibraryPathDistance = string.Empty;
+        private string sourceLibraryPathDistance = string.Empty;
         public string SourceLibraryPathDistance
         {
-            get { return _SourceLibraryPathDistance; }
+            get { return sourceLibraryPathDistance; }
             set
             {
-                if (_SourceLibraryPathDistance == value) { return; }
+                if (sourceLibraryPathDistance == value) { return; }
 
-                _SourceLibraryPathDistance = value;
-                OnPropertyChanged(nameof(SourceLibraryPathDistance));
+                sourceLibraryPathDistance = value;
+                NotifyPropertyChanged();
             }
         }
 
 
-        private string _SourceCategory = string.Empty;
+        private string sourceCategory = string.Empty;
         public string SourceCategory
         {
-            get { return _SourceCategory; }
+            get { return sourceCategory; }
             set
             {
-                if (_SourceCategory != null && _SourceCategory.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (sourceCategory != null && StringUtils.Equals(sourceCategory, value)) { return; }
 
-                _SourceCategory = value;
-                OnPropertyChanged(nameof(SourceCategory));
+                sourceCategory = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private string _SourceCategoryDistance = string.Empty;
+        private string sourceCategoryDistance = string.Empty;
         public string SourceCategoryDistance
         {
-            get { return _SourceCategoryDistance; }
+            get { return sourceCategoryDistance; }
             set
             {
-                if (_SourceCategoryDistance == value) { return; }
+                if (sourceCategoryDistance == value) { return; }
 
-                _SourceCategoryDistance = value;
-                OnPropertyChanged(nameof(SourceCategoryDistance));
+                sourceCategoryDistance = value;
+                NotifyPropertyChanged();
             }
         }
 
 
-        private string _SourceOmniClass = string.Empty;
+        private string sourceOmniClass = string.Empty;
         public string SourceOmniClass
         {
-            get { return _SourceOmniClass; }
+            get { return sourceOmniClass; }
             set
             {
-                if (_SourceOmniClass != null && _SourceOmniClass.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (sourceOmniClass != null && StringUtils.Equals(sourceOmniClass, value)) { return; }
 
-                _SourceOmniClass = value;
-                OnPropertyChanged(nameof(SourceOmniClass));
+                sourceOmniClass = value;
+                NotifyPropertyChanged();
             }
         }
 
 
-        private string _SourceOmniClassDistance = string.Empty;
+        private string sourceOmniClassDistance = string.Empty;
         public string SourceOmniClassDistance
         {
-            get { return _SourceOmniClassDistance; }
+            get { return sourceOmniClassDistance; }
             set
             {
-                if (_SourceOmniClassDistance == value) { return; }
+                if (sourceOmniClassDistance == value) { return; }
 
-                _SourceOmniClassDistance = value;
-                OnPropertyChanged(nameof(SourceOmniClassDistance));
+                sourceOmniClassDistance = value;
+                NotifyPropertyChanged();
             }
         }
 
 
-        private string _SourceUpdated = string.Empty;
+        private string sourceUpdated = string.Empty;
         public string SourceUpdated
         {
-            get { return _SourceUpdated; }
+            get { return sourceUpdated; }
             set
             {
-                if (_SourceUpdated != null && _SourceUpdated.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (sourceUpdated != null && StringUtils.Equals(sourceUpdated, value)) { return; }
 
-                _SourceUpdated = value;
-                OnPropertyChanged(nameof(SourceUpdated));
+                sourceUpdated = value;
+                NotifyPropertyChanged();
             }
         }
 
 
-        private string _SourceUpdatedDistance = string.Empty;
+        private string sourceUpdatedDistance = string.Empty;
         public string SourceUpdatedDistance
         {
-            get { return _SourceUpdatedDistance; }
+            get { return sourceUpdatedDistance; }
             set
             {
-                if (_SourceUpdatedDistance == value) { return; }
+                if (sourceUpdatedDistance == value) { return; }
 
-                _SourceUpdatedDistance = value;
-                OnPropertyChanged(nameof(SourceUpdatedDistance));
+                sourceUpdatedDistance = value;
+                NotifyPropertyChanged();
             }
         }
 
 
-        private string _SourceProduct = string.Empty;
+        private string sourceProduct = string.Empty;
         public string SourceProduct
         {
-            get { return _SourceProduct; }
+            get { return sourceProduct; }
             set
             {
-                if (_SourceProduct != null && _SourceProduct.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (sourceProduct != null && StringUtils.Equals(sourceProduct, value)) { return; }
 
-                _SourceProduct = value;
-                OnPropertyChanged(nameof(SourceProduct));
+                sourceProduct = value;
+                NotifyPropertyChanged();
             }
         }
 
 
-        private string _SourceProductDistance = string.Empty;
+        private string sourceProductDistance = string.Empty;
         public string SourceProductDistance
         {
-            get { return _SourceProductDistance; }
+            get { return sourceProductDistance; }
             set
             {
-                if (_SourceProductDistance == value) { return; }
+                if (sourceProductDistance == value) { return; }
 
-                _SourceProductDistance = value;
-                OnPropertyChanged(nameof(SourceProductDistance));
+                sourceProductDistance = value;
+                NotifyPropertyChanged();
             }
         }
 
 
-        private FamilyType _SourceSelectedFamilyType;
+        private FamilyType sourceSelectedFamilyType;
         public FamilyType SourceSelectedFamilyType
         {
-            get { return _SourceSelectedFamilyType; }
+            get { return sourceSelectedFamilyType; }
             set
             {
-                if (_SourceSelectedFamilyType != null
-                    && _SourceSelectedFamilyType.Equals(value)) { return; }
+                if (sourceSelectedFamilyType != null
+                    && sourceSelectedFamilyType.Equals(value)) { return; }
 
-                _SourceSelectedFamilyType = value;
-                OnPropertyChanged(nameof(SourceSelectedFamilyType));
+                sourceSelectedFamilyType = value;
+                NotifyPropertyChanged();
 
                 UpdateSourceFamilyTypeParameters();
             }
@@ -782,12 +776,6 @@ namespace RevitJournalUI.MetadataUI
             }
 
             return comparer.LevenstheinDistanceAsString(Original, Source);
-        }
-
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

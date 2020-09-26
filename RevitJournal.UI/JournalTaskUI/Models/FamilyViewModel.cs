@@ -1,7 +1,6 @@
 ﻿using RevitJournalUI.MetadataUI;
 using System.Windows.Input;
 using RevitJournal.Library;
-using DataSource.Helper;
 using System;
 using DataSource.Model;
 using Utilities.System;
@@ -37,15 +36,15 @@ namespace RevitJournalUI.JournalTaskUI.Models
             get { return Handler.File.RevitFile.NameWithoutExtension; }
         }
 
-        private bool _Enabled = true;
+        private bool enabled = true;
         public bool Enabled
         {
-            get { return _Enabled; }
+            get { return enabled; }
             set
             {
-                if (_Enabled == value) { return; }
+                if (enabled == value) { return; }
 
-                _Enabled = value;
+                enabled = value;
                 OnPropertyChanged(nameof(Enabled));
             }
         }

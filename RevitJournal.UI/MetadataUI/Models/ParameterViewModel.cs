@@ -1,16 +1,14 @@
 ﻿using DataSource.Model.Family;
 using RevitJournal.Duplicate.Comparer;
-using System;
-using System.ComponentModel;
 using System.Reflection;
+using Utilities.System;
+using Utilities.UI;
 
 namespace RevitJournalUI.MetadataUI.Models
 {
-    public class ParameterViewModel : INotifyPropertyChanged
+    public class ParameterViewModel : ANotifyPropertyChangedModel
     {
         private const string ParameterDistanceSuffix = "Distance";
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public Parameter Parameter { get; set; }
 
@@ -19,23 +17,23 @@ namespace RevitJournalUI.MetadataUI.Models
             get { return Parameter.Id; }
             set
             {
-                if (Parameter.Id.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(Parameter.Id, value)) { return; }
 
                 Parameter.Id = value;
-                OnPropertyChanged(nameof(Id));
+                NotifyPropertyChanged();
             }
         }
 
-        private string _IdDistance = string.Empty;
+        private string idDistance = string.Empty;
         public string IdDistance
         {
-            get { return _IdDistance; }
+            get { return idDistance; }
             set
             {
-                if (_IdDistance.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(idDistance, value)) { return; }
 
-                _IdDistance = value;
-                OnPropertyChanged(nameof(IdDistance));
+                idDistance = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -43,24 +41,25 @@ namespace RevitJournalUI.MetadataUI.Models
         public string Name
         {
             get { return Parameter.Name; }
-            set {
-                if (Parameter.Name.Equals(value, StringComparison.CurrentCulture)) { return; }
+            set
+            {
+                if (StringUtils.Equals(Parameter.Name, value)) { return; }
 
                 Parameter.Name = value;
-                OnPropertyChanged(nameof(Name));
+                NotifyPropertyChanged();
             }
         }
 
-        private string _NameDistance = string.Empty;
+        private string nameDistance = string.Empty;
         public string NameDistance
         {
-            get { return _NameDistance; }
+            get { return nameDistance; }
             set
             {
-                if (_NameDistance.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(nameDistance, value)) { return; }
 
-                _NameDistance = value;
-                OnPropertyChanged(nameof(NameDistance));
+                nameDistance = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -69,23 +68,23 @@ namespace RevitJournalUI.MetadataUI.Models
             get { return Parameter.Value; }
             set
             {
-                if (Parameter.Value.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(Parameter.Value, value)) { return; }
 
                 Parameter.Value = value;
-                OnPropertyChanged(nameof(Value));
+                NotifyPropertyChanged();
             }
         }
 
-        private string _ValueDistance = string.Empty;
+        private string valueDistance = string.Empty;
         public string ValueDistance
         {
-            get { return _ValueDistance; }
+            get { return valueDistance; }
             set
             {
-                if (_ValueDistance.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(valueDistance, value)) { return; }
 
-                _ValueDistance = value;
-                OnPropertyChanged(nameof(ValueDistance));
+                valueDistance = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -94,23 +93,23 @@ namespace RevitJournalUI.MetadataUI.Models
             get { return Parameter.ValueType; }
             set
             {
-                if (Parameter.ValueType.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(Parameter.ValueType, value)) { return; }
 
                 Parameter.ValueType = value;
-                OnPropertyChanged(nameof(ValueType));
+                NotifyPropertyChanged();
             }
         }
 
-        private string _ValueTypeDistance = string.Empty;
+        private string valueTypeDistance = string.Empty;
         public string ValueTypeDistance
         {
-            get { return _ValueTypeDistance; }
+            get { return valueTypeDistance; }
             set
             {
-                if (_ValueTypeDistance.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(valueTypeDistance, value)) { return; }
 
-                _ValueTypeDistance = value;
-                OnPropertyChanged(nameof(ValueTypeDistance));
+                valueTypeDistance = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -119,23 +118,23 @@ namespace RevitJournalUI.MetadataUI.Models
             get { return Parameter.ParameterType; }
             set
             {
-                if (Parameter.ParameterType.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(Parameter.ParameterType, value)) { return; }
 
                 Parameter.ParameterType = value;
-                OnPropertyChanged(nameof(ParameterType));
+                NotifyPropertyChanged();
             }
         }
 
-        private string _ParameterTypeDistance = string.Empty;
+        private string parameterTypeDistance = string.Empty;
         public string ParameterTypeDistance
         {
-            get { return _ParameterTypeDistance; }
+            get { return parameterTypeDistance; }
             set
             {
-                if (_ParameterTypeDistance.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(parameterTypeDistance, value)) { return; }
 
-                _ParameterTypeDistance = value;
-                OnPropertyChanged(nameof(ParameterTypeDistance));
+                parameterTypeDistance = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -147,33 +146,33 @@ namespace RevitJournalUI.MetadataUI.Models
                 if (Parameter.IsInstance == value) { return; }
 
                 Parameter.IsInstance = value;
-                OnPropertyChanged(nameof(IsInstance));
+                NotifyPropertyChanged();
             }
         }
 
-        private string _IsInstanceDistance = string.Empty;
+        private string isInstanceDistance = string.Empty;
         public string IsInstanceDistance
         {
-            get { return _IsInstanceDistance; }
+            get { return isInstanceDistance; }
             set
             {
-                if (_IsInstanceDistance.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(isInstanceDistance, value)) { return; }
 
-                _IsInstanceDistance = value;
-                OnPropertyChanged(nameof(IsInstanceDistance));
+                isInstanceDistance = value;
+                NotifyPropertyChanged();
             }
         }
 
         public void UpdateDistance(Parameter parameter, IModelDuplicateComparer<Parameter> comparer)
         {
-            if(parameter is null || comparer is null) { return; }
+            if (parameter is null || comparer is null) { return; }
 
             foreach (var field in Parameter.GetType().GetProperties())
             {
                 var fieldName = field.Name;
-                if(HasParameter(fieldName, out var modelParameter) == false) { continue; }
+                if (HasParameter(fieldName, out var modelParameter) == false) { continue; }
 
-                if(comparer.HasByName(fieldName, out var fieldComparer) == false) { continue; }
+                if (comparer.HasByName(fieldName, out var fieldComparer) == false) { continue; }
 
                 var distance = fieldComparer.LevenstheinDistanceAsString(Parameter, parameter);
                 modelParameter.SetValue(this, distance);
@@ -185,11 +184,6 @@ namespace RevitJournalUI.MetadataUI.Models
             var propertyName = string.Concat(name, ParameterDistanceSuffix);
             field = GetType().GetProperty(propertyName);
             return field != null;
-        }
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

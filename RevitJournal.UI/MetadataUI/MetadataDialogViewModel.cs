@@ -1,16 +1,12 @@
-﻿using DataSource.Helper;
-using DataSource.Model.Family;
-using System;
+﻿using DataSource.Model.Family;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using Utilities.System;
+using Utilities.UI;
 
 namespace RevitJournalUI.MetadataUI
 {
-    public class MetadataDialogViewModel : INotifyPropertyChanged
+    public class MetadataDialogViewModel : ANotifyPropertyChangedModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public void UpdateFamily(Family family)
         {
             if (family is null) { return; }
@@ -50,108 +46,108 @@ namespace RevitJournalUI.MetadataUI
         }
 
 
-        private string _Name = string.Empty;
+        private string name = string.Empty;
         public string Name
         {
-            get { return _Name; }
+            get { return name; }
             set
             {
-                if (_Name != null && _Name.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (name != null && StringUtils.Equals(name, value)) { return; }
 
-                _Name = value;
-                OnPropertyChanged(nameof(Name));
+                name = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private string _DisplayName = string.Empty;
+        private string displayName = string.Empty;
         public string DisplayName
         {
-            get { return _DisplayName; }
+            get { return displayName; }
             set
             {
-                if (_DisplayName != null && _DisplayName.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (displayName != null && StringUtils.Equals(displayName, value)) { return; }
 
-                _DisplayName = value;
-                OnPropertyChanged(nameof(DisplayName));
+                displayName = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private string _LibraryPath = string.Empty;
+        private string libraryPath = string.Empty;
         public string LibraryPath
         {
-            get { return _LibraryPath; }
+            get { return libraryPath; }
             set
             {
-                if (_LibraryPath != null && _LibraryPath.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (libraryPath != null && StringUtils.Equals(libraryPath, value)) { return; }
 
-                _LibraryPath = value;
-                OnPropertyChanged(nameof(LibraryPath));
+                libraryPath = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private string _Category = string.Empty;
+        private string category = string.Empty;
         public string Category
         {
-            get { return _Category; }
+            get { return category; }
             set
             {
-                if (_Category != null && _Category.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (category != null && StringUtils.Equals(category, value)) { return; }
 
-                _Category = value;
-                OnPropertyChanged(nameof(Category));
+                category = value;
+                NotifyPropertyChanged();
             }
         }
 
 
-        private string _OmniClass = string.Empty;
+        private string omniClass = string.Empty;
         public string OmniClass
         {
-            get { return _OmniClass; }
+            get { return omniClass; }
             set
             {
-                if (_OmniClass != null && _OmniClass.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (omniClass != null && StringUtils.Equals(omniClass, value)) { return; }
 
-                _OmniClass = value;
-                OnPropertyChanged(nameof(OmniClass));
+                omniClass = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private string _Updated = string.Empty;
+        private string updated = string.Empty;
         public string Updated
         {
-            get { return _Updated; }
+            get { return updated; }
             set
             {
-                if (_Updated != null && _Updated.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (updated != null && StringUtils.Equals(updated, value)) { return; }
 
-                _Updated = value;
-                OnPropertyChanged(nameof(Updated));
+                updated = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private string _Product = string.Empty;
+        private string product = string.Empty;
         public string Product
         {
-            get { return _Product; }
+            get { return product; }
             set
             {
-                if (_Product != null && _Product.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (product != null && StringUtils.Equals(product, value)) { return; }
 
-                _Product = value;
-                OnPropertyChanged(nameof(Product));
+                product = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private FamilyType _SelectedFamilyType;
+        private FamilyType selectedFamilyType;
         public FamilyType SelectedFamilyType
         {
-            get { return _SelectedFamilyType; }
+            get { return selectedFamilyType; }
             set
             {
-                if (_SelectedFamilyType == value) { return; }
+                if (selectedFamilyType == value) { return; }
 
-                _SelectedFamilyType = value;
-                OnPropertyChanged(nameof(SelectedFamilyType));
+                selectedFamilyType = value;
+                NotifyPropertyChanged();
                 UpdateFamilyTypeParameters();
             }
         }
@@ -170,11 +166,5 @@ namespace RevitJournalUI.MetadataUI
         public ObservableCollection<FamilyType> FamilyTypes { get; } = new ObservableCollection<FamilyType>();
 
         public ObservableCollection<Parameter> FamilyTypeParameters { get; } = new ObservableCollection<Parameter>();
-
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
     }
 }

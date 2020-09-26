@@ -1,29 +1,22 @@
-﻿using System.ComponentModel;
+﻿using Utilities.UI;
 
 namespace RevitJournalUI.JournalTaskUI.Models
 {
-    public class ParameterViewModel : INotifyPropertyChanged
+    public class ParameterViewModel : ANotifyPropertyChangedModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private bool _Checked = false;
+        private bool isChecked = false;
         public bool Checked
         {
-            get { return _Checked; }
+            get { return isChecked; }
             set
             {
-                if(_Checked == value) { return; }
+                if(isChecked == value) { return; }
 
-                _Checked = value;
-                OnPropertyChanged(nameof(Checked));
+                isChecked = value;
+                NotifyPropertyChanged();
             }
         }
 
         public string ParameterName { get; set; }
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
     }
 }

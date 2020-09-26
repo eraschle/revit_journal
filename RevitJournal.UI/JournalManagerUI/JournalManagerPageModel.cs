@@ -26,10 +26,8 @@ using Utilities.UI;
 
 namespace RevitJournalUI.JournalManagerUI
 {
-    public class JournalManagerPageModel : INotifyPropertyChanged
+    public class JournalManagerPageModel : ANotifyPropertyChangedModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public const string PrefixCreateButton = "Create";
         public const string PrefixDuplicateButton = "Duplicate";
         public const string PrefixEditButton = "Edit";
@@ -88,7 +86,7 @@ namespace RevitJournalUI.JournalManagerUI
                 if (StringUtils.Equals(TaskOptions.RootDirectory, value)) { return; }
 
                 TaskOptions.RootDirectory = value;
-                OnPropertyChanged(nameof(FamilyDirectory));
+                NotifyPropertyChanged();
             }
         }
 
@@ -107,7 +105,7 @@ namespace RevitJournalUI.JournalManagerUI
                 if (StringUtils.Equals(TaskOptions.JournalDirectory, value)) { return; }
 
                 TaskOptions.JournalDirectory = value;
-                OnPropertyChanged(nameof(JournalDirectory));
+                NotifyPropertyChanged();
             }
         }
 
@@ -126,7 +124,7 @@ namespace RevitJournalUI.JournalManagerUI
                 if (StringUtils.Equals(TaskOptions.ActionDirectory, value)) { return; }
 
                 TaskOptions.ActionDirectory = value;
-                OnPropertyChanged(nameof(ActionDirectory));
+                NotifyPropertyChanged();
             }
         }
 
@@ -169,7 +167,7 @@ namespace RevitJournalUI.JournalManagerUI
                 if (loadingProcessTitel == value) { return; }
 
                 loadingProcessTitel = value;
-                OnPropertyChanged(nameof(LoadingProcessTitel));
+                NotifyPropertyChanged();
             }
         }
 
@@ -182,7 +180,7 @@ namespace RevitJournalUI.JournalManagerUI
                 if (loadingProcessPercent == value) { return; }
 
                 loadingProcessPercent = value;
-                OnPropertyChanged(nameof(LoadingProcessPercent));
+                NotifyPropertyChanged();
             }
         }
 
@@ -198,7 +196,7 @@ namespace RevitJournalUI.JournalManagerUI
                 if (fileFilterVisibility == value) { return; }
 
                 fileFilterVisibility = value;
-                OnPropertyChanged(nameof(FileFilterVisibility));
+                NotifyPropertyChanged();
             }
         }
 
@@ -241,7 +239,7 @@ namespace RevitJournalUI.JournalManagerUI
                 if (taskActionsVisibility == value) { return; }
 
                 taskActionsVisibility = value;
-                OnPropertyChanged(nameof(TaskActionsVisibility));
+                NotifyPropertyChanged();
             }
         }
 
@@ -289,7 +287,7 @@ namespace RevitJournalUI.JournalManagerUI
                 if (familiesVisibility == value) { return; }
 
                 familiesVisibility = value;
-                OnPropertyChanged(nameof(FamiliesVisibility));
+                NotifyPropertyChanged();
             }
         }
 
@@ -299,10 +297,10 @@ namespace RevitJournalUI.JournalManagerUI
             get { return createName; }
             set
             {
-                if (createName.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(createName, value)) { return; }
 
                 createName = value;
-                OnPropertyChanged(nameof(CreateName));
+                NotifyPropertyChanged();
             }
         }
 
@@ -373,7 +371,7 @@ namespace RevitJournalUI.JournalManagerUI
                 if (backVisibility == value) { return; }
 
                 backVisibility = value;
-                OnPropertyChanged(nameof(BackVisibility));
+                NotifyPropertyChanged();
             }
         }
 
@@ -387,10 +385,10 @@ namespace RevitJournalUI.JournalManagerUI
             get { return duplicateName; }
             set
             {
-                if (duplicateName.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals( duplicateName, value)) { return; }
 
                 duplicateName = value;
-                OnPropertyChanged(nameof(DuplicateName));
+                NotifyPropertyChanged();
             }
         }
 
@@ -428,10 +426,10 @@ namespace RevitJournalUI.JournalManagerUI
             get { return editName; }
             set
             {
-                if (editName.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(editName, value)) { return; }
 
                 editName = value;
-                OnPropertyChanged(nameof(EditName));
+                NotifyPropertyChanged();
             }
         }
 
@@ -475,7 +473,7 @@ namespace RevitJournalUI.JournalManagerUI
                 if (taskVisibility == value) { return; }
 
                 taskVisibility = value;
-                OnPropertyChanged(nameof(TaskVisibility));
+                NotifyPropertyChanged();
             }
         }
 
@@ -526,7 +524,7 @@ namespace RevitJournalUI.JournalManagerUI
                 if (executeEnable == value) { return; }
 
                 executeEnable = value;
-                OnPropertyChanged(nameof(ExecuteEnable));
+                NotifyPropertyChanged();
             }
         }
 
@@ -541,7 +539,7 @@ namespace RevitJournalUI.JournalManagerUI
             set
             {
                 cancellation = value;
-                OnPropertyChanged(nameof(Cancellation));
+                NotifyPropertyChanged();
                 CancelEnable = cancellation != null;
             }
         }
@@ -555,7 +553,7 @@ namespace RevitJournalUI.JournalManagerUI
                 if (cancelEnable == value) { return; }
 
                 cancelEnable = value;
-                OnPropertyChanged(nameof(CancelEnable));
+                NotifyPropertyChanged();
             }
         }
 
@@ -590,15 +588,10 @@ namespace RevitJournalUI.JournalManagerUI
                 if (cancelVisibility == value) { return; }
 
                 cancelVisibility = value;
-                OnPropertyChanged(nameof(CancelVisibility));
+                NotifyPropertyChanged();
             }
         }
 
         #endregion
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
     }
 }

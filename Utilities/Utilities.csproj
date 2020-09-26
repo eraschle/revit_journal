@@ -53,6 +53,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="System\FileSystem\DirUtils.cs" />
     <Compile Include="System\FileSystem\FileUtils.cs" />
+    <Compile Include="UI\ANotifyPropertyChangedModel.cs" />
     <Compile Include="UI\RelayCommand.cs" />
     <Compile Include="UI\PathDialog.cs" />
   </ItemGroup>

@@ -1,19 +1,12 @@
-﻿using DataSource.Model.FileSystem;
-using RevitJournal.Library;
-using RevitJournalUI.JournalTaskUI.FamilyFilter;
-using System;
-using System.Collections.Generic;
+﻿using RevitJournal.Library;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows;
-using Utilities;
+using Utilities.System;
 
 namespace RevitJournalUI.JournalTaskUI.Models
 {
     public class DirectoryViewModel : PathViewModel<LibraryFolder>
     {
-        public DirectoryViewModel(LibraryFolder handler, DirectoryViewModel parent): base(handler, parent)
+        public DirectoryViewModel(LibraryFolder handler, DirectoryViewModel parent) : base(handler, parent)
         {
             CreateDirectoryModels();
         }
@@ -53,7 +46,7 @@ namespace RevitJournalUI.JournalTaskUI.Models
             get { return filesCountValue; }
             set
             {
-                if (filesCountValue.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(filesCountValue, value)) { return; }
 
                 filesCountValue = value;
                 OnPropertyChanged(nameof(FilesCountValue));
@@ -69,7 +62,7 @@ namespace RevitJournalUI.JournalTaskUI.Models
         protected override void UpdateChildren()
         {
             base.UpdateChildren();
-            if(Handler.IsChecked.HasValue == false) { return; }
+            if (Handler.IsChecked.HasValue == false) { return; }
 
             foreach (var folder in Subfolders)
             {

@@ -1,17 +1,11 @@
 ﻿using RevitJournal.Library;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Utilities.UI;
 
 namespace RevitJournalUI.JournalTaskUI.Models
 {
-    public class PathViewModel<THandler> : INotifyPropertyChanged where THandler : ALibraryNode
+    public class PathViewModel<THandler> : ANotifyPropertyChangedModel where THandler : ALibraryNode
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public THandler Handler { get; private set; }
 
         protected DirectoryViewModel Parent { get; }
@@ -47,7 +41,7 @@ namespace RevitJournalUI.JournalTaskUI.Models
 
         internal void UpdateChecked()
         {
-            OnPropertyChanged(nameof(Checked));
+            NotifyPropertyChanged(nameof(Checked));
         }
 
         protected virtual void FinishSetChecked() { }
@@ -59,11 +53,6 @@ namespace RevitJournalUI.JournalTaskUI.Models
             var updateParent = true;
             Parent.UpdateCheckedCount(updateParent);
             Parent.UpdateCheckedStatus(updateParent);
-        }
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

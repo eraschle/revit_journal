@@ -1,14 +1,12 @@
 ﻿using DataSource.Model.Family;
 using RevitJournal.Duplicate.Comparer;
 using System;
-using System.ComponentModel;
+using Utilities.UI;
 
 namespace RevitJournalUI.MetadataUI.Models
 {
-    public class DuplicateFamilyViewModel : INotifyPropertyChanged
+    public class DuplicateFamilyViewModel : ANotifyPropertyChangedModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public Family Family { get; private set; }
 
         public DuplicateFamilyViewModel(Family family, Family original, FamilyDuplicateComparer familyComparer)
@@ -24,10 +22,5 @@ namespace RevitJournalUI.MetadataUI.Models
         public string DisplayName { get { return Family.Name; } }
 
         public string DisplayeNameDistance { get; private set; }
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
     }
 }

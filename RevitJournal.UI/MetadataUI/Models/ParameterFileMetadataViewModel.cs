@@ -1,5 +1,4 @@
 ﻿using Fam = DataSource.Model.Family;
-using System;
 using System.Text.RegularExpressions;
 using Utilities.System;
 
@@ -36,10 +35,10 @@ namespace RevitJournalUI.MetadataUI.Models
                 {
                     value = string.Concat(value.Trim(), Constant.Space, Unit);
                 }
-                if (Parameter.Value != null && Parameter.Value.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (Parameter.Value != null && StringUtils.Equals(Parameter.Value, value)) { return; }
 
                 Parameter.Value = value;
-                OnPropertyChanged(nameof(Value));
+                NotifyPropertyChanged();
             }
         }
 
@@ -79,14 +78,14 @@ namespace RevitJournalUI.MetadataUI.Models
             set
             {
                 if (Parameter.HasFormula(out var formula)
-                    && string.Concat(PrefixFormula, formula).Equals(value, StringComparison.CurrentCulture)) { return; }
+                    && StringUtils.Equals(string.Concat(PrefixFormula, formula), value)) { return; }
 
                 if (string.IsNullOrWhiteSpace(value) == false)
                 {
                     value = value.Remove(0, PrefixFormula.Length);
                 }
                 Parameter.Formula = value;
-                OnPropertyChanged(nameof(Formula));
+                NotifyPropertyChanged();
             }
         }
 
@@ -94,8 +93,8 @@ namespace RevitJournalUI.MetadataUI.Models
         {
             get
             {
-                return Parameter.IsReadOnly 
-                    || Parameter.HasFormula() 
+                return Parameter.IsReadOnly
+                    || Parameter.HasFormula()
                     || Fam.Parameter.NotSupportValueTypes.Contains(ValueType);
             }
         }

@@ -4,16 +4,13 @@ using RevitJournalUI.JournalTaskUI.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Windows;
 using Utilities.System;
+using Utilities.UI;
 
 namespace RevitJournalUI.JournalTaskUI
 {
-    public class FamilyOverviewViewModel : INotifyPropertyChanged
+    public class FamilyOverviewViewModel : ANotifyPropertyChangedModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public LibraryManager LibraryManager { get; set; }
 
         #region Revit Files
@@ -114,10 +111,5 @@ namespace RevitJournalUI.JournalTaskUI
         }
 
         #endregion
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
     }
 }

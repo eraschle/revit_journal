@@ -1,12 +1,10 @@
 ﻿using RevitJournal.Library.Filtering;
-using System.ComponentModel;
+using Utilities.UI;
 
 namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 {
-    public class CheckedFilterViewModel
+    public class CheckedFilterViewModel : ANotifyPropertyChangedModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         internal FilterValue FilterValue { get; set; }
 
         public virtual bool Checked
@@ -17,18 +15,13 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
                 if (FilterValue.IsChecked == value) { return; }
 
                 FilterValue.IsChecked = value;
-                OnPropertyChanged(nameof(Checked));
+                NotifyPropertyChanged();
             }
         }
 
         public string DisplayName
         {
             get { return FilterValue.Name; }
-        }
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

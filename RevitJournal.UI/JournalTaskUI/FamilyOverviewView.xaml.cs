@@ -1,5 +1,4 @@
-﻿using RevitJournal.Library;
-using RevitJournal.Revit.Filtering;
+﻿using RevitJournal.Revit.Filtering;
 using RevitJournalUI.JournalTaskUI.Models;
 using System.ComponentModel;
 using System.Windows;

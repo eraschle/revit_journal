@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using RevitJournalUI.MetadataUI.Models;
 using RevitJournalUI.MetadataUI.Converter;
 using RevitJournal.Duplicate.Comparer;
-using DataSource.Model.FileSystem;
 using RevitJournal.Library;
 
 namespace RevitJournalUI.MetadataUI

@@ -1,6 +1,4 @@
-﻿using DataSource.Helper;
-using DataSource.Model.FileSystem;
-using RevitJournal.Library;
+﻿using DataSource.Model.FileSystem;
 using RevitJournal.Revit.Filtering;
 using RevitJournalUI.JournalTaskUI.Models;
 using System.Collections.Generic;

@@ -2,18 +2,15 @@
 using DataSource.Model.Product;
 using RevitJournal.Revit;
 using RevitJournal.Tasks.Options;
-using RevitJournalUI.Helper;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using Utilities.System;
+using Utilities.UI;
 
 namespace RevitJournalUI.JournalTaskUI.Options
 {
-    public class TaskOptionViewModel : INotifyPropertyChanged
+    public class TaskOptionViewModel : ANotifyPropertyChangedModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private const string prefixParallelProcess = "Parallel Processes";
         private const string prefixTimeoutTitle = "Timeout";
 
@@ -77,8 +74,8 @@ namespace RevitJournalUI.JournalTaskUI.Options
                 if (Options.Timeout == newValue) { return; }
 
                 Options.Arguments.Timeout = newValue;
-                OnPropertyChanged(nameof(Timeout));
-                OnPropertyChanged(nameof(TimeoutTitle));
+                NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(TimeoutTitle));
             }
         }
 
@@ -90,7 +87,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
                 if (Options.Report.LogResults == value) { return; }
 
                 Options.Report.LogResults = value;
-                OnPropertyChanged(nameof(LogResult));
+                NotifyPropertyChanged();
                 LogOptionsEnabled = value;
             }
         }
@@ -103,7 +100,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
                 if (Options.Report.LogSuccess == value) { return; }
 
                 Options.Report.LogSuccess = value;
-                OnPropertyChanged(nameof(LogResultAll));
+                NotifyPropertyChanged();
             }
         }
 
@@ -115,17 +112,14 @@ namespace RevitJournalUI.JournalTaskUI.Options
                 if (Options.Report.LogError == value) { return; }
 
                 Options.Report.LogError = value;
-                OnPropertyChanged(nameof(LogResultError));
+                NotifyPropertyChanged();
             }
         }
 
         public bool LogOptionsEnabled
         {
             get { return LogResult && OptionsEnabled; }
-            set
-            {
-                OnPropertyChanged(nameof(LogOptionsEnabled));
-            }
+            set { NotifyPropertyChanged(); }
         }
 
         public static int MinParallelProcess
@@ -141,7 +135,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
                 if (Options.Parallel.ParallelProcesses == value) { return; }
 
                 Options.Parallel.ParallelProcesses = value;
-                OnPropertyChanged(nameof(ParallelProcess));
+                NotifyPropertyChanged();
                 SetParallelProcessTitle();
             }
         }
@@ -162,7 +156,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
                 if (StringUtils.Equals(parallelProcessTitle, value)) { return; }
 
                 parallelProcessTitle = value;
-                OnPropertyChanged(nameof(ParallelProcessTitle));
+                NotifyPropertyChanged();
             }
         }
 
@@ -175,7 +169,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
                 if (optionsEnabled == value) { return; }
 
                 optionsEnabled = value;
-                OnPropertyChanged(nameof(OptionsEnabled));
+                NotifyPropertyChanged();
                 LogOptionsEnabled = value;
             }
         }
@@ -199,7 +193,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
                 if (Options.Backup.CreateBackup == value) { return; }
 
                 Options.Backup.CreateBackup = value;
-                OnPropertyChanged(nameof(CreateBackup));
+                NotifyPropertyChanged();
             }
         }
 
@@ -211,7 +205,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
                 if (StringUtils.Equals(Options.Backup.BackupFolder, value)) { return; }
 
                 Options.Backup.BackupFolder = value;
-                OnPropertyChanged(nameof(BackupSubFolder));
+                NotifyPropertyChanged();
             }
         }
 
@@ -223,7 +217,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
                 if (StringUtils.Equals(Options.Backup.FileSuffix, value)) { return; }
 
                 Options.Backup.FileSuffix = value;
-                OnPropertyChanged(nameof(BackupSuffix));
+                NotifyPropertyChanged();
             }
         }
 
@@ -235,13 +229,8 @@ namespace RevitJournalUI.JournalTaskUI.Options
                 if (Options.DeleteRevitBackup == value) { return; }
 
                 Options.DeleteRevitBackup = value;
-                OnPropertyChanged(nameof(CreateBackup));
+                NotifyPropertyChanged();
             }
-        }
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

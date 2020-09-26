@@ -1,23 +1,18 @@
 ﻿using RevitJournal.Tasks;
 using RevitJournal.Tasks.Options;
-using RevitJournalUI.Helper;
 using RevitJournalUI.Tasks;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Threading;
 using Utilities.System;
+using Utilities.UI;
 
 namespace RevitJournalUI.JournalTaskUI
 {
-    public class TaskOverviewViewModel : INotifyPropertyChanged
+    public class TaskOverviewViewModel : ANotifyPropertyChangedModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public Progress<TaskUnitOfWork> Progress { get; set; } = new Progress<TaskUnitOfWork>();
-
 
         private const string PrefixExecutedTask = "Executed Tasks ";
 
@@ -39,7 +34,7 @@ namespace RevitJournalUI.JournalTaskUI
                 if (minTasks == value) { return; }
 
                 minTasks = value;
-                OnPropertyChanged(nameof(MinTasks));
+                NotifyPropertyChanged();
             }
         }
 
@@ -52,7 +47,7 @@ namespace RevitJournalUI.JournalTaskUI
                 if (maxTasks == value) { return; }
 
                 maxTasks = value;
-                OnPropertyChanged(nameof(MaxTasks));
+                NotifyPropertyChanged();
             }
         }
 
@@ -65,7 +60,7 @@ namespace RevitJournalUI.JournalTaskUI
                 if (executedTasks == value) { return; }
 
                 executedTasks = value;
-                OnPropertyChanged(nameof(ExecutedTasks));
+                NotifyPropertyChanged();
             }
         }
 
@@ -75,10 +70,10 @@ namespace RevitJournalUI.JournalTaskUI
             get { return executedTasksText; }
             set
             {
-                if (executedTasksText.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (StringUtils.Equals(executedTasksText, value)) { return; }
 
                 executedTasksText = value;
-                OnPropertyChanged(nameof(ExecutedTasksText));
+                NotifyPropertyChanged();
             }
         }
 
@@ -145,11 +140,6 @@ namespace RevitJournalUI.JournalTaskUI
         {
             var executed = ExecutedTasks + " / " + MaxTasks;
             ExecutedTasksText = PrefixExecutedTask + executed;
-        }
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

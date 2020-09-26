@@ -1,22 +1,18 @@
 ﻿using DataSource;
-using DataSource.Helper;
 using DataSource.Model.Catalog;
 using DataSource.Model.Family;
 using DataSource.Model.FileSystem;
 using DataSource.Model.ProductData;
 using RevitJournalUI.MetadataUI.Models;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using Utilities.System;
+using Utilities.UI;
 
 namespace RevitJournalUI.MetadataUI
 {
-    public class MetadataEditDialogViewModel : INotifyPropertyChanged
+    public class MetadataEditDialogViewModel : ANotifyPropertyChangedModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private IList<RevitFamily> RevitFamilies = new List<RevitFamily>();
 
         private ProductDataManager ProductDataManager = ProductDataManager.Get();
@@ -41,8 +37,8 @@ namespace RevitJournalUI.MetadataUI
 
         private static bool IsFamily(Family family, Family other)
         {
-            return family.Name.Equals(other.Name, StringComparison.CurrentCulture)
-                && family.LibraryPath.Equals(other.LibraryPath, StringComparison.CurrentCulture);
+            return StringUtils.Equals(family.Name, other.Name)
+                && StringUtils.Equals(family.LibraryPath, other.LibraryPath);
         }
 
         public ObservableCollection<Family> Families { get; } = new ObservableCollection<Family>();
@@ -81,14 +77,14 @@ namespace RevitJournalUI.MetadataUI
             }
             if (Family.HasCategory())
             {
-                OnPropertyChanged(nameof(Category));
+                NotifyPropertyChanged(nameof(Category));
             }
 
             if (Family.HasOmniClass(out _))
             {
-                OnPropertyChanged(nameof(OmniClass));
+                NotifyPropertyChanged(nameof(OmniClass));
             }
-            
+
             if (Family.HasProduct(out var product))
             {
                 Product = product.ProductName;
@@ -115,42 +111,42 @@ namespace RevitJournalUI.MetadataUI
         }
 
 
-        private string _FamilyName = string.Empty;
+        private string familyName = string.Empty;
         public string FamilyName
         {
-            get { return _FamilyName; }
+            get { return familyName; }
             set
             {
-                if (_FamilyName != null && _FamilyName.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (familyName != null && StringUtils.Equals(familyName, value)) { return; }
 
-                _FamilyName = value;
-                OnPropertyChanged(nameof(FamilyName));
+                familyName = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private string _DisplayName = string.Empty;
+        private string displayName = string.Empty;
         public string DisplayName
         {
-            get { return _DisplayName; }
+            get { return displayName; }
             set
             {
-                if (_DisplayName != null && _DisplayName.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (displayName != null && StringUtils.Equals(displayName, value)) { return; }
 
-                _DisplayName = value;
-                OnPropertyChanged(nameof(DisplayName));
+                displayName = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private string _LibraryPath = string.Empty;
+        private string libraryPath = string.Empty;
         public string LibraryPath
         {
-            get { return _LibraryPath; }
+            get { return libraryPath; }
             set
             {
-                if (_LibraryPath != null && _LibraryPath.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (libraryPath != null && StringUtils.Equals(libraryPath, value)) { return; }
 
-                _LibraryPath = value;
-                OnPropertyChanged(nameof(LibraryPath));
+                libraryPath = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -178,7 +174,7 @@ namespace RevitJournalUI.MetadataUI
                 if (value is null || Family is null || Family.Category == value) { return; }
 
                 Family.Category = value;
-                OnPropertyChanged(nameof(Category));
+                NotifyPropertyChanged();
             }
         }
 
@@ -206,48 +202,48 @@ namespace RevitJournalUI.MetadataUI
                 if (value is null || Family is null || Family.OmniClass == value) { return; }
 
                 Family.OmniClass = value;
-                OnPropertyChanged(nameof(OmniClass));
+                NotifyPropertyChanged();
             }
         }
 
-        private string _Updated = string.Empty;
+        private string updated = string.Empty;
         public string Updated
         {
-            get { return _Updated; }
+            get { return updated; }
             set
             {
-                if (_Updated != null && _Updated.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (updated != null && StringUtils.Equals(updated, value)) { return; }
 
-                _Updated = value;
-                OnPropertyChanged(nameof(Updated));
+                updated = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private string _Product = string.Empty;
+        private string product = string.Empty;
         public string Product
         {
-            get { return _Product; }
+            get { return product; }
             set
             {
-                if (_Product != null && _Product.Equals(value, StringComparison.CurrentCulture)) { return; }
+                if (product != null && StringUtils.Equals(product, value)) { return; }
 
-                _Product = value;
-                OnPropertyChanged(nameof(Product));
+                product = value;
+                NotifyPropertyChanged();
             }
         }
 
-        private FamilyType _SelectedFamilyType;
+        private FamilyType selectedFamilyType;
         public FamilyType SelectedFamilyType
         {
-            get { return _SelectedFamilyType; }
+            get { return selectedFamilyType; }
             set
             {
                 if (value is null ||
-                    _SelectedFamilyType != null &&
-                    _SelectedFamilyType.Equals(value)) { return; }
+                    selectedFamilyType != null &&
+                    selectedFamilyType.Equals(value)) { return; }
 
-                _SelectedFamilyType = value;
-                OnPropertyChanged(nameof(SelectedFamilyType));
+                selectedFamilyType = value;
+                NotifyPropertyChanged();
                 UpdateFamilyTypeParameters();
             }
         }
@@ -267,16 +263,12 @@ namespace RevitJournalUI.MetadataUI
             return new ParameterFileMetadataViewModel { Parameter = parameter };
         }
 
-        public ObservableCollection<ParameterFileMetadataViewModel> FamilyParameters { get; } = new ObservableCollection<ParameterFileMetadataViewModel>();
+        public ObservableCollection<ParameterFileMetadataViewModel> FamilyParameters { get; }
+            = new ObservableCollection<ParameterFileMetadataViewModel>();
 
         public ObservableCollection<FamilyType> FamilyTypes { get; } = new ObservableCollection<FamilyType>();
 
-        public ObservableCollection<ParameterFileMetadataViewModel> FamilyTypeParameters { get; } = new ObservableCollection<ParameterFileMetadataViewModel>();
-
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
+        public ObservableCollection<ParameterFileMetadataViewModel> FamilyTypeParameters { get; }
+            = new ObservableCollection<ParameterFileMetadataViewModel>();
     }
 }

@@ -1,9 +1,7 @@
 ﻿using RevitAction;
 using RevitJournal.Tasks;
-using RevitJournalUI.Helper;
 using System;
 using System.ComponentModel;
-using System.Windows;
 using System.Windows.Threading;
 using Utilities.System;
 
