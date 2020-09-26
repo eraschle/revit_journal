@@ -4,6 +4,7 @@ using DataSource.Metadata;
 using Utilities.UI.Helper;
 using RevitJournal.Library;
 using DataSource.Helper;
+using System;
 
 namespace RevitJournalUI.JournalTaskUI.Models
 {
@@ -12,12 +13,22 @@ namespace RevitJournalUI.JournalTaskUI.Models
         public FamilyViewModel(LibraryFile fileHandler, DirectoryViewModel parent) : base(fileHandler, parent)
         {
             ViewMetadataCommand = new RelayCommand<object>(ViewMetadataCommandAction);
+            Handler.File.MetadataUpdated += File_MetadataUpdated;
+        }
+
+        ~FamilyViewModel()
+        {
+            Handler.File.MetadataUpdated -= File_MetadataUpdated;
+        }
+
+        private void File_MetadataUpdated(object sender, EventArgs args)
+        {
+            UpdateMetadata();
         }
 
         public MetadataStatus MetadataStatus
         {
             get { return Handler.File.MetadataStatus; }
-            set { OnPropertyChanged(nameof(MetadataStatus)); }
         }
 
         public string RevitFileName
@@ -43,10 +54,16 @@ namespace RevitJournalUI.JournalTaskUI.Models
             get
             {
                 var metadata = Handler.File.Metadata;
-                return metadata is object 
+                return metadata is object
                     ? DateHelper.AsString(metadata.Updated)
                     : string.Empty;
             }
+        }
+
+        private void UpdateMetadata()
+        {
+            OnPropertyChanged(nameof(MetadataStatus));
+            OnPropertyChanged(nameof(LastUpdate));
         }
 
         public ICommand ViewMetadataCommand { get; }
@@ -56,5 +73,7 @@ namespace RevitJournalUI.JournalTaskUI.Models
             var dialog = new MetadataDialogView(Handler.File.Metadata);
             dialog.ShowDialog();
         }
+
+
     }
 }

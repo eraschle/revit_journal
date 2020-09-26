@@ -3,11 +3,21 @@ using DataSource.Metadata;
 using DataSource.Model.Family;
 using DataSource.Model.FileSystem;
 using DataSource.Xml;
+using System;
 
 namespace DataSource.DataSource
 {
+    public delegate void MetadataUpdated();
+
     public abstract class AMetadataContainer
     {
+        public event EventHandler<EventArgs> MetadataUpdated;
+
+        protected virtual void OnMetadataUpdated()
+        {
+            MetadataUpdated?.Invoke(this, EventArgs.Empty);
+        }
+
         protected IMetadataDataSource DataSource { get; set; }
 
         public MetadataStatus MetadataStatus { get; private set; }
@@ -31,6 +41,7 @@ namespace DataSource.DataSource
             if (MetadataStatus == MetadataStatus.Valid)
             {
                 Metadata = DataSource.Read();
+                OnMetadataUpdated();
             }
         }
 
@@ -86,5 +97,18 @@ namespace DataSource.DataSource
         }
 
         protected abstract RevitFamilyFile GetFamilyFile();
+    }
+
+    public class MetadataEventArgs : EventArgs
+    {
+        public MetadataStatus Status { get; private set; }
+
+        public Family Metadata { get; private set; }
+
+        public MetadataEventArgs(MetadataStatus status, Family metadata)
+        {
+            Status = status;
+            Metadata = metadata;
+        }
     }
 }
