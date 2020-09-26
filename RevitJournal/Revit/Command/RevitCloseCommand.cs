@@ -1,5 +1,4 @@
-﻿using RevitJournal.Revit.Journal;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace RevitJournal.Revit.Command
 {

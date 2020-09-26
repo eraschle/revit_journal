@@ -1,18 +1,17 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Helper;
+using DataSource.Model.FileSystem;
 using RevitAction.Action;
 using RevitAction.Report;
 using RevitJournal.Helper;
-using RevitJournal.Revit.Journal;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Utilities;
 
 namespace RevitJournal.Revit.Command
 {
     public class DocumentSaveAsAction : ATaskAction, ITaskActionJournal
     {
-        private const string suffixFormatString = "yyyy-dd-MM";
-
         private readonly ActionParameter fileSuffix;
         private readonly ActionParameter saveFolder;
         private readonly ActionParameter addAtEnd;
@@ -48,7 +47,8 @@ namespace RevitJournal.Revit.Command
 
         private string GetDate()
         {
-            return DateTime.Now.ToString(suffixFormatString, CultureInfo.CurrentCulture);
+            var formats = new string[] { DateUtils.YearLong, DateUtils.MonthShort, DateUtils.Day };
+            return DateUtils.GetDate(Constant.Minus, formats);
         }
 
 

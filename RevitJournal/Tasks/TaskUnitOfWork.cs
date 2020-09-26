@@ -54,9 +54,17 @@ namespace RevitJournal.Tasks
 
         private TaskJournalFile CreateTaskJournal()
         {
+            var dataSource = new TaskJournalDataSource();
+            dataSource.SetFile(GetJournalFile());
+            dataSource.Write(Task);
+            return dataSource.FileNode;
+        }
+
+        private TaskJournalFile GetJournalFile()
+        {
             var journalPath = Options.JournalDirectory;
-            var journal = PathFactory.Instance.CreateRoot(journalPath);
-            return TaskJournalCreator.Create(Task, journal);
+            var directory = PathFactory.Instance.CreateRoot(journalPath);
+            return Task.SourceFile.ChangeDirectory<TaskJournalFile>(directory);
         }
 
         public void DeleteJournalProcess()
