@@ -55,25 +55,24 @@ namespace RevitJournalUI.JournalTaskUI.Options
             return string.Concat(prefixTimeoutTitle, " [", DateUtils.AsString(Options.Timeout, format: DateUtils.Minute), " min]");
         }
 
-        public static int TimeoutMinimum
+        public static TimeSpan TimeoutMinimum
         {
-            get { return (int)RevitArguments.MinimumTimeout.TotalMinutes; }
+            get { return RevitArguments.MinimumTimeout; }
         }
 
-        public static int TimeoutMaximum
+        public static TimeSpan TimeoutMaximum
         {
-            get { return (int)RevitArguments.MaximumTimeout.TotalMinutes; }
+            get { return RevitArguments.MaximumTimeout; }
         }
 
-        public int Timeout
+        public TimeSpan Timeout
         {
-            get { return (int)Options.Timeout.TotalMinutes; }
+            get { return Options.Arguments.Timeout; }
             set
             {
-                var newValue = TimeSpan.FromMinutes(value);
-                if (Options.Timeout == newValue) { return; }
+                if (Options.Arguments.Timeout == value || value == TimeSpan.MinValue) { return; }
 
-                Options.Arguments.Timeout = newValue;
+                Options.Arguments.Timeout = value;
                 NotifyPropertyChanged();
                 NotifyPropertyChanged(nameof(TimeoutTitle));
             }

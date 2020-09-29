@@ -4,7 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RevitJournalUI.JournalTaskUI.Options"
+             xmlns:conv="clr-namespace:RevitJournalUI.JournalTaskUI.Converter"
              mc:Ignorable="d" d:DesignWidth="800">
+    <UserControl.Resources>
+        <conv:TimespanMinutesConverter x:Key="timespanConverter"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
@@ -51,12 +55,13 @@
                Margin="{StaticResource DefaultMargin}"
                HorizontalAlignment="Stretch" 
                VerticalAlignment="Stretch"/>
-        <Slider Grid.Column="1" Grid.Row="2" 
+        <Slider x:Name="timeProcess" 
+                Grid.Column="1" Grid.Row="2" 
                 IsEnabled="{Binding OptionsEnabled}"
                 Margin="{StaticResource DefaultMargin}"
-                Value="{Binding Timeout, UpdateSourceTrigger=PropertyChanged}"
-                Minimum="{Binding TimeoutMinimum}" 
-                Maximum="{Binding TimeoutMaximum}"
+                Value="{Binding Timeout, Converter={StaticResource timespanConverter}}"
+                Minimum="{Binding TimeoutMinimum, Converter={StaticResource timespanConverter}}" 
+                Maximum="{Binding TimeoutMaximum, Converter={StaticResource timespanConverter}}"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Center"/>
         <Label Content="Logs"
