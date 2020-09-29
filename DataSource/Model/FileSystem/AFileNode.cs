@@ -120,12 +120,16 @@ namespace DataSource.Model.FileSystem
 
         public TFile ChangeExtension<TFile>() where TFile : AFileNode, new()
         {
-            return new TFile { Parent = Parent, NameWithoutExtension = NameWithoutExtension };
+            var changed = new TFile { NameWithoutExtension = NameWithoutExtension };
+            changed.SetParent(Parent);
+            return changed;
         }
 
         public TFile ChangeFileName<TFile>(string fileName) where TFile : AFileNode, new()
         {
-            return new TFile() { Parent = Parent, Name = fileName };
+            var changed = new TFile { Name = fileName };
+            changed.SetParent(Parent);
+            return changed;
         }
 
         public TFile ChangeDirectory<TFile>(DirectoryNode newDirectory) where TFile : AFileNode, new()
