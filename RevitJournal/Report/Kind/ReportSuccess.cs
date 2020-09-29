@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace RevitJournal.Report
 {
-    public class TaskSuccessReport : ATaskReport
+    public class ReportSuccess : ATaskReport
     {
-        public TaskSuccessReport(RevitTask task, TaskUnitOfWork unitOfWork) : base(task, unitOfWork) { }
+        public ReportSuccess(TaskUnitOfWork unitOfWork) : base(unitOfWork) { }
 
         public List<string> SuccessReport { get; } = new List<string>();
 
