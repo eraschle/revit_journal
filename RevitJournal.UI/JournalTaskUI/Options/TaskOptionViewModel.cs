@@ -12,7 +12,6 @@ namespace RevitJournalUI.JournalTaskUI.Options
     public class TaskOptionViewModel : ANotifyPropertyChangedModel
     {
         private const string prefixParallelProcess = "Parallel Processes";
-        private const string prefixTimeoutTitle = "Timeout";
 
         public TaskOptions Options { get; set; }
 
@@ -45,16 +44,6 @@ namespace RevitJournalUI.JournalTaskUI.Options
             }
         }
 
-        public string TimeoutTitle
-        {
-            get { return CreateTimeoutTitle(); }
-        }
-
-        private string CreateTimeoutTitle()
-        {
-            return string.Concat(prefixTimeoutTitle, " [", DateUtils.AsString(Options.Timeout, format: DateUtils.Minute), " min]");
-        }
-
         public static TimeSpan TimeoutMinimum
         {
             get { return RevitArguments.MinimumTimeout; }
@@ -74,7 +63,6 @@ namespace RevitJournalUI.JournalTaskUI.Options
 
                 Options.Arguments.Timeout = value;
                 NotifyPropertyChanged();
-                NotifyPropertyChanged(nameof(TimeoutTitle));
             }
         }
 
