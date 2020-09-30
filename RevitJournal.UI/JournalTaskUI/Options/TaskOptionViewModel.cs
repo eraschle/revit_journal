@@ -11,7 +11,6 @@ namespace RevitJournalUI.JournalTaskUI.Options
 {
     public class TaskOptionViewModel : ANotifyPropertyChangedModel
     {
-        private const string prefixParallelProcess = "Parallel Processes";
 
         public TaskOptions Options { get; set; }
 
@@ -123,27 +122,6 @@ namespace RevitJournalUI.JournalTaskUI.Options
 
                 Options.Parallel.ParallelProcesses = value;
                 NotifyPropertyChanged();
-                SetParallelProcessTitle();
-            }
-        }
-
-        private string parallelProcessTitle = string.Empty;
-        public string ParallelProcessTitle
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(parallelProcessTitle))
-                {
-                    SetParallelProcessTitle();
-                }
-                return parallelProcessTitle;
-            }
-            set
-            {
-                if (StringUtils.Equals(parallelProcessTitle, value)) { return; }
-
-                parallelProcessTitle = value;
-                NotifyPropertyChanged();
             }
         }
 
@@ -159,12 +137,6 @@ namespace RevitJournalUI.JournalTaskUI.Options
                 NotifyPropertyChanged();
                 LogOptionsEnabled = value;
             }
-        }
-
-        private void SetParallelProcessTitle()
-        {
-            var title = prefixParallelProcess + " [" + ParallelProcess + "]";
-            ParallelProcessTitle = title;
         }
 
         public static int MaxParallelProcess

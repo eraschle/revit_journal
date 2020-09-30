@@ -37,7 +37,8 @@
                   Margin="{StaticResource DefaultMargin}"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"/>
-        <Label Content="{Binding ParallelProcessTitle, UpdateSourceTrigger=PropertyChanged}"
+        <Label Content="{Binding Path=ParallelProcess,Mode=TwoWay, NotifyOnTargetUpdated=True}"
+               TargetUpdated="OnParallelProcessUpdated"
                Grid.Column="0" Grid.Row="1"
                Margin="{StaticResource DefaultMargin}"
                VerticalAlignment="Stretch"/>

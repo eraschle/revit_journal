@@ -11,6 +11,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
     public partial class TaskOptionView : UserControl
     {
         private const string prefixTimeoutTitle = "Timeout";
+        private const string prefixParallelProcess = "Parallel Processes";
 
         private TaskOptionViewModel ViewModel
         {
@@ -21,7 +22,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
         {
             InitializeComponent();
         }
-
+        
         private void OnTimeoutUpdated(object sender, DataTransferEventArgs args)
         {
             if(!(sender is Label label)){ return; }
@@ -29,6 +30,14 @@ namespace RevitJournalUI.JournalTaskUI.Options
             var timeout = DateUtils.AsString(ViewModel.Options.Timeout, format: DateUtils.Minute);
             var timeoutTitle = string.Concat(prefixTimeoutTitle, " [", timeout, " min]");
             label.Content = timeoutTitle;
+            args.Handled = true;
+        }
+
+        private void OnParallelProcessUpdated(object sender, DataTransferEventArgs args)
+        {
+            if (!(sender is Label label)) { return; }
+
+            label.Content = string.Concat(prefixParallelProcess, " [", ViewModel.ParallelProcess, "]");
             args.Handled = true;
         }
     }
