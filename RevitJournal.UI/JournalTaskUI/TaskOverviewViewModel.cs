@@ -125,10 +125,10 @@ namespace RevitJournalUI.JournalTaskUI
             var viewModel = TaskModels.FirstOrDefault(mdl => mdl.TaskUoW.Equals(task));
             if (viewModel is null) { return; }
 
-            SetExecutedTasks();
             task.Cleanup();
             viewModel.RemoveTimer(timer);
             viewModel.RemoveProgessEvent(Progress);
+            SetExecutedTasks();
         }
 
         private void SetExecutedTasks()
