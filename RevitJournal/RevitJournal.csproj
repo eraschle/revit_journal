@@ -109,7 +109,7 @@
     <Compile Include="Library\LibraryFolder.cs" />
     <Compile Include="Library\LibraryFile.cs" />
     <Compile Include="Report\Kind\ATaskReport.cs" />
-    <Compile Include="Report\Kind\TaskErrorReport.cs" />
+    <Compile Include="Report\Kind\ReportError.cs" />
     <Compile Include="Report\TaskReportManager.cs" />
     <Compile Include="Revit\Filtering\RevitFilterManager.cs" />
     <Compile Include="Revit\Filtering\Rules\ARevitListFilterRule.cs" />
@@ -122,13 +122,12 @@
     <Compile Include="Revit\Filtering\Rules\ParameterRule.cs" />
     <Compile Include="Revit\Filtering\Rules\ProductRule.cs" />
     <Compile Include="Revit\Filtering\Rules\CategoryRule.cs" />
-    <Compile Include="Revit\Journal\RecordeWorkerFile.cs" />
     <Compile Include="Tasks\Actions\NullTaskAction.cs" />
     <Compile Include="Tasks\Actions\TypeLoaderExtensions.cs" />
     <Compile Include="Revit\Command\DocumentOpenAction.cs" />
     <Compile Include="Revit\Command\DocumentSaveAsAction.cs" />
     <Compile Include="Revit\Command\DocumentSaveAction.cs" />
-    <Compile Include="Revit\Journal\RecordeJournalFile.cs" />
+    <Compile Include="Revit\Journal\RecordJournalFile.cs" />
     <Compile Include="Report\Network\ClientController.cs" />
     <Compile Include="Report\Network\ReportClient.cs" />
     <Compile Include="Report\Network\ReportServer.cs" />
@@ -150,7 +149,7 @@
     <Compile Include="Tasks\TaskUnitOfWork.cs" />
     <Compile Include="Tasks\RevitTask.cs" />
     <Compile Include="Tasks\TaskManager.cs" />
-    <Compile Include="Report\Kind\TaskSuccessReport.cs" />
+    <Compile Include="Report\Kind\ReportSuccess.cs" />
     <Compile Include="Revit\Journal\TaskJournalFile.cs" />
     <Compile Include="Report\TaskReportFile.cs" />
     <None Include="Resources\AddinTemplate.addin" />
