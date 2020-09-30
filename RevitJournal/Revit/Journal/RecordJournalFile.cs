@@ -2,12 +2,12 @@
 
 namespace RevitJournal.Revit.Journal
 {
-    public class RecordeJournalFile : TextFile { }
+    public class RecordJournalFile : TextFile { }
 
 
-    public class RecordeJournalNullFile : RecordeJournalFile
+    public class RecordJournalNullFile : RecordJournalFile
     {
-        public RecordeJournalNullFile()
+        public RecordJournalNullFile()
         {
             Name = "No Record Journal file";
         }
