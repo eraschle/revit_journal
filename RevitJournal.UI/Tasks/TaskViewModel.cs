@@ -2,8 +2,12 @@
 using RevitJournal.Tasks;
 using System;
 using System.ComponentModel;
+using System.Data;
+using System.Windows;
+using System.Windows.Input;
 using System.Windows.Threading;
 using Utilities.System;
+using Utilities.UI;
 
 namespace RevitJournalUI.Tasks
 {
@@ -17,7 +21,13 @@ namespace RevitJournalUI.Tasks
 
         private TimeSpan executionTime = TimeSpan.Zero;
 
+        public TaskViewModel()
+        {
+            ErrorCommand = new RelayCommand<object>(ErrorCommandAction, ErrorCommandPredicate);
+        }
         internal TaskUnitOfWork TaskUoW { get; set; }
+
+        internal Func<bool> AllExecutedFunc { get; set; }
 
         public string TotalTime { get; set; }
 
@@ -96,12 +106,6 @@ namespace RevitJournalUI.Tasks
 
             CurrentAction = TaskUoW.CurrentAction.Name;
             ExecutedActions = TaskUoW.ExecutedActions;
-            var reportManager = TaskUoW.ReportManager;
-            if (reportManager.HasErrorAction)
-            {
-                ErrorText = reportManager.ErrorAction.Name;
-                ErrorTextToolTip = reportManager.ErrorMessage;
-            }
         }
 
         private void DispatcherTimer_Tick(object sender, EventArgs e)
@@ -172,30 +176,19 @@ namespace RevitJournalUI.Tasks
 
         #region Result
 
-        private string errorText = string.Empty;
-        public string ErrorText
-        {
-            get { return errorText; }
-            set
-            {
-                if (StringUtils.Equals(errorText, value)) { return; }
+        public ICommand ErrorCommand { get; }
 
-                errorText = value;
-                OnPropertyChanged(nameof(ErrorText));
-            }
+        private void ErrorCommandAction(object parameter)
+        {
+            var manager = TaskUoW.ReportManager;
+            if (manager.HasErrorAction == false) { return; }
+
+            MessageBox.Show(manager.ErrorMessage, manager.ErrorAction.Name);
         }
 
-        private string errorTextToolTip = string.Empty;
-        public string ErrorTextToolTip
+        private bool ErrorCommandPredicate(object parameter)
         {
-            get { return errorTextToolTip; }
-            set
-            {
-                if (StringUtils.Equals(errorTextToolTip, value)) { return; }
-
-                errorTextToolTip = value;
-                OnPropertyChanged(nameof(ErrorTextToolTip));
-            }
+            return AllExecutedFunc.Invoke();
         }
 
         #endregion

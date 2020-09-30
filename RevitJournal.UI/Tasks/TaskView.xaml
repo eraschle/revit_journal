@@ -97,12 +97,12 @@
             <Label Content="{Binding TaskTime}"
                    Grid.Column="1" Grid.Row="0" 
                    Style="{StaticResource RightLabelStyle}"/>
-            <Label Content="Error:" Grid.Column="0" Grid.Row="1"
-                   Style="{StaticResource LeftLabelStyle}"/>
-            <Label Content="{Binding ErrorText}"
-                   ToolTip="{Binding ErrorTextToolTip}"
-                   Grid.Column="1" Grid.Row="1"
-                   Style="{StaticResource RightLabelStyle}"/>
+            <Button Content="{Binding ErrorText}"
+                    Visibility="{Binding Path=TaskStatus, Mode=TwoWay, NotifyOnTargetUpdated=True}"
+                    TargetUpdated="OnTaskStatusUpdated"
+                    Command = "{Binding ErrorCommand}"
+                    Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"
+                    Style="{StaticResource DialogButton}"/>
         </Grid>
         <Label Content="{Binding TaskStatus, Converter={StaticResource StatusText}, 
                                  UpdateSourceTrigger=PropertyChanged}"
