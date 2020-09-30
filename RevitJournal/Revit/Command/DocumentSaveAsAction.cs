@@ -17,7 +17,7 @@ namespace RevitJournal.Revit.Command
         private readonly ActionParameter currentRoot;
         private readonly ActionParameter newRoot;
 
-        private RevitFamilyFile revitFile;
+        private RevitFamilyFile saveAsPath;
 
         private readonly PathCreator pathCreator = new PathCreator(PathFactory.Instance);
 
@@ -55,7 +55,6 @@ namespace RevitJournal.Revit.Command
         {
             get
             {
-                var saveAsPath = pathCreator.CreatePath(revitFile);
                 return new string[]
                 {
                     JournalBuilder.Build("Ribbon", "ID_REVIT_SAVE_AS_FAMILY"),
@@ -78,9 +77,8 @@ namespace RevitJournal.Revit.Command
         {
             if (family is null) { return; }
 
-            revitFile = family.RevitFile;
-            var saveAsFile = pathCreator.CreatePath(revitFile);
-            saveAsFile?.Delete();
+            saveAsPath = pathCreator.CreatePath(family.RevitFile);
+            saveAsPath?.Delete();
         }
 
         public override void SetLibraryRoot(string libraryRoot)
