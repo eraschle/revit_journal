@@ -2,6 +2,7 @@
 using RevitJournal.Revit;
 using RevitJournal.Revit.Journal;
 using System;
+using System.Linq;
 using Utilities.System;
 
 namespace RevitJournal.Tasks.Options
@@ -16,7 +17,7 @@ namespace RevitJournal.Tasks.Options
             DateUtils.MonthShort,
             DateUtils.Day,
             DateUtils.Hour,
-            DateUtils.Minute 
+            DateUtils.Minute
         };
 
         public ReportOptions Report { get; set; } = new ReportOptions();
@@ -48,19 +49,14 @@ namespace RevitJournal.Tasks.Options
             if(builder is null) { throw new ArgumentNullException(nameof(builder)); }
 
             var directory = builder.CreateRoot(JournalDirectory);
-            var timeFolder = GetTimeFolder(builder, directory);
+            var journalTime = JournalTimeDirectory;
+            var timeFolderName = DateUtils.AsString(journalTime, Constant.Minus, formats);
+            var timeFolder = builder.AddFolder(directory, timeFolderName);
             if (timeFolder.Exists() == false)
             {
                 timeFolder.Create();
             }
             return timeFolder;
-        }
-
-        private DirectoryNode GetTimeFolder(IPathBuilder builder, DirectoryNode directory)
-        {
-            var journalTime = JournalTimeDirectory;
-            var timeFolderName = DateUtils.AsString(journalTime, Constant.Minus, formats);
-            return builder.InsertFolder(directory, timeFolderName);
         }
 
         public string ActionDirectory { get; set; } = MyDocuments;

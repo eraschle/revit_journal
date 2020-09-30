@@ -46,34 +46,26 @@ namespace RevitJournal.Helper
         {
             if (file is null) { throw new ArgumentNullException(nameof(file)); }
 
-            var rootIncluded = true;
-            var directories = file.GetRootParentNodes(rootIncluded);
             if (HasNewRootFolder())
             {
-                directories.Remove(directories.First());
-                var newRootNode = builder.CreateRoot(NewRootPath);
-                directories.Insert(0, newRootNode);
+                file = builder.ChangeRoot(file, NewRootPath);
             }
             if (string.IsNullOrWhiteSpace(BackupFolder) == false)
             {
-                var backupNode = builder.CreateWithName(BackupFolder);
-                DirectoryNode parentNode;
-                if (AddBackupAtEnd)
-                {
-                    parentNode = directories.Last();
-                    directories.Add(backupNode);
-                }
-                else
-                {
-                    parentNode = directories.First();
-                    directories.Insert(1, backupNode);
-                }
-                builder.InsertFolder(parentNode, backupNode);
+                file = AddBackupAtEnd 
+                    ? builder.AddFolder(file, BackupFolder) 
+                    : builder.InsertFolder(file, 1, BackupFolder);
             }
-            directories = builder.UpdateOrInsert(directories);
-            var newFile = builder.Create<TFile>(file.Name, directories.Last());
-            if (newFile.HasParent(out var parent)
-                && parent.Exists() == false)
+            if(file is null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+            if(file.HasParent(out var parent) == false)
+            {
+                throw new ArgumentException($"file has no parent {parent}");
+            }
+            var newFile = builder.Create<TFile>(file.Name, parent);
+            if (parent.Exists() == false)
             {
                 parent.Create();
             }

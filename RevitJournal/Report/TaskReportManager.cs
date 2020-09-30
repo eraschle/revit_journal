@@ -8,18 +8,16 @@ using RevitAction.Report.Message;
 using RevitJournal.Tasks;
 using RevitJournal.Tasks.Options;
 using DataSource.DataSource.Json;
+using System.Management;
+using Newtonsoft.Json.Schema;
+using System.Linq;
+using System.Diagnostics;
 
 namespace RevitJournal.Report
 {
     public class TaskReportManager
     {
         private readonly TaskUnitOfWork UnitOfWork;
-
-
-        private RevitTask Task
-        {
-            get { return UnitOfWork.Task; }
-        }
 
         private ReportOptions Options
         {
@@ -43,43 +41,54 @@ namespace RevitJournal.Report
             UnitOfWork = unitOfWork;
         }
 
-        public void CreateLogs()
+        public bool HasErrorReport()
         {
-            if (Options.LogError && ErrorAction is object)
-            {
-                var errorReport = new TaskErrorReport(Task, UnitOfWork)
-                {
-                    ErrorReport = ErrorAction,
-                    ErrorMessage = ErrorMessage
-                };
-                errorReport.WarningReport.AddRange(GetWarnings());
-                var dataSource = GetDataSource<TaskErrorReport>("ERROR");
-                dataSource.Write(errorReport);
-            }
-
-            if (Options.LogSuccess || Options.LogResults)
-            {
-                var successReport = new TaskSuccessReport(Task, UnitOfWork);
-                successReport.SuccessReport.AddRange(GetSuccess());
-                successReport.WarningReport.AddRange(GetWarnings());
-                var dataSource = GetDataSource<TaskSuccessReport>("Report");
-                dataSource.Write(successReport);
-            }
+            return Options.LogError
+                && ErrorAction is object;
         }
 
-        private JsonDataSource<TReport> GetDataSource<TReport>(params string[] suffixes) where TReport : ATaskReport
+        public void CreateErrorReport(RecordJournalFile copyRecord, params string[] suffixes)
         {
-            var dataSource = new JsonDataSource<TReport>();
-            var jsonFile = Task.SourceFile.ChangeExtension<JsonFile>();
+            if (HasErrorReport() == false) { return; }
+
+            var errorReport = new ReportError(UnitOfWork)
+            {
+                ErrorReport = ErrorAction,
+                ErrorMessage = ErrorMessage
+            };
+            errorReport.WarningReport.AddRange(GetWarnings());
+            CreateReport(errorReport, copyRecord, suffixes);
+        }
+
+        public bool HasSuccessReport()
+        {
+            return (Options.LogSuccess || Options.LogResults);
+        }
+
+        public void CreateSuccessReport(RecordJournalFile copyRecord, params string[] suffixes)
+        {
+            if (HasSuccessReport() == false) { return; }
+
+            var successReport = new ReportSuccess(UnitOfWork);
+            successReport.SuccessReport.AddRange(GetSuccess());
+            successReport.WarningReport.AddRange(GetWarnings());
+            CreateReport(successReport, copyRecord, suffixes);
+        }
+
+        private void CreateReport<TReport>(TReport report, RecordJournalFile copyRecord, params string[] suffixes) where TReport : ATaskReport
+        {
+            report.CopiedRecordJournal = UnitOfWork.GetRenamedJournalFile();
+            var jsonFile = UnitOfWork.Task.SourceFile.ChangeExtension<JsonFile>();
             jsonFile.AddSuffixes(suffixes);
+            var dataSource = new JsonDataSource<TReport>();
             dataSource.SetFile(jsonFile);
-            return dataSource;
+            dataSource.Write(report);
         }
 
         private IList<string> GetWarnings()
         {
             var warnings = new List<string>();
-            foreach (var action in Task.Actions)
+            foreach (var action in UnitOfWork.Task.Actions)
             {
                 if (ActionReports.ContainsKey(action) == false) { continue; }
 
@@ -94,7 +103,7 @@ namespace RevitJournal.Report
         private IList<string> GetSuccess()
         {
             var success = new List<string>();
-            foreach (var action in Task.Actions)
+            foreach (var action in UnitOfWork.Task.Actions)
             {
                 if (ActionReports.ContainsKey(action) == false) { continue; }
 
@@ -131,7 +140,7 @@ namespace RevitJournal.Report
                     break;
                 case ReportKind.Error:
                     if (HasErrorAction == false
-                        && Task.HasActionById(report.ActionId, out var errorAction))
+                        && UnitOfWork.Task.HasActionById(report.ActionId, out var errorAction))
                     {
                         ErrorAction = errorAction;
                         var message = report.Message;
@@ -151,7 +160,7 @@ namespace RevitJournal.Report
         private bool HasActionReport(Guid actionId, out TaskActionReport actionReport)
         {
             actionReport = null;
-            if (Task.HasActionById(actionId, out var action))
+            if (UnitOfWork.Task.HasActionById(actionId, out var action))
             {
                 if (ActionReports.ContainsKey(action) == false)
                 {

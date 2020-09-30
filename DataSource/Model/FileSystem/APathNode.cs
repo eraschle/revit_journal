@@ -57,9 +57,19 @@ namespace DataSource.Model.FileSystem
 
         public IList<DirectoryNode> GetRootParentNodes(bool included)
         {
-            return HasParent(out var parent)
-                ? GetParentNodes(parent, included)
-                : new List<DirectoryNode>();
+            if( HasParent(out var parent))
+            {
+                return GetParentNodes(parent, included);
+            }
+            else if(included && this is DirectoryRootNode rootNode)
+            {
+                return new List<DirectoryNode> { rootNode };
+            }
+            else
+            {
+                return new List<DirectoryNode>();
+            }
+                
         }
 
         private IList<DirectoryNode> GetParentNodes(DirectoryNode directory, bool included)
