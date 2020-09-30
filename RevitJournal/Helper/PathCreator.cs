@@ -62,7 +62,7 @@ namespace RevitJournal.Helper
             }
             if(file.HasParent(out var parent) == false)
             {
-                throw new ArgumentException($"file has no parent {parent}");
+                throw new ArgumentException($"file {file.Name} has no parent");
             }
             var newFile = builder.Create<TFile>(file.Name, parent);
             if (parent.Exists() == false)
