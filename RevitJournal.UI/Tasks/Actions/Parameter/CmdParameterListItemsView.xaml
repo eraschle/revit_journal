@@ -38,16 +38,16 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Content="Search" Grid.Column="0"
-                   Margin="{StaticResource DefaultMargin}"/>
+                   Margin="{StaticResource ThreeThick}"/>
             <TextBox x:Name="txtSearch" 
-                     Margin="{StaticResource DefaultMargin}"
+                     Margin="{StaticResource ThreeThick}"
                      VerticalContentAlignment="Center"
                      Grid.Column="1" 
                      TextChanged="TxtSearch_TextChanged"/>
         </Grid>
         <ListBox x:Name="lstItems" 
                  ItemsSource="{Binding Source={StaticResource ItemsSource}}"
-                 Margin="{StaticResource DefaultMargin}"
+                 Margin="{StaticResource ThreeThick}"
                  Grid.Column="0" Grid.Row="1">
             <ListBox.GroupStyle>
                 <GroupStyle>
@@ -94,10 +94,10 @@
             </ListBox.ItemContainerStyle>
         </ListBox>
         <Label Content="Selected Parameters"
-               Margin="{StaticResource DefaultMargin}"
+               Margin="{StaticResource ThreeThick}"
                Grid.Column="1" Grid.Row="0"/>
         <TextBox Text="{Binding SelectedParameters}"
-                 Margin="{StaticResource DefaultMargin}"
+                 Margin="{StaticResource ThreeThick}"
                  Grid.Column="1" Grid.Row="1"/>
         <WrapPanel HorizontalAlignment="Right"
                    Orientation="Horizontal"

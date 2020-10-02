@@ -27,15 +27,15 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
             <Setter Property="Background" Value="{StaticResource DefaultBackground}"/>
-            <Setter Property="Margin" Value="{StaticResource DefaultMargin}"/>
-            <Setter Property="Padding" Value="{StaticResource DefaultMargin}"/>
+            <Setter Property="Margin" Value="{StaticResource ThreeThick}"/>
+            <Setter Property="Padding" Value="{StaticResource ThreeThick}"/>
         </Style>
 
         <Style x:Key="ComboBoxStyle" TargetType="{x:Type ComboBox}">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="{StaticResource DefaultMargin}"/>
-            <Setter Property="Padding" Value="{StaticResource DefaultMargin}"/>
+            <Setter Property="Margin" Value="{StaticResource ThreeThick}"/>
+            <Setter Property="Padding" Value="{StaticResource ThreeThick}"/>
         </Style>
 
         <Style x:Key="TextBoxStyle" TargetType="{x:Type TextBox}">
@@ -44,8 +44,8 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Background" Value="{StaticResource DefaultBackground}"/>
-            <Setter Property="Margin" Value="{StaticResource DefaultMargin}"/>
-            <Setter Property="Padding" Value="{StaticResource DefaultMargin}"/>
+            <Setter Property="Margin" Value="{StaticResource ThreeThick}"/>
+            <Setter Property="Padding" Value="{StaticResource ThreeThick}"/>
         </Style>
 
         <Style x:Key="ListTextBlockStyle" TargetType="{x:Type TextBlock}"
@@ -128,7 +128,7 @@
             <Button IsCancel="True"
                     Style="{StaticResource DialogButton}">_Cancel</Button>
         </WrapPanel>
-        <Grid Margin="{StaticResource DefaultMargin}"
+        <Grid Margin="{StaticResource ThreeThick}"
               DockPanel.Dock="Right">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -139,10 +139,10 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <GroupBox Header="Family Informations" 
-                      Margin="{StaticResource DefaultMargin}"
+                      Margin="{StaticResource ThreeThick}"
                       Grid.Column="0">
                 <GroupBox.Content>
-                    <Grid Margin="{StaticResource DefaultMargin}">
+                    <Grid Margin="{StaticResource ThreeThick}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition/>
@@ -194,12 +194,12 @@
                 </GroupBox.Content>
             </GroupBox>
             <GroupBox Header="Family Parameter" 
-                      Margin="{StaticResource DefaultMargin}"
+                      Margin="{StaticResource ThreeThick}"
                       Grid.Column="1" Grid.Row="0">
                 <GroupBox.Content>
                     <ListView x:Name="lstFamilyParameters"
                               ItemsSource="{Binding FamilyParameters}"
-                              Margin="{StaticResource DefaultMargin}"
+                              Margin="{StaticResource ThreeThick}"
                               ItemContainerStyle="{StaticResource StyleListViewItem}">
                         <ListView.View>
                             <GridView>
@@ -215,19 +215,19 @@
                     </ListView>
                 </GroupBox.Content>
             </GroupBox>
-            <GroupBox Margin="{StaticResource DefaultMargin}"
+            <GroupBox Margin="{StaticResource ThreeThick}"
                       HorizontalAlignment="Stretch"
                       Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
                 <GroupBox.Header>
                     <DockPanel LastChildFill="True">
                         <TextBlock Text="Family Type" 
                                    DockPanel.Dock="Left"
-                                   Margin="{StaticResource DefaultMargin}"
+                                   Margin="{StaticResource ThreeThick}"
                                    VerticalAlignment="Center"/>
                         <ComboBox x:Name="cbxFamilyTypes"
                                   ItemsSource="{Binding FamilyTypes}"
                                   SelectedItem="{Binding SelectedFamilyType}"
-                                  Margin="{StaticResource DefaultMargin}"
+                                  Margin="{StaticResource ThreeThick}"
                                   MinWidth="250"
                                   DisplayMemberPath="Name" 
                                   HorizontalAlignment="Stretch"
@@ -238,7 +238,7 @@
                 <GroupBox.Content>
                     <ListView x:Name="lstFamilyTypeParameters"
                               ItemsSource="{Binding FamilyTypeParameters}"
-                              Margin="{StaticResource DefaultMargin}"
+                              Margin="{StaticResource ThreeThick}"
                               ItemContainerStyle="{StaticResource StyleListViewItem}">
                         <ListView.View>
                             <GridView>

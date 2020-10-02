@@ -39,7 +39,7 @@
                         <Border CornerRadius="5" 
                                 BorderThickness="1" 
                                 Padding="5" 
-                                Margin="{StaticResource DefaultMargin}"
+                                Margin="{StaticResource ThreeThick}"
                                 BorderBrush="LightGray" Background="WhiteSmoke" >
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
@@ -80,7 +80,7 @@
         <TreeView x:Name="trvDirectories"
                   Grid.Column="0"
                   ItemsSource="{Binding Source={StaticResource Directories}}"
-                  Margin="{StaticResource DefaultMargin}"
+                  Margin="{StaticResource ThreeThick}"
                   MinWidth="200"
                   HorizontalAlignment="Stretch"
                   HorizontalContentAlignment="Stretch"
@@ -121,7 +121,7 @@
         <ListBox x:Name="lbxRevitFiles"
                  Grid.Column="1"
                  ItemsSource="{Binding Source={StaticResource Files}}"
-                 Margin="{StaticResource DefaultMargin}"
+                 Margin="{StaticResource ThreeThick}"
                  SelectionMode="Multiple"
                  HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>

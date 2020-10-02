@@ -5,12 +5,14 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <Thickness x:Key="DefaultMargin" Left="3" Top="3" Right="3" Bottom="3" />
+        <Thickness x:Key="NullThick" Left="0" Top="0" Right="0" Bottom="0" />
+        <Thickness x:Key="OneThick" Left="1" Top="1" Right="1" Bottom="1" />
+        <Thickness x:Key="ThreeThick" Left="3" Top="3" Right="3" Bottom="3" />
         <SolidColorBrush x:Key="DefaultBackground" Color="WhiteSmoke"/>
         <sys:Double x:Key="MinWidthButton">80</sys:Double>
 
         <Style x:Key="UIElement" TargetType="{x:Type FrameworkElement}">
-            <Setter Property="Margin" Value="{StaticResource DefaultMargin}"/>
+            <Setter Property="Margin" Value="{StaticResource ThreeThick}"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Stretch"/>
         </Style>
@@ -23,7 +25,7 @@
         <Style x:Key="UILabel" TargetType="{x:Type Label}" BasedOn="{StaticResource UIControl}">
 
         </Style>
-
+        
         <Style x:Key="UITextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource UIControl}">
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
@@ -37,12 +39,27 @@
         </Style>
 
         <Style x:Key="UIComboBox" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource UIControl}">
-            
         </Style>
 
         <Style x:Key="UIButton" TargetType="{x:Type Button}" BasedOn="{StaticResource UIControl}">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="MinWidth" Value="{StaticResource MinWidthButton}"/>
+        </Style>
+
+        <Style x:Key="UIRoundedButton" TargetType="{x:Type Button}" BasedOn="{StaticResource UIButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="5" BorderThickness="1" Padding="5" 
+                                Margin="{StaticResource ThreeThick}">
+                            <ContentPresenter Style="{StaticResource UIElement}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         
         <Style x:Key="DialogButton" TargetType="{x:Type Button}" BasedOn="{StaticResource UIButton}">

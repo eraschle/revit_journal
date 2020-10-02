@@ -27,7 +27,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Grid x:Name="Directories"
-                  Margin="{StaticResource DefaultMargin}"
+                  Margin="{StaticResource ThreeThick}"
                   Grid.Column="0" Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -46,7 +46,7 @@
                 <Label Content="Journal Directory" 
                        Grid.Column="0" Grid.Row="0"/>
                 <TextBlock Text="{Binding JournalDirectory}"
-                           Margin="{StaticResource DefaultMargin}"
+                           Margin="{StaticResource ThreeThick}"
                            Grid.Column="1" Grid.Row="0"
                            VerticalAlignment="Center"/>
                 <Button Content="Choose" 
@@ -57,7 +57,7 @@
                 <Label Content="Family Directory" 
                        Grid.Column="0" Grid.Row="1"/>
                 <TextBlock Text="{Binding FamilyDirectory}"
-                           Margin="{StaticResource DefaultMargin}"
+                           Margin="{StaticResource ThreeThick}"
                            Grid.Column="1" Grid.Row="1"
                            VerticalAlignment="Center"/>
                 <Button Content="Choose" 
@@ -68,7 +68,7 @@
                 <Label Content="Actions Directory" 
                        Grid.Column="0" Grid.Row="2"/>
                 <TextBlock Text="{Binding ActionDirectory}"
-                           Margin="{StaticResource DefaultMargin}"
+                           Margin="{StaticResource ThreeThick}"
                            Grid.Column="1" Grid.Row="2"
                            VerticalAlignment="Center"/>
                 <Button Content="Choose" 
@@ -89,7 +89,7 @@
                         </Grid.RowDefinitions>
                         <Grid x:Name="Progess" 
                               Grid.Column="0" Grid.Row="0"
-                              Margin="{StaticResource DefaultMargin}" 
+                              Margin="{StaticResource ThreeThick}" 
                               Visibility="Collapsed">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition MinWidth="50" Width="Auto"/>
@@ -103,7 +103,7 @@
                         </Grid>
                         <Grid x:Name="Setup" 
                               Grid.Column="0" Grid.Row="0"
-                              Margin="{StaticResource DefaultMargin}">
+                              Margin="{StaticResource ThreeThick}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition MinWidth="{StaticResource MinWidthButton}" Width="Auto"/>
@@ -114,11 +114,11 @@
                             <Button Content="Setup"
                                     Command="{Binding SetupFilterCommand}"
                                     Visibility="{Binding FileFilterVisibility }"
-                                    Margin="{StaticResource DefaultMargin}"
+                                    Margin="{StaticResource ThreeThick}"
                                     Grid.Column="1"/>
                         </Grid>
                         <ListBox ItemsSource="{Binding Source={StaticResource FilterListBox}}" 
-                                 Margin="{StaticResource DefaultMargin}"
+                                 Margin="{StaticResource ThreeThick}"
                                  Grid.Column="0" Grid.Row="1">
                             <ListBox.GroupStyle>
                                 <GroupStyle>
@@ -162,7 +162,7 @@
                             </ListBox.ItemContainerStyle>
                         </ListBox>
                         <Grid Grid.Column="1" Grid.Row="0"
-                              Margin="{StaticResource DefaultMargin}">
+                              Margin="{StaticResource ThreeThick}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition MinWidth="{StaticResource MinWidthButton}" 
@@ -174,12 +174,12 @@
                             <Button Content="Setup" 
                                     Command="{Binding TaskActionsCommand}"
                                     Visibility="{Binding TaskActionsVisibility}"
-                                    Margin="{StaticResource DefaultMargin}"
+                                    Margin="{StaticResource ThreeThick}"
                                     Grid.Column="1"/>
                         </Grid>
                         <ListBox ItemsSource="{Binding Actions}" 
                                  DisplayMemberPath="Name"
-                                 Margin="{StaticResource DefaultMargin}"
+                                 Margin="{StaticResource ThreeThick}"
                                  Grid.Column="1" Grid.Row="1"/>
                     </Grid>
                 </Grid>
@@ -195,11 +195,11 @@
                         CommandParameter="{Binding FamiliesViewModel}"/>
             </Grid>
             <options:TaskOptionView Grid.Column="1" Grid.Row="0"
-                                           Margin="{StaticResource DefaultMargin}"
+                                           Margin="{StaticResource ThreeThick}"
                                            DataContext="{Binding TaskOptionViewModel}"/>
         </Grid>
         <WrapPanel DockPanel.Dock="Bottom" 
-                   Margin="{StaticResource DefaultMargin}"
+                   Margin="{StaticResource ThreeThick}"
                    HorizontalAlignment="Right">
             <WrapPanel Visibility="{Binding TaskVisibility}">
                 <Button Content="Cancel" 
@@ -225,11 +225,11 @@
         </WrapPanel>
         <Grid>
             <Grid Visibility="{Binding FamiliesVisibility}"
-                  Margin="{StaticResource DefaultMargin}">
+                  Margin="{StaticResource ThreeThick}">
                 <task:FamilyOverviewView DataContext="{Binding FamiliesViewModel}"/>
             </Grid>
             <Grid Visibility="{Binding TaskVisibility}"
-                  Margin="{StaticResource DefaultMargin}">
+                  Margin="{StaticResource ThreeThick}">
                 <task:JournalTaskOverviewView DataContext="{Binding TasksViewModel }"/>
             </Grid>
         </Grid>

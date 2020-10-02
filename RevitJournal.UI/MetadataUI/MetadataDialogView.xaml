@@ -9,12 +9,12 @@
     <Window.DataContext>
         <local:MetadataDialogViewModel/>
     </Window.DataContext>
-    <StackPanel Margin="{StaticResource DefaultMargin}">
+    <StackPanel Margin="{StaticResource ThreeThick}">
         <GroupBox Header="Family Informations" 
-                  Margin="{StaticResource DefaultMargin}"
+                  Margin="{StaticResource ThreeThick}"
                   Grid.Column="0">
             <GroupBox.Content>
-                <Grid Margin="{StaticResource DefaultMargin}">
+                <Grid Margin="{StaticResource ThreeThick}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100"/>
                         <ColumnDefinition/>
@@ -32,58 +32,58 @@
                     <TextBlock Text="{Binding DisplayName}" 
                                Grid.Column="1" Grid.Row="0" 
                                Background="{StaticResource DefaultBackground}"
-                               Padding="{StaticResource DefaultMargin}"
+                               Padding="{StaticResource ThreeThick}"
                                VerticalAlignment="Center" />
                     <Label Content="Category" Grid.Column="0" Grid.Row="1"
                            VerticalAlignment="Center"/>
                     <TextBlock Text="{Binding Category}" 
                                Grid.Column="1" Grid.Row="1"
                                Background="{StaticResource DefaultBackground}"
-                               Padding="{StaticResource DefaultMargin}"
+                               Padding="{StaticResource ThreeThick}"
                                VerticalAlignment="Center"/>
                     <Label Content="OmniClass" Grid.Column="0" Grid.Row="2"
                            VerticalAlignment="Center"/>
                     <TextBlock Text="{Binding OmniClass}" 
                                Grid.Column="1" Grid.Row="2"
                                Background="{StaticResource DefaultBackground}"
-                               Padding="{StaticResource DefaultMargin}"
+                               Padding="{StaticResource ThreeThick}"
                                VerticalAlignment="Center"/>
                     <Label Content="Updated" Grid.Column="2" Grid.Row="0"
                            VerticalAlignment="Center"/>
                     <TextBlock Text="{Binding Updated}" 
                                Grid.Column="3" Grid.Row="0" 
                                Background="{StaticResource DefaultBackground}"
-                               Padding="{StaticResource DefaultMargin}"
+                               Padding="{StaticResource ThreeThick}"
                                VerticalAlignment="Center"/>
                     <Label Content="Product" Grid.Column="2" Grid.Row="1"
                            VerticalAlignment="Center"/>
                     <TextBlock Text="{Binding Product}" 
                                Grid.Column="3" Grid.Row="1" 
                                Background="{StaticResource DefaultBackground}"
-                               Padding="{StaticResource DefaultMargin}"
+                               Padding="{StaticResource ThreeThick}"
                                VerticalAlignment="Center"/>
                     <Label Content="Library Path" Grid.Column="0" Grid.Row="3"
                            VerticalAlignment="Center"/>
                     <TextBlock Text="{Binding LibraryPath}" 
                                Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3" 
                                Background="{StaticResource DefaultBackground}"
-                               Padding="{StaticResource DefaultMargin}"
+                               Padding="{StaticResource ThreeThick}"
                                VerticalAlignment="Center"/>
                 </Grid>
             </GroupBox.Content>
         </GroupBox>
         <Grid MaxHeight="300"
-              Margin="{StaticResource DefaultMargin}">
+              Margin="{StaticResource ThreeThick}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <GroupBox Header="Family Parameter" 
-                      Margin="{StaticResource DefaultMargin}"
+                      Margin="{StaticResource ThreeThick}"
                       Grid.Column="0">
                 <GroupBox.Content>
                     <ListView ItemsSource="{Binding FamilyParameters}"
-                              Margin="{StaticResource DefaultMargin}"
+                              Margin="{StaticResource ThreeThick}"
                               HorizontalContentAlignment="Stretch"
                               HorizontalAlignment="Stretch">
                         <ListView.View>
@@ -99,19 +99,19 @@
                     </ListView>
                 </GroupBox.Content>
             </GroupBox>
-            <GroupBox Margin="{StaticResource DefaultMargin}"
+            <GroupBox Margin="{StaticResource ThreeThick}"
                       HorizontalAlignment="Stretch"
                       Grid.Column="1">
                 <GroupBox.Header>
                     <DockPanel LastChildFill="True">
                         <TextBlock Text="Family Type" 
                                    DockPanel.Dock="Left"
-                                   Margin="{StaticResource DefaultMargin}"
+                                   Margin="{StaticResource ThreeThick}"
                                    VerticalAlignment="Center"/>
                         <ComboBox ItemsSource="{Binding FamilyTypes}"
                                   SelectedItem="{Binding SelectedFamilyType,
                                                          UpdateSourceTrigger=PropertyChanged}"
-                                  Margin="{StaticResource DefaultMargin}"
+                                  Margin="{StaticResource ThreeThick}"
                                   MinWidth="250"
                                   DisplayMemberPath="Name" 
                                   HorizontalAlignment="Stretch"
@@ -121,7 +121,7 @@
                 </GroupBox.Header>
                 <GroupBox.Content>
                     <ListView ItemsSource="{Binding FamilyTypeParameters}"
-                              Margin="{StaticResource DefaultMargin}"
+                              Margin="{StaticResource ThreeThick}"
                               HorizontalContentAlignment="Stretch"
                               HorizontalAlignment="Stretch">
                         <ListView.View>

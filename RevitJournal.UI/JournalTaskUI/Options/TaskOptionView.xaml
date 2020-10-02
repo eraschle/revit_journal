@@ -57,7 +57,7 @@
                Grid.Column="0" Grid.Row="3" 
                Style="{StaticResource UILabel}"/>
         <Grid Grid.Column="1" Grid.Row="3"
-              Margin="{StaticResource DefaultMargin}">
+              Margin="{StaticResource ThreeThick}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
