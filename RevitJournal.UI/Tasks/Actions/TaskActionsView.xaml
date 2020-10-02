@@ -239,7 +239,7 @@
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="{StaticResource ParameterNameWidth}"/>
                                                             <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition MinWidth="{StaticResource MinWidthButton}" Width="Auto"/>
+                                                            <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
                                                         <Label Content="{Binding Name}" 
                                                                Style="{StaticResource StyleLabelItem}"

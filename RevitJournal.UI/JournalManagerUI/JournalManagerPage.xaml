@@ -123,7 +123,7 @@
                               Margin="{StaticResource NullThick}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition MinWidth="{StaticResource MinWidthButton}" Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Content="Filter" Grid.Column="0" 
                                    Margin="0" 
@@ -181,8 +181,7 @@
                         <Grid Grid.Column="1" Grid.Row="0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition MinWidth="{StaticResource MinWidthButton}" 
-                                                  Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Content="Journal Tasks" Grid.Column="0"
                                    Style="{StaticResource LabelDir}"/>
