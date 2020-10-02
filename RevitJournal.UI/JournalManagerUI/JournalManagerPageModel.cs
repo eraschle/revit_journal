@@ -42,7 +42,7 @@ namespace RevitJournalUI.JournalManagerUI
         {
             LibraryManager = new LibraryManager { PathBuilder = PathFactory.Instance };
             TaskManager = new TaskManager();
-            TaskOptions = new TaskOptions();
+            TaskOptions = new TaskOptions(PathFactory.Instance);
             ProductManager.UpdateVersions();
             TaskOptionViewModel = new TaskOptionViewModel { Options = TaskOptions };
             FamiliesViewModel = new FamilyOverviewViewModel { LibraryManager = LibraryManager };

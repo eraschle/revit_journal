@@ -95,6 +95,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <Page Include="JournalTaskUI\Options\BackupDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Tasks\Actions\TaskActionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -149,6 +153,10 @@
     <Compile Include="JournalTaskUI\FamilyFilter\CheckedFilterViewModel.cs" />
     <Compile Include="JournalTaskUI\FamilyFilter\FilterViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\PathViewModel.cs" />
+    <Compile Include="JournalTaskUI\Options\BackupDialog.xaml.cs">
+      <DependentUpon>BackupDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="JournalTaskUI\Options\BackupDialogModel.cs" />
     <Compile Include="Tasks\Actions\OpenActionViewModel.cs" />
     <Compile Include="Tasks\Converter\TaskResultVisibleConverter.cs" />
     <Compile Include="Tasks\Converter\TaskExecuteVisibleConverter.cs" />

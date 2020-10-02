@@ -8,9 +8,50 @@
         <Thickness x:Key="DefaultMargin" Left="3" Top="3" Right="3" Bottom="3" />
         <SolidColorBrush x:Key="DefaultBackground" Color="WhiteSmoke"/>
         <sys:Double x:Key="MinWidthButton">80</sys:Double>
-        <Style x:Key="DialogButton" TargetType="{x:Type Button}">
-            <Setter Property="MinWidth" Value="{StaticResource MinWidthButton}"/>
-            <Setter Property="Margin" Value="10, 3, 10, 3"/>
+
+        <Style x:Key="UIElement" TargetType="{x:Type FrameworkElement}">
+            <Setter Property="Margin" Value="{StaticResource DefaultMargin}"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
         </Style>
+
+        <Style x:Key="UIControl" TargetType="{x:Type Control}" BasedOn="{StaticResource UIElement}">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="UILabel" TargetType="{x:Type Label}" BasedOn="{StaticResource UIControl}">
+
+        </Style>
+
+        <Style x:Key="UITextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource UIControl}">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+
+        <Style x:Key="UITextBlock" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource UIElement}">
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="UICheckBox" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource UIControl}">
+        </Style>
+
+        <Style x:Key="UIComboBox" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource UIControl}">
+            
+        </Style>
+
+        <Style x:Key="UIButton" TargetType="{x:Type Button}" BasedOn="{StaticResource UIControl}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="MinWidth" Value="{StaticResource MinWidthButton}"/>
+        </Style>
+        
+        <Style x:Key="DialogButton" TargetType="{x:Type Button}" BasedOn="{StaticResource UIButton}">
+            <Setter Property="Margin" Value="10, 3, 3, 3"/>
+        </Style>
+
+        <Style x:Key="UISlider" TargetType="{x:Type Slider}" BasedOn="{StaticResource UIControl}">
+            <Setter Property="Interval" Value="1"/>
+        </Style>
+        
     </Application.Resources>
 </Application>

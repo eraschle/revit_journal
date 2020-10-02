@@ -15,8 +15,10 @@
             </Grid.ColumnDefinitions>
             <Label Content="{Binding ExecutedTasksText, UpdateSourceTrigger=PropertyChanged}"
                    Grid.Column="0"/>
-            <ProgressBar Minimum="{Binding MinTasks, UpdateSourceTrigger=PropertyChanged}" 
-                         Value="{Binding ExecutedTasks, UpdateSourceTrigger=PropertyChanged}" 
+            <ProgressBar x:Name="prgExecutedTasks" 
+                         Minimum="{Binding MinTasks, UpdateSourceTrigger=PropertyChanged}" 
+                         Value="{Binding Path=ExecutedTasksText, Mode=TwoWay, NotifyOnTargetUpdated=True}"
+                         TargetUpdated="ExecutedTasks_TargetUpdated"
                          Maximum="{Binding MaxTasks, UpdateSourceTrigger=PropertyChanged}"
                          Grid.Column="1"/>
         </Grid>

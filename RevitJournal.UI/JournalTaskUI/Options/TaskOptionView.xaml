@@ -26,51 +26,36 @@
         </Grid.RowDefinitions>
         <Label Content="Revit"
                Grid.Column="0" Grid.Row="0" 
-               Margin="{StaticResource DefaultMargin}"
-               HorizontalAlignment="Stretch" 
-               VerticalAlignment="Stretch"/>
+               Style="{StaticResource UILabel}"/>
         <ComboBox ItemsSource="{Binding RevitApps}"
                   IsEnabled="{Binding OptionsEnabled}"
                   SelectedItem="{Binding SelectedRevitApp}"
                   DisplayMemberPath="ProductName"
                   Grid.Column="1" Grid.Row="0"
-                  Margin="{StaticResource DefaultMargin}"
-                  HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch"/>
+                  Style="{StaticResource UIComboBox}"/>
         <Label Content="{Binding Path=ParallelProcess,Mode=TwoWay, NotifyOnTargetUpdated=True}"
                TargetUpdated="OnParallelProcessUpdated"
                Grid.Column="0" Grid.Row="1"
-               Margin="{StaticResource DefaultMargin}"
-               VerticalAlignment="Stretch"/>
+               Style="{StaticResource UILabel}"/>
         <Slider Grid.Column="1" Grid.Row="1"
                 Value="{Binding ParallelProcess, UpdateSourceTrigger=PropertyChanged}"
                 IsEnabled="{Binding OptionsEnabled}"
                 Minimum="{Binding MinParallelProcess}" 
                 Maximum="{Binding MaxParallelProcess}"
-                Interval="1"
-                Margin="{StaticResource DefaultMargin}"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Center"/>
-        <Label Content="{Binding Path=Timeout,Mode=TwoWay, NotifyOnTargetUpdated=True}"
+                Style="{StaticResource UISlider}"/>
+        <Label Content="{Binding Path=Timeout, Mode=TwoWay, NotifyOnTargetUpdated=True}"
                TargetUpdated="OnTimeoutUpdated"
                Grid.Column="0" Grid.Row="2" 
-               Margin="{StaticResource DefaultMargin}"
-               HorizontalAlignment="Stretch" 
-               VerticalAlignment="Stretch"/>
-        <Slider x:Name="timeProcess" 
-                Grid.Column="1" Grid.Row="2" 
+               Style="{StaticResource UILabel}"/>
+        <Slider Grid.Column="1" Grid.Row="2" 
                 IsEnabled="{Binding OptionsEnabled}"
-                Margin="{StaticResource DefaultMargin}"
                 Value="{Binding Timeout, Converter={StaticResource timespanConverter}}"
                 Minimum="{Binding TimeoutMinimum, Converter={StaticResource timespanConverter}}" 
                 Maximum="{Binding TimeoutMaximum, Converter={StaticResource timespanConverter}}"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Center"/>
+                Style="{StaticResource UISlider}"/>
         <Label Content="Logs"
                Grid.Column="0" Grid.Row="3" 
-               Margin="{StaticResource DefaultMargin}"
-               HorizontalAlignment="Stretch" 
-               VerticalAlignment="Center"/>
+               Style="{StaticResource UILabel}"/>
         <Grid Grid.Column="1" Grid.Row="3"
               Margin="{StaticResource DefaultMargin}">
             <Grid.ColumnDefinitions>
@@ -78,74 +63,32 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <CheckBox x:Name="cbxLogResult"
-                      Content="Create?"
+            <CheckBox Content="Create?" Grid.Column="0" 
                       IsChecked="{Binding LogResult}"
                       IsEnabled="{Binding OptionsEnabled}"
-                      Grid.Column="0" 
-                      HorizontalAlignment="Stretch"
-                      VerticalAlignment="Center"/>
-            <CheckBox Content="Success" 
+                      Style="{StaticResource UICheckBox}"/>
+            <CheckBox Content="Success" Grid.Column="1"
                       IsChecked="{Binding LogResultAll, UpdateSourceTrigger=PropertyChanged}"
                       IsEnabled="{Binding LogOptionsEnabled}"
-                      Grid.Column="1"
-                      HorizontalAlignment="Stretch" 
-                      VerticalAlignment="Stretch"
-                      VerticalContentAlignment="Center"/>
-            <CheckBox Content="Error" 
+                      Style="{StaticResource UICheckBox}"/>
+            <CheckBox Content="Error" Grid.Column="2"
                       IsChecked="{Binding LogResultError, UpdateSourceTrigger=PropertyChanged}"
                       IsEnabled="{Binding LogOptionsEnabled}"
-                      Grid.Column="2"
-                      HorizontalAlignment="Stretch" 
-                      VerticalAlignment="Stretch"
-                      VerticalContentAlignment="Center"/>
+                      Style="{StaticResource UICheckBox}"/>
         </Grid>
         <Label Content="Delete Revit-Backups"
-                   Grid.Column="0" Grid.Row="4" 
-                   Margin="{StaticResource DefaultMargin}"
-                   HorizontalAlignment="Stretch" 
-                   VerticalAlignment="Center"/>
+               Grid.Column="0" Grid.Row="4" 
+               Style="{StaticResource UILabel}"/>
         <CheckBox Grid.Column="1" Grid.Row="4" 
-                      Margin="{StaticResource DefaultMargin}"
-                      IsChecked="{Binding DeleteAppBackups, UpdateSourceTrigger=PropertyChanged}"
-                      IsEnabled="{Binding OptionsEnabled}"
-                      HorizontalAlignment="Stretch" 
-                      VerticalAlignment="Center"/>
+                  IsChecked="{Binding DeleteAppBackups, UpdateSourceTrigger=PropertyChanged}"
+                  IsEnabled="{Binding OptionsEnabled}"
+                  Style="{StaticResource UICheckBox}"/>
         <Label Content="Create Backup"
                Grid.Column="0" Grid.Row="5" 
-               Margin="{StaticResource DefaultMargin}"
-               HorizontalAlignment="Stretch" 
-               VerticalAlignment="Center"/>
-        <CheckBox x:Name="ckbBackup"
-                  Grid.Column="1" Grid.Row="5" 
-                  Margin="{StaticResource DefaultMargin}"
-                  IsChecked="{Binding CreateBackup, UpdateSourceTrigger=PropertyChanged}"
-                  IsEnabled="{Binding OptionsEnabled}"
-                  HorizontalAlignment="Stretch" 
-                  VerticalAlignment="Center"/>
-        <Label Content="Subfolder"
-               Grid.Column="0" Grid.Row="6" 
-               Margin="{StaticResource DefaultMargin}"
-               HorizontalAlignment="Stretch" 
-               VerticalAlignment="Stretch"/>
-        <TextBox Text="{Binding BackupSubFolder, UpdateSourceTrigger=PropertyChanged}" 
-                 Grid.Column="1" Grid.Row="6"
-                 Margin="{StaticResource DefaultMargin}"
-                 IsEnabled="{Binding CreateBackup, UpdateSourceTrigger=PropertyChanged}"
-                 HorizontalAlignment="Stretch" 
-                 VerticalAlignment="Stretch"
-                 VerticalContentAlignment="Center"/>
-        <Label Content="File Suffix"
-               Grid.Column="0" Grid.Row="7" 
-               Margin="{StaticResource DefaultMargin}"
-               HorizontalAlignment="Stretch" 
-               VerticalAlignment="Stretch"/>
-        <TextBox Text="{Binding BackupSuffix, UpdateSourceTrigger=PropertyChanged}" 
-                 Grid.Column="1" Grid.Row="7"
-                 Margin="{StaticResource DefaultMargin}"
-                 IsEnabled="{Binding CreateBackup, UpdateSourceTrigger=PropertyChanged}"
-                 HorizontalAlignment="Stretch" 
-                 VerticalAlignment="Stretch"
-                 VerticalContentAlignment="Center"/>
+               Style="{StaticResource UILabel}"/>
+        <Button Grid.Column="1" Grid.Row="5"
+                Command="{Binding CreateBackupCommand}"
+                Style="{StaticResource UIButton}"/>
+       
     </Grid>
 </UserControl>

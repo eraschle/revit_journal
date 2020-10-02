@@ -4,6 +4,7 @@ using RevitJournal.Revit;
 using RevitJournal.Tasks.Options;
 using System;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using Utilities.System;
 using Utilities.UI;
 
@@ -17,6 +18,7 @@ namespace RevitJournalUI.JournalTaskUI.Options
         public TaskOptionViewModel()
         {
             Initialize();
+            CreateBackupCommand = new RelayCommand<object>(CreateBackupAction, CreateBackupPredicate);
         }
 
         private void Initialize()
@@ -144,39 +146,21 @@ namespace RevitJournalUI.JournalTaskUI.Options
             get { return ParallelOptions.MaxProcesses; }
         }
 
-        public bool CreateBackup
-        {
-            get { return Options.Backup.CreateBackup && OptionsEnabled; }
-            set
-            {
-                if (Options.Backup.CreateBackup == value) { return; }
+        public ICommand CreateBackupCommand { get; }
 
-                Options.Backup.CreateBackup = value;
-                NotifyPropertyChanged();
-            }
+        public bool CreateBackupPredicate(object parameter)
+        {
+            return OptionsEnabled;
         }
 
-        public string BackupSubFolder
+        public void CreateBackupAction(object parameter)
         {
-            get { return Options.Backup.BackupFolder; }
-            set
+            var dialog = new BackupDialog();
+            dialog.Update(Options.GetBackupSetting());
+            var result = dialog.ShowDialog();
+            if(result == true)
             {
-                if (StringUtils.Equals(Options.Backup.BackupFolder, value)) { return; }
-
-                Options.Backup.BackupFolder = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        public string BackupSuffix
-        {
-            get { return Options.Backup.FileSuffix; }
-            set
-            {
-                if (StringUtils.Equals(Options.Backup.FileSuffix, value)) { return; }
-
-                Options.Backup.FileSuffix = value;
-                NotifyPropertyChanged();
+                Options.SetBackupSetting(dialog.GetPathCreator());
             }
         }
 
