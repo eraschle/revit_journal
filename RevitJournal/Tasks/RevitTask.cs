@@ -76,7 +76,7 @@ namespace RevitJournal.Tasks
             return actionCommands.Count > 0;
         }
 
-        public void PreExecution(BackupOptions options)
+        public void PreExecution(TaskOptions options)
         {
             if(options is null) { throw new ArgumentNullException(nameof(options)); }
 

@@ -135,7 +135,6 @@
     <Compile Include="Tasks\Actions\ExternalAction.cs" />
     <Compile Include="Tasks\Actions\ExternalActionDataSource.cs" />
     <Compile Include="Tasks\Actions\ExternalActionFile.cs" />
-    <Compile Include="Tasks\Options\BackupOptions.cs" />
     <Compile Include="Tasks\Options\ParallelOptions.cs" />
     <Compile Include="Tasks\Options\ReportOptions.cs" />
     <Compile Include="Revit\Addin\AddinManager.cs" />

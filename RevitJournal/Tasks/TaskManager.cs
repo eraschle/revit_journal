@@ -97,7 +97,7 @@ namespace RevitJournal.Tasks
                 }
             }
 
-            var workingDirectory = options.GetJournalWorking(PathFactory.Instance);
+            var workingDirectory = options.GetJournalWorking();
             AddinManager.CreateAppManifest(workingDirectory, ExternalAction.GetTaskApp());
             foreach (var command in commands)
             {

@@ -57,7 +57,7 @@ namespace RevitJournal.Tasks
         private TaskJournalFile CreateTaskJournal()
         {
             var dataSource = new TaskJournalDataSource();
-            var workingDirectory = Options.GetJournalWorking(PathFactory.Instance);
+            var workingDirectory = Options.GetJournalWorking();
             var journalFile = Task.SourceFile.ChangeDirectory<TaskJournalFile>(workingDirectory);
             dataSource.SetFile(journalFile);
             dataSource.Write(Task);
@@ -92,7 +92,7 @@ namespace RevitJournal.Tasks
             else if (ActionManager.IsJournalAction(report.ActionId))
             {
                 var journalFile = factory.Create<RecordJournalFile>(report.Message);
-                var journalRoot = Options.GetJournalWorking(factory);
+                var journalRoot = Options.GetJournalWorking();
                 var search = $"{journalFile.NameWithoutExtension}{Constant.Star}";
                 factory.CreateFiles<RecordJournalFile>(journalRoot, search);
                 RecordeJournal = journalFile;
@@ -152,7 +152,7 @@ namespace RevitJournal.Tasks
 
         internal async SYS.Task CreateTask(CancellationToken cancel)
         {
-            Task.PreExecution(Options.Backup);
+            Task.PreExecution(Options);
             TaskJournal = CreateTaskJournal();
             ReportStatus(TaskAppStatus.Started);
             using (var taskCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel))

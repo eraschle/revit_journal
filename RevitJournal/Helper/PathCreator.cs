@@ -1,5 +1,6 @@
 ﻿using DataSource.Model.FileSystem;
 using System;
+using System.IO;
 using System.Linq;
 using Utilities.System;
 using Utilities.System.FileSystem;
@@ -34,7 +35,11 @@ namespace RevitJournal.Helper
 
         public void SetRoot(string path)
         {
-            RootPath = string.IsNullOrEmpty(path) ? string.Empty : DirUtils.RemoveSlases(path);
+            if (string.IsNullOrEmpty(path) || Directory.Exists(path) == false)
+            {
+                throw new ArgumentException($"Root path must exists {path}");
+            }
+            RootPath = DirUtils.RemoveSlases(path);
         }
 
         public void SetNewRoot(string path)
