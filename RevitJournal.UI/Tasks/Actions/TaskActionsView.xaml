@@ -11,44 +11,40 @@
         <GridLength x:Key="ParameterNameWidth">150</GridLength>
         <par:BoolParameterConverter x:Key="BooleanToString" />
 
-        <Style x:Key="StyleListView" TargetType="{x:Type ListBox}">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Style x:Key="StyleListView" TargetType="{x:Type ListBox}"
+               BasedOn="{StaticResource UIListBox}">
         </Style>
 
         <Thickness x:Key="ListItemMargin" Left="14" Top="0" Right="0" Bottom="0" />
-        <Thickness x:Key="ListItemPadding" Left="1" Top="1" Right="1" Bottom="1" />
 
-        <Style x:Key="StyleLabelItem" TargetType="{x:Type Label}">
+        <Style x:Key="StyleLabelItem" TargetType="{x:Type Label}"
+               BasedOn="{StaticResource UILabel}">
             <Setter Property="Margin" Value="{StaticResource ListItemMargin}"/>
-            <Setter Property="Padding" Value="{StaticResource ListItemPadding}"/>
-            <Setter Property="VerticalAlignment" Value="Stretch"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="{StaticResource OneThick}"/>
         </Style>
-        <Style x:Key="StyleTextBlockItem" TargetType="{x:Type TextBlock}">
+        <Style x:Key="StyleTextBlockItem" TargetType="{x:Type TextBlock}"
+               BasedOn="{StaticResource UITextBlock}">
             <Setter Property="Margin" Value="{StaticResource ListItemMargin}"/>
-            <Setter Property="Padding" Value="{StaticResource ListItemPadding}"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="{StaticResource OneThick}"/>
             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
         </Style>
 
-        <Style x:Key="StyleTextBoxItem" TargetType="{x:Type TextBox}">
+        <Style x:Key="StyleTextBoxItem" TargetType="{x:Type TextBox}"
+               BasedOn="{StaticResource UITextBox}">
             <Setter Property="Margin" Value="{StaticResource ListItemMargin}"/>
-            <Setter Property="Padding" Value="{StaticResource ListItemPadding}"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="{StaticResource OneThick}"/>
         </Style>
 
-        <Style x:Key="StyleComboBoxItem" TargetType="{x:Type ComboBox}">
+        <Style x:Key="StyleComboBoxItem" TargetType="{x:Type ComboBox}" 
+               BasedOn="{StaticResource UIComboBox}">
             <Setter Property="Margin" Value="{StaticResource ListItemMargin}"/>
-            <Setter Property="Padding" Value="{StaticResource ListItemPadding}"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="{StaticResource OneThick}"/>
         </Style>
         
-        <Style x:Key="StyleButtonItem" TargetType="{x:Type Button}">
+        <Style x:Key="StyleButtonItem" TargetType="{x:Type Button}"
+               BasedOn="{StaticResource UIButton}">
             <Setter Property="Margin" Value="{StaticResource ListItemMargin}"/>
-            <Setter Property="Padding" Value="{StaticResource ListItemPadding}"/>
-            <Setter Property="VerticalAlignment" Value="Stretch"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="{StaticResource OneThick}"/>
             <Setter Property="Visibility" Value="Visible"/>
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="False">
@@ -56,11 +52,10 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="StyleCheckBoxItem" TargetType="{x:Type CheckBox}">
+        <Style x:Key="StyleCheckBoxItem" TargetType="{x:Type CheckBox}"
+               BasedOn="{StaticResource UICheckBox}">
             <Setter Property="Margin" Value="{StaticResource ListItemMargin}"/>
-            <Setter Property="Padding" Value="{StaticResource ListItemPadding}"/>
-            <Setter Property="VerticalAlignment" Value="Stretch"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="{StaticResource OneThick}"/>
         </Style>
     </Window.Resources>
     <Window.DataContext>
@@ -293,9 +288,9 @@
         <WrapPanel Grid.Row="1" HorizontalAlignment="Right">
             <Button x:Name="OK" Content="_OK" IsDefault="True" 
                     Click="OK_Click" 
-                    Style="{StaticResource DialogButton}"/>
+                    Style="{StaticResource UIButtonDialog}"/>
             <Button Content="_Cancel" IsCancel="True"
-                    Style="{StaticResource DialogButton}"/>
+                    Style="{StaticResource UIButtonDialog}"/>
         </WrapPanel>
     </Grid>
 </Window>

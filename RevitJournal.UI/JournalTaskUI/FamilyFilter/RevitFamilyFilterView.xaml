@@ -8,7 +8,7 @@
     <Window.Resources>
         <Style x:Key="GroupStyle" TargetType="{x:Type GroupBox}">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
-            <Setter Property="Margin" Value="{StaticResource ThreeThick}"/>
+            <Setter Property="Margin" Value="{StaticResource TwoThick}"/>
         </Style>
 
         <DataTemplate x:Key="CheckedItemTemplate" 
@@ -44,7 +44,7 @@
             <GroupBox Header="Metadata"
                       Style="{StaticResource GroupStyle}"
                       Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
-                <Grid Margin="{StaticResource ThreeThick}">
+                <Grid Margin="{StaticResource TwoThick}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
@@ -98,13 +98,13 @@
                          Style="{StaticResource ListStyle}"/>
             </GroupBox>
             <WrapPanel HorizontalAlignment="Right"
-                       Margin="{StaticResource ThreeThick}"
+                       Margin="{StaticResource TwoThick}"
                        Grid.Column="1" Grid.Row="4">
                 <Button x:Name="Ok" Content="_OK" IsDefault="True" 
                         Click="Ok_Click"
-                        Style="{StaticResource DialogButton}"/>
+                        Style="{StaticResource UIButtonDialog}"/>
                 <Button Content="_Cancel" IsCancel="True"
-                        Style="{StaticResource DialogButton}"/>
+                        Style="{StaticResource UIButtonDialog}"/>
             </WrapPanel>
         </Grid>
     </Grid>

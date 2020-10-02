@@ -15,7 +15,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <RowDefinition />
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
@@ -56,8 +56,7 @@
         <Label Content="Logs"
                Grid.Column="0" Grid.Row="3" 
                Style="{StaticResource UILabel}"/>
-        <Grid Grid.Column="1" Grid.Row="3"
-              Margin="{StaticResource ThreeThick}">
+        <Grid Grid.Column="1" Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -89,7 +88,7 @@
         <Button Content="Backup Settings" 
                 Grid.Column="1" Grid.Row="5"
                 Command="{Binding CreateBackupCommand}"
-                Style="{StaticResource UIButton}"/>
-       
+                Style="{StaticResource UIButton}"
+                HorizontalAlignment="Stretch"/>
     </Grid>
 </UserControl>

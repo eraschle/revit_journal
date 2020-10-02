@@ -25,8 +25,8 @@
 
         <converter:OriginalFamilyColorConverter x:Key="BkgOriginalFamilyConverter" />
         <Style x:Key="StyleTextBlockOriginal" TargetType="{x:Type TextBlock}">
-            <Setter Property="Margin" Value="{StaticResource ThreeThick}"/>
-            <Setter Property="Padding" Value="{StaticResource ThreeThick}"/>
+            <Setter Property="Margin" Value="{StaticResource TwoThick}"/>
+            <Setter Property="Padding" Value="{StaticResource TwoThick}"/>
             <Setter Property="Background">
                 <Setter.Value>
                     <MultiBinding Converter="{StaticResource BkgOriginalFamilyConverter}">
@@ -72,15 +72,15 @@
         </Style>
 
         <Style x:Key="StyleLabelParameterName" TargetType="{x:Type Label}">
-            <!--<Setter Property="Margin" Value="{StaticResource ThreeThick}"/>-->
-            <!--<Setter Property="Padding" Value="{StaticResource ThreeThick}"/>-->
+            <!--<Setter Property="Margin" Value="{StaticResource TwoThick}"/>-->
+            <!--<Setter Property="Padding" Value="{StaticResource TwoThick}"/>-->
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
         <Style x:Key="StyleLabelDistance" TargetType="{x:Type Label}">
-            <Setter Property="Padding" Value="{StaticResource ThreeThick}"/>
+            <Setter Property="Padding" Value="{StaticResource TwoThick}"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
@@ -151,7 +151,7 @@
         <Style x:Key="StyleLabelFamily" TargetType="{x:Type Label}"
                BasedOn="{StaticResource StyleLabelDistance}">
             <Setter Property="VerticalAlignment" Value="Stretch"/>
-            <Setter Property="Margin" Value="{StaticResource ThreeThick}"/>
+            <Setter Property="Margin" Value="{StaticResource TwoThick}"/>
             <Setter Property="Background">
                 <Setter.Value>
                     <MultiBinding Converter="{StaticResource BkgSourceFamilyConverter}">
@@ -200,15 +200,15 @@
                    DockPanel.Dock="Bottom"
                    HorizontalAlignment="Right">
             <Button IsDefault="True" 
-                    Style="{StaticResource DialogButton}"
+                    Style="{StaticResource UIButtonDialog}"
                     Click="Button_Click">_Ok</Button>
         </WrapPanel>
         <Expander IsExpanded="{Binding IsSearchOptionExpanded}"
                   DockPanel.Dock="Top">
             <Expander.Header>
-                <WrapPanel Margin="{StaticResource ThreeThick}">
+                <WrapPanel Margin="{StaticResource TwoThick}">
                     <TextBlock Text="Dublicate search options"
-                               Margin="{StaticResource ThreeThick}"
+                               Margin="{StaticResource TwoThick}"
                                VerticalAlignment="Center"/>
                     <Button Content="Use Filter"
                             Command="{Binding UseFilterCommand}"
@@ -238,16 +238,16 @@
                                         Command="{Binding DeselectAllCommand}"
                                         CommandParameter="{Binding FamilyInformations}"
                                         MinWidth="80"
-                                        Margin="{StaticResource ThreeThick}"/>
+                                        Margin="{StaticResource TwoThick}"/>
                                 <Button Content="Select all"
                                         Command="{Binding SelectAllCommand}"
                                         CommandParameter="{Binding FamilyInformations}"
                                         MinWidth="80"
-                                        Margin="{StaticResource ThreeThick}"/>
+                                        Margin="{StaticResource TwoThick}"/>
                             </WrapPanel>
                             <ListBox x:Name="lstFamilyInformations" 
                                      ItemsSource="{Binding FamilyInformations}"
-                                     Margin="{StaticResource ThreeThick}"
+                                     Margin="{StaticResource TwoThick}"
                                      DockPanel.Dock="Top">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate DataType="MetadataComparerFamilyViewModel">
@@ -272,16 +272,16 @@
                                         Command="{Binding DeselectAllCommand}"
                                         CommandParameter="{Binding FamilyParameters}"
                                         MinWidth="80"
-                                        Margin="{StaticResource ThreeThick}"/>
+                                        Margin="{StaticResource TwoThick}"/>
                                 <Button Content="Select all"
                                         Command="{Binding SelectAllCommand}"
                                         CommandParameter="{Binding FamilyParameters}"
                                         MinWidth="80"
-                                        Margin="{StaticResource ThreeThick}"/>
+                                        Margin="{StaticResource TwoThick}"/>
                             </WrapPanel>
                             <ListBox x:Name="lstFamilyParameters" 
                                      ItemsSource="{Binding FamilyParameters}"
-                                     Margin="{StaticResource ThreeThick}">
+                                     Margin="{StaticResource TwoThick}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate DataType="MetadataComparerParameterViewModel">
                                         <ContentPresenter>
@@ -305,16 +305,16 @@
                                         Command="{Binding DeselectAllCommand}"
                                         CommandParameter="{Binding FamilyTypes}"
                                         MinWidth="80"
-                                        Margin="{StaticResource ThreeThick}"/>
+                                        Margin="{StaticResource TwoThick}"/>
                                 <Button Content="Select all"
                                         Command="{Binding SelectAllCommand}"
                                         CommandParameter="{Binding FamilyTypes}"
                                         MinWidth="80"
-                                        Margin="{StaticResource ThreeThick}"/>
+                                        Margin="{StaticResource TwoThick}"/>
                             </WrapPanel>
                             <ListBox x:Name="lstFamilyTypes" 
                                      ItemsSource="{Binding FamilyTypes}"
-                                     Margin="{StaticResource ThreeThick}">
+                                     Margin="{StaticResource TwoThick}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate DataType="MetadataComparerFamilyTypeViewModel">
                                         <ContentPresenter>
@@ -338,16 +338,16 @@
                                         Command="{Binding DeselectAllCommand}"
                                         CommandParameter="{Binding FamilyTypeParameters}"
                                         MinWidth="80"
-                                        Margin="{StaticResource ThreeThick}"/>
+                                        Margin="{StaticResource TwoThick}"/>
                                 <Button Content="Select all"
                                         Command="{Binding SelectAllCommand}"
                                         CommandParameter="{Binding FamilyTypeParameters}"
                                         MinWidth="80"
-                                        Margin="{StaticResource ThreeThick}"/>
+                                        Margin="{StaticResource TwoThick}"/>
                             </WrapPanel>
                             <ListBox x:Name="lstFamilyTypeParameters" 
                                      ItemsSource="{Binding FamilyTypeParameters}"
-                                     Margin="{StaticResource ThreeThick}">
+                                     Margin="{StaticResource TwoThick}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate DataType="MetadataComparerParameterViewModel">
                                         <ContentPresenter>
@@ -367,7 +367,7 @@
         <ListBox x:Name="lstRevitFiles"
                  ItemsSource="{Binding Models}"
                  SelectedItem="{Binding SelectedModel}"
-                 Margin="{StaticResource ThreeThick}"
+                 Margin="{StaticResource TwoThick}"
                  DockPanel.Dock="Left"
                  HorizontalContentAlignment="Stretch"
                  SelectionChanged="LstRevitFiles_SelectionChanged">
@@ -398,7 +398,7 @@
         </ListBox>
         <Grid x:Name="GridDublicate"
               DockPanel.Dock="Right"
-              Margin="{StaticResource ThreeThick}" >
+              Margin="{StaticResource TwoThick}" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition />
@@ -407,7 +407,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <ScrollViewer Margin="{StaticResource ThreeThick}"
+            <ScrollViewer Margin="{StaticResource TwoThick}"
                           Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"
                           CanContentScroll="True" 
                           VerticalContentAlignment="Stretch" 
@@ -430,7 +430,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Original"
                                    Padding="{StaticResource TitlePadding}"
-                                   Margin="{StaticResource ThreeThick}"
+                                   Margin="{StaticResource TwoThick}"
                                    Grid.Column="0"
                                    VerticalAlignment="Center"/>
                         <TextBlock x:Name="OrigName"
@@ -440,7 +440,7 @@
                                    Grid.Column="1"/>
                     </Grid>
                     <GroupBox Header="Family Informations" 
-                              Margin="{StaticResource ThreeThick}"
+                              Margin="{StaticResource TwoThick}"
                               Grid.Column="0" Grid.Row="1" >
                         <GroupBox.Content>
                             <Grid >
@@ -503,7 +503,7 @@
                         </GroupBox.Content>
                     </GroupBox>
                     <GroupBox Header="Family Parameter" 
-                              Margin="{StaticResource ThreeThick}"
+                              Margin="{StaticResource TwoThick}"
                               Grid.Column="0" Grid.Row="2">
                         <GroupBox.Content>
                             <ListView x:Name="lstOrigFamPar"
@@ -553,7 +553,7 @@
                             </ListView>
                         </GroupBox.Content>
                     </GroupBox>
-                    <GroupBox Margin="{StaticResource ThreeThick}"
+                    <GroupBox Margin="{StaticResource TwoThick}"
                               Grid.Column="0" Grid.Row="3">
                         <GroupBox.Header>
                             <DockPanel LastChildFill="True">
@@ -641,7 +641,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Source" 
                                    Padding="{StaticResource TitlePadding}"
-                                   Margin="{StaticResource ThreeThick}"
+                                   Margin="{StaticResource TwoThick}"
                                    VerticalAlignment="Center"/>
                         <ComboBox x:Name="cbxDublicated"
                                   ItemsSource="{Binding Duplicated}"
@@ -692,7 +692,7 @@
                         </Label>
                     </Grid>
                     <GroupBox Header="Family Informations" 
-                              Margin="{StaticResource ThreeThick}"
+                              Margin="{StaticResource TwoThick}"
                               Grid.Column="1" Grid.Row="1" >
                         <GroupBox.Content>
                             <Grid >
@@ -809,7 +809,7 @@
                         </GroupBox.Content>
                     </GroupBox>
                     <GroupBox Header="Family Parameter" 
-                              Margin="{StaticResource ThreeThick}"
+                              Margin="{StaticResource TwoThick}"
                               Grid.Column="1" Grid.Row="2" 
                               Grid.IsSharedSizeScope="True" >
                         <GroupBox.Content>
@@ -884,7 +884,7 @@
                             </ListView>
                         </GroupBox.Content>
                     </GroupBox>
-                    <GroupBox Margin="{StaticResource ThreeThick}"
+                    <GroupBox Margin="{StaticResource TwoThick}"
                               Grid.Column="1" Grid.Row="3"
                               Grid.IsSharedSizeScope="True" >
                         <GroupBox.Header>

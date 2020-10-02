@@ -31,25 +31,9 @@
             <Setter Property="Width" Value="15"/>
             <Setter Property="Height" Value="15"/>
         </Style>
-
-        <Style x:Key="RoundedButtonStyle" TargetType="{x:Type Button}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border CornerRadius="5" 
-                                BorderThickness="1" 
-                                Padding="5" 
-                                Margin="{StaticResource ThreeThick}"
-                                BorderBrush="LightGray" Background="WhiteSmoke" >
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
         
         <converter:FamilyStatusVisibilityMetadataConverter x:Key="FamilyVisibilityMetadataConverter" />
-        <Style x:Key="FamilyItemButtomStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource RoundedButtonStyle}">
+        <Style x:Key="FamilyItemButtomStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource UIButton}">
             <Setter Property="Visibility">
                 <Setter.Value>
                     <MultiBinding Converter="{StaticResource FamilyVisibilityMetadataConverter}">
@@ -80,7 +64,7 @@
         <TreeView x:Name="trvDirectories"
                   Grid.Column="0"
                   ItemsSource="{Binding Source={StaticResource Directories}}"
-                  Margin="{StaticResource ThreeThick}"
+                  Margin="{StaticResource TwoThick}"
                   MinWidth="200"
                   HorizontalAlignment="Stretch"
                   HorizontalContentAlignment="Stretch"
@@ -121,9 +105,10 @@
         <ListBox x:Name="lbxRevitFiles"
                  Grid.Column="1"
                  ItemsSource="{Binding Source={StaticResource Files}}"
-                 Margin="{StaticResource ThreeThick}"
+                 Margin="{StaticResource TwoThick}"
                  SelectionMode="Multiple"
-                 HorizontalContentAlignment="Stretch">
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.VerticalScrollBarVisibility="Visible">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:FamilyViewModel}">
                     <CheckBox x:Name="CbxFileChecked"

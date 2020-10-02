@@ -102,7 +102,7 @@
                     TargetUpdated="OnTaskStatusUpdated"
                     Command = "{Binding ErrorCommand}"
                     Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"
-                    Style="{StaticResource DialogButton}"/>
+                    Style="{StaticResource UIButton}"/>
         </Grid>
         <Label Content="{Binding TaskStatus, Converter={StaticResource StatusText}, 
                                  UpdateSourceTrigger=PropertyChanged}"

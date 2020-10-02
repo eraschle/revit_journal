@@ -16,27 +16,42 @@
                 <PropertyGroupDescription PropertyName="Group" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
+        <Style x:Key="LabelDir" TargetType="{x:Type Label}" BasedOn="{StaticResource UILabel}">
+            <Setter Property="Margin" Value="0, 2"/>
+        </Style>
+
+        <Style x:Key="BoxDir" TargetType="{x:Type TextBox}" BasedOn="{StaticResource UITextBox}">
+            <Setter Property="Background" Value="WhiteSmoke"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="2,4"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="IsTabStop" Value="False"/>
+        </Style>
+        
+        <Style x:Key="SetupList" TargetType="{x:Type ListBox}" BasedOn="{StaticResource UIListBox}">
+            <Setter Property="Margin" Value="4, 0, 2, 2"/>
+        </Style>
     </Page.Resources>
     <Page.DataContext>
         <local:JournalManagerPageModel/>
     </Page.DataContext>
-    <DockPanel LastChildFill="True">
+    <DockPanel LastChildFill="True" Margin="5">
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Grid x:Name="Directories"
-                  Margin="{StaticResource ThreeThick}"
                   Grid.Column="0" Grid.Row="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -44,40 +59,41 @@
                     <ColumnDefinition MinWidth="120" Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="Journal Directory" 
-                       Grid.Column="0" Grid.Row="0"/>
-                <TextBlock Text="{Binding JournalDirectory}"
-                           Margin="{StaticResource ThreeThick}"
-                           Grid.Column="1" Grid.Row="0"
-                           VerticalAlignment="Center"/>
+                       Grid.Column="0" Grid.Row="0"
+                       Style="{StaticResource LabelDir}"/>
+                <TextBox Text="{Binding JournalDirectory}"
+                         Style="{StaticResource BoxDir}"
+                         Grid.Column="1" Grid.Row="0"/>
                 <Button Content="Choose" 
                         Command="{Binding ChooseJournalDirectoryCommand}"
                         CommandParameter="{Binding JournalDirectory}"
-                        Style="{StaticResource DialogButton}"
+                        Style="{StaticResource UIButton}"
                         Grid.Column="2" Grid.Row="0"/>
                 <Label Content="Family Directory" 
-                       Grid.Column="0" Grid.Row="1"/>
-                <TextBlock Text="{Binding FamilyDirectory}"
-                           Margin="{StaticResource ThreeThick}"
-                           Grid.Column="1" Grid.Row="1"
-                           VerticalAlignment="Center"/>
+                       Grid.Column="0" Grid.Row="1"
+                       Style="{StaticResource LabelDir}"/>
+                <TextBox Text="{Binding FamilyDirectory}"
+                         Style="{StaticResource BoxDir}"
+                         Grid.Column="1" Grid.Row="1"/>
                 <Button Content="Choose" 
                         Command="{Binding ChooseFamilyDirectoryCommand}"
                         CommandParameter="{Binding FamilyDirectory}"
-                        Style="{StaticResource DialogButton}"
+                        Style="{StaticResource UIButton}"
                         Grid.Column="2" Grid.Row="1"/>
                 <Label Content="Actions Directory" 
-                       Grid.Column="0" Grid.Row="2"/>
-                <TextBlock Text="{Binding ActionDirectory}"
-                           Margin="{StaticResource ThreeThick}"
-                           Grid.Column="1" Grid.Row="2"
-                           VerticalAlignment="Center"/>
+                       Grid.Column="0" Grid.Row="2"
+                       Style="{StaticResource LabelDir}"/>
+                <TextBox Text="{Binding ActionDirectory}"
+                         Style="{StaticResource BoxDir}"
+                         Grid.Column="1" Grid.Row="2"/>
                 <Button Content="Choose" 
                         Command="{Binding ChooseActionDirectoryCommand}"
                         CommandParameter="{Binding ActionDirectory}"
-                        Style="{StaticResource DialogButton}"
+                        Style="{StaticResource UIButton}"
                         Grid.Column="2" Grid.Row="2"/>
                 <Grid Grid.Column="0" Grid.ColumnSpan="2"
-                      Grid.Row="3" Grid.RowSpan="4">
+                      Grid.Row="3" Grid.RowSpan="4"
+                      Margin="{StaticResource NullThick}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
@@ -89,36 +105,37 @@
                         </Grid.RowDefinitions>
                         <Grid x:Name="Progess" 
                               Grid.Column="0" Grid.Row="0"
-                              Margin="{StaticResource ThreeThick}" 
                               Visibility="Collapsed">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition MinWidth="50" Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Label Content="{Binding LoadingProcessTitel}" 
+                                   Style="{StaticResource UILabel}"
                                    Grid.Column="0"/>
                             <ProgressBar Value="{Binding LoadingProcessPercent}"
+                                         Margin="{StaticResource NullThick}"
                                          Minimum="0" Maximum="100" 
                                          Grid.Column="1"/>
                         </Grid>
                         <Grid x:Name="Setup" 
                               Grid.Column="0" Grid.Row="0"
-                              Margin="{StaticResource ThreeThick}">
+                              Margin="{StaticResource NullThick}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition MinWidth="{StaticResource MinWidthButton}" Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Content="Filter" Grid.Column="0" 
-                                   Margin="0" Padding="0"
-                                   VerticalAlignment="Center"/>
+                                   Margin="0" 
+                                   Style="{StaticResource UILabel}"/>
                             <Button Content="Setup"
                                     Command="{Binding SetupFilterCommand}"
                                     Visibility="{Binding FileFilterVisibility }"
-                                    Margin="{StaticResource ThreeThick}"
+                                    Style="{StaticResource UIButton}"
                                     Grid.Column="1"/>
                         </Grid>
                         <ListBox ItemsSource="{Binding Source={StaticResource FilterListBox}}" 
-                                 Margin="{StaticResource ThreeThick}"
+                                 Style="{StaticResource SetupList}"
                                  Grid.Column="0" Grid.Row="1">
                             <ListBox.GroupStyle>
                                 <GroupStyle>
@@ -161,75 +178,71 @@
                                 </Style>
                             </ListBox.ItemContainerStyle>
                         </ListBox>
-                        <Grid Grid.Column="1" Grid.Row="0"
-                              Margin="{StaticResource ThreeThick}">
+                        <Grid Grid.Column="1" Grid.Row="0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition MinWidth="{StaticResource MinWidthButton}" 
                                                   Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Content="Journal Tasks" Grid.Column="0"
-                                   Margin="0" Padding="0"
-                                   VerticalAlignment="Center"/>
+                                   Style="{StaticResource LabelDir}"/>
                             <Button Content="Setup" 
                                     Command="{Binding TaskActionsCommand}"
                                     Visibility="{Binding TaskActionsVisibility}"
-                                    Margin="{StaticResource ThreeThick}"
+                                    Style="{StaticResource UIButton}"
                                     Grid.Column="1"/>
                         </Grid>
                         <ListBox ItemsSource="{Binding Actions}" 
                                  DisplayMemberPath="Name"
-                                 Margin="{StaticResource ThreeThick}"
+                                 Style="{StaticResource SetupList}"
                                  Grid.Column="1" Grid.Row="1"/>
                     </Grid>
                 </Grid>
                 <Button Content="{Binding DuplicateName}"
                         Grid.Column="2" Grid.Row="4" 
-                        Style="{StaticResource DialogButton}"
+                        Style="{StaticResource UIButton}"
                         Command="{Binding DuplicateCommand}"
                         CommandParameter="{Binding FamiliesViewModel}"/>
                 <Button Content="{Binding EditName}"
                         Grid.Column="2" Grid.Row="5" 
-                        Style="{StaticResource DialogButton}"
+                        Style="{StaticResource UIButton}"
                         Command="{Binding EditCommand}"
                         CommandParameter="{Binding FamiliesViewModel}"/>
             </Grid>
             <options:TaskOptionView Grid.Column="1" Grid.Row="0"
-                                           Margin="{StaticResource ThreeThick}"
-                                           DataContext="{Binding TaskOptionViewModel}"/>
+                                    DataContext="{Binding TaskOptionViewModel}"/>
         </Grid>
         <WrapPanel DockPanel.Dock="Bottom" 
-                   Margin="{StaticResource ThreeThick}"
                    HorizontalAlignment="Right">
             <WrapPanel Visibility="{Binding TaskVisibility}">
                 <Button Content="Cancel" 
                         Visibility="{Binding CancelVisibility}"
                         IsEnabled="{Binding CancelEnable}"
                         Command="{Binding CancelCommand}"
-                        Style="{StaticResource DialogButton}"/>
+                        Style="{StaticResource UIButton}"/>
                 <Button Content="Back"  
                         Visibility="{Binding BackVisibility}"
                         Command="{Binding BackCommand}"
-                        Style="{StaticResource DialogButton}"/>
+                        Style="{StaticResource UIButton}"/>
                 <Button Content="Run" 
                         IsEnabled="{Binding ExecuteEnable}"
                         Command="{Binding ExecuteCommand}"
-                        Style="{StaticResource DialogButton}"/>
+                        Style="{StaticResource UIButton}"/>
             </WrapPanel>
             <WrapPanel Visibility="{Binding FamiliesVisibility}">
                 <Button Content="{Binding CreateName}"
                         Command="{Binding CreateCommand}" 
                         CommandParameter="{Binding FamiliesViewModel}"
-                        Style="{StaticResource DialogButton}"/>
+                        Style="{StaticResource UIButton}"/>
             </WrapPanel>
         </WrapPanel>
         <Grid>
             <Grid Visibility="{Binding FamiliesVisibility}"
-                  Margin="{StaticResource ThreeThick}">
+                  Margin="{StaticResource TwoThick}">
                 <task:FamilyOverviewView DataContext="{Binding FamiliesViewModel}"/>
             </Grid>
             <Grid Visibility="{Binding TaskVisibility}"
-                  Margin="{StaticResource ThreeThick}">
+                  Margin="{StaticResource TwoThick}">
                 <task:JournalTaskOverviewView DataContext="{Binding TasksViewModel }"/>
             </Grid>
         </Grid>
