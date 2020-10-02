@@ -28,7 +28,7 @@ namespace RevitAction.Report.Network
             }
             catch (Exception exception)
             {
-                DebugUtils.DebugException<SendPacket>(exception);
+                DebugUtils.Exception<SendPacket>(exception);
             }
         }
     }

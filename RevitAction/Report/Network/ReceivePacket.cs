@@ -30,7 +30,7 @@ namespace RevitAction.Report.Network
             }
             catch (Exception exception)
             {
-                DebugUtils.DebugException<ReceivePacket>(exception);
+                DebugUtils.Exception<ReceivePacket>(exception);
             }
         }
 
@@ -47,7 +47,7 @@ namespace RevitAction.Report.Network
             }
             catch (Exception exception)
             {
-                DebugUtils.DebugException<ReceivePacket>(exception);
+                DebugUtils.Exception<ReceivePacket>(exception);
                 throw;
             }
         }
@@ -65,7 +65,7 @@ namespace RevitAction.Report.Network
             }
             catch (Exception exception)
             {
-                DebugUtils.DebugException<ReceivePacket>(exception);
+                DebugUtils.Exception<ReceivePacket>(exception);
                 throw;
             }
         }
@@ -94,7 +94,7 @@ namespace RevitAction.Report.Network
             }
             catch (Exception exception)
             {
-                DebugUtils.DebugException<ReceivePacket>(exception);
+                DebugUtils.Exception<ReceivePacket>(exception);
             }
             finally
             {
@@ -118,7 +118,7 @@ namespace RevitAction.Report.Network
             }
             catch (Exception exception)
             {
-                DebugUtils.DebugException<ReceivePacket>(exception);
+                DebugUtils.Exception<ReceivePacket>(exception);
             }
         }
     }

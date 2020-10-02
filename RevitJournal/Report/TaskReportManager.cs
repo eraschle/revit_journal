@@ -43,11 +43,12 @@ namespace RevitJournal.Report
 
         public bool HasErrorReport()
         {
-            return Options.LogError
+            return Options.LogResults 
+                && Options.LogError
                 && ErrorAction is object;
         }
 
-        public void CreateErrorReport(RecordJournalFile copyRecord, params string[] suffixes)
+        public void CreateErrorReport(params string[] suffixes)
         {
             if (HasErrorReport() == false) { return; }
 
@@ -57,25 +58,25 @@ namespace RevitJournal.Report
                 ErrorMessage = ErrorMessage
             };
             errorReport.WarningReport.AddRange(GetWarnings());
-            CreateReport(errorReport, copyRecord, suffixes);
+            CreateReport(errorReport, suffixes);
         }
 
         public bool HasSuccessReport()
         {
-            return (Options.LogSuccess || Options.LogResults);
+            return Options.LogResults && Options.LogSuccess;
         }
 
-        public void CreateSuccessReport(RecordJournalFile copyRecord, params string[] suffixes)
+        public void CreateSuccessReport(params string[] suffixes)
         {
             if (HasSuccessReport() == false) { return; }
 
             var successReport = new ReportSuccess(UnitOfWork);
             successReport.SuccessReport.AddRange(GetSuccess());
             successReport.WarningReport.AddRange(GetWarnings());
-            CreateReport(successReport, copyRecord, suffixes);
+            CreateReport(successReport, suffixes);
         }
 
-        private void CreateReport<TReport>(TReport report, RecordJournalFile copyRecord, params string[] suffixes) where TReport : ATaskReport
+        private void CreateReport<TReport>(TReport report, params string[] suffixes) where TReport : ATaskReport
         {
             report.CopiedRecordJournal = UnitOfWork.GetRenamedJournalFile();
             var jsonFile = UnitOfWork.Task.SourceFile.ChangeExtension<JsonFile>();

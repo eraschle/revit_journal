@@ -36,7 +36,7 @@ namespace RevitAction.Report
             }
             catch (Exception exception)
             {
-                DebugUtils.DebugException<ReportPublisher>(exception);
+                DebugUtils.Exception<ReportPublisher>(exception);
                 return Guid.Empty;
             }
         }
@@ -50,7 +50,7 @@ namespace RevitAction.Report
             }
             catch (Exception exception)
             {
-                DebugUtils.DebugException<ReportPublisher>(exception);
+                DebugUtils.Exception<ReportPublisher>(exception);
                 return null;
             }
         }
@@ -64,7 +64,7 @@ namespace RevitAction.Report
             }
             catch (Exception exception)
             {
-                DebugUtils.DebugException<ReportPublisher>(exception);
+                DebugUtils.Exception<ReportPublisher>(exception);
             }
         }
 
@@ -77,7 +77,7 @@ namespace RevitAction.Report
             }
             catch (Exception exception)
             {
-                DebugUtils.DebugException<ReportPublisher>(exception);
+                DebugUtils.Exception<ReportPublisher>(exception);
                 throw;
             }
         }

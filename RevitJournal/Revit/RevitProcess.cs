@@ -6,6 +6,7 @@ using System.Management;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Utilities.System;
 
 namespace RevitJournal.Revit
 {
@@ -35,10 +36,12 @@ namespace RevitJournal.Revit
             {
                 if (Process.Start() == false)
                 {
-                    Debug.WriteLine("Revit Process not started:" + Environment.NewLine +
-                        "FileName  : " + Process.StartInfo.FileName + Environment.NewLine +
-                        "WorkingDir: " + Process.StartInfo.WorkingDirectory + Environment.NewLine +
-                        "Arguments : " + Process.StartInfo.Arguments);
+                    var message = new StringBuilder();
+                    message.AppendLine("Revit Process not started:");
+                    message.AppendLine($"FileName  : {Process.StartInfo.FileName}");
+                    message.AppendLine($"WorkingDir: {Process.StartInfo.WorkingDirectory}");
+                    message.AppendLine($"Arguments : {Process.StartInfo.Arguments}");
+                    DebugUtils.Line<RevitProcess>(message.ToString());
                     return false;
                 }
                 ProcessId = Process.Id;
@@ -52,15 +55,15 @@ namespace RevitJournal.Revit
 
             KillChildren();
             try { Process.Kill(); }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Debug.WriteLine($"Process.Kill Exception: {e.Message}");
+                DebugUtils.Exception<RevitProcess>(ex);
             }
 
             try { Process.Dispose(); }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Debug.WriteLine($"Process.Close Exception: {e.Message}");
+                DebugUtils.Exception<RevitProcess>(ex);
             }
             Process = null;
         }
@@ -74,15 +77,17 @@ namespace RevitJournal.Revit
                     var subPid = Convert.ToInt32(managmentObject["ProcessID"], CultureInfo.CurrentCulture);
                     try
                     {
+                        DebugUtils.Line<RevitProcess>($"Child process: {subPid}");
                         var proc = Process.GetProcessById(subPid);
                         if (proc.HasExited == false)
                         {
+                            DebugUtils.Line<RevitProcess>($"Kill Child process: {subPid}");
                             proc.Kill();
                         }
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        Debug.WriteLine($"SubProcess.Kill Exception: {e.Message}");
+                        DebugUtils.Exception<RevitProcess>(ex, $"SubProcess.Kill {subPid}");
                     }
                 }
             }

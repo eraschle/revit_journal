@@ -126,7 +126,6 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Content="Filter" Grid.Column="0" 
-                                   Margin="0" 
                                    Style="{StaticResource UILabel}"/>
                             <Button Content="Setup"
                                     Command="{Binding SetupFilterCommand}"
@@ -236,12 +235,10 @@
             </WrapPanel>
         </WrapPanel>
         <Grid>
-            <Grid Visibility="{Binding FamiliesVisibility}"
-                  Margin="{StaticResource TwoThick}">
+            <Grid Visibility="{Binding FamiliesVisibility}">
                 <task:FamilyOverviewView DataContext="{Binding FamiliesViewModel}"/>
             </Grid>
-            <Grid Visibility="{Binding TaskVisibility}"
-                  Margin="{StaticResource TwoThick}">
+            <Grid Visibility="{Binding TaskVisibility}">
                 <task:JournalTaskOverviewView DataContext="{Binding TasksViewModel }"/>
             </Grid>
         </Grid>

@@ -202,15 +202,15 @@ namespace RevitJournal.Tasks
             DisconnectAction?.Invoke(TaskId);
             Progress = null;
 
-            if (DoesRecordCopyExists(out var copy)) { return; }
+            if (DoesRecordCopyExists()) { return; }
 
             if (ReportManager.HasErrorReport())
             {
-                ReportManager.CreateErrorReport(copy, "ERROR");
+                ReportManager.CreateErrorReport("ERROR");
             }
             if (ReportManager.HasSuccessReport())
             {
-                ReportManager.CreateSuccessReport(copy, "Success");
+                ReportManager.CreateSuccessReport("Success");
             }
             CopyRecordJournal();
 
@@ -232,9 +232,9 @@ namespace RevitJournal.Tasks
                                  .ChangeDirectory<RecordJournalFile>(directory);
         }
 
-        public bool DoesRecordCopyExists(out RecordJournalFile copied)
+        public bool DoesRecordCopyExists()
         {
-            copied = GetRenamedJournalFile();
+            var copied = GetRenamedJournalFile();
             return copied is object && copied.Exists();
         }
 
@@ -242,16 +242,17 @@ namespace RevitJournal.Tasks
         {
             await SYS.Task.Run(() =>
             {
-                while (HasRecordJournal() && DoesRecordCopyExists(out var copy) == false)
+                while (HasRecordJournal() && DoesRecordCopyExists() == false)
                 {
+                    var copy = GetRenamedJournalFile();
                     try
                     {
                         RecordeJournal.CopyTo(copy, overrideFile: true);
-                        Debug.WriteLine($"Copy Name: {copy.Name} [{copy.FullPath}]");
+                        DebugUtils.Line<TaskUnitOfWork>($"Copy Name: {copy.Name} [{copy.FullPath}]");
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine($"Wait: {copy.Name} Exception {ex.Message}");
+                        DebugUtils.Exception<TaskUnitOfWork>(ex, $"Wait: {copy.Name}");
                         SYS.Task.Delay(TimeSpan.FromMilliseconds(500)).Wait();
                     }
                 }
