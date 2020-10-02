@@ -9,6 +9,7 @@
         <Thickness x:Key="OneThick" Left="1" Top="1" Right="1" Bottom="1" />
         <Thickness x:Key="TwoThick" Left="2" Top="2" Right="2" Bottom="2" />
         <SolidColorBrush x:Key="DefaultBackground" Color="WhiteSmoke"/>
+        <sys:Double x:Key="MinWidthButton">80</sys:Double>
 
         <Style x:Key="UIElement" TargetType="{x:Type FrameworkElement}">
             <Setter Property="Margin" Value="{StaticResource TwoThick}"/>
@@ -48,7 +49,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="MinWidth" Value="50"/>
+            <Setter Property="MinWidth" Value="{StaticResource MinWidthButton}"/>
         </Style>
 
         <Style x:Key="UIRoundedButton" TargetType="{x:Type Button}" BasedOn="{StaticResource UIButtonBase}">
@@ -74,7 +75,6 @@
         </Style>
 
         <Style x:Key="UIButtonDialog" TargetType="{x:Type Button}" BasedOn="{StaticResource UIButton}">
-            <Setter Property="MinWidth" Value="80"/>
             <Setter Property="Margin" Value="10, 3, 3, 3"/>
         </Style>
 
