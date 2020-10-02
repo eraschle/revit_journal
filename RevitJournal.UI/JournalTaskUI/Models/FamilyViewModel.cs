@@ -13,10 +13,14 @@ namespace RevitJournalUI.JournalTaskUI.Models
         public FamilyViewModel(LibraryFile fileHandler, DirectoryViewModel parent) : base(fileHandler, parent)
         {
             ViewMetadataCommand = new RelayCommand<object>(ViewMetadataCommandAction);
+        }
+
+        public void AddMetadataEvent()
+        {
             Handler.File.MetadataUpdated += File_MetadataUpdated;
         }
 
-        ~FamilyViewModel()
+        public void RemoveMetadataEvent()
         {
             Handler.File.MetadataUpdated -= File_MetadataUpdated;
         }

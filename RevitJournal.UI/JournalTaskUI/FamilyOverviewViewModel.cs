@@ -53,10 +53,16 @@ namespace RevitJournalUI.JournalTaskUI
         {
             if (model is null) { return; }
 
+            foreach (var viewModel in DirectoryFiles)
+            {
+                viewModel.RemoveMetadataEvent();
+            }
+
             DirectoryFiles.Clear();
             foreach (var file in model.Handler.Files)
             {
                 var viewModel = new FamilyViewModel(file, model);
+                viewModel.AddMetadataEvent();
                 viewModel.PropertyChanged += ViewModel_PropertyChanged;
                 DirectoryFiles.Add(viewModel);
             }

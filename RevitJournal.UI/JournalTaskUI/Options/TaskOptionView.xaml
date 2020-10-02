@@ -86,7 +86,8 @@
         <Label Content="Create Backup"
                Grid.Column="0" Grid.Row="5" 
                Style="{StaticResource UILabel}"/>
-        <Button Grid.Column="1" Grid.Row="5"
+        <Button Content="Backup Settings" 
+                Grid.Column="1" Grid.Row="5"
                 Command="{Binding CreateBackupCommand}"
                 Style="{StaticResource UIButton}"/>
        
