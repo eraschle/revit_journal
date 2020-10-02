@@ -1,4 +1,5 @@
-﻿using RevitAction;
+﻿using DataSource.Model.FileSystem;
+using RevitAction;
 using RevitAction.Action;
 using System;
 
@@ -16,6 +17,9 @@ namespace RevitCommand.Families.Metadata
             Library = ActionParameter.Text("Library Path", "Library");
             Parameters.Add(Library);
         }
+
+
+        public override void PreTask(RevitFamily family) { }
 
         public override void SetLibraryRoot(string libraryRoot)
         {

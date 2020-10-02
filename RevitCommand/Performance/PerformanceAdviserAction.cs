@@ -1,4 +1,5 @@
-﻿using RevitAction;
+﻿using DataSource.Model.FileSystem;
+using RevitAction;
 using RevitAction.Action;
 using RevitCommand.AmWaMeta;
 using System;
@@ -27,5 +28,9 @@ namespace RevitCommand.JournalCommand
         }
 
         public ITaskInfo TaskInfo { get; }
+
+        public override void PreTask(RevitFamily family) { }
+
+        public override void SetLibraryRoot(string libraryRoot) { }
     }
 }

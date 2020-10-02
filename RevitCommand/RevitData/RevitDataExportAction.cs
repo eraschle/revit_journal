@@ -1,4 +1,5 @@
-﻿using RevitAction;
+﻿using DataSource.Model.FileSystem;
+using RevitAction;
 using RevitAction.Action;
 using System;
 using System.Collections.Generic;
@@ -17,5 +18,9 @@ namespace RevitCommand.RevitData
             ExportDirectory = ActionParameter.Create("Export Directory", "ExportDir", ParameterKind.SelectFolder);
             Parameters.Add(ExportDirectory);
         }
+
+        public override void PreTask(RevitFamily family) { }
+
+        public override void SetLibraryRoot(string libraryRoot) { }
     }
 }

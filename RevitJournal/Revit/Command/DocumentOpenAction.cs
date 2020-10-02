@@ -61,6 +61,8 @@ namespace RevitJournal.Revit.Command
 
             RevitFile = family.RevitFile;
         }
+
+        public override void SetLibraryRoot(string libraryRoot) { }
     }
 }
 

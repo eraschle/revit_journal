@@ -1,4 +1,5 @@
 ﻿using DataSource;
+using DataSource.Model.FileSystem;
 using RevitAction;
 using RevitAction.Action;
 using RevitAction.Action.Parameter;
@@ -56,6 +57,9 @@ namespace RevitCommand.Families.SharedParameters
                                      .Select(grp => grp.Name)
                                      .ToList();
         }
+
+        public override void PreTask(RevitFamily family) { }
+
 
         public override void SetLibraryRoot(string libraryRoot)
         {

@@ -1,4 +1,5 @@
-﻿using RevitAction;
+﻿using DataSource.Model.FileSystem;
+using RevitAction;
 using RevitAction.Action;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,9 @@ namespace RevitCommand.Families.SharedParameters
             Parameters.Add(RootDirectory);
             MakeChanges = true;
         }
+
+
+        public override void PreTask(RevitFamily family) { }
 
         public override void SetLibraryRoot(string libraryRoot)
         {

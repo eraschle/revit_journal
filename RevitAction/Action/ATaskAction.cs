@@ -2,10 +2,11 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using Utilities.System;
 
 namespace RevitAction.Action
 {
-    public abstract class ATaskAction : ITaskAction
+    public abstract class ATaskAction : ITaskAction, IEquatable<ATaskAction>
     {
         protected ATaskAction(string name, Guid actionId)
         {
@@ -31,25 +32,44 @@ namespace RevitAction.Action
 
         public ICollection<DialogHandler> DialogHandlers { get; } = new List<DialogHandler>();
 
-        public virtual void PreTask(RevitFamily family) { }
+        public abstract void PreTask(RevitFamily family);
 
-        public virtual void SetLibraryRoot(string libraryRoot) { }
+        public abstract void SetLibraryRoot(string libraryRoot);
+
+        public int CompareTo(ITaskAction other)
+        {
+            var compare = 1;
+            if(other is object)
+            {
+                compare = StringUtils.Compare(Name, other.Name);
+            }
+            return compare;
+        }
 
         public override bool Equals(object obj)
         {
-            return obj is ITaskAction action &&
-                   Name == action.Name;
+            return Equals(obj as ATaskAction);
+        }
+
+        public bool Equals(ATaskAction other)
+        {
+            return other != null &&
+                   ActionId.Equals(other.ActionId);
         }
 
         public override int GetHashCode()
         {
-            return 539060726 + EqualityComparer<string>.Default.GetHashCode(Name);
+            return -848256190 + ActionId.GetHashCode();
         }
 
-        public int CompareTo(ITaskAction other)
+        public static bool operator ==(ATaskAction left, ATaskAction right)
         {
-            return other is null ? 1 : Name.CompareTo(other.Name);
+            return EqualityComparer<ATaskAction>.Default.Equals(left, right);
         }
 
+        public static bool operator !=(ATaskAction left, ATaskAction right)
+        {
+            return !(left == right);
+        }
     }
 }
