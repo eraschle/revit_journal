@@ -489,7 +489,7 @@ namespace RevitJournalUI.JournalManagerUI
             CancelVisibility = Visibility.Visible;
             BackVisibility = Visibility.Collapsed;
 
-            TaskOptions.JournalTimeDirectory = DateTime.Now;
+            TaskOptions.TimeDirectory = DateTime.Now;
             TaskManager.StartServer(TaskOptions);
             TasksViewModel.AddEvents();
             using (var cancel = new CancellationTokenSource())

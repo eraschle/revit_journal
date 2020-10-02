@@ -18,7 +18,9 @@ namespace RevitJournal.Tasks.Options
             DateUtils.Minute
         };
 
-        public IPathBuilder PathBuilder { get; set; }
+        private PathCreator pathCreator;
+
+        private readonly IPathBuilder pathBuilder;
 
         public ReportOptions Report { get; set; }
 
@@ -40,13 +42,11 @@ namespace RevitJournal.Tasks.Options
 
         public string JournalDirectory { get; set; }
 
-        public DateTime JournalTimeDirectory { get; set; }
+        public DateTime TimeDirectory { get; set; }
 
         public string ActionDirectory { get; set; }
 
         public bool DeleteRevitBackup { get; set; } = true;
-
-        private PathCreator pathCreator;
 
         public bool CreateBackup
         {
@@ -55,7 +55,7 @@ namespace RevitJournal.Tasks.Options
 
         public TaskOptions(IPathBuilder pathBuilder)
         {
-            PathBuilder = pathBuilder ?? throw new ArgumentNullException(nameof(pathBuilder));
+            this.pathBuilder = pathBuilder ?? throw new ArgumentNullException(nameof(pathBuilder));
             Report = new ReportOptions();
             Parallel = new ParallelOptions();
             Arguments = new RevitArguments();
@@ -71,10 +71,9 @@ namespace RevitJournal.Tasks.Options
 
         public DirectoryNode GetJournalWorking()
         {
-            var directory = PathBuilder.CreateRoot(JournalDirectory);
-            var journalTime = JournalTimeDirectory;
-            var timeFolderName = DateUtils.AsString(journalTime, Constant.Minus, formats);
-            var timeFolder = PathBuilder.AddFolder(directory, timeFolderName);
+            var directory = pathBuilder.CreateRoot(JournalDirectory);
+            var timeFolderName = DateUtils.GetPathDate(TimeDirectory, format: formats);
+            var timeFolder = pathBuilder.AddFolder(directory, timeFolderName);
             if (timeFolder.Exists() == false)
             {
                 timeFolder.Create();
@@ -87,7 +86,7 @@ namespace RevitJournal.Tasks.Options
             var creator = pathCreator;
             if (creator is null)
             {
-                creator = new PathCreator(PathBuilder);
+                creator = new PathCreator(pathBuilder);
             }
             creator.SetRoot(RootDirectory);
             return creator;

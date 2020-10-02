@@ -19,7 +19,7 @@ namespace Utilities.System
         public const string Seconds = "ss";
         public const string Milliseconds = "ffff";
 
-        public static string GetPathDate(string separator = "", params string[] format)
+        public static string GetPathDate(DateTime dateTime, string separator = "", params string[] format)
         {
             if (string.IsNullOrWhiteSpace(separator))
             {
@@ -29,7 +29,12 @@ namespace Utilities.System
             {
                 format = new string[] { YearLong, MonthShort, Day };
             }
-            return AsString(separator, format);
+            return AsString(dateTime, separator, format);
+        }
+
+        public static string GetPathDate(string separator = "", params string[] format)
+        {
+            return GetPathDate(DateTime.Now, separator, format);
         }
 
         public static string AsString(string separator = "", params string[] format)
