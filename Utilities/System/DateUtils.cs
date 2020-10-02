@@ -19,6 +19,18 @@ namespace Utilities.System
         public const string Seconds = "ss";
         public const string Milliseconds = "ffff";
 
+        public static string GetPathDate(string separator = "", params string[] format)
+        {
+            if (string.IsNullOrWhiteSpace(separator))
+            {
+                separator = Constant.Minus;
+            }
+            if (format is null || format.Length == 0)
+            {
+                format = new string[] { YearLong, MonthShort, Day };
+            }
+            return AsString(separator, format);
+        }
 
         public static string AsString(string separator = "", params string[] format)
         {

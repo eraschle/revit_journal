@@ -25,10 +25,10 @@ namespace RevitJournal.Revit.Command
         {
             AddParameter(new ActionParameterInfo("Save As Path Model", CreateSymbolicPath));
 
-            fileSuffix = ActionParameter.Text("File suffix", null, defaultValue: GetDate());
+            fileSuffix = ActionParameter.Text("File suffix", null, defaultValue: DateUtils.GetPathDate());
             AddParameter(fileSuffix);
 
-            saveFolder = ActionParameter.Text("Save As Folder", null, defaultValue: GetDate());
+            saveFolder = ActionParameter.Text("Save As Folder", null, defaultValue: DateUtils.GetPathDate());
             AddParameter(saveFolder);
 
             addAtEnd = ActionParameter.Bool("Add Folder At End", null, true);
@@ -43,13 +43,6 @@ namespace RevitJournal.Revit.Command
             DialogHandlers.Add(new DialogHandler(ActionId, "TaskDialog_Replace_Existing_File", DialogHandler.YES));
             DialogHandlers.Add(new DialogHandler(ActionId, "TaskDialog_Newer_File_Exists", DialogHandler.YES));
         }
-
-        private string GetDate()
-        {
-            var formats = new string[] { DateUtils.YearLong, DateUtils.MonthShort, DateUtils.Day };
-            return DateUtils.AsString(Constant.Minus, formats);
-        }
-
 
         public IEnumerable<string> Commands
         {
