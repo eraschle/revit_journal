@@ -14,8 +14,6 @@ namespace RevitJournalUI.JournalTaskUI
     {
         public Progress<TaskUnitOfWork> Progress { get; set; } = new Progress<TaskUnitOfWork>();
 
-        private const string PrefixExecutedTask = "Executed Tasks";
-
         private readonly DispatcherTimer timer;
 
         public TaskOverviewViewModel()
@@ -25,7 +23,7 @@ namespace RevitJournalUI.JournalTaskUI
 
         public ObservableCollection<TaskViewModel> TaskModels { get; } = new ObservableCollection<TaskViewModel>();
 
-        private int minTasks = 1;
+        private int minTasks = 0;
         public int MinTasks
         {
             get { return minTasks; }
@@ -51,19 +49,16 @@ namespace RevitJournalUI.JournalTaskUI
             }
         }
 
-        public int ExecutedTasks { get; private set; }
-
-        private string executedTasksText = string.Empty;
-        public string ExecutedTasksText
+        private int executedTasks = int.MinValue;
+        public int ExecutedTasks
         {
-            get { return executedTasksText; }
+            get { return executedTasks; }
             set
             {
-                if (StringUtils.Equals(executedTasksText, value)) { return; }
+                if (executedTasks == value) { return; }
 
-                executedTasksText = value;
+                executedTasks = value;
                 NotifyPropertyChanged();
-                NotifyPropertyChanged(nameof(ExecutedTasks));
             }
         }
 
@@ -95,22 +90,17 @@ namespace RevitJournalUI.JournalTaskUI
 
             TaskModels.Clear();
             MaxTasks = 0;
-            var formats = new string[] { DateUtils.Minute, DateUtils.Seconds };
-            var totalTime = DateUtils.AsString(options.Arguments.Timeout, Constant.Point, formats);
             foreach (var unitOfWork in manager.UnitOfWorks)
             {
-                MaxTasks += 1;
                 var viewModel = new TaskViewModel
                 {
                     TaskUoW = unitOfWork,
-                    AllExecutedFunc = AllTaskExecuted,
-                    TotalTime = totalTime
+                    AllExecutedFunc = AllTaskExecuted
                 };
                 TaskModels.Add(viewModel);
+                MaxTasks += 1;
             }
-
             ExecutedTasks = 0;
-            SetExecutedTasks();
         }
 
         private bool AllTaskExecuted()
@@ -128,16 +118,7 @@ namespace RevitJournalUI.JournalTaskUI
             task.Cleanup();
             viewModel.RemoveTimer(timer);
             viewModel.RemoveProgessEvent(Progress);
-            SetExecutedTasks();
-        }
-
-        private void SetExecutedTasks()
-        {
-            var executed = TaskModels.Count(model => model.TaskUoW.Status.IsExecuted);
-            if(executed == ExecutedTasks) { return; }
-
-            ExecutedTasks = executed;
-            ExecutedTasksText = string.Join(Constant.Space, PrefixExecutedTask, ExecutedTasks, Constant.SlashChar, MaxTasks) ;
+            ExecutedTasks = TaskModels.Count(model => model.TaskUoW.Status.IsExecuted);
         }
     }
 }

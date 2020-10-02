@@ -17,13 +17,6 @@ namespace RevitJournal.Report
 {
     public class TaskReportManager
     {
-        private readonly TaskUnitOfWork UnitOfWork;
-
-        private ReportOptions Options
-        {
-            get { return UnitOfWork.Options.Report; }
-        }
-
         public IDictionary<ITaskAction, TaskActionReport> ActionReports { get; }
             = new Dictionary<ITaskAction, TaskActionReport>();
 
@@ -36,60 +29,60 @@ namespace RevitJournal.Report
             get { return ErrorAction != null; }
         }
 
-        public TaskReportManager(TaskUnitOfWork unitOfWork)
+        public bool HasErrorReport(TaskOptions options)
         {
-            UnitOfWork = unitOfWork;
+            return options is object && ErrorAction is object
+                && options.Report.LogResults && options.Report.LogError;
         }
 
-        public bool HasErrorReport()
+        public void CreateErrorReport(RevitTask task, TaskOptions options, params string[] suffixes)
         {
-            return Options.LogResults 
-                && Options.LogError
-                && ErrorAction is object;
-        }
+            if (task is null || HasErrorReport(options) == false) { return; }
 
-        public void CreateErrorReport(params string[] suffixes)
-        {
-            if (HasErrorReport() == false) { return; }
-
-            var errorReport = new ReportError(UnitOfWork)
+            var errorReport = new ReportError(task)
             {
                 ErrorReport = ErrorAction,
                 ErrorMessage = ErrorMessage
             };
-            errorReport.WarningReport.AddRange(GetWarnings());
-            CreateReport(errorReport, suffixes);
+            errorReport.WarningReport.AddRange(GetWarnings(task));
+            CreateReport(errorReport, task, suffixes);
         }
 
-        public bool HasSuccessReport()
+        public bool HasSuccessReport(RevitTask task, TaskOptions options)
         {
-            return Options.LogResults && Options.LogSuccess;
+            return options is object && task is object
+                && options.Report.LogResults && options.Report.LogSuccess
+                && HasSuccessReports(task);
         }
 
-        public void CreateSuccessReport(params string[] suffixes)
+        public void CreateSuccessReport(RevitTask task, TaskOptions options, params string[] suffixes)
         {
-            if (HasSuccessReport() == false) { return; }
+            if (HasSuccessReport(task, options) == false) { return; }
 
-            var successReport = new ReportSuccess(UnitOfWork);
-            successReport.SuccessReport.AddRange(GetSuccess());
-            successReport.WarningReport.AddRange(GetWarnings());
-            CreateReport(successReport, suffixes);
+            var successReport = new ReportSuccess(task);
+            successReport.SuccessReport.AddRange(GetSuccess(task));
+            successReport.WarningReport.AddRange(GetWarnings(task));
+            CreateReport(successReport, task, suffixes);
         }
 
-        private void CreateReport<TReport>(TReport report, params string[] suffixes) where TReport : ATaskReport
+        private void CreateReport<TReport>(TReport report, RevitTask task, params string[] suffixes) where TReport : ATaskReport
         {
-            report.CopiedRecordJournal = UnitOfWork.GetRenamedJournalFile();
-            var jsonFile = UnitOfWork.Task.SourceFile.ChangeExtension<JsonFile>();
+            if (task is null) { throw new ArgumentNullException(nameof(task)); }
+
+            report.CopiedRecordJournal = task.GetRenamedJournalFile();
+            var jsonFile = report.SourceFile.ChangeExtension<JsonFile>();
             jsonFile.AddSuffixes(suffixes);
             var dataSource = new JsonDataSource<TReport>();
             dataSource.SetFile(jsonFile);
             dataSource.Write(report);
         }
 
-        private IList<string> GetWarnings()
+        private IList<string> GetWarnings(RevitTask task)
         {
+            if (task is null) { throw new ArgumentNullException(nameof(task)); }
+
             var warnings = new List<string>();
-            foreach (var action in UnitOfWork.Task.Actions)
+            foreach (var action in task.Actions)
             {
                 if (ActionReports.ContainsKey(action) == false) { continue; }
 
@@ -101,10 +94,12 @@ namespace RevitJournal.Report
             return warnings;
         }
 
-        private IList<string> GetSuccess()
+        private IList<string> GetSuccess(RevitTask task)
         {
+            if (task is null) { throw new ArgumentNullException(nameof(task)); }
+
             var success = new List<string>();
-            foreach (var action in UnitOfWork.Task.Actions)
+            foreach (var action in task.Actions)
             {
                 if (ActionReports.ContainsKey(action) == false) { continue; }
 
@@ -112,6 +107,22 @@ namespace RevitJournal.Report
                 {
                     success.AddRange(GetStatus(action));
                 }
+            }
+            return success;
+        }
+
+        private bool HasSuccessReports(RevitTask task)
+        {
+            if (task is null) { throw new ArgumentNullException(nameof(task)); }
+
+            var success = true;
+            var it = task.Actions.GetEnumerator();
+            while (it.MoveNext() && success)
+            {
+                var action = it.Current;
+                if (ActionReports.ContainsKey(action) == false) { continue; }
+
+                success &= ActionReports[action].HasStatusReports();
             }
             return success;
         }
@@ -126,22 +137,22 @@ namespace RevitJournal.Report
             return GetMessages(action, ActionReports[action].StatusReports(), "STATUS");
         }
 
-        public void AddReport(ReportMessage report)
+        public void AddReport(RevitTask task, ReportMessage report)
         {
-            if (report is null) { return; }
+            if (task is null || report is null) { return; }
 
             switch (report.Kind)
             {
                 case ReportKind.Message:
                 case ReportKind.Warning:
-                    if (HasActionReport(report.ActionId, out var actionReport))
+                    if (HasActionReport(task, report.ActionId, out var actionReport))
                     {
                         actionReport.Add(report);
                     }
                     break;
                 case ReportKind.Error:
                     if (HasErrorAction == false
-                        && UnitOfWork.Task.HasActionById(report.ActionId, out var errorAction))
+                        && task.HasActionById(report.ActionId, out var errorAction))
                     {
                         ErrorAction = errorAction;
                         var message = report.Message;
@@ -158,10 +169,10 @@ namespace RevitJournal.Report
             }
         }
 
-        private bool HasActionReport(Guid actionId, out TaskActionReport actionReport)
+        private bool HasActionReport(RevitTask task, Guid actionId, out TaskActionReport actionReport)
         {
             actionReport = null;
-            if (UnitOfWork.Task.HasActionById(actionId, out var action))
+            if (task is object && task.HasActionById(actionId, out var action))
             {
                 if (ActionReports.ContainsKey(action) == false)
                 {

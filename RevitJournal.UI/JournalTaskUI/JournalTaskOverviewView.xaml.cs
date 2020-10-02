@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Data;
+using Utilities.System;
 
 namespace RevitJournalUI.JournalTaskUI
 {
@@ -8,6 +9,8 @@ namespace RevitJournalUI.JournalTaskUI
     /// </summary>
     public partial class JournalTaskOverviewView : UserControl
     {
+        private const string PrefixExecuted = "Executed Tasks";
+
         private TaskOverviewViewModel ViewModel
         {
             get { return DataContext as TaskOverviewViewModel; }
@@ -18,9 +21,10 @@ namespace RevitJournalUI.JournalTaskUI
             InitializeComponent();
         }
 
-        private void ExecutedTasks_TargetUpdated(object sender, DataTransferEventArgs e)
+        private void ExecutedTasks_TargetUpdated(object sender, DataTransferEventArgs args)
         {
-            prgExecutedTasks.Value = ViewModel.ExecutedTasks;
+            var text = string.Join(Constant.Space, PrefixExecuted, ViewModel.ExecutedTasks, Constant.SlashChar, ViewModel.MaxTasks);
+            lblExecutedTasks.Content = text;
         }
     }
 }

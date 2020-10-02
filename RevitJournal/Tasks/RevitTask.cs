@@ -3,15 +3,30 @@ using DataSource.Model.FileSystem;
 using DataSource.Model.Product;
 using RevitAction.Action;
 using RevitJournal.Revit;
+using RevitJournal.Revit.Journal;
 using RevitJournal.Tasks.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Utilities.System;
 
 namespace RevitJournal.Tasks
 {
     public class RevitTask : IEquatable<RevitTask>
     {
+        private static readonly string[] timeFormat = new string[] 
+        { 
+            DateUtils.Hour, 
+            DateUtils.Minute, 
+            DateUtils.Seconds, 
+            DateUtils.Milliseconds 
+        };
+
+        private static readonly RecordJournalNullFile nullRecorde = new RecordJournalNullFile();
+        private static readonly TaskJournalNullFile nullTask = new TaskJournalNullFile();
+
         public RevitFamily Family { get; private set; }
 
         public RevitFamilyFile SourceFile
@@ -32,6 +47,10 @@ namespace RevitJournal.Tasks
         {
             get { return BackupFile != null; }
         }
+
+        public TaskJournalFile TaskJournal { get; set; } = nullTask;
+
+        public RecordJournalFile RecordeJournal { get; set; } = nullRecorde;
 
         public List<ITaskAction> Actions { get; } = new List<ITaskAction>();
 
@@ -58,10 +77,21 @@ namespace RevitJournal.Tasks
             Actions.AddRange(actions);
         }
 
-        internal bool HasActionById(Guid actionId, out ITaskAction action)
+        public bool HasActionById(Guid actionId, out ITaskAction action)
         {
             action = Actions.FirstOrDefault(act => act.ActionId == actionId);
             return action != null;
+        }
+
+        public int GetExecutedActions(ITaskAction action)
+        {
+            var count = 0;
+            var it = Actions.GetEnumerator();
+            while (it.MoveNext() && it.Current.Equals(action))
+            {
+                count += 1;
+            }
+            return count;
         }
 
         public bool HasCommands(out ICollection<ITaskActionCommand> actionCommands)
@@ -78,7 +108,7 @@ namespace RevitJournal.Tasks
 
         public void PreExecution(TaskOptions options)
         {
-            if(options is null) { throw new ArgumentNullException(nameof(options)); }
+            if (options is null) { throw new ArgumentNullException(nameof(options)); }
 
             if (options.CreateBackup)
             {
@@ -106,6 +136,64 @@ namespace RevitJournal.Tasks
             {
                 BackupFile.DeleteBackups();
             }
+        }
+
+        public void CreateTaskJournal(TaskOptions options)
+        {
+            if(options is null) { throw new ArgumentNullException(nameof(options)); }
+
+            var workingDirectory = options.GetJournalWorking();
+            TaskJournal = SourceFile.ChangeDirectory<TaskJournalFile>(workingDirectory);
+            var fileSuffix = DateUtils.GetPathDate(format: timeFormat);
+            TaskJournal.AddSuffixes(fileSuffix);
+        }
+
+        public void SetDefaultTaskJournal()
+        {
+            TaskJournal = nullTask;
+        }
+
+        public bool HasRecordJournal()
+        {
+            return RecordeJournal is object && RecordeJournal.Exists();
+        }
+
+        public bool DoesRecordCopyExists()
+        {
+            var renamed = GetRenamedJournalFile();
+            return renamed is object && renamed.Exists();
+        }
+
+        public async void CopyRecordJournal()
+        {
+            await Task.Run(() =>
+            {
+                while (HasRecordJournal() && DoesRecordCopyExists() == false)
+                {
+                    var renamed = GetRenamedJournalFile();
+                    try
+                    {
+                        RecordeJournal.CopyTo(renamed, overrideFile: true);
+                        DebugUtils.Line<TaskUnitOfWork>($"Copy Name: {renamed.Name} [{renamed.FullPath}]");
+                    }
+                    catch (Exception ex)
+                    {
+                        DebugUtils.Exception<TaskUnitOfWork>(ex, $"Wait: {renamed.Name}");
+                        Thread.SpinWait(1);
+                    }
+                }
+            }).ConfigureAwait(false);
+        }
+
+        public RecordJournalFile GetRenamedJournalFile()
+        {
+            if (HasRecordJournal() == false
+                || SourceFile is null
+                || SourceFile.HasParent(out var directory) == false) { return null; }
+
+            var newFileName = $"{Name}_{RecordeJournal.NameWithoutExtension}";
+            return RecordeJournal.ChangeFileName<RecordJournalFile>(newFileName)
+                                 .ChangeDirectory<RecordJournalFile>(directory);
         }
 
         public override bool Equals(object obj)

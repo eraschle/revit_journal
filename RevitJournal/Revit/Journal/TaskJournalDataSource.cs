@@ -29,15 +29,6 @@ namespace RevitJournal.Revit.Journal
             File.WriteAllText(FileNode.FullPath, content, Encoding.Default);
         }
 
-        public override void SetFile(TaskJournalFile fileNode)
-        {
-            if (fileNode is null) { throw new ArgumentNullException(nameof(fileNode)); }
-
-            var formats = new string[] { DateUtils.Hour, DateUtils.Minute, DateUtils.Seconds, DateUtils.Milliseconds };
-            fileNode.AddSuffixes(DateUtils.AsString(Constant.Minus, formats));
-            base.SetFile(fileNode);
-        }
-
         internal string Build(IEnumerable<ITaskAction> actions)
         {
             var journalLines = new StringBuilder();

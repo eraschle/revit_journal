@@ -5,7 +5,7 @@ namespace RevitJournal.Report
 {
     public class ReportError : ATaskReport
     {
-        public ReportError(TaskUnitOfWork unitOfWork) : base(unitOfWork) { }
+        public ReportError(RevitTask task) : base(task) { }
 
         public ITaskAction ErrorReport { get; set; } = null;
 

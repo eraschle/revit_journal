@@ -331,8 +331,7 @@ namespace RevitJournalUI.JournalManagerUI
 
             foreach (var family in LibraryManager.GetCheckedFiles())
             {
-                if ((TaskOptions.UseMetadata && TaskManager.IsRevitInstalled(family, out _) == false)
-                    || TaskManager.IsExecutable(family, TaskOptions) == false) { continue; }
+                if (TaskManager.IsExecutable(family, TaskOptions) == false) { continue; }
 
                 var task = new RevitTask(family);
                 TaskManager.AddTask(task, TaskOptions);
@@ -501,6 +500,8 @@ namespace RevitJournalUI.JournalManagerUI
                 Cancellation = null;
             }
             await CleanupEvents().ConfigureAwait(false);
+            CancelVisibility = Visibility.Collapsed;
+            BackVisibility = Visibility.Visible;
             ExecuteEnable = true;
         }
 

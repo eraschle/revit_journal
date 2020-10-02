@@ -13,7 +13,7 @@ namespace RevitJournalUI.Tasks
 {
     public class TaskViewModel : INotifyPropertyChanged
     {
-        private static string[] formatString = new string[] { DateUtils.Minute, DateUtils.Seconds };
+        private static readonly string[] timeFormat = new string[] { DateUtils.Minute, DateUtils.Seconds };
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -28,8 +28,6 @@ namespace RevitJournalUI.Tasks
         internal TaskUnitOfWork TaskUoW { get; set; }
 
         internal Func<bool> AllExecutedFunc { get; set; }
-
-        public string TotalTime { get; set; }
 
         #region Task
 
@@ -101,8 +99,8 @@ namespace RevitJournalUI.Tasks
 
             TaskStatus = TaskUoW.Status;
 
-            JournalTask = TaskUoW.TaskJournal.NameWithoutExtension;
-            JournalRecorde = TaskUoW.RecordeJournal.NameWithoutExtension;
+            JournalTask = TaskUoW.GetTaskJournalName();
+            JournalRecorde = TaskUoW.GetRecordJournalName();
 
             CurrentAction = TaskUoW.CurrentAction.Name;
             ExecutedActions = TaskUoW.ExecutedActions;
@@ -113,9 +111,13 @@ namespace RevitJournalUI.Tasks
             if (TaskUoW.Status.IsStarted && TaskUoW.Status.IsExecuted == false)
             {
                 executionTime += timerInterval;
-                var runTime = DateUtils.AsString(executionTime, Constant.Point, formatString);
-                TaskTime = $"{runTime} / {TotalTime}";
+                TaskTime = $"{GetTime(executionTime)} / {GetTime(TaskUoW.Options.Timeout)}";
             }
+        }
+
+        private string GetTime(TimeSpan time)
+        {
+            return DateUtils.AsString(time, Constant.Point, timeFormat);
         }
 
         #endregion

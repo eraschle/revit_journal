@@ -22,14 +22,14 @@ namespace RevitJournal.Report
 
         public List<string> WarningReport { get; } = new List<string>();
 
-        protected ATaskReport(TaskUnitOfWork unitOfWork)
+        protected ATaskReport(RevitTask task)
         {
-            if(unitOfWork is null) { throw new ArgumentNullException(nameof(unitOfWork)); }
-            SourceFile = unitOfWork.Task.SourceFile;
-            ResultFile = unitOfWork.Task.ResultFile;
-            BackupFile = unitOfWork.Task.BackupFile;
-            TaskJournal = unitOfWork.TaskJournal;
-            OriginalRecordJournal = unitOfWork.RecordeJournal;
+            if(task is null) { throw new ArgumentNullException(nameof(task)); }
+            SourceFile = task.SourceFile;
+            ResultFile = task.ResultFile;
+            BackupFile = task.BackupFile;
+            TaskJournal = task.TaskJournal;
+            OriginalRecordJournal = task.RecordeJournal;
         }
 
 

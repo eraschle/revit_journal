@@ -17,6 +17,8 @@ namespace RevitJournal.Tasks
 {
     public class TaskManager
     {
+        private object NextTaskLock = new object();
+
         private ReportServer ReportServer { get; set; } = new ReportServer();
 
         private ClientController ClientController { get; set; } = new ClientController();
@@ -39,8 +41,8 @@ namespace RevitJournal.Tasks
             if (family is null) { throw new ArgumentNullException(nameof(family)); }
             if (options is null) { throw new ArgumentNullException(nameof(options)); }
 
-            return family.AreMetadataRepairable
-                || (family.HasValidMetadata && options.UseMetadata);
+            return (options.UseMetadata && IsRevitInstalled(family, out _))
+                || ((family.AreMetadataRepairable || family.HasValidMetadata) && options.UseMetadata == false);
         }
 
         public static bool IsRevitInstalled(RevitFamily family, out RevitApp revit)
@@ -172,15 +174,19 @@ namespace RevitJournal.Tasks
             {
                 var task = GetNextTask(cancellation);
                 runningTasks.Add(task);
-                Task.Delay(TimeSpan.FromMilliseconds(500)).Wait();
             }
             return runningTasks;
         }
 
         private Task GetNextTask(CancellationToken cancellation)
         {
-            var unitOfWork = TaskQueue.Dequeue();
-            return unitOfWork.CreateTask(cancellation);
+            lock (NextTaskLock)
+            {
+                var unitOfWork = TaskQueue.Dequeue();
+                var nextTask = unitOfWork.CreateTask(cancellation);
+                Task.Delay(TimeSpan.FromMilliseconds(500)).Wait();
+                return nextTask;
+            }
         }
     }
 }

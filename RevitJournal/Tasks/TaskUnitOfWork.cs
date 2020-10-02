@@ -11,29 +11,23 @@ using RevitJournal.Tasks.Options;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using SYS = System.Threading.Tasks;
 using Utilities.System;
-using System.Diagnostics;
 
 namespace RevitJournal.Tasks
 {
     public class TaskUnitOfWork : IReportReceiver, IEquatable<TaskUnitOfWork>
     {
-        private static readonly RecordJournalNullFile nullRecorde = new RecordJournalNullFile();
-        private static readonly TaskJournalNullFile nullTask = new TaskJournalNullFile();
         private static readonly ITaskAction nullAction = new NullTaskAction();
 
         public RevitTask Task { get; private set; }
+
+        public ITaskAction CurrentAction { get; private set; } = nullAction;
 
         public TaskOptions Options { get; private set; }
 
         public TaskAppStatus Status { get; private set; } = new TaskAppStatus();
 
-        public TaskJournalFile TaskJournal { get; set; } = nullTask;
-
-        public RecordJournalFile RecordeJournal { get; set; } = nullRecorde;
-
-        public TaskReportManager ReportManager { get; private set; }
+        public TaskReportManager ReportManager { get; private set; } = new TaskReportManager();
 
         public RevitProcess Process { get; set; }
 
@@ -45,7 +39,6 @@ namespace RevitJournal.Tasks
         {
             Task = task;
             Options = options;
-            ReportManager = new TaskReportManager(this);
             Status.SetStatus(TaskAppStatus.Initial);
         }
 
@@ -54,26 +47,33 @@ namespace RevitJournal.Tasks
             get { return Task.SourceFile.FullPath; }
         }
 
-        private TaskJournalFile CreateTaskJournal()
+        private void CreateTaskJournal()
         {
-            var dataSource = new TaskJournalDataSource();
-            var workingDirectory = Options.GetJournalWorking();
-            var journalFile = Task.SourceFile.ChangeDirectory<TaskJournalFile>(workingDirectory);
-            dataSource.SetFile(journalFile);
-            dataSource.Write(Task);
-            return dataSource.FileNode;
+            try
+            {
+                Task.CreateTaskJournal(Options);
+                var dataSource = new TaskJournalDataSource();
+                dataSource.SetFile(Task.TaskJournal);
+                dataSource.Write(Task);
+            }
+            catch (Exception)
+            {
+                Task.SetDefaultTaskJournal();
+                throw;
+            }
         }
 
         public void DeleteJournalProcess()
         {
-            if (TaskJournal is null) { return; }
+            if (Task.TaskJournal is null) { return; }
 
-            TaskJournal.Delete();
+            Task.TaskJournal.Delete();
         }
 
-        public ITaskAction CurrentAction { get; private set; } = nullAction;
-
-        public int ExecutedActions { get; private set; } = 0;
+        public int ExecutedActions
+        {
+            get { return Task.GetExecutedActions(CurrentAction); }
+        }
 
         public void MakeReport(ReportMessage report)
         {
@@ -82,7 +82,7 @@ namespace RevitJournal.Tasks
             var factory = PathFactory.Instance;
             SetNewAction(report);
             Status.SetStatus(GetTaskStatus(report));
-            ReportManager.AddReport(report);
+            ReportManager.AddReport(Task, report);
             if (ActionManager.IsOpenAction(report.ActionId)
                 || ActionManager.IsSaveAction(report.ActionId))
             {
@@ -92,22 +92,20 @@ namespace RevitJournal.Tasks
             else if (ActionManager.IsJournalAction(report.ActionId))
             {
                 var journalFile = factory.Create<RecordJournalFile>(report.Message);
-                var journalRoot = Options.GetJournalWorking();
-                var search = $"{journalFile.NameWithoutExtension}{Constant.Star}";
-                factory.CreateFiles<RecordJournalFile>(journalRoot, search);
-                RecordeJournal = journalFile;
+                Task.RecordeJournal = journalFile;
             }
             Progress?.Report(this);
         }
 
         private void SetNewAction(ReportMessage report)
         {
-            if (CurrentAction.ActionId.Equals(report.ActionId) == false
-                && Task.HasActionById(report.ActionId, out var action))
+            if (CurrentAction.ActionId.Equals(report.ActionId)
+                || Task.HasActionById(report.ActionId, out var action) == false)
             {
-                ExecutedActions += 1;
-                CurrentAction = action;
+                return;
             }
+
+            CurrentAction = action;
         }
 
         private int GetTaskStatus(ReportMessage report)
@@ -150,17 +148,17 @@ namespace RevitJournal.Tasks
 
         #endregion
 
-        internal async SYS.Task CreateTask(CancellationToken cancel)
+        internal async System.Threading.Tasks.Task CreateTask(CancellationToken cancel)
         {
             Task.PreExecution(Options);
-            TaskJournal = CreateTaskJournal();
+            CreateTaskJournal();
             ReportStatus(TaskAppStatus.Started);
             using (var taskCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel))
             {
                 taskCancel.Token.Register(CancelProcess);
                 using (Process = new RevitProcess(TaskArguments))
                 {
-                    var normalExit = await Process.RunTaskAsync(TaskJournal, taskCancel.Token)
+                    var normalExit = await Process.RunTaskAsync(Task.TaskJournal, taskCancel.Token)
                                                   .ConfigureAwait(false);
                     if (normalExit == false)
                     {
@@ -202,61 +200,28 @@ namespace RevitJournal.Tasks
             DisconnectAction?.Invoke(TaskId);
             Progress = null;
 
-            if (DoesRecordCopyExists()) { return; }
+            if (Task.DoesRecordCopyExists()) { return; }
 
-            if (ReportManager.HasErrorReport())
+            if (ReportManager.HasErrorReport(Options))
             {
-                ReportManager.CreateErrorReport("ERROR");
+                ReportManager.CreateErrorReport(Task, Options, "ERROR");
             }
-            if (ReportManager.HasSuccessReport())
+            if (ReportManager.HasSuccessReport(Task, Options))
             {
-                ReportManager.CreateSuccessReport("Success");
+                ReportManager.CreateSuccessReport(Task, Options, "Success");
             }
-            CopyRecordJournal();
+            Task.CopyRecordJournal();
 
         }
 
-        private bool HasRecordJournal()
+        public string GetTaskJournalName()
         {
-            return RecordeJournal is object && RecordeJournal.Exists();
+            return Task.TaskJournal.NameWithoutExtension;
         }
 
-        public RecordJournalFile GetRenamedJournalFile()
+        public string GetRecordJournalName()
         {
-            if (HasRecordJournal() == false 
-                || Task.SourceFile is null 
-                || Task.SourceFile.HasParent(out var directory) == false) { return null; }
-
-            var newFileName = $"{Task.Name}_{RecordeJournal.NameWithoutExtension}";
-            return RecordeJournal.ChangeFileName<RecordJournalFile>(newFileName)
-                                 .ChangeDirectory<RecordJournalFile>(directory);
-        }
-
-        public bool DoesRecordCopyExists()
-        {
-            var copied = GetRenamedJournalFile();
-            return copied is object && copied.Exists();
-        }
-
-        private async void CopyRecordJournal()
-        {
-            await SYS.Task.Run(() =>
-            {
-                while (HasRecordJournal() && DoesRecordCopyExists() == false)
-                {
-                    var copy = GetRenamedJournalFile();
-                    try
-                    {
-                        RecordeJournal.CopyTo(copy, overrideFile: true);
-                        DebugUtils.Line<TaskUnitOfWork>($"Copy Name: {copy.Name} [{copy.FullPath}]");
-                    }
-                    catch (Exception ex)
-                    {
-                        DebugUtils.Exception<TaskUnitOfWork>(ex, $"Wait: {copy.Name}");
-                        SYS.Task.Delay(TimeSpan.FromMilliseconds(500)).Wait();
-                    }
-                }
-            }).ConfigureAwait(false);
+            return Task.RecordeJournal.NameWithoutExtension;
         }
 
         public override bool Equals(object obj)
