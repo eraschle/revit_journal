@@ -88,6 +88,7 @@
         <Button Content="Backup Settings" 
                 Grid.Column="1" Grid.Row="5"
                 Command="{Binding CreateBackupCommand}"
+                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                 Style="{StaticResource UIButton}"
                 HorizontalAlignment="Stretch"/>
     </Grid>

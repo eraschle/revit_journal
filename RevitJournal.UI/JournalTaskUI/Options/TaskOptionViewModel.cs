@@ -4,6 +4,7 @@ using RevitJournal.Revit;
 using RevitJournal.Tasks.Options;
 using System;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 using Utilities.System;
 using Utilities.UI;
@@ -150,17 +151,21 @@ namespace RevitJournalUI.JournalTaskUI.Options
 
         public bool CreateBackupPredicate(object parameter)
         {
-            return OptionsEnabled;
+            return OptionsEnabled && parameter is Window;
         }
 
         public void CreateBackupAction(object parameter)
         {
-            var dialog = new BackupDialog();
-            dialog.Update(Options.GetBackupSetting());
-            var result = dialog.ShowDialog();
-            if(result == true)
+            var dialog = new BackupDialog
             {
-                Options.SetBackupSetting(dialog.GetPathCreator());
+                Owner = parameter as Window
+            };
+            var creator = Options.GetBackupSetting();
+            dialog.Update(creator);
+            if (dialog.ShowDialog() == true)
+            {
+                creator = dialog.GetPathCreator();
+                Options.SetBackupSetting(creator);
             }
         }
 
