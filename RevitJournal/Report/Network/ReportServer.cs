@@ -2,6 +2,7 @@
 using RevitJournal.Tasks.Options;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
 
@@ -33,6 +34,7 @@ namespace RevitJournal.Report.Network
             }
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public void AcceptCallback(IAsyncResult result)
         {
             if (ServerSocket is null) { return; }
@@ -51,6 +53,7 @@ namespace RevitJournal.Report.Network
             }
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public void StopListening()
         {
             try

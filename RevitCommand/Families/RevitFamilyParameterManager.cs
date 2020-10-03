@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RevitCommand.Families
 {
@@ -95,6 +96,7 @@ namespace RevitCommand.Families
                 && paramDefinition.UnitType == definition.UnitType;
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public FamilyParameter RenameParameter(FamilyParameter parameter, string newName)
         {
             using (var transaction = new Transaction(Document, "Rename Family parameter"))

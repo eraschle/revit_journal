@@ -77,7 +77,7 @@ namespace RevitJournal.Revit
             }
             catch (Exception ex)
             {
-                //DebugUtils.Exception<RevitProcess>(ex, GetDebugMessage(ProcessId, "Kill"));
+                DebugUtils.Exception<RevitProcess>(ex, GetDebugMessage(ProcessId, "Kill"));
             }
 
             try
@@ -86,7 +86,7 @@ namespace RevitJournal.Revit
             }
             catch (Exception ex)
             {
-                //DebugUtils.Exception<RevitProcess>(ex, GetDebugMessage(ProcessId, "Dispose"));
+                DebugUtils.Exception<RevitProcess>(ex, GetDebugMessage(ProcessId, "Dispose"));
             }
             Process = null;
         }

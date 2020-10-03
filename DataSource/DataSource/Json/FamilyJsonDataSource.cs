@@ -3,6 +3,7 @@ using DataSource.Model;
 using DataSource.Model.Family;
 using DataSource.Model.FileSystem;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DataSource.DataSource.Json
 {
@@ -15,6 +16,7 @@ namespace DataSource.DataSource.Json
             return dataSource.Read();
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public MetadataStatus UpdateStatus()
         {
             var status = MetadataStatus.Valid;

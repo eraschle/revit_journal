@@ -6,6 +6,7 @@ using DataSource.Model.FileSystem;
 using RevitAction.Revit;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using DS = DataSource.Model;
 
@@ -16,6 +17,7 @@ namespace RevitCommand.Families.Metadata
     [Journaling(JournalingMode.UsingCommandData)]
     public class CreateMetadataCommand : ARevitActionCommand<CreateMetadataAction>
     {
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         protected override Result ExecuteRevitCommand(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             PathFactory.Instance.CreateRoot(Action.Library.Value);

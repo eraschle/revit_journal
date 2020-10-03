@@ -4,6 +4,7 @@ using RevitAction.Action;
 using RevitAction.Revit;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace RevitCommand.Families.ImageExport
@@ -38,6 +39,7 @@ namespace RevitCommand.Families.ImageExport
             ExcludeHeads = new ElementMulticategoryFilter(categories, true);
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         protected override Result ExecuteRevitCommand(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             Manager = new ImageExportManager(UIDocument);

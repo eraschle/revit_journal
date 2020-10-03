@@ -4,6 +4,7 @@ using Cat = DataSource.Model.Catalog;
 using System;
 using System.Collections.Generic;
 using RevitCommand.Families.Metadata;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RevitCommand.Families
 {
@@ -27,6 +28,7 @@ namespace RevitCommand.Families
             ParameterComparer = new MetadataParameterComparer();
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public void UpdateMetadata(Fam.Family original, Fam.Family other)
         {
             UpdateFamilyParameters(original, other);
@@ -99,6 +101,7 @@ namespace RevitCommand.Families
             }
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         private void SetCurrentType(FamilyType familyType)
         {
             using (var transaction = new Transaction(Document, "Cahnge Family Type"))
@@ -152,6 +155,7 @@ namespace RevitCommand.Families
             SetParameter(revitParameter, parameterValue, transactionName);
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         private void SetParameter<TParameter>(TParameter revitParameter, string parameterValue, string transactionName)
         {
             using (var transaction = new Transaction(Document, transactionName))

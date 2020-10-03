@@ -4,6 +4,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RevitCommand.Families.ImageExport
 {
@@ -12,6 +13,7 @@ namespace RevitCommand.Families.ImageExport
     [Journaling(JournalingMode.UsingCommandData)]
     public class GeomCombinationCommand : IExternalCommand
     {
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             try

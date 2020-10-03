@@ -3,6 +3,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RevitCommand.Families.ImageExport
 {
@@ -238,6 +239,7 @@ namespace RevitCommand.Families.ImageExport
             return material;
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         private void SetMaterial()
         {
             if (AreAllElementsHidden(out var visibleCollector)

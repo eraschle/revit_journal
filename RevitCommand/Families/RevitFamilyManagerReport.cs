@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using System;
 using RevitCommand.Reports;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RevitCommand.Families
 {
@@ -13,6 +14,7 @@ namespace RevitCommand.Families
             Manager = manager;
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public MessageReportLine MergeSharedParameter(ExternalDefinition definition)
         {
             if (Manager.CanMergeSharedParameter(definition, out var parameter) == false)
@@ -38,6 +40,7 @@ namespace RevitCommand.Families
             return reportLine;
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public ParameterSharedAddReportLine AddSharedInstance(ExternalDefinition definition, BuiltInParameterGroup group)
         {
             var report = CreateReport(definition, group, true);
@@ -52,6 +55,7 @@ namespace RevitCommand.Families
             return report;
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public ParameterSharedAddReportLine AddSharedType(ExternalDefinition definition, BuiltInParameterGroup group)
         {
             var report = CreateReport(definition, group, false);

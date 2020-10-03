@@ -4,6 +4,7 @@ using Autodesk.Revit.UI;
 using DataSource.Model.FileSystem;
 using RevitAction.Revit;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RevitCommand.Families.Metadata
 {
@@ -14,6 +15,7 @@ namespace RevitCommand.Families.Metadata
     {
         private const string debugLibraryPath = @"C:\develop\workspace\TEMP\JournalData\test files\";
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         protected override Result ExecuteRevitCommand(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
 #if DEBUG

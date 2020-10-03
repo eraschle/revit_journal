@@ -7,6 +7,7 @@ using RevitJournal.Revit.Journal;
 using RevitJournal.Tasks.Options;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -165,7 +166,7 @@ namespace RevitJournal.Tasks
             return renamed is object && renamed.Exists();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public async void CopyRecordJournal()
         {
             await Task.Run(() =>

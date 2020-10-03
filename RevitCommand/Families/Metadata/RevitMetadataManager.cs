@@ -13,6 +13,7 @@ using DataSource.Model.Product;
 using DataSource.Model.Family;
 using DataSource.Model.Catalog;
 using Utilities.System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RevitCommand.Families.Metadata
 {
@@ -140,6 +141,7 @@ namespace RevitCommand.Families.Metadata
             return familyType;
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public Fam.Family MergeFamilyTypes(Fam.Family metaFamily)
         {
             if (Manager.Types.Size <= 1)
@@ -398,6 +400,7 @@ namespace RevitCommand.Families.Metadata
                     || bip == BuiltInParameter.FAMILY_CATEGORY_PSEUDO_PARAM);
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         private static string GetDisplayUnit(FamilyParameter parameter)
         {
             try
@@ -411,6 +414,7 @@ namespace RevitCommand.Families.Metadata
             }
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         private static string GetDisplayUnit(Rvt.Parameter parameter)
         {
             try

@@ -4,6 +4,7 @@ using DataSource.Model.Catalog;
 using Cat = DataSource.Model.Catalog;
 using DataSource.Model.ProductData;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RevitCommand
 {
@@ -189,6 +190,7 @@ namespace RevitCommand
             return model;
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         private TModel Create<TEnum, TModel>(TEnum builtIn, Func<string> getName, Func<int> enumValue) where TModel : RevitEnum, new()
         {
             TModel model = null;
@@ -201,6 +203,7 @@ namespace RevitCommand
             return model;
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         private TModel Create<TEnum, TModel>(TEnum builtIn, TEnum notValid, Func<string> getName, Func<int> enumValue) where TModel : RevitEnum, new()
         {
             TModel model = null;
@@ -213,6 +216,7 @@ namespace RevitCommand
             return model;
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         private TModel Create<TModel>(Func<string> getName, Func<int> enumValue) where TModel : RevitEnum, new()
         {
             TModel model = null;
