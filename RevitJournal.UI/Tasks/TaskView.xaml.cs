@@ -27,16 +27,16 @@ namespace RevitJournalUI.Tasks
         //    lblExecuted.Content = GetExecutedCount();
         //}
 
-        //private void ProgressBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        //{
-        //    if (ViewModel is null) { return; }
+        private void ProgressBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (ViewModel is null) { return; }
 
-        //    //lblExecuted.Content = GetExecutedCount();
-        //    if (ViewModel.HasErrorAction(out var action))
-        //    {
-        //        btnError.Content = action.Name;
-        //    }
-        //}
+            //lblExecuted.Content = GetExecutedCount();
+            if (ViewModel.HasErrorAction(out var action))
+            {
+                btnError.Content = action.Name;
+            }
+        }
 
         private string GetExecutedCount()
         {
