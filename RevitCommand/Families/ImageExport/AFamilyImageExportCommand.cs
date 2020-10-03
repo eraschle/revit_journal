@@ -12,20 +12,17 @@ namespace RevitCommand.Families.ImageExport
     public abstract class AFamilyImageExportCommand<TAction>
         : ARevitActionCommand<TAction> where TAction : ITaskActionCommand, new()
     {
-        protected ImageExportManager Manager;
-        protected readonly ElementFilter ExcludeHeads;
+        protected ImageExportManager Manager { get; set; }
 
-        protected readonly ElementFilter NoCameraFilter
-            = new ElementCategoryFilter(BuiltInCategory.OST_Cameras, true);
+        protected ElementFilter ExcludeHeads { get; }
 
-        protected readonly ElementFilter NoDimensionFilter
-            = new ElementCategoryFilter(BuiltInCategory.OST_Dimensions, true);
+        protected ElementFilter NoCameraFilter { get; } = new ElementCategoryFilter(BuiltInCategory.OST_Cameras, true);
 
-        protected readonly ElementFilter FamilySymbolFilter
-            = new ElementClassFilter(typeof(FamilySymbol));
+        protected ElementFilter NoDimensionFilter { get; } = new ElementCategoryFilter(BuiltInCategory.OST_Dimensions, true);
 
-        protected readonly ElementFilter NotViewFilter
-            = new ElementCategoryFilter(BuiltInCategory.OST_Views, true);
+        protected ElementFilter FamilySymbolFilter { get; } = new ElementClassFilter(typeof(FamilySymbol));
+
+        protected ElementFilter NotViewFilter { get; } = new ElementCategoryFilter(BuiltInCategory.OST_Views, true);
 
 
         protected AFamilyImageExportCommand() : base()
@@ -226,7 +223,7 @@ namespace RevitCommand.Families.ImageExport
 
         protected void SetLineColorAndWeight(Color color, int lineWeight)
         {
-            if (AreAllElementsHidden(out var elements) 
+            if (AreAllElementsHidden(out var elements)
                 || Document.IsFamilyDocument == false) { return; }
 
             SetCategoryDesign(Document.OwnerFamily.FamilyCategory, color, lineWeight);
