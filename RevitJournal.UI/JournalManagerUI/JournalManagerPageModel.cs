@@ -337,7 +337,7 @@ namespace RevitJournalUI.JournalManagerUI
                 TaskManager.AddTask(task, TaskOptions);
             }
 
-            TasksViewModel.Update(TaskManager, TaskOptions);
+            TasksViewModel.Update(TaskManager);
 
             FamiliesVisibility = Visibility.Collapsed;
             BackVisibility = Visibility.Visible;
