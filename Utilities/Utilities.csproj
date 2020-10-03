@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\Levensthein.cs" />
     <Compile Include="System\BoolUtils.cs" />
     <Compile Include="System\Constant.cs" />
     <Compile Include="System\DebugUtils.cs" />
