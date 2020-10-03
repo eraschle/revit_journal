@@ -83,13 +83,13 @@ namespace RevitJournal.Tasks
             return action != null;
         }
 
-        public int GetExecutedActions(ITaskAction action)
+        public int GetExecutedActions(ITaskAction current)
         {
             var count = 0;
-            var it = Actions.GetEnumerator();
-            while (it.MoveNext() && it.Current.Equals(action))
+            foreach (var action in Actions)
             {
                 count += 1;
+                if (action.Equals(current)) { break; }
             }
             return count;
         }
@@ -140,10 +140,11 @@ namespace RevitJournal.Tasks
 
         public void CreateTaskJournal(TaskOptions options)
         {
-            if(options is null) { throw new ArgumentNullException(nameof(options)); }
+            if (options is null) { throw new ArgumentNullException(nameof(options)); }
 
             var workingDirectory = options.GetJournalWorking();
             TaskJournal = SourceFile.ChangeDirectory<TaskJournalFile>(workingDirectory);
+            TaskJournal.SetFileName(SourceFile);
             var fileSuffix = DateUtils.GetPathDate(format: timeFormat);
             TaskJournal.AddSuffixes(fileSuffix);
         }
@@ -164,6 +165,7 @@ namespace RevitJournal.Tasks
             return renamed is object && renamed.Exists();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public async void CopyRecordJournal()
         {
             await Task.Run(() =>
@@ -179,7 +181,7 @@ namespace RevitJournal.Tasks
                     catch (Exception ex)
                     {
                         DebugUtils.Exception<TaskUnitOfWork>(ex, $"Wait: {renamed.Name}");
-                        Thread.SpinWait(1);
+                        Task.Delay(TimeSpan.FromSeconds(1));
                     }
                 }
             }).ConfigureAwait(false);

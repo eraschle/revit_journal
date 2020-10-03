@@ -2,6 +2,8 @@
 using RevitJournal.Tasks.Options;
 using RevitJournalUI.Tasks;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Threading;
@@ -22,6 +24,8 @@ namespace RevitJournalUI.JournalTaskUI
         }
 
         public ObservableCollection<TaskViewModel> TaskModels { get; } = new ObservableCollection<TaskViewModel>();
+
+        private ConcurrentDictionary<string, TaskViewModel> tasksMap { get; } = new ConcurrentDictionary<string, TaskViewModel>();
 
         private int minTasks = 0;
         public int MinTasks
@@ -84,20 +88,22 @@ namespace RevitJournalUI.JournalTaskUI
             Progress.ProgressChanged -= Progress_ProgressChanged;
         }
 
-        internal void Update(TaskManager manager, TaskOptions options)
+        internal void Update(TaskManager manager)
         {
             if (manager is null || manager.HasTasks == false) { return; }
 
             TaskModels.Clear();
+            tasksMap.Clear();
             MaxTasks = 0;
             foreach (var unitOfWork in manager.UnitOfWorks)
             {
                 var viewModel = new TaskViewModel
                 {
-                    TaskUoW = unitOfWork,
                     AllExecutedFunc = AllTaskExecuted
                 };
+                viewModel.TaskUoW = unitOfWork;
                 TaskModels.Add(viewModel);
+                tasksMap.TryAdd(unitOfWork.TaskId, viewModel);
                 MaxTasks += 1;
             }
             ExecutedTasks = 0;
@@ -108,17 +114,18 @@ namespace RevitJournalUI.JournalTaskUI
             return ExecutedTasks >= MaxTasks;
         }
 
-        private void Progress_ProgressChanged(object sender, TaskUnitOfWork task)
+        private void Progress_ProgressChanged(object sender, TaskUnitOfWork unitOfWork)
         {
-            if (task.Status.IsExecuted == false) { return; }
+            if (tasksMap.ContainsKey(unitOfWork.TaskId) == false
+                || unitOfWork.Status.IsExecuted == false) { return; }
 
-            var viewModel = TaskModels.FirstOrDefault(mdl => mdl.TaskUoW.Equals(task));
-            if (viewModel is null) { return; }
-
-            task.Cleanup();
-            viewModel.RemoveTimer(timer);
-            viewModel.RemoveProgessEvent(Progress);
-            ExecutedTasks = TaskModels.Count(model => model.TaskUoW.Status.IsExecuted);
+            ExecutedTasks = TaskModels.Count - tasksMap.Count;
+            if (unitOfWork.Status.IsCleanedUp 
+                && tasksMap.TryRemove(unitOfWork.TaskId, out var viewModel))
+            {
+                viewModel.RemoveTimer(timer);
+                viewModel.RemoveProgessEvent(Progress);
+            }
         }
     }
 }

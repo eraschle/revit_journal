@@ -49,5 +49,10 @@ namespace RevitJournal.Revit
         public static TimeSpan MaximumTimeout { get { return TimeSpan.FromMinutes(20); } }
 
         public TimeSpan Timeout { get; set; } = DefaultTimeout;
+
+        public int TimeoutTime
+        {
+            get { return (int)Timeout.TotalMilliseconds; }
+        } 
     }
 }

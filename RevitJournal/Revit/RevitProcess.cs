@@ -1,6 +1,10 @@
-﻿using RevitJournal.Revit.Journal;
+﻿using Autodesk.Revit.DB.Structure;
+using RevitJournal.Revit.Journal;
+using RevitJournal.Tasks.Options;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Management;
 using System.Text;
@@ -12,11 +16,20 @@ namespace RevitJournal.Revit
 {
     public class RevitProcess : IDisposable
     {
+        public event EventHandler<EventArgs> ProcessFinished;
+
+        protected virtual void OnProcessFinished()
+        {
+            ProcessFinished?.Invoke(this, EventArgs.Empty);
+        }
+
         private bool disposedValue;
 
         internal Process Process { get; private set; }
 
         private int ProcessId { get; set; }
+
+        private Dictionary<int, string> ChildProcessIds { get; set; } = new Dictionary<int, string>();
 
         internal RevitArguments Arguments { get; private set; }
 
@@ -25,14 +38,16 @@ namespace RevitJournal.Revit
             Arguments = arguments;
         }
 
-        public Task<bool> RunTaskAsync(TaskJournalFile journalProcess, CancellationToken cancellation)
+        public Task<bool> RunTaskAsync(TaskJournalFile journal, CancellationToken cancellation)
         {
-            return Task.Run(() => Run(journalProcess), cancellation);
+            return Task.Run(() => Run(journal), cancellation);
         }
 
-        public bool Run(TaskJournalFile journalProcess)
+        public bool Run(TaskJournalFile journal)
         {
-            using (Process = CreateProccess(journalProcess))
+            if (journal is null) { throw new ArgumentNullException(nameof(journal)); }
+
+            using (Process = CreateProccess(journal))
             {
                 if (Process.Start() == false)
                 {
@@ -45,57 +60,164 @@ namespace RevitJournal.Revit
                     return false;
                 }
                 ProcessId = Process.Id;
-                return Process.WaitForExit((int)Arguments.Timeout.TotalMilliseconds);
+                ChildProcessIds.Add(ProcessId, journal.GetFileName());
+                CollectChildProcessIds();
+                return Process.WaitForExit(Arguments.TimeoutTime);
             }
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         internal void KillProcess()
         {
             if (Process is null) { return; }
 
-            KillChildren();
-            try { Process.Kill(); }
+            try
+            {
+                Process.Kill();
+            }
             catch (Exception ex)
             {
-                DebugUtils.Exception<RevitProcess>(ex);
+                //DebugUtils.Exception<RevitProcess>(ex, GetDebugMessage(ProcessId, "Kill"));
             }
 
-            try { Process.Dispose(); }
+            try
+            {
+                Process.Dispose();
+            }
             catch (Exception ex)
             {
-                DebugUtils.Exception<RevitProcess>(ex);
+                //DebugUtils.Exception<RevitProcess>(ex, GetDebugMessage(ProcessId, "Dispose"));
             }
             Process = null;
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         private void KillChildren()
         {
-            using (var searcher = new ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" + ProcessId))
+            var processIds = new List<int>(ChildProcessIds.Keys);
+            foreach (var processId in processIds)
             {
-                foreach (var managmentObject in searcher.Get())
+                try
                 {
-                    var subPid = Convert.ToInt32(managmentObject["ProcessID"], CultureInfo.CurrentCulture);
-                    try
+                    var process = Process.GetProcessById(processId);
+                    if (process.HasExited)
                     {
-                        DebugUtils.Line<RevitProcess>($"Child process: {subPid}");
-                        var proc = Process.GetProcessById(subPid);
-                        if (proc.HasExited == false)
-                        {
-                            DebugUtils.Line<RevitProcess>($"Kill Child process: {subPid}");
-                            proc.Kill();
-                        }
+                        DebugUtils.Line<RevitProcess>(GetDebugMessage(processId, "Exited"));
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        DebugUtils.Exception<RevitProcess>(ex, $"SubProcess.Kill {subPid}");
+                        DebugUtils.Line<RevitProcess>(GetDebugMessage(processId, "Kill"));
+                        process.Kill();
                     }
+                    ChildProcessIds.Remove(processId);
+                }
+                catch (Exception ex)
+                {
+                    DebugUtils.Exception<RevitProcess>(ex, GetDebugMessage(processId, string.Empty));
+                    ChildProcessIds.Remove(processId);
                 }
             }
         }
 
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
+        private async void CollectChildProcessIds()
+        {
+            await Task.Run(() =>
+            {
+                var running = true;
+                while (running)
+                {
+                    using (var searcher = new ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" + ProcessId))
+                    {
+                        foreach (var managmentObject in searcher.Get())
+                        {
+                            var processId = Convert.ToInt32(managmentObject["ProcessID"], CultureInfo.CurrentCulture);
+                            if (ChildProcessIds.ContainsKey(processId)) { continue; }
+
+                            var process = Process.GetProcessById(processId);
+                            ChildProcessIds.Add(processId, process.ProcessName);
+                            //DebugUtils.Line<RevitProcess>(GetDebugMessage(processId, "Collect"));
+                        }
+                    }
+                    WaitForContinue();
+                    try
+                    {
+                        running = Process.HasExited == false;
+                    }
+                    catch (Exception)
+                    {
+                        running = false;
+                    }
+                }
+            }).ConfigureAwait(false);
+        }
+
+        [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
+        public async void WaitChildProcessesExited()
+        {
+            await Task.Run(() =>
+            {
+                ChildProcessIds.Remove(ProcessId);
+                while (ChildProcessIds.Count == 0)
+                {
+                    var processIds = new List<int>(ChildProcessIds.Keys);
+                    foreach (var processId in processIds)
+                    {
+                        if(processId == ProcessId) { continue; }
+                        try
+                        {
+                            var process = Process.GetProcessById(processId);
+                            if (process.HasExited == false)
+                            {
+                                DebugUtils.Line<RevitProcess>(GetDebugMessage(processId, "NOT Exited"));
+                                continue;
+                            }
+
+                            //DebugUtils.Line<RevitProcess>(GetDebugMessage(processId, "Exited"));
+                            ChildProcessIds.Remove(processId);
+                        }
+                        catch (Exception ex)
+                        {
+                            //DebugUtils.Exception<RevitProcess>(ex, GetDebugMessage(processId, string.Empty));
+                            ChildProcessIds.Remove(processId);
+                        }
+                    }
+                    WaitForContinue();
+                }
+                OnProcessFinished();
+            }).ConfigureAwait(false);
+        }
+
+        private static void WaitForContinue()
+        {
+            var time = TimeSpan.FromSeconds(2);
+            Task.Delay(time).Wait();
+        }
+
+        private string GetDebugMessage(int processId, string suffix)
+        {
+            var processName = "NO NAME";
+            var processKind = "UNKNOWN";
+            if (ChildProcessIds.ContainsKey(processId))
+            {
+                processKind = $"Child of {ChildProcessIds[ProcessId]}";
+                processName = ChildProcessIds[processId];
+            }
+            if (processId == ProcessId)
+            {
+                processKind = "Main";
+            }
+            var message = $"{processName} [{processId}] ({processKind})";
+            if (string.IsNullOrWhiteSpace(suffix) == false)
+            {
+                message = $"{message}: {suffix}";
+            }
+            return message;
+        }
+
         #region Create Process and Arguments
 
-        internal Process CreateProccess(TaskJournalFile journalProcess)
+        private Process CreateProccess(TaskJournalFile journalProcess)
         {
             var process = new Process();
             process.StartInfo.FileName = Arguments.RevitExecutable;
@@ -154,6 +276,8 @@ namespace RevitJournal.Revit
             return args;
         }
 
+        #endregion
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -180,6 +304,5 @@ namespace RevitJournal.Revit
             GC.SuppressFinalize(this);
         }
 
-        #endregion
     }
 }

@@ -14,6 +14,7 @@ namespace RevitAction
         public const int Error = 32;
         public const int Timeout = 64;
         public const int Finish = 128;
+        public const int CleanUp = 256;
 
         private static IList<int> allStatus;
         public static IList<int> All
@@ -22,7 +23,7 @@ namespace RevitAction
             {
                 if (allStatus is null)
                 {
-                    allStatus = new List<int> { Unknown, Initial, Waiting, Started, Running, Cancel, Error, Timeout, Finish };
+                    allStatus = new List<int> { Unknown, Initial, Waiting, Started, Running, Cancel, Error, Timeout, Finish, CleanUp };
                 }
                 return allStatus;
             }
@@ -106,6 +107,11 @@ namespace RevitAction
         public bool IsError
         {
             get { return IsReportStatus(Error); }
+        }
+
+        public bool IsCleanedUp
+        {
+            get { return IsReportStatus(CleanUp); }
         }
 
         private bool IsReportStatus(int status)

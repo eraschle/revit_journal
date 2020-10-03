@@ -47,7 +47,7 @@ namespace RevitJournal.Tasks
             get { return Task.SourceFile.FullPath; }
         }
 
-        private void CreateTaskJournal()
+        private TaskJournalFile CreateTaskJournal()
         {
             try
             {
@@ -61,6 +61,7 @@ namespace RevitJournal.Tasks
                 Task.SetDefaultTaskJournal();
                 throw;
             }
+            return Task.TaskJournal;
         }
 
         public void DeleteJournalProcess()
@@ -72,7 +73,15 @@ namespace RevitJournal.Tasks
 
         public int ExecutedActions
         {
-            get { return Task.GetExecutedActions(CurrentAction); }
+            get
+            {
+                var count = 0;
+                if (CurrentAction.Equals(nullAction) == false)
+                {
+                    count = Task.GetExecutedActions(CurrentAction);
+                }
+                return count;
+            }
         }
 
         public void MakeReport(ReportMessage report)
@@ -126,23 +135,19 @@ namespace RevitJournal.Tasks
 
         public void KillProcess()
         {
-            if (Process is null) { return; }
-
             try
             {
                 Process.KillProcess();
-                Process.Dispose();
             }
             finally
             {
-                Process = null;
+                Process.Dispose();
             }
         }
 
         public void CancelProcess()
         {
             ReportStatus(TaskAppStatus.Cancel);
-            DisconnectAction?.Invoke(TaskId);
             KillProcess();
         }
 
@@ -151,22 +156,21 @@ namespace RevitJournal.Tasks
         internal async System.Threading.Tasks.Task CreateTask(CancellationToken cancel)
         {
             Task.PreExecution(Options);
-            CreateTaskJournal();
+            var journal = CreateTaskJournal();
             ReportStatus(TaskAppStatus.Started);
             using (var taskCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel))
             {
                 taskCancel.Token.Register(CancelProcess);
-                using (Process = new RevitProcess(TaskArguments))
+                Process = new RevitProcess(TaskArguments);
+                Process.ProcessFinished += Process_ProcessFinished;
+                var normalExit = await Process.RunTaskAsync(journal, taskCancel.Token)
+                                              .ConfigureAwait(false);
+                if (normalExit == false)
                 {
-                    var normalExit = await Process.RunTaskAsync(Task.TaskJournal, taskCancel.Token)
-                                                  .ConfigureAwait(false);
-                    if (normalExit == false)
-                    {
-                        ReportStatus(TaskAppStatus.Timeout);
-                    }
+                    ReportStatus(TaskAppStatus.Timeout);
                 }
-                Process = null;
             }
+            Process.WaitChildProcessesExited();
             ReportStatus(TaskAppStatus.Finish);
         }
 
@@ -176,7 +180,7 @@ namespace RevitJournal.Tasks
             {
                 if (Options.UseMetadata && TaskManager.IsRevitInstalled(Task.Family, out var revitApp))
                 {
-                    var timeout = Options.Arguments.Timeout;
+                    var timeout = Options.Timeout;
                     return new RevitArguments
                     {
                         Timeout = timeout,
@@ -193,12 +197,12 @@ namespace RevitJournal.Tasks
             Progress?.Report(this);
         }
 
-        public void Cleanup()
+        private void Process_ProcessFinished(object sender, EventArgs e)
         {
-            Process?.KillProcess();
-            Task.DeleteBackups(Options);
+            Process.ProcessFinished -= Process_ProcessFinished;
+            Process = null;
+            ReportStatus(TaskAppStatus.CleanUp);
             DisconnectAction?.Invoke(TaskId);
-            Progress = null;
 
             if (Task.DoesRecordCopyExists()) { return; }
 
@@ -211,7 +215,7 @@ namespace RevitJournal.Tasks
                 ReportManager.CreateSuccessReport(Task, Options, "Success");
             }
             Task.CopyRecordJournal();
-
+            Task.DeleteBackups(Options);
         }
 
         public string GetTaskJournalName()
