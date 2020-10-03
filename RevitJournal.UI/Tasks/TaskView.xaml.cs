@@ -1,6 +1,7 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows;
+using RevitJournal.Tasks;
 
 namespace RevitJournalUI.Tasks
 {
@@ -19,19 +20,37 @@ namespace RevitJournalUI.Tasks
             InitializeComponent();
         }
 
+        //private void UserControl_Loaded(object sender, RoutedEventArgs args)
+        //{
+        //    if (ViewModel is null) { return; }
 
-        private void OnTaskStatusUpdated(object sender, DataTransferEventArgs args)
+        //    lblExecuted.Content = GetExecutedCount();
+        //}
+
+        //private void ProgressBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        //{
+        //    if (ViewModel is null) { return; }
+
+        //    //lblExecuted.Content = GetExecutedCount();
+        //    if (ViewModel.HasErrorAction(out var action))
+        //    {
+        //        btnError.Content = action.Name;
+        //    }
+        //}
+
+        private string GetExecutedCount()
         {
-            if (!(sender is Button button) || ViewModel is null) { return; }
-
-            var manager = ViewModel.TaskUoW.ReportManager;
-
-            button.Visibility = manager.HasErrorAction ? Visibility.Visible : Visibility.Collapsed;
-            if (manager.HasErrorAction)
+            var executed = 0.0;
+            var count = 0.0;
+            if (ViewModel.ActionsCount > 0)
             {
-                button.Content = manager.ErrorAction.Name;
+                if (ViewModel.ExecutedActions > 0)
+                {
+                    executed = ViewModel.ExecutedActions;
+                }
+                count = ViewModel.ActionsCount;
             }
-            args.Handled = true;
+            return $"{executed} / {count}";
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using RevitAction;
+using RevitAction.Action;
 using RevitJournal.Tasks;
 using System;
 using System.ComponentModel;
@@ -11,11 +12,9 @@ using Utilities.UI;
 
 namespace RevitJournalUI.Tasks
 {
-    public class TaskViewModel : INotifyPropertyChanged
+    public class TaskViewModel : ANotifyPropertyChangedModel
     {
         private static readonly string[] timeFormat = new string[] { DateUtils.Minute, DateUtils.Seconds };
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         private TimeSpan timerInterval;
 
@@ -33,13 +32,13 @@ namespace RevitJournalUI.Tasks
 
         public string TaskName
         {
-            get { return TaskUoW.Task.Name; }
+            get { return TaskUoW is null ? string.Empty : TaskUoW.Task.Name; }
         }
 
         public TaskAppStatus TaskStatus
         {
-            get { return TaskUoW.Status; }
-            set { OnPropertyChanged(nameof(TaskStatus)); }
+            get { return TaskUoW is null ? new TaskAppStatus() : TaskUoW.Status; }
+            set { NotifyPropertyChanged(); }
         }
 
         private string journalTask = string.Empty;
@@ -51,7 +50,7 @@ namespace RevitJournalUI.Tasks
                 if (StringUtils.Equals(journalTask, value)) { return; }
 
                 journalTask = value;
-                OnPropertyChanged(nameof(JournalTask));
+                NotifyPropertyChanged();
             }
         }
 
@@ -64,7 +63,7 @@ namespace RevitJournalUI.Tasks
                 if (StringUtils.Equals(journalRecorde, value)) { return; }
 
                 journalRecorde = value;
-                OnPropertyChanged(nameof(JournalRecorde));
+                NotifyPropertyChanged();
             }
         }
 
@@ -108,7 +107,7 @@ namespace RevitJournalUI.Tasks
 
         private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
-            if (TaskUoW.Status.IsStarted && TaskUoW.Status.IsExecuted == false)
+            if (TaskUoW is object && TaskUoW.Status.IsStarted && TaskUoW.Status.IsExecuted == false)
             {
                 executionTime += timerInterval;
                 TaskTime = $"{GetTime(executionTime)} / {GetTime(TaskUoW.Options.Timeout)}";
@@ -133,19 +132,13 @@ namespace RevitJournalUI.Tasks
                 if (executedActions == value) { return; }
 
                 executedActions = value;
-                OnPropertyChanged(nameof(ExecutedActions));
-                OnPropertyChanged(nameof(ExecutedActionsText));
+                NotifyPropertyChanged();
             }
-        }
-
-        public string ExecutedActionsText
-        {
-            get { return $"{ExecutedActions} / {ActionsCount}"; }
         }
 
         public double ActionsCount
         {
-            get { return TaskUoW.Task.Actions.Count; }
+            get { return TaskUoW is null ? 0 : TaskUoW.Task.Actions.Count; }
         }
 
         private string taskTime = string.Empty;
@@ -157,7 +150,7 @@ namespace RevitJournalUI.Tasks
                 if (StringUtils.Equals(taskTime, value)) { return; }
 
                 taskTime = value;
-                OnPropertyChanged(nameof(TaskTime));
+                NotifyPropertyChanged();
             }
         }
 
@@ -170,7 +163,7 @@ namespace RevitJournalUI.Tasks
                 if (StringUtils.Equals(currentAction, value)) { return; }
 
                 currentAction = value;
-                OnPropertyChanged(nameof(CurrentAction));
+                NotifyPropertyChanged();
             }
         }
 
@@ -178,7 +171,25 @@ namespace RevitJournalUI.Tasks
 
         #region Result
 
+        public bool HasErrorAction(out ITaskAction action)
+        {
+            action = null;
+            if (TaskUoW is object && TaskUoW.ReportManager.HasErrorAction)
+            {
+                action = TaskUoW.ReportManager.ErrorAction;
+            }
+            return action is object;
+        }
+
         public ICommand ErrorCommand { get; }
+
+        private bool ErrorCommandPredicate(object parameter)
+        {
+            if(TaskUoW is null) { return false; }
+
+            return TaskStatus is object && TaskStatus.IsCleanedUp 
+                && TaskUoW.ReportManager.HasErrorAction;
+        }
 
         private void ErrorCommandAction(object parameter)
         {
@@ -188,16 +199,6 @@ namespace RevitJournalUI.Tasks
             MessageBox.Show(manager.ErrorMessage, manager.ErrorAction.Name);
         }
 
-        private bool ErrorCommandPredicate(object parameter)
-        {
-            return AllExecutedFunc.Invoke();
-        }
-
         #endregion
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
     }
 }

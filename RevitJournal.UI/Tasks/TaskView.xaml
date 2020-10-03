@@ -16,6 +16,18 @@
                BasedOn="{StaticResource LeftLabelStyle}">
             <Setter Property="HorizontalContentAlignment" Value="Right"/>
         </Style>
+
+        <Style x:Key="ErrorButtonStyle" TargetType="{x:Type Button}"
+               BasedOn="{StaticResource UIButton}">
+            <Setter Property="Visibility" Value="Hidden"/>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </Trigger>
+            </Style.Triggers>
+            
+        </Style>
+        
         <converter:TaskStatusColorConverter x:Key="StatusColor"/>
         <converter:TaskStatusTextConverter x:Key="StatusText"/>
         <converter:TaskExecuteVisibleConverter x:Key="ExecuteTask"/>
@@ -97,12 +109,10 @@
             <Label Content="{Binding TaskTime}"
                    Grid.Column="1" Grid.Row="0" 
                    Style="{StaticResource RightLabelStyle}"/>
-            <Button Content="{Binding ErrorText}"
-                    Visibility="{Binding Path=TaskStatus, Mode=TwoWay, NotifyOnTargetUpdated=True}"
-                    TargetUpdated="OnTaskStatusUpdated"
-                    Command = "{Binding ErrorCommand}"
+            <Button x:Name="btnError" 
+                    Command="{Binding ErrorCommand}"
                     Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"
-                    Style="{StaticResource UIButton}"/>
+                    Style="{StaticResource ErrorButtonStyle}"/>
         </Grid>
         <Label Content="{Binding TaskStatus, Converter={StaticResource StatusText}, 
                                  UpdateSourceTrigger=PropertyChanged}"
