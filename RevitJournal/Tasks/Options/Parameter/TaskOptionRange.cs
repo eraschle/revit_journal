@@ -1,15 +1,15 @@
 ﻿namespace RevitJournal.Tasks.Options.Parameter
 {
-    public class TaskOptionRange<TValue> : TaskOption<TValue>
+    public class TaskOptionRange : TaskOption<double>
     {
-        public TaskOptionRange(TValue defaultValue, TValue minValue, TValue maxValue) : base(defaultValue)
+        public TaskOptionRange(double defaultValue, double minValue, double maxValue) : base(defaultValue)
         {
             MinValue = minValue;
             MaxValue = maxValue;
         }
 
-        public TValue MinValue { get; }
+        public double MinValue { get; }
 
-        public TValue MaxValue { get; }
+        public double MaxValue { get; }
     }
 }

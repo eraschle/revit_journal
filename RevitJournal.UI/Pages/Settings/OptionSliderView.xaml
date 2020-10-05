@@ -6,9 +6,6 @@
              xmlns:local="clr-namespace:RevitJournalUI.Pages.Settings"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
-        <local:OptionSliderConverter x:Key="converter"/>
-    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{StaticResource GridFirstColumnWidth}"/>
@@ -18,9 +15,9 @@
         <Label Content="{Binding LabelName}"
                Style="{StaticResource UILabel}"/>
         <Slider x:Name="slider"
-                Value="{Binding Value, Converter={StaticResource converter}, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"
-                Minimum="{Binding MinValue, Converter={StaticResource converter}}"
-                Maximum="{Binding MaxValue, Converter={StaticResource converter}}"
+                Value="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"
+                Minimum="{Binding MinValue}"
+                Maximum="{Binding MaxValue}"
                 Style="{StaticResource UISlider}"/>
         <Button Content="Default" Grid.Column="2"
                 Command="{Binding DefaultCommand}"

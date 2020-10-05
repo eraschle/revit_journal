@@ -28,9 +28,19 @@ namespace RevitJournal.Tasks.Options
 
         public BoolOption LogError { get; } = new BoolOption(true);
 
-        public TaskOptionRange<int> ParallelProcesses { get; } = new TaskOptionRange<int>(Environment.ProcessorCount / 2, 1, Environment.ProcessorCount);
+        public TaskOptionRange Processes { get; } = new TaskOptionRange(Environment.ProcessorCount / 2, 1, Environment.ProcessorCount);
 
-        public TaskOptionRange<TimeSpan> ProcessTime { get; set; } = new TaskOptionRange<TimeSpan>(TimeSpan.FromMinutes(2), TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(20));
+        public int ParallelProcesses
+        {
+            get { return (int)Processes.Value; }
+        }
+
+        public TaskOptionRange ProcessTime { get; } = new TaskOptionRange(2, 1, 20);
+
+        public TimeSpan ProcessTimeout
+        {
+            get { return TimeSpan.FromMinutes(ProcessTime.Value); }
+        }
 
         public RevitArguments Arguments { get; set; }
 

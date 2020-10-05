@@ -71,11 +71,6 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Label Content="Revit"
@@ -92,39 +87,20 @@
                     CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
                     Style="{StaticResource UIButton}"/>
 
-            <local:OptionSliderView Grid.Row="1" Grid.ColumnSpan="2"
+            <local:OptionSliderView Grid.Row="1" Grid.ColumnSpan="3"
                                     DataContext="{Binding ParallelProcess}"/>
 
-            <local:OptionSliderView Grid.Row="2" Grid.ColumnSpan="2"
+            <local:OptionSliderView Grid.Row="2" Grid.ColumnSpan="3"
                                     DataContext="{Binding ProcessTimeout}"/>
-            
-            <Label Content="Logs"
-                   Grid.Column="0" Grid.Row="3" 
-                   Style="{StaticResource UILabel}"/>
-            <Grid Grid.Column="1" Grid.Row="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <CheckBox x:Name="cbkLogResult"
-                          Content="Create?" Grid.Column="0" 
-                          IsChecked="{Binding LogResult}"
-                          Style="{StaticResource UICheckBox}"/>
-                <CheckBox Content="Success" Grid.Column="1"
-                          IsChecked="{Binding LogSuccess}"
-                          IsEnabled="{Binding ElementName=cbkLogResult, Path=IsChecked}"
-                          Style="{StaticResource UICheckBox}"/>
-                <CheckBox Content="Error" Grid.Column="2"
-                          IsChecked="{Binding LogResult}"
-                          IsEnabled="{Binding ElementName=cbkLogResult, Path=IsChecked}"
-                          Style="{StaticResource UICheckBox}"/>
-            </Grid>
-            <Button Content="Default"
-                    Grid.Column="2" Grid.Row="3"
-                    Command="{Binding DefaultCommand}"
-                    CommandParameter="{Binding ElementName=txtFileSuffix}"
-                    Style="{StaticResource UIButton}"/>
+
+            <local:OptionBoolView Grid.Row="3" Grid.ColumnSpan="3"
+                                  DataContext="{Binding LogResult}"/>
+
+            <local:OptionBoolView Grid.Row="4" Grid.ColumnSpan="3"
+                                  DataContext="{Binding LogSuccess}"/>
+
+            <local:OptionBoolView Grid.Row="5" Grid.ColumnSpan="3"
+                                  DataContext="{Binding LogError}"/>
         </Grid>
     </Grid>
 </Page>

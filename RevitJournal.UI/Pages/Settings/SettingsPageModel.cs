@@ -30,8 +30,8 @@ namespace RevitJournalUI.Pages.Settings
             LogSuccess = new OptionBoolViewModel ("Log succes", Options.LogSuccess);
             LogError = new OptionBoolViewModel ("Log error", Options.LogError);
 
-            ParallelProcess = new OptionSliderViewModel<int>("Processes", Options.ParallelProcesses);
-            ProcessTimeout = new OptionSliderViewModel<TimeSpan>("Timeout", Options.ProcessTime);
+            ParallelProcess = new OptionSliderViewModel("Processes", Options.Processes);
+            ProcessTimeout = new OptionSliderViewModel("Timeout", Options.ProcessTime);
 #if DEBUG
             FamilyDirectory.Value = @"C:\develop\workspace\revit_journal_test_data\families";
             JournalDirectory.Value = @"C:\develop\workspace\Content\journal";
@@ -69,9 +69,9 @@ namespace RevitJournalUI.Pages.Settings
             }
         }
 
-        public OptionSliderViewModel<int> ParallelProcess { get; }
+        public OptionSliderViewModel ParallelProcess { get; }
 
-        public OptionSliderViewModel<TimeSpan> ProcessTimeout { get; }
+        public OptionSliderViewModel ProcessTimeout { get; }
 
         public OptionBoolViewModel LogResult { get; }
 

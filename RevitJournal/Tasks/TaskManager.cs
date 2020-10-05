@@ -167,7 +167,7 @@ namespace RevitJournal.Tasks
 
         private ICollection<Task> CreateTasks(TaskOptions options, CancellationToken cancellation)
         {
-            var max = Math.Min(options.ParallelProcesses.Value, TaskQueue.Count);
+            var max = Math.Min(options.ParallelProcesses, TaskQueue.Count);
             var runningTasks = new List<Task>();
 
             while (runningTasks.Count < max)

@@ -180,7 +180,7 @@ namespace RevitJournal.Tasks
             {
                 if (Options.UseMetadata && TaskManager.IsRevitInstalled(Task.Family, out var revitApp))
                 {
-                    var timeout = Options.ProcessTime.Value;
+                    var timeout = Options.ProcessTimeout;
                     return new RevitArguments
                     {
                         Timeout = timeout,

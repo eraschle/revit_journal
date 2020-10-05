@@ -1,16 +1,12 @@
 ﻿using RevitJournal.Tasks.Options.Parameter;
 using System.ComponentModel;
-using System.Globalization;
-using System.Windows.Data;
 using Utilities.System;
 
 namespace RevitJournalUI.Pages.Settings
 {
-    public class OptionSliderViewModel<TValue> : AOptionRangeViewModel<TaskOptionRange<TValue>, TValue>
+    public class OptionSliderViewModel : AOptionViewModel<TaskOptionRange, double>
     {
-        private readonly IValueConverter converter = new OptionSliderConverter();
-
-        public OptionSliderViewModel(string name, TaskOptionRange<TValue> taskOption) : base(name, taskOption)
+        public OptionSliderViewModel(string name, TaskOptionRange taskOption) : base(name, taskOption)
         {
             labelName = name;
             PropertyChanged += OptionSliderViewModel_PropertyChanged;
@@ -26,8 +22,18 @@ namespace RevitJournalUI.Pages.Settings
         private string labelName;
         public override string LabelName
         {
-            get { return $"{labelName} [{converter.Convert(Value, typeof(TValue), null, CultureInfo.CurrentCulture)}]"; }
+            get { return $"{labelName} [{(int)Value}]"; }
             set { NotifyPropertyChanged(); }
+        }
+
+        public double MinValue
+        {
+            get { return Option.MinValue; }
+        }
+
+        public double MaxValue
+        {
+            get { return Option.MaxValue; }
         }
     }
 }

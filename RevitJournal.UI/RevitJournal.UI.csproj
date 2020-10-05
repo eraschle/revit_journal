@@ -185,7 +185,6 @@
     <Compile Include="Pages\Settings\OptionSliderView.xaml.cs">
       <DependentUpon>OptionSliderView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Settings\AOptionRangeViewModel.cs" />
     <Compile Include="Pages\Settings\OptionStringView.xaml.cs">
       <DependentUpon>OptionStringView.xaml</DependentUpon>
     </Compile>
@@ -198,7 +197,6 @@
     <Compile Include="Pages\Settings\OptionStringViewModel.cs" />
     <Compile Include="Pages\Settings\OptionDirectoryViewModel.cs" />
     <Compile Include="Pages\Settings\SettingsPageModel.cs" />
-    <Compile Include="Pages\Settings\OptionSliderConverter.cs" />
     <Compile Include="Pages\TaskFilesPage.xaml.cs">
       <DependentUpon>TaskFilesPage.xaml</DependentUpon>
     </Compile>
