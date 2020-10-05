@@ -61,8 +61,8 @@ namespace RevitJournal.Revit.Command
             pathCreator.FileSuffix = fileSuffix.Value;
             pathCreator.BackupFolder = saveFolder.Value;
             pathCreator.AddBackupAtEnd = addAtEnd.GetBoolValue();
-            pathCreator.SetRoot(currentRoot.Value);
-            pathCreator.SetNewRoot(newRoot.Value);
+            pathCreator.RootPath = currentRoot.Value;
+            pathCreator.NewRootPath = newRoot.Value;
             return pathCreator.CreateSymbolic();
         }
 

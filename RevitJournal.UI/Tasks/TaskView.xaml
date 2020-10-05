@@ -81,10 +81,11 @@
             </Grid.ColumnDefinitions>
             <ProgressBar Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"
                          Value="{Binding ExecutedActions, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource UIProgressBar}"
                          ValueChanged="ProgressBar_ValueChanged"
                          Minimum="0" Maximum="{Binding ActionsCount}"/>
             <Label Grid.Column="3" Grid.Row="0"
-                   Content="{Binding ExecutedActionsText, UpdateSourceTrigger=PropertyChanged}"
+                   Content="{Binding ExecutedActionsText, UpdateSourceTrigger=PropertyChanged, FallbackValue=0 / 0}"
                    Style="{StaticResource RightLabelStyle}"/>
             <Label Grid.Column="0" Grid.Row="1"
                    Content="{Binding CurrentAction, UpdateSourceTrigger=PropertyChanged}"

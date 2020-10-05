@@ -17,7 +17,7 @@ namespace RevitJournal.Library
         {
             if (options is null) { throw new ArgumentNullException(nameof(options)); }
 
-            var rootDirectory = PathBuilder.CreateRoot(options.RootDirectory);
+            var rootDirectory = PathBuilder.CreateRoot(options.RootDirectory.Value);
             PathBuilder.CreateFiles<RevitFamilyFile>(rootDirectory);
             Root = new LibraryRoot(rootDirectory);
         }

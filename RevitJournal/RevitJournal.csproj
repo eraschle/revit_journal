@@ -135,7 +135,11 @@
     <Compile Include="Tasks\Actions\ExternalAction.cs" />
     <Compile Include="Tasks\Actions\ExternalActionDataSource.cs" />
     <Compile Include="Tasks\Actions\ExternalActionFile.cs" />
+    <Compile Include="Tasks\Options\Parameter\TaskOptionRange.cs" />
+    <Compile Include="Tasks\Options\Parameter\BoolOption.cs" />
+    <Compile Include="Tasks\Options\Parameter\TaskOptionProperty.cs" />
     <Compile Include="Tasks\Options\ParallelOptions.cs" />
+    <Compile Include="Tasks\Options\Parameter\TaskOption.cs" />
     <Compile Include="Tasks\Options\ReportOptions.cs" />
     <Compile Include="Revit\Addin\AddinManager.cs" />
     <Compile Include="Revit\Command\JournalBuilder.cs" />

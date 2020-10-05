@@ -48,7 +48,7 @@ namespace RevitJournalUI.Tasks.Actions
             ActionViewModels.Clear();
             foreach (var action in taskActions)
             {
-                action.SetLibraryRoot(options.RootDirectory);
+                action.SetLibraryRoot(options.RootDirectory.Value);
                 var model = new ActionViewModel
                 {
                     Action = action

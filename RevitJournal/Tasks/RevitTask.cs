@@ -111,7 +111,7 @@ namespace RevitJournal.Tasks
         {
             if (options is null) { throw new ArgumentNullException(nameof(options)); }
 
-            if (options.CreateBackup)
+            if (options.CreateSourceBackup.Value)
             {
                 var backupFile = options.CreateBackupFile(SourceFile);
                 BackupFile = SourceFile.CopyTo(backupFile, true);
@@ -125,7 +125,7 @@ namespace RevitJournal.Tasks
 
         public void DeleteBackups(TaskOptions options)
         {
-            if (options is null || options.DeleteRevitBackup == false) { return; }
+            if (options is null || options.DeleteRevitBackup.Value == false) { return; }
 
             SourceFile.DeleteBackups();
             if (HasResultFile)

@@ -15,11 +15,13 @@
             </Grid.ColumnDefinitions>
             <Label x:Name="lblExecutedTasks"
                    Content="{Binding Path=ExecutedTasks, Mode=TwoWay, NotifyOnTargetUpdated=True}"
+                   Style="{StaticResource UILabel}"
                    TargetUpdated="ExecutedTasks_TargetUpdated"
                    Grid.Column="0"/>
             <ProgressBar Minimum="{Binding MinTasks, UpdateSourceTrigger=PropertyChanged}" 
                          Value="{Binding ExecutedTasks, UpdateSourceTrigger=PropertyChanged}"
                          Maximum="{Binding MaxTasks, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource UIProgressBar}"
                          Grid.Column="1"/>
         </Grid>
         <ListBox ItemsSource="{Binding TaskModels, UpdateSourceTrigger=PropertyChanged}"

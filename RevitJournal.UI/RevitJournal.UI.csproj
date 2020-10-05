@@ -95,9 +95,33 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <Page Include="JournalTaskUI\Options\BackupDialog.xaml">
+    <Page Include="Pages\Settings\OptionBoolView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\OptionSliderView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\OptionStringView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Settings\OptionDirectoryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\TaskFilesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Settings\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\TasksPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Tasks\Actions\TaskActionsView.xaml">
       <SubType>Designer</SubType>
@@ -111,10 +135,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="JournalManagerUI\JournalManagerPage.xaml">
+    <None Include="JournalManagerUI\JournalManagerPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
+    </None>
     <Page Include="JournalTaskUI\JournalTaskOverviewView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -127,10 +151,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="JournalTaskUI\Options\TaskOptionView.xaml">
+    <None Include="JournalTaskUI\Options\TaskOptionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
+    </None>
     <Page Include="MetadataUI\MetadataDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -143,6 +167,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Commands\DefaultValueCommand.cs" />
+    <Compile Include="Converters\VisibilityBooleanConverter.cs" />
     <Compile Include="Helper\ListViewHelper.cs" />
     <Compile Include="JournalTaskUI\Converter\TimespanMinutesConverter .cs" />
     <Compile Include="JournalTaskUI\Converter\DirectoryVisibilityConverter.cs" />
@@ -153,10 +179,36 @@
     <Compile Include="JournalTaskUI\FamilyFilter\CheckedFilterViewModel.cs" />
     <Compile Include="JournalTaskUI\FamilyFilter\FilterViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\PathViewModel.cs" />
-    <Compile Include="JournalTaskUI\Options\BackupDialog.xaml.cs">
-      <DependentUpon>BackupDialog.xaml</DependentUpon>
+    <Compile Include="Converters\TimespanMinutesConverter .cs" />
+    <Compile Include="Pages\Settings\OptionBoolView.xaml.cs">
+      <DependentUpon>OptionBoolView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="JournalTaskUI\Options\BackupDialogModel.cs" />
+    <Compile Include="Pages\Settings\OptionSliderView.xaml.cs">
+      <DependentUpon>OptionSliderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Settings\AOptionRangeViewModel.cs" />
+    <Compile Include="Pages\Settings\OptionStringView.xaml.cs">
+      <DependentUpon>OptionStringView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Settings\OptionDirectoryView.xaml.cs">
+      <DependentUpon>OptionDirectoryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Settings\OptionSliderViewModel.cs" />
+    <Compile Include="Pages\Settings\AOptionViewModel.cs" />
+    <Compile Include="Pages\Settings\OptionBoolViewModel.cs" />
+    <Compile Include="Pages\Settings\OptionStringViewModel.cs" />
+    <Compile Include="Pages\Settings\OptionDirectoryViewModel.cs" />
+    <Compile Include="Pages\Settings\SettingsPageModel.cs" />
+    <Compile Include="Pages\Settings\OptionSliderConverter.cs" />
+    <Compile Include="Pages\TaskFilesPage.xaml.cs">
+      <DependentUpon>TaskFilesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Settings\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\TasksPage.xaml.cs">
+      <DependentUpon>TasksPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tasks\Actions\OpenActionViewModel.cs" />
     <Compile Include="Tasks\Converter\TaskResultVisibleConverter.cs" />
     <Compile Include="Tasks\Converter\TaskExecuteVisibleConverter.cs" />
@@ -217,10 +269,10 @@
     <Compile Include="MetadataUI\Models\DuplicateFamilyViewModel.cs" />
     <Compile Include="MetadataUI\Models\ParameterViewModel.cs" />
     <Compile Include="MetadataUI\Models\OriginalFamilyViewModel.cs" />
-    <Compile Include="JournalManagerUI\JournalManagerPage.xaml.cs">
+    <None Include="JournalManagerUI\JournalManagerPage.xaml.cs">
       <DependentUpon>JournalManagerPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="JournalManagerUI\JournalManagerPageModel.cs" />
+    </None>
+    <None Include="JournalManagerUI\JournalManagerPageModel.cs" />
     <Compile Include="JournalTaskUI\JournalTaskOverviewView.xaml.cs">
       <DependentUpon>JournalTaskOverviewView.xaml</DependentUpon>
     </Compile>
@@ -237,10 +289,10 @@
     <Compile Include="Tasks\TaskView.xaml.cs">
       <DependentUpon>TaskView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="JournalTaskUI\Options\TaskOptionView.xaml.cs">
+    <None Include="JournalTaskUI\Options\TaskOptionView.xaml.cs">
       <DependentUpon>TaskOptionView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="JournalTaskUI\Options\TaskOptionViewModel.cs" />
+    </None>
+    <None Include="JournalTaskUI\Options\TaskOptionViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\FamilyViewModel.cs" />
     <Compile Include="MetadataUI\MetadataDialogView.xaml.cs">
       <DependentUpon>MetadataDialogView.xaml</DependentUpon>

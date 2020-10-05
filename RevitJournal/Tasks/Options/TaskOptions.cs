@@ -1,6 +1,8 @@
-﻿using DataSource.Model.FileSystem;
+﻿using Autodesk.Revit.DB.Architecture;
+using DataSource.Model.FileSystem;
 using RevitJournal.Helper;
 using RevitJournal.Revit;
+using RevitJournal.Tasks.Options.Parameter;
 using System;
 using Utilities.System;
 using Utilities.System.FileSystem;
@@ -18,13 +20,17 @@ namespace RevitJournal.Tasks.Options
             DateUtils.Minute
         };
 
-        private PathCreator pathCreator;
-
         private readonly IPathBuilder pathBuilder;
 
-        public ReportOptions Report { get; set; }
+        public BoolOption LogResults { get; } = new BoolOption(true);
 
-        public ParallelOptions Parallel { get; set; }
+        public BoolOption LogSuccess { get; } = new BoolOption(false);
+
+        public BoolOption LogError { get; } = new BoolOption(true);
+
+        public TaskOptionRange<int> ParallelProcesses { get; } = new TaskOptionRange<int>(Environment.ProcessorCount / 2, 1, Environment.ProcessorCount);
+
+        public TaskOptionRange<TimeSpan> ProcessTime { get; set; } = new TaskOptionRange<TimeSpan>(TimeSpan.FromMinutes(2), TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(20));
 
         public RevitArguments Arguments { get; set; }
 
@@ -33,45 +39,48 @@ namespace RevitJournal.Tasks.Options
             get { return Arguments.RevitApp.UseMetadata; }
         }
 
-        public TimeSpan Timeout
-        {
-            get { return Arguments.Timeout; }
-        }
+        public TaskOptionProperty<string> RootDirectory { get; }
 
-        public string RootDirectory { get; set; }
-
-        public string JournalDirectory { get; set; }
+        public TaskOption<string> JournalDirectory { get; } = new TaskOption<string>(DirUtils.MyDocuments);
 
         public DateTime TimeDirectory { get; set; }
 
-        public string ActionDirectory { get; set; }
+        public TaskOption<string> ActionDirectory { get; } = new TaskOption<string>(DirUtils.MyDocuments);
 
-        public bool DeleteRevitBackup { get; set; } = true;
+        public BoolOption DeleteRevitBackup { get; } = new BoolOption(true);
 
-        public bool CreateBackup
+        public PathCreator PathCreator { get; }
+
+        public TaskOptionProperty<string> NewRootPath { get; }
+
+        public TaskOptionProperty<string> FileSuffix { get; }
+
+        public TaskOptionProperty<string> BackupFolder { get; }
+
+        public TaskOptionProperty<bool> AddBackupAtEnd { get; }
+
+        public TaskOption<bool> CreateSourceBackup { get; } = new TaskOption<bool>(false);
+
+        public TaskOptions(IPathBuilder builder)
         {
-            get { return pathCreator is object; }
-        }
-
-        public TaskOptions(IPathBuilder pathBuilder)
-        {
-            this.pathBuilder = pathBuilder ?? throw new ArgumentNullException(nameof(pathBuilder));
-            Report = new ReportOptions();
-            Parallel = new ParallelOptions();
+            pathBuilder = builder ?? throw new ArgumentNullException(nameof(builder));
+            PathCreator = new PathCreator(builder);
             Arguments = new RevitArguments();
-            RootDirectory = DirUtils.MyDocuments;
-            JournalDirectory = DirUtils.MyDocuments;
-            ActionDirectory = DirUtils.MyDocuments;
+            RootDirectory = new TaskOptionProperty<string>(DirUtils.MyDocuments, PathCreator, nameof(PathCreator.RootPath));
+            NewRootPath = new TaskOptionProperty<string>(string.Empty, PathCreator, nameof(PathCreator.NewRootPath));
+            BackupFolder = new TaskOptionProperty<string>(DateUtils.GetPathDate(), PathCreator, nameof(PathCreator.BackupFolder));
+            FileSuffix = new TaskOptionProperty<string>(DateUtils.GetPathDate(), PathCreator, nameof(PathCreator.FileSuffix));
+            AddBackupAtEnd = new TaskOptionProperty<bool>(PathCreator.AddBackupAtEnd, PathCreator, nameof(PathCreator.AddBackupAtEnd));
         }
 
         public RevitFamilyFile CreateBackupFile(RevitFamilyFile file)
         {
-            return pathCreator.CreatePath(file);
+            return PathCreator.CreatePath(file);
         }
 
         public DirectoryNode GetJournalWorking()
         {
-            var directory = pathBuilder.CreateRoot(JournalDirectory);
+            var directory = pathBuilder.CreateRoot(JournalDirectory.Value);
             var timeFolderName = DateUtils.GetPathDate(TimeDirectory, format: formats);
             var timeFolder = pathBuilder.AddFolder(directory, timeFolderName);
             if (timeFolder.Exists() == false)
@@ -79,22 +88,6 @@ namespace RevitJournal.Tasks.Options
                 timeFolder.Create();
             }
             return timeFolder;
-        }
-
-        public PathCreator GetBackupSetting()
-        {
-            var creator = pathCreator;
-            if (creator is null)
-            {
-                creator = new PathCreator(pathBuilder);
-            }
-            creator.SetRoot(RootDirectory);
-            return creator;
-        }
-
-        public void SetBackupSetting(PathCreator creator)
-        {
-            pathCreator = creator ?? throw new ArgumentNullException(nameof(creator));
         }
     }
 }

@@ -23,28 +23,37 @@ namespace RevitJournal.Helper
             builder = pathBuilder ?? throw new ArgumentNullException(nameof(pathBuilder));
         }
 
-        public string RootPath { get; private set; }
+        private string rootPath = string.Empty;
+        public string RootPath
+        {
+            get { return rootPath; }
+            set
+            {
+                rootPath = CheckPath(value);
+                newRootPath = rootPath;
+            }
+        }
 
         public string FileSuffix { get; set; } = string.Empty;
 
-        public string NewRootPath { get; private set; } = string.Empty;
+        private string newRootPath = string.Empty;
+        public string NewRootPath
+        {
+            get { return HasNewRootFolder() ? newRootPath : string.Empty; }
+            set { newRootPath = DirUtils.RemoveSlases(value); }
+        }
 
         public string BackupFolder { get; set; } = string.Empty;
 
         public bool AddBackupAtEnd { get; set; } = true;
 
-        public void SetRoot(string path)
+        private static string CheckPath(string path)
         {
             if (string.IsNullOrEmpty(path) || Directory.Exists(path) == false)
             {
                 throw new ArgumentException($"Root path must exists {path}");
             }
-            RootPath = DirUtils.RemoveSlases(path);
-        }
-
-        public void SetNewRoot(string path)
-        {
-            NewRootPath = string.IsNullOrEmpty(path) ? string.Empty : DirUtils.RemoveSlases(path);
+            return DirUtils.RemoveSlases(path);
         }
 
         public TFile CreatePath<TFile>(TFile file) where TFile : AFileNode, new()
@@ -57,15 +66,15 @@ namespace RevitJournal.Helper
             }
             if (string.IsNullOrWhiteSpace(BackupFolder) == false)
             {
-                file = AddBackupAtEnd 
-                    ? builder.AddFolder(file, BackupFolder) 
+                file = AddBackupAtEnd
+                    ? builder.AddFolder(file, BackupFolder)
                     : builder.InsertFolder(file, 1, BackupFolder);
             }
-            if(file is null)
+            if (file is null)
             {
                 throw new ArgumentNullException(nameof(file));
             }
-            if(file.HasParent(out var parent) == false)
+            if (file.HasParent(out var parent) == false)
             {
                 throw new ArgumentException($"file {file.Name} has no parent");
             }
@@ -116,8 +125,8 @@ namespace RevitJournal.Helper
 
         private bool HasNewRootFolder()
         {
-            return string.IsNullOrWhiteSpace(NewRootPath) == false
-                && StringUtils.Equals(RootPath, NewRootPath) == false;
+            return string.IsNullOrWhiteSpace(newRootPath) == false
+                && StringUtils.Equals(rootPath, newRootPath) == false;
         }
     }
 }

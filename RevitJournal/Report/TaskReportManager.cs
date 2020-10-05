@@ -32,7 +32,7 @@ namespace RevitJournal.Report
         public bool HasErrorReport(TaskOptions options)
         {
             return options is object && ErrorAction is object
-                && options.Report.LogResults && options.Report.LogError;
+                && options.LogResults.Value && options.LogError.Value;
         }
 
         public void CreateErrorReport(RevitTask task, TaskOptions options, params string[] suffixes)
@@ -51,7 +51,7 @@ namespace RevitJournal.Report
         public bool HasSuccessReport(RevitTask task, TaskOptions options)
         {
             return options is object && task is object
-                && options.Report.LogResults && options.Report.LogSuccess
+                && options.LogResults.Value && options.LogSuccess.Value
                 && HasSuccessReports(task);
         }
 

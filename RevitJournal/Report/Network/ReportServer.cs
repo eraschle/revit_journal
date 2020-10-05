@@ -25,7 +25,7 @@ namespace RevitJournal.Report.Network
                 ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 var endPoint = new IPEndPoint(IPAddress.Loopback, Port);
                 ServerSocket.Bind(endPoint);
-                ServerSocket.Listen(options.Parallel.ParallelProcesses);
+                ServerSocket.Listen(options.ParallelProcesses.Value);
                 ServerSocket.BeginAccept(AcceptCallback, ServerSocket);
             }
             catch (Exception exception)

@@ -1,13 +1,9 @@
 ﻿using RevitJournal.Tasks;
-using RevitJournal.Tasks.Options;
 using RevitJournalUI.Tasks;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows.Threading;
-using Utilities.System;
 using Utilities.UI;
 
 namespace RevitJournalUI.JournalTaskUI

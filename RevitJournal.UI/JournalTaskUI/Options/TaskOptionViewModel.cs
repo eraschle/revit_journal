@@ -160,12 +160,12 @@ namespace RevitJournalUI.JournalTaskUI.Options
             {
                 Owner = parameter as Window
             };
-            var creator = Options.GetBackupSetting();
-            dialog.Update(creator);
+            //var creator = Options.GetBackupSetting();
+            dialog.Update(Options.PathCreator);
             if (dialog.ShowDialog() == true)
             {
-                creator = dialog.GetPathCreator();
-                Options.SetBackupSetting(creator);
+                //creator = dialog.GetPathCreator();
+                //Options.SetBackupSetting(creator);
             }
         }
 

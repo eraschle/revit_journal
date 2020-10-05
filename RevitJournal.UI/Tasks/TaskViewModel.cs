@@ -2,8 +2,6 @@
 using RevitAction.Action;
 using RevitJournal.Tasks;
 using System;
-using System.ComponentModel;
-using System.Data;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -110,7 +108,7 @@ namespace RevitJournalUI.Tasks
             if (TaskUoW is object && TaskUoW.Status.IsStarted && TaskUoW.Status.IsExecuted == false)
             {
                 executionTime += timerInterval;
-                TaskTime = $"{GetTime(executionTime)} / {GetTime(TaskUoW.Options.Timeout)}";
+                TaskTime = $"{GetTime(executionTime)} / {GetTime(TaskUoW.Options.ProcessTime.Value)}";
             }
         }
 

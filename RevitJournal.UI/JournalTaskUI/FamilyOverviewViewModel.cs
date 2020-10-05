@@ -1,5 +1,4 @@
 ﻿using RevitJournal.Library;
-using RevitJournalUI.JournalManagerUI;
 using RevitJournalUI.JournalTaskUI.Models;
 using System;
 using System.Collections.ObjectModel;
@@ -20,10 +19,10 @@ namespace RevitJournalUI.JournalTaskUI
 
         public void OnContentDirectoryChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args is null || !(sender is JournalManagerPageModel model)
-                || StringUtils.Equals(args.PropertyName, nameof(model.FamilyDirectory)) == false) { return; }
+            //if (args is null || !(sender is JournalManagerPageModel model)
+            //    || StringUtils.Equals(args.PropertyName, nameof(model.FamilyDirectory)) == false) { return; }
 
-            UpdateDirectoryViewModels(model);
+            //UpdateDirectoryViewModels(model);
         }
 
         private void OnAllCheckedChanged(object sender, PropertyChangedEventArgs args)
@@ -80,20 +79,20 @@ namespace RevitJournalUI.JournalTaskUI
 
         private DirectoryViewModel RootModel;
 
-        public void UpdateDirectoryViewModels(JournalManagerPageModel model)
-        {
-            if (model is null) { return; }
+        //public void UpdateDirectoryViewModels(JournalManagerPageModel model)
+        //{
+        //    if (model is null) { return; }
 
-            DirectoryViewModels.Clear();
-            LibraryManager.CreateRoot(model.TaskOptions);
-            LibraryManager.Root.Setup();
-            RootModel = new DirectoryViewModel(LibraryManager.Root, null);
-            RootModel.PropertyChanged += model.OnCheckedChanged;
-            RootModel.PropertyChanged += OnAllCheckedChanged;
-            DirectoryViewModels.Add(RootModel);
-            model.UpdateDuplicateName();
-            model.UpdateEditName();
-        }
+        //    DirectoryViewModels.Clear();
+        //    LibraryManager.CreateRoot(model.TaskOptions);
+        //    LibraryManager.Root.Setup();
+        //    RootModel = new DirectoryViewModel(LibraryManager.Root, null);
+        //    RootModel.PropertyChanged += model.OnCheckedChanged;
+        //    RootModel.PropertyChanged += OnAllCheckedChanged;
+        //    DirectoryViewModels.Add(RootModel);
+        //    model.UpdateDuplicateName();
+        //    model.UpdateEditName();
+        //}
 
         public void FilterUpdated()
         {
