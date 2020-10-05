@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Controls;
-using System.Windows.Data;
+﻿using System.Windows.Controls;
 
 namespace RevitJournalUI.Pages.Settings
 {
@@ -9,11 +7,6 @@ namespace RevitJournalUI.Pages.Settings
     /// </summary>
     public partial class OptionSliderView : UserControl
     {
-        private OptionSliderViewModel<TValue> GetViewModel<TValue>() where TValue : class
-        {
-            return DataContext as OptionSliderViewModel<TValue>;
-        }
-
         public OptionSliderView()
         {
             InitializeComponent();
