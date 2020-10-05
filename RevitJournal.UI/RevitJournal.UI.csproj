@@ -167,7 +167,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Commands\DefaultValueCommand.cs" />
     <Compile Include="Converters\VisibilityBooleanConverter.cs" />
     <Compile Include="Helper\ListViewHelper.cs" />
     <Compile Include="JournalTaskUI\Converter\TimespanMinutesConverter .cs" />
