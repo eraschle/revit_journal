@@ -5,7 +5,6 @@ using System;
 using System.Collections.ObjectModel;
 using Utilities.UI;
 using DataSource.Model.FileSystem;
-using RevitJournal.Tasks.Options.Parameter;
 
 namespace RevitJournalUI.Pages.Settings
 {
