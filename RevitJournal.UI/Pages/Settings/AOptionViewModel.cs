@@ -2,18 +2,24 @@
 using Utilities.UI;
 using RevitJournal.Tasks.Options.Parameter;
 using Utilities.System;
+using System;
 
 namespace RevitJournalUI.Pages.Settings
 {
-    public abstract class AOptionViewModel<TOption, TValue> : ANotifyPropertyChangedModel where TOption : TaskOption<TValue>
+    public abstract class AOptionViewModel<TOption, TValue> : ANotifyPropertyChangedModel
+        where TOption : TaskOption<TValue>
     {
         protected TOption Option { get; }
 
-        protected AOptionViewModel(string name, TOption taskOption)
+        protected AOptionViewModel(string name, TOption taskOption, bool showDefaultAtStart)
         {
             labelName = name;
-            Option = taskOption;
+            Option = taskOption ?? throw new ArgumentNullException(nameof(taskOption));
             DefaultCommand = new RelayCommand<object>(DefaultAction, DefaultPredicate);
+            if (showDefaultAtStart)
+            {
+                Value = Option.DefaultValue;
+            }
         }
 
         private string labelName = string.Empty;
@@ -42,6 +48,8 @@ namespace RevitJournalUI.Pages.Settings
         }
 
         public ICommand DefaultCommand { get; }
+
+        public bool ShowDefaultValue { get; set; }
 
         private bool DefaultPredicate(object parameter)
         {

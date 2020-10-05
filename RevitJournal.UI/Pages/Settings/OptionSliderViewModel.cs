@@ -6,7 +6,8 @@ namespace RevitJournalUI.Pages.Settings
 {
     public class OptionSliderViewModel : AOptionViewModel<TaskOptionRange, double>
     {
-        public OptionSliderViewModel(string name, TaskOptionRange taskOption) : base(name, taskOption)
+        public OptionSliderViewModel(string name, TaskOptionRange taskOption, bool showDefaultAtStart) 
+            : base(name, taskOption, showDefaultAtStart)
         {
             labelName = name;
             PropertyChanged += OptionSliderViewModel_PropertyChanged;

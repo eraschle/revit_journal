@@ -10,7 +10,8 @@ namespace RevitJournalUI.Pages.Settings
 
         private readonly TaskOption<string> otherOption;
 
-        public OptionDirectoryViewModel(string name, TaskOption<string> taskOption, TaskOption<string> other = null) : base(name, taskOption)
+        public OptionDirectoryViewModel(string name, TaskOption<string> taskOption, bool showDefaultAtStart, TaskOption<string> other = null) 
+            : base(name, taskOption, showDefaultAtStart)
         {
             otherOption = other;
             SelectCommand = new RelayCommand<object>(SelectAction, SelectPredicate);

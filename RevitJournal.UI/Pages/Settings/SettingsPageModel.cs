@@ -14,24 +14,24 @@ namespace RevitJournalUI.Pages.Settings
 
         public SettingsPageModel()
         {
-            FamilyDirectory = new OptionDirectoryViewModel("Family Directory", Options.RootDirectory);
-            JournalDirectory = new OptionDirectoryViewModel("Journal Directory", Options.JournalDirectory);
-            ActionDirectory = new OptionDirectoryViewModel("Action Directory", Options.ActionDirectory);
+            FamilyDirectory = new OptionDirectoryViewModel("Family Directory", Options.RootDirectory, true);
+            JournalDirectory = new OptionDirectoryViewModel("Journal Directory", Options.JournalDirectory, true);
+            ActionDirectory = new OptionDirectoryViewModel("Action Directory", Options.ActionDirectory, true);
             
-            NewRootPath = new OptionDirectoryViewModel("New Root Directory", Options.NewRootPath, Options.RootDirectory);
-            BackupFolder = new OptionStringViewModel("Backup Folder", Options.BackupFolder);
-            AddBackupAtEnd = new OptionBoolViewModel("Add folder at the end", Options.AddBackupAtEnd);
-            FileSuffix = new OptionStringViewModel("File Suffix", Options.FileSuffix);
+            NewRootPath = new OptionDirectoryViewModel("New Root Directory", Options.NewRootPath, false, Options.RootDirectory);
+            BackupFolder = new OptionStringViewModel("Backup Folder", Options.BackupFolder, false);
+            AddBackupAtEnd = new OptionBoolViewModel("Add folder at the end", Options.AddBackupAtEnd, true);
+            FileSuffix = new OptionStringViewModel("File Suffix", Options.FileSuffix, false);
 
-            DeleteAppBackups = new OptionBoolViewModel("Delete Revit Backups", Options.DeleteRevitBackup);
-            SourceBackup = new OptionBoolViewModel("Create source Backups", Options.CreateSourceBackup);
+            DeleteAppBackups = new OptionBoolViewModel("Delete Revit Backups", Options.DeleteRevitBackup, true);
+            SourceBackup = new OptionBoolViewModel("Create source Backups", Options.CreateSourceBackup, true);
 
-            LogResult = new OptionBoolViewModel ("Log Results",Options.LogResults);
-            LogSuccess = new OptionBoolViewModel ("Log succes", Options.LogSuccess);
-            LogError = new OptionBoolViewModel ("Log error", Options.LogError);
+            LogResult = new OptionBoolViewModel ("Log Results",Options.LogResults, true);
+            LogSuccess = new OptionBoolViewModel ("Log succes", Options.LogSuccess, true);
+            LogError = new OptionBoolViewModel ("Log error", Options.LogError, true);
 
-            ParallelProcess = new OptionSliderViewModel("Processes", Options.Processes);
-            ProcessTimeout = new OptionSliderViewModel("Timeout", Options.ProcessTime);
+            ParallelProcess = new OptionSliderViewModel("Processes", Options.Processes, true);
+            ProcessTimeout = new OptionSliderViewModel("Timeout", Options.ProcessTime, true);
 #if DEBUG
             FamilyDirectory.Value = @"C:\develop\workspace\revit_journal_test_data\families";
             JournalDirectory.Value = @"C:\develop\workspace\Content\journal";

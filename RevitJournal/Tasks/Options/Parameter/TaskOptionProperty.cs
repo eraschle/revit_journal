@@ -19,10 +19,6 @@ namespace RevitJournal.Tasks.Options.Parameter
             get
             {
                 var value = property.GetValue(source);
-                if(value is null)
-                {
-                    value = DefaultValue;
-                }
                 return (TValue)value;
             }
             set { property.SetValue(source ,value); }
