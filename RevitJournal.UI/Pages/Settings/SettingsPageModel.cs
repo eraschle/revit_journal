@@ -31,7 +31,7 @@ namespace RevitJournalUI.Pages.Settings
             LogError = new OptionBoolViewModel ("Log error", Options.LogError, true);
 
             ParallelProcess = new OptionSliderViewModel("Processes", Options.Processes, true);
-            ProcessTimeout = new OptionSliderViewModel("Timeout", Options.ProcessTime, true);
+            ProcessTimeout = new OptionSliderViewModel("Timeout", Options.ProcessTime, true, "min");
 #if DEBUG
             FamilyDirectory.Value = @"C:\develop\workspace\revit_journal_test_data\families";
             JournalDirectory.Value = @"C:\develop\workspace\Content\journal";
@@ -48,6 +48,7 @@ namespace RevitJournalUI.Pages.Settings
         private void AddRevitApplications()
         {
             RevitApps.Clear();
+            ProductManager.UpdateVersions();
             RevitApps.Add(ProductManager.UseMetadata);
             foreach (var revitApp in ProductManager.ExecutableRevitApps)
             {

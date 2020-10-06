@@ -9,17 +9,27 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{StaticResource GridFirstColumnWidth}"/>
+            <ColumnDefinition Width="20"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="30"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <Label Content="{Binding LabelName}"
+        <Label Grid.Column="0"
+               Content="{Binding LabelName}"
                Style="{StaticResource UILabel}"/>
-        <Slider x:Name="slider"
-                Value="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1"
+        <Label Grid.Column="1"
+               Content="{Binding MinValue}"
+               Style="{StaticResource UILabel}"/>
+        <Slider Grid.Column="2"
+                Value="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
                 Minimum="{Binding MinValue}"
                 Maximum="{Binding MaxValue}"
                 Style="{StaticResource UISlider}"/>
-        <Button Content="Default" Grid.Column="2"
+        <Label Grid.Column="3"
+               Content="{Binding MaxValue}"
+               Style="{StaticResource UILabel}"
+               HorizontalContentAlignment="Right"/>
+        <Button Content="Default" Grid.Column="4"
                 Command="{Binding DefaultCommand}"
                 Style="{StaticResource UIButton}"/>
     </Grid>
