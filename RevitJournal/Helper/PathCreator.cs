@@ -1,5 +1,6 @@
 ﻿using DataSource.Model.FileSystem;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Utilities.System;
@@ -9,12 +10,12 @@ namespace RevitJournal.Helper
 {
     public class PathCreator
     {
-        public const string LIBRARYROOTNAME = "[Library Folder]";
-        public const string NEWLIBRARYROOTNAME = "[New Library Folder]";
-        public const string LIBRARYPATHNAME = "[Library Path]";
-        public const string BACKUPFOLDERNAME = "[Save As Folder]";
-        public const string REVITFILENAME = "[File Name]";
-        public const string SUFFIXNAME = "[Save As Suffix]";
+        public const string RootName = "[ROOT Path]";
+        public const string NewRootName = "[New ROOT Path]";
+        public const string LibraryPathName = "[Library Path]";
+        public const string NewFolderName = "[New Folder]";
+        public const string FileName = "[File Name]";
+        public const string FileSuffixName = "[File Suffix]";
 
         private readonly IPathBuilder builder;
 
@@ -43,7 +44,7 @@ namespace RevitJournal.Helper
             set { newRootPath = DirUtils.RemoveSlases(value); }
         }
 
-        public string BackupFolder { get; set; } = string.Empty;
+        public string NewFolder { get; set; } = string.Empty;
 
         public bool AddBackupAtEnd { get; set; } = true;
 
@@ -64,11 +65,11 @@ namespace RevitJournal.Helper
             {
                 file = builder.ChangeRoot(file, NewRootPath);
             }
-            if (string.IsNullOrWhiteSpace(BackupFolder) == false)
+            if (string.IsNullOrWhiteSpace(NewFolder) == false)
             {
                 file = AddBackupAtEnd
-                    ? builder.AddFolder(file, BackupFolder)
-                    : builder.InsertFolder(file, 1, BackupFolder);
+                    ? builder.AddFolder(file, NewFolder)
+                    : builder.InsertFolder(file, 1, NewFolder);
             }
             if (file is null)
             {
@@ -93,34 +94,37 @@ namespace RevitJournal.Helper
 
         public string CreateSymbolic()
         {
-            var symbolicPath = LIBRARYROOTNAME;
+            var path = new List<string> { RootName };
             if (HasNewRootFolder())
             {
-                symbolicPath = NEWLIBRARYROOTNAME;
+                path.Clear();
+                path.Add(NewRootName);
             }
-            if (string.IsNullOrWhiteSpace(BackupFolder))
-            {
-                symbolicPath = string.Join(Constant.BackSlash, symbolicPath, LIBRARYPATHNAME);
-            }
-            else
+            path.Add(LibraryPathName);
+            if (string.IsNullOrWhiteSpace(NewFolder) == false)
             {
                 if (AddBackupAtEnd)
                 {
-                    symbolicPath = string.Join(Constant.BackSlash, symbolicPath, LIBRARYPATHNAME, BACKUPFOLDERNAME);
+                    path.Add(NewFolderName);
                 }
                 else
                 {
-                    symbolicPath = string.Join(Constant.BackSlash, symbolicPath, BACKUPFOLDERNAME, LIBRARYPATHNAME);
+                    path.Insert(1, NewFolderName);
                 }
             }
-
-            var fileName = REVITFILENAME;
+            path.Add(FileName);
             if (string.IsNullOrWhiteSpace(FileSuffix) == false)
             {
-                fileName = string.Join(Constant.Underline, REVITFILENAME, SUFFIXNAME);
+                path.Add(FileSuffixName);
             }
-            symbolicPath = string.Join(Constant.BackSlash, symbolicPath, fileName);
-            return symbolicPath;
+            return string.Join(Constant.BackSlash, path.ToArray());
+        }
+
+        public bool PathConfigured()
+        {
+            return HasNewRootFolder()
+                || string.IsNullOrWhiteSpace(NewFolder) == false
+                || string.IsNullOrWhiteSpace(FileSuffix) == false;
         }
 
         private bool HasNewRootFolder()

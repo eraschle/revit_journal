@@ -78,7 +78,7 @@ namespace RevitJournal.Tasks.Options
             Arguments = new RevitArguments();
             RootDirectory = new TaskOptionProperty<string>(DirUtils.MyDocuments, PathCreator, nameof(PathCreator.RootPath));
             NewRootPath = new TaskOptionProperty<string>(string.Empty, PathCreator, nameof(PathCreator.NewRootPath));
-            BackupFolder = new TaskOptionProperty<string>(DateUtils.GetPathDate(), PathCreator, nameof(PathCreator.BackupFolder));
+            BackupFolder = new TaskOptionProperty<string>(DateUtils.GetPathDate(), PathCreator, nameof(PathCreator.NewFolder));
             FileSuffix = new TaskOptionProperty<string>(DateUtils.GetPathDate(), PathCreator, nameof(PathCreator.FileSuffix));
             AddBackupAtEnd = new TaskOptionProperty<bool>(PathCreator.AddBackupAtEnd, PathCreator, nameof(PathCreator.AddBackupAtEnd));
         }

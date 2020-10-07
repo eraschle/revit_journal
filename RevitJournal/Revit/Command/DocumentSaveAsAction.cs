@@ -59,7 +59,7 @@ namespace RevitJournal.Revit.Command
         private string CreateSymbolicPath()
         {
             pathCreator.FileSuffix = fileSuffix.Value;
-            pathCreator.BackupFolder = saveFolder.Value;
+            pathCreator.NewFolder = saveFolder.Value;
             pathCreator.AddBackupAtEnd = addAtEnd.GetBoolValue();
             pathCreator.RootPath = currentRoot.Value;
             pathCreator.NewRootPath = newRoot.Value;
