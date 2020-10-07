@@ -99,6 +99,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Settings\OptionSelectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Settings\OptionSliderView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -182,9 +186,13 @@
     <Compile Include="Pages\Settings\OptionBoolView.xaml.cs">
       <DependentUpon>OptionBoolView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Settings\OptionSelectView.xaml.cs">
+      <DependentUpon>OptionSelectView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings\OptionSliderView.xaml.cs">
       <DependentUpon>OptionSliderView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Settings\OptionSelectViewModel.cs" />
     <Compile Include="Pages\Settings\OptionStringView.xaml.cs">
       <DependentUpon>OptionStringView.xaml</DependentUpon>
     </Compile>

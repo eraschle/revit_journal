@@ -18,7 +18,7 @@ namespace DataSource
 
         public static void UpdateVersions(string rootDirectory = AutodeskProgram)
         {
-            if (ExecutableRevitApps.Any()) { return; }
+            if (RevitVersions.Values.Any()) { return; }
 
             var factory = PathFactory.Instance;
             var root = factory.CreateRoot(rootDirectory);
@@ -29,22 +29,25 @@ namespace DataSource
             }
         }
 
-        public static ICollection<RevitApp> RevitApps
+        public static ICollection<RevitApp> GetApplications(bool insertUseMetadata)
         {
-            get { return RevitVersions.Values; }
+            UpdateVersions();
+            if (insertUseMetadata == false)
+            {
+                return RevitVersions.Values;
+            }
+            var apps = new List<RevitApp>(RevitVersions.Values);
+            apps.Insert(0, UseMetadata);
+            return apps;
         }
 
         public static IEnumerable<RevitApp> ExecutableRevitApps
         {
-            get { return RevitApps.Where(rvt => rvt.Executable); }
+            get { return GetApplications(false).Where(rvt => rvt.Executable); }
         }
 
         public static RevitApp OldestVersion()
         {
-            if (RevitApps.Count == 0)
-            {
-                UpdateVersions();
-            }
             RevitApp oldest = null;
             foreach (var revitApp in ExecutableRevitApps)
             {

@@ -1,5 +1,7 @@
 ﻿using Autodesk.Revit.DB.Architecture;
+using DataSource;
 using DataSource.Model.FileSystem;
+using DataSource.Model.Product;
 using RevitJournal.Helper;
 using RevitJournal.Revit;
 using RevitJournal.Tasks.Options.Parameter;
@@ -22,11 +24,13 @@ namespace RevitJournal.Tasks.Options
 
         private readonly IPathBuilder pathBuilder;
 
-        public BoolOption LogResults { get; } = new BoolOption(true);
+        public TaskOptionSelect<RevitApp> Applications { get; }
 
-        public BoolOption LogSuccess { get; } = new BoolOption(false);
+        public TaskOptionBool LogResults { get; } = new TaskOptionBool(true);
 
-        public BoolOption LogError { get; } = new BoolOption(true);
+        public TaskOptionBool LogSuccess { get; } = new TaskOptionBool(false);
+
+        public TaskOptionBool LogError { get; } = new TaskOptionBool(true);
 
         public TaskOptionRange Processes { get; } = new TaskOptionRange(Environment.ProcessorCount / 2, 1, Environment.ProcessorCount);
 
@@ -57,7 +61,7 @@ namespace RevitJournal.Tasks.Options
 
         public TaskOption<string> ActionDirectory { get; } = new TaskOption<string>(DirUtils.MyDocuments);
 
-        public BoolOption DeleteRevitBackup { get; } = new BoolOption(true);
+        public TaskOptionBool DeleteRevitBackup { get; } = new TaskOptionBool(true);
 
         public PathCreator PathCreator { get; }
 
@@ -75,6 +79,7 @@ namespace RevitJournal.Tasks.Options
         {
             pathBuilder = builder ?? throw new ArgumentNullException(nameof(builder));
             PathCreator = new PathCreator(builder);
+            Applications  = new TaskOptionSelect<RevitApp>(ProductManager.UseMetadata, ProductManager.GetApplications(true));
             Arguments = new RevitArguments();
             RootDirectory = new TaskOptionProperty<string>(DirUtils.MyDocuments, PathCreator, nameof(PathCreator.RootPath));
             NewRootPath = new TaskOptionProperty<string>(string.Empty, PathCreator, nameof(PathCreator.NewRootPath));

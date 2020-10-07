@@ -135,8 +135,9 @@
     <Compile Include="Tasks\Actions\ExternalAction.cs" />
     <Compile Include="Tasks\Actions\ExternalActionDataSource.cs" />
     <Compile Include="Tasks\Actions\ExternalActionFile.cs" />
+    <Compile Include="Tasks\Options\Parameter\TaskOptionSelect.cs" />
     <Compile Include="Tasks\Options\Parameter\TaskOptionRange.cs" />
-    <Compile Include="Tasks\Options\Parameter\BoolOption.cs" />
+    <Compile Include="Tasks\Options\Parameter\TaskOptionBool.cs" />
     <Compile Include="Tasks\Options\Parameter\TaskOptionProperty.cs" />
     <Compile Include="Tasks\Options\ParallelOptions.cs" />
     <Compile Include="Tasks\Options\Parameter\TaskOption.cs" />
