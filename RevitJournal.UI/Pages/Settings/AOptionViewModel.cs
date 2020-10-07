@@ -3,6 +3,7 @@ using Utilities.UI;
 using RevitJournal.Tasks.Options.Parameter;
 using Utilities.System;
 using System;
+using System.Windows;
 
 namespace RevitJournalUI.Pages.Settings
 {
@@ -43,6 +44,32 @@ namespace RevitJournalUI.Pages.Settings
                 if (Option.HasValue(out var optionValue) && optionValue.Equals(value)) { return; }
 
                 Option.Value = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private Visibility optionVisibility = Visibility.Visible;
+        public Visibility OptionVisibility
+        {
+            get { return optionVisibility; }
+            set
+            {
+                if (optionVisibility == value) { return; }
+
+                optionVisibility = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private bool isEnabled = true;
+        public bool IsEnabled
+        {
+            get { return isEnabled; }
+            set
+            {
+                if (isEnabled == value) { return; }
+
+                isEnabled = value;
                 NotifyPropertyChanged();
             }
         }

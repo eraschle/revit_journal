@@ -1,6 +1,5 @@
 ﻿using RevitJournal.Tasks.Options.Parameter;
 using System.ComponentModel;
-using System.Globalization;
 using Utilities.System;
 
 namespace RevitJournalUI.Pages.Settings
@@ -12,7 +11,6 @@ namespace RevitJournalUI.Pages.Settings
             : base(name, taskOption, showDefaultAtStart)
         {
             nameSuffix = labelSuffix;
-            labelName = name;
             PropertyChanged += OptionSliderViewModel_PropertyChanged;
         }
 
@@ -20,16 +18,15 @@ namespace RevitJournalUI.Pages.Settings
         {
             if (StringUtils.Equals(args.PropertyName, nameof(Value)) == false) { return; }
 
-            LabelName = string.Empty;
+            SliderValue = string.Empty;
         }
 
-        private string labelName;
-        public override string LabelName
+        public string SliderValue
         {
             get
             {
                 var suffix = string.IsNullOrEmpty(nameSuffix) ? nameSuffix : $" {nameSuffix}";
-                return $"{labelName} [{Value}{suffix}]";
+                return $"({Value}{suffix})";
             }
             set { NotifyPropertyChanged(); }
         }
