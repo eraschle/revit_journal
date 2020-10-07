@@ -15,10 +15,10 @@
     </Page.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="4*"/>
         </Grid.ColumnDefinitions>
-        <Grid x:Name="gridFolder" Grid.Column="0">
+        <Grid x:Name="gridFolder" Grid.Column="0" Margin="{StaticResource ThreeThick}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -71,12 +71,7 @@
             <local:OptionDirectoryView Grid.Row="9" Grid.ColumnSpan="2"
                                        DataContext="{Binding ActionDirectory}"/>
         </Grid>
-        <Grid x:Name="gridOptions" Grid.Column="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="{StaticResource GridFirstColumnWidth}"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Grid x:Name="gridOptions" Grid.Column="1" Margin="{StaticResource ThreeThick}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -86,33 +81,22 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Label Content="Revit"
-                   Grid.Column="0" Grid.Row="0" 
-                   Style="{StaticResource UILabel}"/>
-            <ComboBox ItemsSource="{Binding RevitApps}"
-                      SelectedItem="{Binding SelectedRevitApp}"
-                      DisplayMemberPath="ProductName"
-                      Grid.Column="1" Grid.Row="0"
-                      Style="{StaticResource UIComboBox}"/>
-            <Button Content="Default"
-                    Grid.Column="2" Grid.Row="0"
-                    Command="{Binding DefaultCommand}"
-                    CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
-                    Style="{StaticResource UIButton}"/>
+            <local:OptionSelectView Grid.Row="0"
+                                    DataContext="{Binding RevitApps}"/>
 
-            <local:OptionSliderView Grid.Row="1" Grid.ColumnSpan="3"
+            <local:OptionSliderView Grid.Row="1"
                                     DataContext="{Binding ParallelProcess}"/>
 
-            <local:OptionSliderView Grid.Row="2" Grid.ColumnSpan="3"
+            <local:OptionSliderView Grid.Row="2"
                                     DataContext="{Binding ProcessTimeout}"/>
 
-            <local:OptionBoolView Grid.Row="3" Grid.ColumnSpan="3"
+            <local:OptionBoolView Grid.Row="3"
                                   DataContext="{Binding LogResult}"/>
 
-            <local:OptionBoolView Grid.Row="4" Grid.ColumnSpan="3"
+            <local:OptionBoolView Grid.Row="4"
                                   DataContext="{Binding LogSuccess}"/>
 
-            <local:OptionBoolView Grid.Row="5" Grid.ColumnSpan="3"
+            <local:OptionBoolView Grid.Row="5"
                                   DataContext="{Binding LogError}"/>
         </Grid>
     </Grid>

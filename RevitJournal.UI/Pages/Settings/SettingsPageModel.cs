@@ -22,8 +22,8 @@ namespace RevitJournalUI.Pages.Settings
             JournalDirectory = new OptionDirectoryViewModel("Journal Directory", Options.JournalDirectory, true);
             ActionDirectory = new OptionDirectoryViewModel("Action Directory", Options.ActionDirectory, true);
 
-            DeleteAppBackups = new OptionBoolViewModel("Delete Revit Backups", Options.DeleteRevitBackup, true);
-            SourceBackup = new OptionBoolViewModel("Create source Backups", Options.CreateSourceBackup, true);
+            DeleteAppBackups = new OptionBoolViewModel("Delete App Backups", Options.DeleteRevitBackup, true);
+            SourceBackup = new OptionBoolViewModel("Make Backups", Options.CreateSourceBackup, true);
             SourceBackup.PropertyChanged += SourceBackup_PropertyChanged;
 
             NewRootPath = new OptionDirectoryViewModel("New Root Directory", Options.NewRootPath, false, Options.RootDirectory);
@@ -38,6 +38,8 @@ namespace RevitJournalUI.Pages.Settings
             SetBackupOptionVisibility(SourceBackup.Value);
             SetAddFolderAtEndEnabled();
 
+            RevitApps = new OptionSelectViewModel<RevitApp>("Application", Options.Applications, true);
+
             LogResult = new OptionBoolViewModel("Log Results", Options.LogResults, true);
             LogResult.PropertyChanged += LogResult_PropertyChanged;
             LogSuccess = new OptionBoolViewModel("Log succes", Options.LogSuccess, true);
@@ -50,7 +52,6 @@ namespace RevitJournalUI.Pages.Settings
             FamilyDirectory.Value = @"C:\develop\workspace\revit_journal_test_data\families";
             JournalDirectory.Value = @"C:\develop\workspace\Content\journal";
 #endif
-            AddRevitApplications();
         }
 
         public OptionStringViewModel FamilyDirectory { get; }
@@ -59,18 +60,7 @@ namespace RevitJournalUI.Pages.Settings
 
         public OptionStringViewModel ActionDirectory { get; }
 
-        private void AddRevitApplications()
-        {
-            RevitApps.Clear();
-            ProductManager.UpdateVersions();
-            RevitApps.Add(ProductManager.UseMetadata);
-            foreach (var revitApp in ProductManager.ExecutableRevitApps)
-            {
-                RevitApps.Add(revitApp);
-            }
-        }
-
-        public ObservableCollection<RevitApp> RevitApps { get; } = new ObservableCollection<RevitApp>();
+        public OptionSelectViewModel<RevitApp> RevitApps { get; }
 
         public RevitApp SelectedRevitApp
         {
