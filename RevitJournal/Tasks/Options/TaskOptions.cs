@@ -65,6 +65,8 @@ namespace RevitJournal.Tasks.Options
 
         public PathCreator PathCreator { get; }
 
+        public TaskOptionProperty<string> SymbolicPath { get; }
+
         public TaskOptionProperty<string> NewRootPath { get; }
 
         public TaskOptionProperty<string> FileSuffix { get; }
@@ -81,6 +83,7 @@ namespace RevitJournal.Tasks.Options
             PathCreator = new PathCreator(builder);
             Applications  = new TaskOptionSelect<RevitApp>(ProductManager.UseMetadata, ProductManager.GetApplications(true));
             Arguments = new RevitArguments();
+            SymbolicPath = new TaskOptionProperty<string>(string.Empty, PathCreator, nameof(PathCreator.SymbolicPath));
             RootDirectory = new TaskOptionProperty<string>(DirUtils.MyDocuments, PathCreator, nameof(PathCreator.RootPath));
             NewRootPath = new TaskOptionProperty<string>(string.Empty, PathCreator, nameof(PathCreator.NewRootPath));
             BackupFolder = new TaskOptionProperty<string>(DateUtils.GetPathDate(), PathCreator, nameof(PathCreator.NewFolder));

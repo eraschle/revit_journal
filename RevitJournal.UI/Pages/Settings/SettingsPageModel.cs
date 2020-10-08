@@ -26,6 +26,7 @@ namespace RevitJournalUI.Pages.Settings
             SourceBackup = new OptionBoolViewModel("Make Backups", Options.CreateSourceBackup, true);
             SourceBackup.PropertyChanged += SourceBackup_PropertyChanged;
 
+            SymbolicPath = new OptionInformationViewModel("Backup path", Options.SymbolicPath, false);
             NewRootPath = new OptionDirectoryViewModel("New Root Directory", Options.NewRootPath, false, Options.RootDirectory);
             NewRootPath.PropertyChanged += PathOptions_PropertyChanged;
             BackupFolder = new OptionStringViewModel("Backup Folder", Options.BackupFolder, false);
@@ -46,7 +47,7 @@ namespace RevitJournalUI.Pages.Settings
             LogError = new OptionBoolViewModel("Log error", Options.LogError, true);
             SetOptionLogEnabled(LogResult.Value);
 
-            ParallelProcess = new OptionSliderViewModel("Processes", Options.Processes, true);
+            ParallelProcess = new OptionSliderViewModel("Processes", Options.Processes, true, "CPU");
             ProcessTimeout = new OptionSliderViewModel("Timeout", Options.ProcessTime, true, "min");
 #if DEBUG
             FamilyDirectory.Value = @"C:\develop\workspace\revit_journal_test_data\families";
@@ -123,13 +124,7 @@ namespace RevitJournalUI.Pages.Settings
         {
             if (StringUtils.Equals(args.PropertyName, nameof(SourceBackup.Value)) == false) { return; }
 
-            SymbolicPath = string.Empty;
-        }
-
-        public Visibility BackupVisibility
-        {
-            get { return GetVisibility(SourceBackup.Value); }
-            set { NotifyPropertyChanged(); }
+            SymbolicPath.InformationValue = string.Empty;
         }
 
         private void SetBackupOptionVisibility(bool isChecked)
@@ -139,14 +134,10 @@ namespace RevitJournalUI.Pages.Settings
             AddBackupAtEnd.OptionVisibility = visibility;
             BackupFolder.OptionVisibility = visibility;
             FileSuffix.OptionVisibility = visibility;
-            BackupVisibility = visibility;
+            SymbolicPath.OptionVisibility = visibility;
         }
 
-        public string SymbolicPath
-        {
-            get { return Options.PathCreator.CreateSymbolic(); }
-            set { NotifyPropertyChanged(); }
-        }
+        public OptionInformationViewModel SymbolicPath { get; }
 
         public OptionBoolViewModel SourceBackup { get; }
 

@@ -10,18 +10,27 @@ namespace RevitJournal.Helper
 {
     public class PathCreator
     {
-        public const string RootName = "[ROOT Path]";
+        public const string RootName = "[Root Path]";
         public const string NewRootName = "[New ROOT Path]";
         public const string LibraryPathName = "[Library Path]";
         public const string NewFolderName = "[New Folder]";
         public const string FileName = "[File Name]";
         public const string FileSuffixName = "[File Suffix]";
+        public const string NoPathConfigured = "Original path";
 
         private readonly IPathBuilder builder;
 
         public PathCreator(IPathBuilder pathBuilder)
         {
             builder = pathBuilder ?? throw new ArgumentNullException(nameof(pathBuilder));
+        }
+
+        public string SymbolicPath
+        {
+            get
+            {
+                return PathConfigured() ? CreateSymbolic() : NoPathConfigured;
+            }
         }
 
         private string rootPath = string.Empty;

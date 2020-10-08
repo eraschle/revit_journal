@@ -40,6 +40,7 @@
         <Style x:Key="UITextBlock" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource UIElement}">
             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="{StaticResource ThreeThick}"/>
         </Style>
 
         <Style x:Key="UICheckBox" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource UIControl}">

@@ -24,52 +24,44 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="{StaticResource GridFirstColumnWidth}"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <local:OptionDirectoryView Grid.Row="0" Grid.ColumnSpan="2"
+            <local:OptionDirectoryView Grid.Row="0"
                                        DataContext="{Binding FamilyDirectory}"/>
 
-            <local:OptionBoolView Grid.Row="1" Grid.ColumnSpan="2"
-                                  DataContext="{Binding DeleteAppBackups}"/>
-
-            <local:OptionBoolView Grid.Row="2" Grid.ColumnSpan="2"
-                                  DataContext="{Binding SourceBackup}"/>
-
-            <Label Content="Backup Path" Grid.Row="3" Grid.Column="0"
-                   Visibility="{Binding BackupVisibility}"
-                   Style="{StaticResource UILabel}"/>
-            <TextBlock Text="{Binding SymbolicPath, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                       Grid.Row="3" Grid.Column="1"
-                       Visibility="{Binding BackupVisibility}"
-                       Style="{StaticResource UITextBlock}"/>
-
-            <local:OptionDirectoryView Grid.Row="4" Grid.ColumnSpan="2"
-                                       DataContext="{Binding NewRootPath}"/>
-
-            <local:OptionStringView Grid.Row="5" Grid.ColumnSpan="2"
-                                    DataContext="{Binding BackupFolder}"/>
-
-            <local:OptionBoolView Grid.Row="6" Grid.ColumnSpan="2"
-                                  DataContext="{Binding AddBackupAtEnd}"/>
-
-            <local:OptionStringView Grid.Row="7" Grid.ColumnSpan="2"
-                                    DataContext="{Binding FileSuffix}"/>
-
-            <local:OptionDirectoryView Grid.Row="8" Grid.ColumnSpan="2"
+            <local:OptionDirectoryView Grid.Row="1" Grid.ColumnSpan="2"
                                        DataContext="{Binding JournalDirectory}"/>
 
-            <local:OptionDirectoryView Grid.Row="9" Grid.ColumnSpan="2"
+            <local:OptionDirectoryView Grid.Row="2" Grid.ColumnSpan="2"
                                        DataContext="{Binding ActionDirectory}"/>
+            
+            <GroupBox Header="Options" Grid.Row="3">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <local:OptionBoolView Grid.Row="0" DataContext="{Binding DeleteAppBackups}"/>
+
+                    <local:OptionBoolView Grid.Row="1" DataContext="{Binding SourceBackup}"/>
+
+                    <local:OptionInformationView Grid.Row="2" DataContext="{Binding SymbolicPath}"/>
+
+                    <local:OptionDirectoryView Grid.Row="3" DataContext="{Binding NewRootPath}"/>
+
+                    <local:OptionStringView Grid.Row="4" DataContext="{Binding BackupFolder}"/>
+
+                    <local:OptionBoolView Grid.Row="5" DataContext="{Binding AddBackupAtEnd}"/>
+
+                    <local:OptionStringView Grid.Row="6" DataContext="{Binding FileSuffix}"/>
+                </Grid>
+            </GroupBox>
         </Grid>
         <Grid x:Name="gridOptions" Grid.Column="1" Margin="{StaticResource ThreeThick}">
             <Grid.RowDefinitions>

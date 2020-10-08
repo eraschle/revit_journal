@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="RevitJournalUI.Pages.Settings.OptionInformationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RevitJournalUI.Pages.Settings"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" 
+             Visibility="{Binding OptionVisibility}"
+             IsEnabled="{Binding IsEnabled}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{StaticResource GridFirstColumnWidth}"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="{Binding LabelName}" Grid.Column="0"
+               Style="{StaticResource UILabel}"/>
+        <TextBlock Text="{Binding InformationValue}"
+                   Grid.Row="2" Grid.Column="1"
+                   Style="{StaticResource UITextBlock}"/>
+    </Grid>
+</UserControl>

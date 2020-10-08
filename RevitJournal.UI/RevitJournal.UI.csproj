@@ -95,6 +95,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <Page Include="Pages\Settings\OptionInformationView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Settings\OptionBoolView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -183,6 +187,10 @@
     <Compile Include="JournalTaskUI\FamilyFilter\FilterViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\PathViewModel.cs" />
     <Compile Include="Converters\TimespanMinutesConverter .cs" />
+    <Compile Include="Pages\Settings\OptionInformationViewModel.cs" />
+    <Compile Include="Pages\Settings\OptionInformationView.xaml.cs">
+      <DependentUpon>OptionInformationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings\OptionBoolView.xaml.cs">
       <DependentUpon>OptionBoolView.xaml</DependentUpon>
     </Compile>
