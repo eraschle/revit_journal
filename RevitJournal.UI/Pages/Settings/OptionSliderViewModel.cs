@@ -26,7 +26,7 @@ namespace RevitJournalUI.Pages.Settings
             get
             {
                 var suffix = string.IsNullOrEmpty(nameSuffix) ? nameSuffix : $" {nameSuffix}";
-                return $"({Value}{suffix})";
+                return $"{Value}{suffix}";
             }
             set { NotifyPropertyChanged(); }
         }
