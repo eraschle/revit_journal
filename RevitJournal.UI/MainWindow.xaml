@@ -8,5 +8,17 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="768" Width="1024">
     <!--<Button Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Style="{DynamicResource ButtonStyle1}"/>-->
-    <pages:SettingsPage/>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Frame Name="MainFrame" >
+        </Frame>
+        <WrapPanel HorizontalAlignment="Right" Grid.Row="1">
+            <Button x:Name="BtnNext" Style="{StaticResource UIButton}"
+                    Click="BtnNext_Click"/>
+        </WrapPanel>
+    </Grid>
+    <!--<pages:SettingsPage/>-->
 </Window>

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace RevitJournalUI
 {
@@ -10,6 +11,11 @@ namespace RevitJournalUI
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void BtnNext_Click(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new Uri("Pages/Settings/SettingsPage.xaml", UriKind.RelativeOrAbsolute));
         }
     }
 }
