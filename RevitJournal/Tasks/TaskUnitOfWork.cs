@@ -161,7 +161,12 @@ namespace RevitJournal.Tasks
             using (var taskCancel = CancellationTokenSource.CreateLinkedTokenSource(cancel))
             {
                 taskCancel.Token.Register(CancelProcess);
-                Process = new RevitProcess(TaskArguments);
+                var argument = new RevitArguments
+                {
+                    Timeout = Options.GetProcessTimeout(),
+                    RevitApp = Options.GetApplication(Task.Family.Metadata.Product)
+                };
+                Process = new RevitProcess(argument);
                 Process.ProcessFinished += Process_ProcessFinished;
                 var normalExit = await Process.RunTaskAsync(journal, taskCancel.Token)
                                               .ConfigureAwait(false);
@@ -172,23 +177,6 @@ namespace RevitJournal.Tasks
             }
             Process.WaitChildProcessesExited();
             ReportStatus(TaskAppStatus.Finish);
-        }
-
-        private RevitArguments TaskArguments
-        {
-            get
-            {
-                if (Options.UseMetadata && TaskManager.IsRevitInstalled(Task.Family, out var revitApp))
-                {
-                    var timeout = Options.ProcessTimeout;
-                    return new RevitArguments
-                    {
-                        Timeout = timeout,
-                        RevitApp = revitApp
-                    };
-                }
-                return Options.Arguments;
-            }
         }
 
         public void ReportStatus(int status)

@@ -41,8 +41,9 @@ namespace RevitJournal.Tasks
             if (family is null) { throw new ArgumentNullException(nameof(family)); }
             if (options is null) { throw new ArgumentNullException(nameof(options)); }
 
-            return (options.UseMetadata && IsRevitInstalled(family, out _))
-                || ((family.AreMetadataRepairable || family.HasValidMetadata) && options.UseMetadata == false);
+            var useMetadata = options.Applications.Value.UseMetadata;
+            return (useMetadata && IsRevitInstalled(family, out _))
+                || ((family.AreMetadataRepairable || family.HasValidMetadata) && useMetadata == false);
         }
 
         public static bool IsRevitInstalled(RevitFamily family, out RevitApp revit)

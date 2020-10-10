@@ -71,24 +71,28 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <local:OptionSelectView Grid.Row="0"
-                                    DataContext="{Binding RevitApps}"/>
+                                    DataContext="{Binding Applications}"/>
 
-            <local:OptionSliderView Grid.Row="1"
+            <local:OptionBoolView Grid.Row="1"
+                                  DataContext="{Binding UseNewerApplication}"/>
+            
+            <local:OptionSliderView Grid.Row="2"
                                     DataContext="{Binding ParallelProcess}"/>
 
-            <local:OptionSliderView Grid.Row="2"
+            <local:OptionSliderView Grid.Row="3"
                                     DataContext="{Binding ProcessTimeout}"/>
 
-            <local:OptionBoolView Grid.Row="3"
+            <local:OptionBoolView Grid.Row="4"
                                   DataContext="{Binding LogResult}"/>
 
-            <local:OptionBoolView Grid.Row="4"
+            <local:OptionBoolView Grid.Row="5"
                                   DataContext="{Binding LogSuccess}"/>
 
-            <local:OptionBoolView Grid.Row="5"
+            <local:OptionBoolView Grid.Row="6"
                                   DataContext="{Binding LogError}"/>
         </Grid>
     </Grid>

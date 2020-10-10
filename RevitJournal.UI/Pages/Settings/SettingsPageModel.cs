@@ -39,7 +39,8 @@ namespace RevitJournalUI.Pages.Settings
             SetBackupOptionVisibility(SourceBackup.Value);
             SetAddFolderAtEndEnabled();
 
-            RevitApps = new OptionSelectViewModel<RevitApp>("Application", Options.Applications, true);
+            Applications = new OptionSelectViewModel<RevitApp>("Application", Options.Applications, true);
+            UseNewerApplication = new OptionBoolViewModel("Use newer app", Options.UseNewerApp, true);
 
             LogResult = new OptionBoolViewModel("Log Results", Options.LogResults, true);
             LogResult.PropertyChanged += LogResult_PropertyChanged;
@@ -61,19 +62,9 @@ namespace RevitJournalUI.Pages.Settings
 
         public OptionStringViewModel ActionDirectory { get; }
 
-        public OptionSelectViewModel<RevitApp> RevitApps { get; }
+        public OptionSelectViewModel<RevitApp> Applications { get; }
 
-        public RevitApp SelectedRevitApp
-        {
-            get { return Options.Arguments.RevitApp; }
-            set
-            {
-                if (Options.Arguments.RevitApp != null && Options.Arguments.RevitApp.Equals(value)) { return; }
-
-                Options.Arguments.RevitApp = value;
-                NotifyPropertyChanged();
-            }
-        }
+        public OptionBoolViewModel UseNewerApplication { get; }
 
         public OptionSliderViewModel ParallelProcess { get; }
 

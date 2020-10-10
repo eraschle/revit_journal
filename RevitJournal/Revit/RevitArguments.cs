@@ -37,22 +37,16 @@ namespace RevitJournal.Revit
         {
             get
             {
-                return RevitApp.AppFile.HasParent(out var parent) == false 
+                return RevitApp.AppFile.HasParent(out var parent) == false
                     ? string.Empty : parent.FullPath;
             }
         }
 
-        public static TimeSpan MinimumTimeout { get { return TimeSpan.FromMinutes(1); } }
-
-        public static TimeSpan DefaultTimeout { get { return TimeSpan.FromMinutes(2); } }
-
-        public static TimeSpan MaximumTimeout { get { return TimeSpan.FromMinutes(20); } }
-
-        public TimeSpan Timeout { get; set; } = DefaultTimeout;
+        public TimeSpan Timeout { get; set; }
 
         public int TimeoutTime
         {
             get { return (int)Timeout.TotalMilliseconds; }
-        } 
+        }
     }
 }

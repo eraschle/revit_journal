@@ -108,7 +108,7 @@ namespace RevitJournalUI.Tasks
             if (TaskUoW is object && TaskUoW.Status.IsStarted && TaskUoW.Status.IsExecuted == false)
             {
                 executionTime += timerInterval;
-                TaskTime = $"{GetTime(executionTime)} / {GetTime(TaskUoW.Options.ProcessTimeout)}";
+                TaskTime = $"{GetTime(executionTime)} / {GetTime(TaskUoW.Options.GetProcessTimeout())}";
             }
         }
 

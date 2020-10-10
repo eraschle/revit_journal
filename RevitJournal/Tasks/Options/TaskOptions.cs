@@ -24,7 +24,11 @@ namespace RevitJournal.Tasks.Options
 
         private readonly IPathBuilder pathBuilder;
 
+        private readonly PathCreator pathCreator;
+
         public TaskOptionSelect<RevitApp> Applications { get; }
+
+        public TaskOptionBool UseNewerApp { get; } = new TaskOptionBool(true);
 
         public TaskOptionBool LogResults { get; } = new TaskOptionBool(true);
 
@@ -41,18 +45,6 @@ namespace RevitJournal.Tasks.Options
 
         public TaskOptionRange ProcessTime { get; } = new TaskOptionRange(2, 1, 20);
 
-        public TimeSpan ProcessTimeout
-        {
-            get { return TimeSpan.FromMinutes(ProcessTime.Value); }
-        }
-
-        public RevitArguments Arguments { get; set; }
-
-        public bool UseMetadata
-        {
-            get { return Arguments.RevitApp.UseMetadata; }
-        }
-
         public TaskOptionProperty<string> RootDirectory { get; }
 
         public TaskOption<string> JournalDirectory { get; } = new TaskOption<string>(DirUtils.MyDocuments);
@@ -63,7 +55,6 @@ namespace RevitJournal.Tasks.Options
 
         public TaskOptionBool DeleteRevitBackup { get; } = new TaskOptionBool(true);
 
-        public PathCreator PathCreator { get; }
 
         public TaskOptionProperty<string> SymbolicPath { get; }
 
@@ -80,20 +71,19 @@ namespace RevitJournal.Tasks.Options
         public TaskOptions(IPathBuilder builder)
         {
             pathBuilder = builder ?? throw new ArgumentNullException(nameof(builder));
-            PathCreator = new PathCreator(builder);
-            Applications  = new TaskOptionSelect<RevitApp>(ProductManager.UseMetadata, ProductManager.GetApplications(true));
-            Arguments = new RevitArguments();
-            SymbolicPath = new TaskOptionProperty<string>(string.Empty, PathCreator, nameof(PathCreator.SymbolicPath));
-            RootDirectory = new TaskOptionProperty<string>(DirUtils.MyDocuments, PathCreator, nameof(PathCreator.RootPath));
-            NewRootPath = new TaskOptionProperty<string>(string.Empty, PathCreator, nameof(PathCreator.NewRootPath));
-            BackupFolder = new TaskOptionProperty<string>(DateUtils.GetPathDate(), PathCreator, nameof(PathCreator.NewFolder));
-            FileSuffix = new TaskOptionProperty<string>(DateUtils.GetPathDate(), PathCreator, nameof(PathCreator.FileSuffix));
-            AddBackupAtEnd = new TaskOptionProperty<bool>(PathCreator.AddBackupAtEnd, PathCreator, nameof(PathCreator.AddBackupAtEnd));
+            pathCreator = new PathCreator(builder);
+            Applications = new TaskOptionSelect<RevitApp>(ProductManager.UseMetadata, ProductManager.GetApplications(true));
+            SymbolicPath = new TaskOptionProperty<string>(string.Empty, pathCreator, nameof(pathCreator.SymbolicPath));
+            RootDirectory = new TaskOptionProperty<string>(DirUtils.MyDocuments, pathCreator, nameof(pathCreator.RootPath));
+            NewRootPath = new TaskOptionProperty<string>(string.Empty, pathCreator, nameof(pathCreator.NewRootPath));
+            BackupFolder = new TaskOptionProperty<string>(DateUtils.GetPathDate(), pathCreator, nameof(pathCreator.NewFolder));
+            FileSuffix = new TaskOptionProperty<string>(DateUtils.GetPathDate(), pathCreator, nameof(pathCreator.FileSuffix));
+            AddBackupAtEnd = new TaskOptionProperty<bool>(pathCreator.AddBackupAtEnd, pathCreator, nameof(pathCreator.AddBackupAtEnd));
         }
 
         public RevitFamilyFile CreateBackupFile(RevitFamilyFile file)
         {
-            return PathCreator.CreatePath(file);
+            return pathCreator.CreatePath(file);
         }
 
         public DirectoryNode GetJournalWorking()
@@ -106,6 +96,23 @@ namespace RevitJournal.Tasks.Options
                 timeFolder.Create();
             }
             return timeFolder;
+        }
+
+        public TimeSpan GetProcessTimeout()
+        {
+            return TimeSpan.FromMinutes(ProcessTime.Value);
+        }
+
+
+        public RevitApp GetApplication(RevitApp application)
+        {
+            if(application is null) { throw new ArgumentNullException(nameof(application)); }
+
+            if (UseNewerApp.Value && Applications.Value.UseMetadata)
+            {
+                return ProductManager.GetVersionOrNewer(application.Version, onlyExist: true);
+            }
+            return application;
         }
     }
 }
