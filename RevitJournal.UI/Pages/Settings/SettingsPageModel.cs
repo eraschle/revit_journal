@@ -9,6 +9,7 @@ using System.Windows;
 using System.Drawing;
 using Utilities.System;
 using System.ComponentModel;
+using RevitJournalUI.Pages.Settings.Models;
 
 namespace RevitJournalUI.Pages.Settings
 {

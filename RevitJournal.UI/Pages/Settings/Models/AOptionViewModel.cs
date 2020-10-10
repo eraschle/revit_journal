@@ -5,7 +5,7 @@ using Utilities.System;
 using System;
 using System.Windows;
 
-namespace RevitJournalUI.Pages.Settings
+namespace RevitJournalUI.Pages.Settings.Models
 {
     public abstract class AOptionViewModel<TOption, TValue> : ANotifyPropertyChangedModel
         where TOption : TaskOption<TValue>

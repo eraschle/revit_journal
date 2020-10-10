@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using Utilities.System;
 
-namespace RevitJournalUI.Pages.Settings
+namespace RevitJournalUI.Pages.Settings.Models
 {
     public class OptionSliderViewModel : AOptionViewModel<TaskOptionRange, double>
     {

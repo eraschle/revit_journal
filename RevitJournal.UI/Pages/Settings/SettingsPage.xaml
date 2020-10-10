@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:RevitJournalUI.Pages.Settings"
+      xmlns:models="clr-namespace:RevitJournalUI.Pages.Settings.Models"
       xmlns:conv="clr-namespace:RevitJournalUI.Converters"
       mc:Ignorable="d" d:DesignWidth="1000"
       Title="Settings">
@@ -26,13 +27,13 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <local:OptionDirectoryView Grid.Row="0"
+            <models:OptionDirectoryView Grid.Row="0"
                                        DataContext="{Binding FamilyDirectory}"/>
 
-            <local:OptionDirectoryView Grid.Row="1" Grid.ColumnSpan="2"
+            <models:OptionDirectoryView Grid.Row="1" Grid.ColumnSpan="2"
                                        DataContext="{Binding JournalDirectory}"/>
 
-            <local:OptionDirectoryView Grid.Row="2" Grid.ColumnSpan="2"
+            <models:OptionDirectoryView Grid.Row="2" Grid.ColumnSpan="2"
                                        DataContext="{Binding ActionDirectory}"/>
             
             <GroupBox Header="Options" Grid.Row="3">
@@ -47,19 +48,19 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <local:OptionBoolView Grid.Row="0" DataContext="{Binding DeleteAppBackups}"/>
+                    <models:OptionBoolView Grid.Row="0" DataContext="{Binding DeleteAppBackups}"/>
 
-                    <local:OptionBoolView Grid.Row="1" DataContext="{Binding SourceBackup}"/>
+                    <models:OptionBoolView Grid.Row="1" DataContext="{Binding SourceBackup}"/>
 
-                    <local:OptionInformationView Grid.Row="2" DataContext="{Binding SymbolicPath}"/>
+                    <models:OptionInformationView Grid.Row="2" DataContext="{Binding SymbolicPath}"/>
 
-                    <local:OptionDirectoryView Grid.Row="3" DataContext="{Binding NewRootPath}"/>
+                    <models:OptionDirectoryView Grid.Row="3" DataContext="{Binding NewRootPath}"/>
 
-                    <local:OptionStringView Grid.Row="4" DataContext="{Binding BackupFolder}"/>
+                    <models:OptionStringView Grid.Row="4" DataContext="{Binding BackupFolder}"/>
 
-                    <local:OptionBoolView Grid.Row="5" DataContext="{Binding AddBackupAtEnd}"/>
+                    <models:OptionBoolView Grid.Row="5" DataContext="{Binding AddBackupAtEnd}"/>
 
-                    <local:OptionStringView Grid.Row="6" DataContext="{Binding FileSuffix}"/>
+                    <models:OptionStringView Grid.Row="6" DataContext="{Binding FileSuffix}"/>
                 </Grid>
             </GroupBox>
         </Grid>
@@ -74,25 +75,25 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <local:OptionSelectView Grid.Row="0"
+            <models:OptionSelectView Grid.Row="0"
                                     DataContext="{Binding Applications}"/>
 
-            <local:OptionBoolView Grid.Row="1"
+            <models:OptionBoolView Grid.Row="1"
                                   DataContext="{Binding UseNewerApplication}"/>
             
-            <local:OptionSliderView Grid.Row="2"
+            <models:OptionSliderView Grid.Row="2"
                                     DataContext="{Binding ParallelProcess}"/>
 
-            <local:OptionSliderView Grid.Row="3"
+            <models:OptionSliderView Grid.Row="3"
                                     DataContext="{Binding ProcessTimeout}"/>
 
-            <local:OptionBoolView Grid.Row="4"
+            <models:OptionBoolView Grid.Row="4"
                                   DataContext="{Binding LogResult}"/>
 
-            <local:OptionBoolView Grid.Row="5"
+            <models:OptionBoolView Grid.Row="5"
                                   DataContext="{Binding LogSuccess}"/>
 
-            <local:OptionBoolView Grid.Row="6"
+            <models:OptionBoolView Grid.Row="6"
                                   DataContext="{Binding LogError}"/>
         </Grid>
     </Grid>

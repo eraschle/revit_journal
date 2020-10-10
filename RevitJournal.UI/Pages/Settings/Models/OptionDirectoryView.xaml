@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="RevitJournalUI.Pages.Settings.OptionSelectView"
+﻿<UserControl x:Class="RevitJournalUI.Pages.Settings.Models.OptionDirectoryView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,20 +8,22 @@
              d:DesignHeight="450" d:DesignWidth="800" 
              Visibility="{Binding OptionVisibility}"
              IsEnabled="{Binding IsEnabled}">
+    <UserControl.Resources>
+        <Style x:Key="UiDirButton" TargetType="Button" BasedOn="{StaticResource UIButtonBase}">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{StaticResource GridFirstColumnWidth}"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <Label Grid.Column="0"
-               Content="{Binding LabelName}"
+        <Label Content="{Binding LabelName}" Grid.Column="0"
                Style="{StaticResource UILabel}"/>
-        <ComboBox Grid.Column="1"
-                  ItemsSource="{Binding Values}"
-                  SelectedItem="{Binding Value}"
-                  Style="{StaticResource UIComboBox}">
-        </ComboBox>
+        <Button Content="{Binding Value}" Grid.Column="1"
+                Command="{Binding SelectCommand}"
+                Style="{StaticResource UiDirButton}"/>
         <Button Content="Default" Grid.Column="2"
                 Command="{Binding DefaultCommand}"
                 Style="{StaticResource UIButton}"/>

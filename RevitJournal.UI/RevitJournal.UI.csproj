@@ -95,27 +95,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <Page Include="Pages\Settings\OptionInformationView.xaml">
+    <Page Include="Pages\Settings\Models\OptionInformationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Settings\OptionBoolView.xaml">
+    <Page Include="Pages\Settings\Models\OptionBoolView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Settings\OptionSelectView.xaml">
+    <Page Include="Pages\Settings\Models\OptionSelectView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Settings\OptionSliderView.xaml">
+    <Page Include="Pages\Settings\Models\OptionSliderView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Settings\OptionStringView.xaml">
+    <Page Include="Pages\Settings\Models\OptionStringView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\Settings\OptionDirectoryView.xaml">
+    <Page Include="Pages\Settings\Models\OptionDirectoryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -187,31 +187,31 @@
     <Compile Include="JournalTaskUI\FamilyFilter\FilterViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\PathViewModel.cs" />
     <Compile Include="Converters\TimespanMinutesConverter .cs" />
-    <Compile Include="Pages\Settings\OptionInformationViewModel.cs" />
-    <Compile Include="Pages\Settings\OptionInformationView.xaml.cs">
+    <Compile Include="Pages\Settings\Models\OptionInformationViewModel.cs" />
+    <Compile Include="Pages\Settings\Models\OptionInformationView.xaml.cs">
       <DependentUpon>OptionInformationView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Settings\OptionBoolView.xaml.cs">
+    <Compile Include="Pages\Settings\Models\OptionBoolView.xaml.cs">
       <DependentUpon>OptionBoolView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Settings\OptionSelectView.xaml.cs">
+    <Compile Include="Pages\Settings\Models\OptionSelectView.xaml.cs">
       <DependentUpon>OptionSelectView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Settings\OptionSliderView.xaml.cs">
+    <Compile Include="Pages\Settings\Models\OptionSliderView.xaml.cs">
       <DependentUpon>OptionSliderView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Settings\OptionSelectViewModel.cs" />
-    <Compile Include="Pages\Settings\OptionStringView.xaml.cs">
+    <Compile Include="Pages\Settings\Models\OptionSelectViewModel.cs" />
+    <Compile Include="Pages\Settings\Models\OptionStringView.xaml.cs">
       <DependentUpon>OptionStringView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Settings\OptionDirectoryView.xaml.cs">
+    <Compile Include="Pages\Settings\Models\OptionDirectoryView.xaml.cs">
       <DependentUpon>OptionDirectoryView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Settings\OptionSliderViewModel.cs" />
-    <Compile Include="Pages\Settings\AOptionViewModel.cs" />
-    <Compile Include="Pages\Settings\OptionBoolViewModel.cs" />
-    <Compile Include="Pages\Settings\OptionStringViewModel.cs" />
-    <Compile Include="Pages\Settings\OptionDirectoryViewModel.cs" />
+    <Compile Include="Pages\Settings\Models\OptionSliderViewModel.cs" />
+    <Compile Include="Pages\Settings\Models\AOptionViewModel.cs" />
+    <Compile Include="Pages\Settings\Models\OptionBoolViewModel.cs" />
+    <Compile Include="Pages\Settings\Models\OptionStringViewModel.cs" />
+    <Compile Include="Pages\Settings\Models\OptionDirectoryViewModel.cs" />
     <Compile Include="Pages\Settings\SettingsPageModel.cs" />
     <Compile Include="Pages\TaskFilesPage.xaml.cs">
       <DependentUpon>TaskFilesPage.xaml</DependentUpon>

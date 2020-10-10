@@ -1,7 +1,7 @@
 ﻿using RevitJournal.Tasks.Options.Parameter;
 using System.Collections.ObjectModel;
 
-namespace RevitJournalUI.Pages.Settings
+namespace RevitJournalUI.Pages.Settings.Models
 {
     public class OptionSelectViewModel<TValue> : AOptionViewModel<TaskOptionSelect<TValue>, TValue>
     {

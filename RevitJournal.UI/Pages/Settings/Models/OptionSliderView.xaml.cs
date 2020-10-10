@@ -1,13 +1,13 @@
 ﻿using System.Windows.Controls;
 
-namespace RevitJournalUI.Pages.Settings
+namespace RevitJournalUI.Pages.Settings.Models
 {
     /// <summary>
     /// Interaction logic for OptionView.xaml
     /// </summary>
-    public partial class OptionStringView : UserControl
+    public partial class OptionSliderView : UserControl
     {
-        public OptionStringView()
+        public OptionSliderView()
         {
             InitializeComponent();
         }

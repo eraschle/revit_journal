@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace RevitJournalUI.Pages.Settings
+namespace RevitJournalUI.Pages.Settings.Models
 {
     /// <summary>
     /// Interaction logic for OptionView.xaml

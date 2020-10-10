@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using Utilities.UI;
 
-namespace RevitJournalUI.Pages.Settings
+namespace RevitJournalUI.Pages.Settings.Models
 {
     public class OptionDirectoryViewModel : OptionStringViewModel
     {
@@ -10,7 +10,7 @@ namespace RevitJournalUI.Pages.Settings
 
         private readonly TaskOption<string> otherOption;
 
-        public OptionDirectoryViewModel(string name, TaskOption<string> taskOption, bool showDefaultAtStart, TaskOption<string> other = null) 
+        public OptionDirectoryViewModel(string name, TaskOption<string> taskOption, bool showDefaultAtStart, TaskOption<string> other = null)
             : base(name, taskOption, showDefaultAtStart)
         {
             otherOption = other;

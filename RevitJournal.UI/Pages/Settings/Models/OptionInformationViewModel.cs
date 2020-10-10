@@ -1,6 +1,6 @@
 ﻿using RevitJournal.Tasks.Options.Parameter;
 
-namespace RevitJournalUI.Pages.Settings
+namespace RevitJournalUI.Pages.Settings.Models
 {
     public class OptionInformationViewModel : OptionStringViewModel
     {
