@@ -119,7 +119,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\TaskFilesPage.xaml">
+    <Page Include="Pages\Files\TaskFilesPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -213,7 +213,7 @@
     <Compile Include="Pages\Settings\Models\OptionStringViewModel.cs" />
     <Compile Include="Pages\Settings\Models\OptionDirectoryViewModel.cs" />
     <Compile Include="Pages\Settings\SettingsPageModel.cs" />
-    <Compile Include="Pages\TaskFilesPage.xaml.cs">
+    <Compile Include="Pages\Files\TaskFilesPage.xaml.cs">
       <DependentUpon>TaskFilesPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Settings\SettingsPage.xaml.cs">

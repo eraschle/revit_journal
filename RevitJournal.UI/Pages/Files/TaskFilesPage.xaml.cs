@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace RevitJournalUI.Pages
+namespace RevitJournalUI.Pages.Files
 {
     /// <summary>
     /// Interaction logic for FileSelectionPage.xaml
