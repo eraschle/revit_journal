@@ -190,6 +190,7 @@
     <Compile Include="Pages\Files\Models\FolderModel.cs" />
     <Compile Include="Pages\Files\Models\FileModel.cs" />
     <Compile Include="Pages\Files\Models\PathModel.cs" />
+    <Compile Include="Pages\Files\TaskFilesPageModel.cs" />
     <Compile Include="Pages\Settings\Models\OptionInformationViewModel.cs" />
     <Compile Include="Pages\Settings\Models\OptionInformationView.xaml.cs">
       <DependentUpon>OptionInformationView.xaml</DependentUpon>

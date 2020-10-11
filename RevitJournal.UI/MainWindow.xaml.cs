@@ -15,7 +15,7 @@ namespace RevitJournalUI
 
         private void BtnNext_Click(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(new Uri("Pages/Settings/SettingsPage.xaml", UriKind.RelativeOrAbsolute));
+            MainFrame.Navigate(new Uri("Pages/Files/TaskFilesPage.xaml", UriKind.RelativeOrAbsolute));
         }
     }
 }

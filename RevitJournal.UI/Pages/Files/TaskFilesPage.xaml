@@ -4,91 +4,33 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:filter="clr-namespace:RevitJournalUI.JournalTaskUI.FamilyFilter"
-      xmlns:models="clr-namespace:RevitJournalUI.JournalTaskUI.Models"
-      xmlns:converter="clr-namespace:RevitJournalUI.JournalTaskUI.Converter"
       xmlns:local="clr-namespace:RevitJournalUI.Pages.Files"
+      xmlns:converter="clr-namespace:RevitJournalUI.JournalTaskUI.Converter"
+      xmlns:model="clr-namespace:RevitJournalUI.Pages.Files.Models"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="800" d:DesignWidth="1000"
       Title="Task Files Selection">
     <Page.Resources>
-        <CollectionViewSource x:Key="FilterListBox" Source="{Binding FilterViewModels}">
+        <CollectionViewSource x:Key="FilterListBox" Source="{Binding Filters}">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="Group" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
-
-        <Style x:Key="SetupList" TargetType="{x:Type ListBox}" BasedOn="{StaticResource UIListBox}">
-            <Setter Property="Margin" Value="4, 0, 2, 2"/>
-        </Style>
-        <SolidColorBrush x:Key="ListBorder" Color="#828790"/>
-        <Style x:Key="DirectoryTreeViewStyle" TargetType="{x:Type TreeView}">
-            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ListBorder}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="1"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
-            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
-            <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
-            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TreeView}">
-                        <Border x:Name="Bd" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}" 
-                                SnapsToDevicePixels="true">
-                            <ScrollViewer x:Name="_tv_scrollviewer_" 
-                                          Background="{TemplateBinding Background}" 
-                                          CanContentScroll="false" Focusable="false" 
-                                          HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" 
-                                          Padding="{TemplateBinding Padding}" 
-                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
-                                          VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
-                                <ItemsPresenter/>
-                            </ScrollViewer>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Background" 
-                                        TargetName="Bd" 
-                                        Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                            </Trigger>
-                            <Trigger Property="VirtualizingPanel.IsVirtualizing" Value="true">
-                                <Setter Property="CanContentScroll" 
-                                        TargetName="_tv_scrollviewer_" 
-                                        Value="true"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="VirtualizingPanel.IsVirtualizing" Value="true">
-                    <Setter Property="ItemsPanel">
-                        <Setter.Value>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel/>
-                            </ItemsPanelTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <converter:FamilyStatusColorMetadataConverter x:Key="MetaColorConverter"/>
-        <converter:FamilyStatusToolTipMetadataConverter x:Key="MetaToolTipConverter"/>
-        <Style x:Key="FamilyItemEllipseStyle" TargetType="{x:Type Ellipse}">
+        <CollectionViewSource x:Key="ActionListBox" Source="{Binding Actions}">
+        </CollectionViewSource>
+        <converter:FamilyStatusColorMetadataConverter x:Key="MetaColor"/>
+        <converter:FamilyStatusToolTipMetadataConverter x:Key="MetaToolTip"/>
+        <Style x:Key="MetaEllipseStyle" TargetType="{x:Type Ellipse}">
             <Setter Property="Fill">
                 <Setter.Value>
-                    <MultiBinding Converter="{StaticResource MetaColorConverter}">
+                    <MultiBinding Converter="{StaticResource MetaColor}">
                         <Binding Path="MetadataStatus"/>
                     </MultiBinding>
                 </Setter.Value>
             </Setter>
             <Setter Property="ToolTip">
                 <Setter.Value>
-                    <MultiBinding Converter="{StaticResource MetaToolTipConverter}">
+                    <MultiBinding Converter="{StaticResource MetaToolTip}">
                         <Binding Path="MetadataStatus"/>
                     </MultiBinding>
                 </Setter.Value>
@@ -99,14 +41,13 @@
             <Setter Property="Width" Value="15"/>
             <Setter Property="Height" Value="15"/>
         </Style>
-        <CollectionViewSource x:Key="Directories" 
+        <CollectionViewSource x:Key="Models" 
                               Filter="DirectoryFilter" 
-                              Source="{Binding DirectoryViewModels}"/>
-
-        <CollectionViewSource x:Key="Files" 
-                              Filter="FileFilter" 
-                              Source="{Binding DirectoryFiles}"/>
+                              Source="{Binding PathModels}"/>
     </Page.Resources>
+    <Page.DataContext>
+        <local:TaskFilesPageModel/>
+    </Page.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition MinHeight="200" Height="Auto"/>
@@ -127,12 +68,11 @@
             <Label Content="Filter" Grid.Column="0" Grid.Row="0"
                     Style="{StaticResource UILabel}"/>
             <Button Content="Setup" Grid.Column="1" Grid.Row="0"
-                    Command="{Binding SetupFilterCommand}"
-                    Visibility="{Binding FileFilterVisibility }"
+                    Command="{Binding FilterCommand}"
                     Style="{StaticResource UIButton}"/>
             <ListBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"
-                     ItemsSource="{Binding Source={StaticResource FilterListBox}}" 
-                     Style="{StaticResource SetupList}">
+                     ItemsSource="{Binding Source={StaticResource FilterListBox}}"
+                     Style="{StaticResource UIListBox}">
                 <ListBox.GroupStyle>
                     <GroupStyle>
                         <GroupStyle.Panel>
@@ -146,7 +86,7 @@
                                     <Setter.Value>
                                         <ControlTemplate>
                                             <Expander Header="{Binding Name}"
-                                                        IsExpanded="False">
+                                                      IsExpanded="False">
                                                 <ItemsPresenter/>
                                             </Expander>
                                         </ControlTemplate>
@@ -179,87 +119,64 @@
                    Style="{StaticResource UILabel}"/>
             <Button Content="Setup" 
                     Grid.Column="3" Grid.Row="0"
-                    Command="{Binding TaskActionsCommand}"
-                    Visibility="{Binding TaskActionsVisibility}"
+                    Command="{Binding ActionsCommand}"
                     Style="{StaticResource UIButton}"/>
             <ListBox Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="1"
-                     ItemsSource="{Binding Actions}" 
-                     DisplayMemberPath="Name"
-                     Style="{StaticResource SetupList}"/>
+                     ItemsSource="{Binding Source={StaticResource ActionListBox}}"
+                     DisplayMemberPath="Name"/>
         </Grid>
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TreeView x:Name="trvDirectories"
-                      Grid.Column="0"
-                      ItemsSource="{Binding Source={StaticResource Directories}}"
-                      MinWidth="200"
-                      SelectedItemChanged="TreeView_SelectedItemChanged" 
-                      Style="{DynamicResource DirectoryTreeViewStyle}">
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type models:DirectoryViewModel}" 
-                                              ItemsSource="{Binding Subfolders}">
-                        <Grid Width="{Binding RelativeSource={RelativeSource 
+        <TreeView ItemsSource="{Binding Source={StaticResource Models}}"
+                  Grid.Row="2" Grid.Column="0">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type model:FolderModel}"
+                                          ItemsSource="{Binding Children}">
+                    <Grid Width="{Binding RelativeSource={RelativeSource 
                                           AncestorType={x:Type TreeViewItem}},
                                           Path=ActualWidth, Mode=OneTime}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="20"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="100"/>
-                            </Grid.ColumnDefinitions>
-                            <CheckBox IsChecked="{Binding Checked}"
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox IsChecked="{Binding IsChecked}"
                                   Grid.Column="0"
                                   VerticalAlignment="Center"/>
-                            <TextBlock Text="{Binding DirectoryName}"
+                        <TextBlock Text="{Binding Name}"
                                    Grid.Column="1"
                                    VerticalAlignment="Center"/>
-                            <Label Content="{Binding FilesCountValue}"
+                        <!--<Label Content="{Binding FilesCountValue}"
                                Grid.Column="2"
                                HorizontalContentAlignment="Right"
-                               VerticalAlignment="Center"/>
-                        </Grid>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
-            </TreeView>
-            <ListBox x:Name="lbxRevitFiles"
-                 Grid.Column="1"
-                 ItemsSource="{Binding Source={StaticResource Files}}"
-                 Margin="{StaticResource TwoThick}"
-                 SelectionMode="Multiple"
-                 HorizontalContentAlignment="Stretch"
-                 ScrollViewer.VerticalScrollBarVisibility="Visible">
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type models:FamilyViewModel}">
-                        <CheckBox x:Name="CbxFileChecked"
-                              IsChecked="{Binding Checked}"
+                               VerticalAlignment="Center"/>-->
+                    </Grid>
+                </HierarchicalDataTemplate>
+                <DataTemplate DataType="{x:Type model:FileModel}">
+                    <CheckBox IsChecked="{Binding IsChecked}"
                               VerticalContentAlignment="Center">
-                            <CheckBox.Content>
-                                <Grid HorizontalAlignment="{Binding HorizontalAlignment,
+                        <CheckBox.Content>
+                            <Grid HorizontalAlignment="{Binding HorizontalAlignment,
                                                                 RelativeSource={RelativeSource FindAncestor, 
                                                                 AncestorType={x:Type ContentPresenter}},
                                                                 Mode=OneWayToSource}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="150"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding RevitFileName, Mode=OneTime}"
-                                               Grid.Column="0" 
-                                               VerticalAlignment="Center"/>
-                                    <Button Content="{Binding LastUpdate}"
-                                            Command="{Binding ViewMetadataCommand}"
-                                            Style="{StaticResource UIButton}"
-                                            Grid.Column="1"/>
-                                    <Ellipse Style="{StaticResource FamilyItemEllipseStyle}"
-                                             Grid.Column="2"/>
-                                </Grid>
-                            </CheckBox.Content>
-                        </CheckBox>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Name, Mode=OneTime}"
+                                           Grid.Column="0" 
+                                           VerticalAlignment="Center"/>
+                                <Button Content="{Binding LastUpdate}"
+                                        Command="{Binding ViewMetadataCommand}"
+                                        Style="{StaticResource UIButton}"
+                                        Grid.Column="1"/>
+                                <Ellipse Style="{StaticResource MetaEllipseStyle}"
+                                         Grid.Column="2"/>
+                            </Grid>
+                        </CheckBox.Content>
+                    </CheckBox>
+                </DataTemplate>
+            </TreeView.Resources>
+        </TreeView>
     </Grid>
 </Page>
