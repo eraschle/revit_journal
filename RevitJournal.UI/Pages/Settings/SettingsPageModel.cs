@@ -1,15 +1,12 @@
 ﻿using DataSource.Models.Product;
-using DataSource;
 using RevitJournal.Tasks.Options;
-using System;
-using System.Collections.ObjectModel;
 using Utilities.UI;
 using DataSource.Models.FileSystem;
 using System.Windows;
-using System.Drawing;
 using Utilities.System;
 using System.ComponentModel;
 using RevitJournalUI.Pages.Settings.Models;
+using RevitJournalUI.Pages.Settings.Worker;
 
 namespace RevitJournalUI.Pages.Settings
 {
@@ -19,7 +16,7 @@ namespace RevitJournalUI.Pages.Settings
 
         public SettingsPageModel()
         {
-            FamilyDirectory = new OptionDirectoryViewModel("Family Directory", Options.RootDirectory, true);
+            FamilyDirectory = new OptionDirectoryViewModel("Family Directory", Options.RootDirectory, true, backgroundWorker: MetadataWorker.Create());
             JournalDirectory = new OptionDirectoryViewModel("Journal Directory", Options.JournalDirectory, true);
             ActionDirectory = new OptionDirectoryViewModel("Action Directory", Options.ActionDirectory, true);
 
@@ -57,11 +54,11 @@ namespace RevitJournalUI.Pages.Settings
 #endif
         }
 
-        public OptionStringViewModel FamilyDirectory { get; }
+        public OptionDirectoryViewModel FamilyDirectory { get; }
 
-        public OptionStringViewModel JournalDirectory { get; }
+        public OptionDirectoryViewModel JournalDirectory { get; }
 
-        public OptionStringViewModel ActionDirectory { get; }
+        public OptionDirectoryViewModel ActionDirectory { get; }
 
         public OptionSelectViewModel<RevitApp> Applications { get; }
 

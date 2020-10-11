@@ -1,6 +1,6 @@
 ﻿namespace RevitJournal.Tasks.Options.Parameter
 {
-    public class TaskOptionRange : TaskOption<double>
+    public class TaskOptionRange : TaskOption<double>, ITaskOptionRange
     {
         public TaskOptionRange(double defaultValue, double minValue, double maxValue) : base(defaultValue)
         {

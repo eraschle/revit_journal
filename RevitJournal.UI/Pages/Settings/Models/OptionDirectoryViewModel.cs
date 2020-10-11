@@ -1,20 +1,23 @@
 ﻿using RevitJournal.Tasks.Options.Parameter;
+using System;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Utilities.System;
 using Utilities.UI;
 
 namespace RevitJournalUI.Pages.Settings.Models
 {
-    public class OptionDirectoryViewModel : OptionStringViewModel
+    public class OptionDirectoryViewModel : AOptionViewModel<ITaskOptionDirectory, string>
     {
         private const string TitleChooseDir = "Choose Directory";
 
-        private readonly TaskOption<string> otherOption;
+        private readonly ITaskOption<string> otherOption;
 
         private readonly BackgroundWorker worker;
 
-        public OptionDirectoryViewModel(string name, TaskOption<string> taskOption, bool showDefaultAtStart, TaskOption<string> other = null, BackgroundWorker backgroundWorker = null)
+        public OptionDirectoryViewModel(string name, ITaskOptionDirectory taskOption, bool showDefaultAtStart, ITaskOptionDirectory other = null, BackgroundWorker backgroundWorker = null)
             : base(name, taskOption, showDefaultAtStart)
         {
             otherOption = other;
@@ -41,9 +44,17 @@ namespace RevitJournalUI.Pages.Settings.Models
                 value = otherOption.Value;
             }
             Value = PathDialog.ChooseDir(TitleChooseDir, value);
-            if(worker is object && StringUtils.Equals(Value, value) == false)
+            if (worker is object && StringUtils.Equals(Value, value) == false)
             {
-                worker.RunWorkerAsync();
+                if (worker.IsBusy)
+                {
+                    worker.CancelAsync();
+                }
+                while (worker.CancellationPending)
+                {
+                    Task.Delay(TimeSpan.FromMilliseconds(500)).Wait();
+                }
+                worker.RunWorkerAsync(Option);
             }
         }
     }

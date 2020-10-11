@@ -223,9 +223,12 @@
     <Compile Include="Pages\Settings\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Settings\Worker\MetadataWorker.cs" />
     <Compile Include="Pages\TasksPage.xaml.cs">
       <DependentUpon>TasksPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainWindowModel.cs" />
+    <Compile Include="Status\StatusBarViewModel.cs" />
     <Compile Include="Tasks\Actions\OpenActionViewModel.cs" />
     <Compile Include="Tasks\Converter\TaskResultVisibleConverter.cs" />
     <Compile Include="Tasks\Converter\TaskExecuteVisibleConverter.cs" />
@@ -387,9 +390,7 @@
       <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Pages\Files\Worker\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

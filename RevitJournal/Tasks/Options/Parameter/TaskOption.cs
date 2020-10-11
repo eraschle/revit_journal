@@ -1,6 +1,6 @@
 ﻿namespace RevitJournal.Tasks.Options.Parameter
 {
-    public class TaskOption<TValue>
+    public class TaskOption<TValue> : ITaskOption<TValue>
     {
         public TaskOption(TValue defaultValue)
         {

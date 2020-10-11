@@ -21,9 +21,9 @@ namespace DataSource.Xml
             TypeBuilder = new FamilyTypeBuilder();
         }
 
-        public void SetFamilyFile(RevitFamilyFile revitFile)
+        public override void SetFile(RevitFamilyFile revitFile)
         {
-            SetFile(revitFile);
+            base.SetFile(revitFile);
             Repository.SetRevitFile(revitFile);
         }
 

@@ -4,21 +4,77 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RevitJournalUI"
-        xmlns:pages="clr-namespace:RevitJournalUI.Pages.Settings"
         mc:Ignorable="d"
         Title="MainWindow" Height="768" Width="1024">
-    <!--<Button Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Style="{DynamicResource ButtonStyle1}"/>-->
+    <Window.DataContext>
+        <local:MainWindowModel/>
+    </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Frame Name="MainFrame" >
+        <Frame Name="MainFrame">
         </Frame>
-        <WrapPanel HorizontalAlignment="Right" Grid.Row="1">
-            <Button x:Name="BtnNext" Style="{StaticResource UIButton}"
-                    Click="BtnNext_Click"/>
+
+        <WrapPanel Grid.Row="1" HorizontalAlignment="Right">
+        
         </WrapPanel>
+        <StatusBar Grid.Row="2"
+                    DataContext="{Binding StatusBar}">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem>
+                <TextBlock Text="{Binding Status}"/>
+            </StatusBarItem>
+            <Separator Grid.Column="1"
+                       Visibility="{Binding ProgressVisibility}" />
+            <StatusBarItem Grid.Column="2"
+                           HorizontalContentAlignment="Right"
+                           Visibility="{Binding ProgressVisibility}">
+                <TextBlock Text="{Binding ProgressText}"/>
+            </StatusBarItem>
+            <Separator Grid.Column="3" 
+                       Visibility="{Binding ProgressVisibility}"/>
+            <StatusBarItem Grid.Column="4" 
+                           Visibility="{Binding ProgressVisibility}"
+                           HorizontalContentAlignment="Stretch"
+                           VerticalContentAlignment="Stretch">
+                <ProgressBar Value="{Binding ProgressValue}" 
+                             Minimum="{Binding MinValue}" 
+                             Maximum="{Binding MaxValue}"
+                             Style="{StaticResource UIProgressBar}"/>
+            </StatusBarItem>
+            <Separator Grid.Column="5" 
+                       Visibility="{Binding ProgressVisibility}"/>
+            <StatusBarItem Grid.Column="6">
+                <Button x:Name="BtnBack" 
+                        Content="Back"
+                        IsEnabled="{Binding NavigationEnabled}"
+                        Style="{StaticResource UIButton}"/>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="7">
+                <Button x:Name="BtnNext"
+                        Content="Next"
+                        IsEnabled="{Binding NavigationEnabled}"
+                        Style="{StaticResource UIButton}"
+                        Click="BtnNext_Click"/>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
-    <!--<pages:SettingsPage/>-->
 </Window>

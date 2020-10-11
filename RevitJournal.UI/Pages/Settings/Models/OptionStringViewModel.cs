@@ -2,9 +2,9 @@
 
 namespace RevitJournalUI.Pages.Settings.Models
 {
-    public class OptionStringViewModel : AOptionViewModel<TaskOption<string>, string>
+    public class OptionStringViewModel : AOptionViewModel<ITaskOption<string>, string>
     {
-        public OptionStringViewModel(string name, TaskOption<string> taskOption, bool showDefaultAtStart)
+        public OptionStringViewModel(string name, ITaskOption<string> taskOption, bool showDefaultAtStart)
             : base(name, taskOption, showDefaultAtStart) { }
     }
 }

@@ -23,6 +23,7 @@ namespace DataSource.Models.FileSystem
         public RevitFamilyFile()
         {
             container = new FamiliyMetadataContainer(this);
+            SetApplicationDataSource();
         }
 
         public override string FileExtension { get; } = FamilyExtension;

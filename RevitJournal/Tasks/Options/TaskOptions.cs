@@ -4,6 +4,7 @@ using DataSource.Models.FileSystem;
 using DataSource.Models.Product;
 using RevitJournal.Helper;
 using RevitJournal.Revit;
+using RevitJournal.Revit.Journal;
 using RevitJournal.Tasks.Options.Parameter;
 using System;
 using Utilities.System;
@@ -28,54 +29,55 @@ namespace RevitJournal.Tasks.Options
 
         public TaskOptionSelect<RevitApp> Applications { get; }
 
-        public TaskOptionBool UseNewerApp { get; } = new TaskOptionBool(true);
+        public ITaskOption<bool> UseNewerApp { get; } = new TaskOptionBool(true);
 
-        public TaskOptionBool LogResults { get; } = new TaskOptionBool(true);
+        public ITaskOption<bool> LogResults { get; } = new TaskOptionBool(true);
 
-        public TaskOptionBool LogSuccess { get; } = new TaskOptionBool(false);
+        public ITaskOption<bool> LogSuccess { get; } = new TaskOptionBool(false);
 
-        public TaskOptionBool LogError { get; } = new TaskOptionBool(true);
+        public ITaskOption<bool> LogError { get; } = new TaskOptionBool(true);
 
-        public TaskOptionRange Processes { get; } = new TaskOptionRange(Environment.ProcessorCount / 2, 1, Environment.ProcessorCount);
+        public ITaskOptionRange Processes { get; } = new TaskOptionRange(Environment.ProcessorCount / 2, 1, Environment.ProcessorCount);
 
         public int ParallelProcesses
         {
             get { return (int)Processes.Value; }
         }
 
-        public TaskOptionRange ProcessTime { get; } = new TaskOptionRange(2, 1, 20);
+        public ITaskOptionRange ProcessTime { get; } = new TaskOptionRange(2, 1, 20);
 
-        public TaskOptionProperty<string> RootDirectory { get; }
+        public ITaskOptionDirectory RootDirectory { get; }
 
-        public TaskOption<string> JournalDirectory { get; } = new TaskOption<string>(DirUtils.MyDocuments);
+        public ITaskOptionDirectory JournalDirectory { get; }
 
         public DateTime TimeDirectory { get; set; }
 
-        public TaskOption<string> ActionDirectory { get; } = new TaskOption<string>(DirUtils.MyDocuments);
+        public ITaskOptionDirectory ActionDirectory { get; }
 
         public TaskOptionBool DeleteRevitBackup { get; } = new TaskOptionBool(true);
 
+        public ITaskOption<string> SymbolicPath { get; }
 
-        public TaskOptionProperty<string> SymbolicPath { get; }
+        public ITaskOptionDirectory NewRootPath { get; }
 
-        public TaskOptionProperty<string> NewRootPath { get; }
+        public ITaskOption<string> FileSuffix { get; }
 
-        public TaskOptionProperty<string> FileSuffix { get; }
+        public ITaskOption<string> BackupFolder { get; }
 
-        public TaskOptionProperty<string> BackupFolder { get; }
+        public ITaskOption<bool> AddBackupAtEnd { get; }
 
-        public TaskOptionProperty<bool> AddBackupAtEnd { get; }
-
-        public TaskOption<bool> CreateSourceBackup { get; } = new TaskOption<bool>(false);
+        public ITaskOption<bool> CreateSourceBackup { get; } = new TaskOption<bool>(false);
 
         public TaskOptions(IPathBuilder builder)
         {
             pathBuilder = builder ?? throw new ArgumentNullException(nameof(builder));
             pathCreator = new PathCreator(builder);
+            RootDirectory = new TaskOptionPropertyDirectory(DirUtils.MyDocuments, pathCreator, nameof(pathCreator.RootPath), pathBuilder);
+            ActionDirectory = new TaskOptionDirectory(DirUtils.MyDocuments, pathBuilder);
+            JournalDirectory = new TaskOptionDirectory(DirUtils.MyDocuments, pathBuilder);
             Applications = new TaskOptionSelect<RevitApp>(ProductManager.UseMetadata, ProductManager.GetApplications(true));
             SymbolicPath = new TaskOptionProperty<string>(string.Empty, pathCreator, nameof(pathCreator.SymbolicPath));
-            RootDirectory = new TaskOptionProperty<string>(DirUtils.MyDocuments, pathCreator, nameof(pathCreator.RootPath));
-            NewRootPath = new TaskOptionProperty<string>(string.Empty, pathCreator, nameof(pathCreator.NewRootPath));
+            NewRootPath = new TaskOptionPropertyDirectory(string.Empty, pathCreator, nameof(pathCreator.NewRootPath), pathBuilder);
             BackupFolder = new TaskOptionProperty<string>(DateUtils.GetPathDate(), pathCreator, nameof(pathCreator.NewFolder));
             FileSuffix = new TaskOptionProperty<string>(DateUtils.GetPathDate(), pathCreator, nameof(pathCreator.FileSuffix));
             AddBackupAtEnd = new TaskOptionProperty<bool>(pathCreator.AddBackupAtEnd, pathCreator, nameof(pathCreator.AddBackupAtEnd));
@@ -88,7 +90,7 @@ namespace RevitJournal.Tasks.Options
 
         public DirectoryNode GetJournalWorking()
         {
-            var directory = pathBuilder.CreateRoot(JournalDirectory.Value);
+            var directory = JournalDirectory.GetRootNode<TaskJournalFile>();
             var timeFolderName = DateUtils.GetPathDate(TimeDirectory, format: formats);
             var timeFolder = pathBuilder.AddFolder(directory, timeFolderName);
             if (timeFolder.Exists() == false)
@@ -106,7 +108,7 @@ namespace RevitJournal.Tasks.Options
 
         public RevitApp GetApplication(RevitApp application)
         {
-            if(application is null) { throw new ArgumentNullException(nameof(application)); }
+            if (application is null) { throw new ArgumentNullException(nameof(application)); }
 
             if (UseNewerApp.Value && Applications.Value.UseMetadata)
             {

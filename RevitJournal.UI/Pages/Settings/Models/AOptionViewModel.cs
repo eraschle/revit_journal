@@ -8,14 +8,14 @@ using System.Windows;
 namespace RevitJournalUI.Pages.Settings.Models
 {
     public abstract class AOptionViewModel<TOption, TValue> : ANotifyPropertyChangedModel
-        where TOption : TaskOption<TValue>
+        where TOption : ITaskOption<TValue>
     {
         protected TOption Option { get; }
 
         protected AOptionViewModel(string name, TOption taskOption, bool showDefaultAtStart)
         {
             labelName = name;
-            Option = taskOption ?? throw new ArgumentNullException(nameof(taskOption));
+            Option = taskOption;
             DefaultCommand = new RelayCommand<object>(DefaultAction, DefaultPredicate);
             if (showDefaultAtStart)
             {

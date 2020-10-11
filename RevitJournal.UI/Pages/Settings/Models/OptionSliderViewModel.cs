@@ -4,10 +4,10 @@ using Utilities.System;
 
 namespace RevitJournalUI.Pages.Settings.Models
 {
-    public class OptionSliderViewModel : AOptionViewModel<TaskOptionRange, double>
+    public class OptionSliderViewModel : AOptionViewModel<ITaskOptionRange, double>
     {
         private readonly string nameSuffix;
-        public OptionSliderViewModel(string name, TaskOptionRange taskOption, bool showDefaultAtStart, string labelSuffix = "")
+        public OptionSliderViewModel(string name, ITaskOptionRange taskOption, bool showDefaultAtStart, string labelSuffix = "")
             : base(name, taskOption, showDefaultAtStart)
         {
             nameSuffix = labelSuffix;

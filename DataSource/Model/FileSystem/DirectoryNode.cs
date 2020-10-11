@@ -68,9 +68,9 @@ namespace DataSource.Models.FileSystem
             FileNodes.Remove(file);
         }
 
-        public IEnumerable<DirectoryNode> GetDirectories<TFile>(bool recursive, FileSearch<TFile> search = null) where TFile : AFileNode, new()
+        public IList<DirectoryNode> GetDirectories<TFile>(bool recursive, FileSearch<TFile> search = null) where TFile : AFileNode, new()
         {
-            return DirectoryNodes.Where(dir => dir.HasFiles(recursive, search));
+            return DirectoryNodes.Where(dir => dir.HasFiles(recursive, search)).ToList();
         }
 
         public bool HasFiles<TFile>(bool recursive, FileSearch<TFile> search = null) where TFile : AFileNode, new()
@@ -79,13 +79,13 @@ namespace DataSource.Models.FileSystem
             return files.Any();
         }
 
-        private IEnumerable<TFile> GetFiles<TFile>(FileSearch<TFile> search) where TFile : AFileNode, new()
+        private IList<TFile> GetFiles<TFile>(FileSearch<TFile> search) where TFile : AFileNode, new()
         {
-            var files = FileNodes.OfType<TFile>();
-            return search is null ? files : files.Where(file => search.IsFile(file));
+            var files = FileNodes.OfType<TFile>().ToList();
+            return search is null ? files : files.Where(file => search.IsFile(file)).ToList();
         }
 
-        public IEnumerable<TFile> GetFiles<TFile>(bool recursive, FileSearch<TFile> search = null) where TFile : AFileNode, new()
+        public IList<TFile> GetFiles<TFile>(bool recursive, FileSearch<TFile> search = null) where TFile : AFileNode, new()
         {
             if (recursive)
             {

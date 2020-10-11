@@ -4,7 +4,7 @@ namespace RevitJournalUI.Pages.Settings.Models
 {
     public class OptionInformationViewModel : OptionStringViewModel
     {
-        public OptionInformationViewModel(string name, TaskOption<string> taskOption, bool showDefaultAtStart)
+        public OptionInformationViewModel(string name, ITaskOption<string> taskOption, bool showDefaultAtStart)
             : base(name, taskOption, showDefaultAtStart) { }
 
 
