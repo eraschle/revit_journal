@@ -34,6 +34,10 @@ namespace RevitJournalUI.Pages.Settings.Models
 
         private void SelectAction(object parameter)
         {
+            if (worker is object && worker.IsBusy)
+            {
+                worker.CancelAsync();
+            }
             var value = Option.Value;
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -46,14 +50,6 @@ namespace RevitJournalUI.Pages.Settings.Models
             Value = PathDialog.ChooseDir(TitleChooseDir, value);
             if (worker is object && StringUtils.Equals(Value, value) == false)
             {
-                if (worker.IsBusy)
-                {
-                    worker.CancelAsync();
-                }
-                while (worker.CancellationPending)
-                {
-                    Task.Delay(TimeSpan.FromMilliseconds(500)).Wait();
-                }
                 worker.RunWorkerAsync(Option);
             }
         }

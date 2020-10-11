@@ -23,7 +23,7 @@ namespace RevitJournalUI.Pages.Settings.Worker
             return worker;
         }
 
-        public static async void OnDoWork(object sender, DoWorkEventArgs args)
+        public static void OnDoWork(object sender, DoWorkEventArgs args)
         {
             if (args is null || !(args.Argument is ITaskOptionDirectory optionDirectory)) { return; }
             if (!(sender is BackgroundWorker worker)) { return; }
@@ -33,26 +33,20 @@ namespace RevitJournalUI.Pages.Settings.Worker
             var rootNode = optionDirectory.GetRootNode<RevitFamilyFile>();
             var files = rootNode.GetFiles<RevitFamilyFile>(true);
             var currentCount = 0;
-            using (var cancel = new CancellationTokenSource())
+            Parallel.For(0, files.Count, (idx) =>
             {
-
-                var options = new ParallelOptions { CancellationToken = cancel.Token };
-                Parallel.For(0, files.Count, options, (idx) =>
+                if (worker.CancellationPending)
                 {
-                    if (worker.CancellationPending)
-                    {
-                        cancel.Cancel();
-                        args.Cancel = true;
-                        return;
-                    }
+                    args.Cancel = true;
+                    return;
+                }
 
-                    var file = files[idx];
-                    file.Update();
-                    currentCount++;
-                    var percent = currentCount * 100 / files.Count;
-                    worker.ReportProgress(percent, file);
-                });
-            }
+                var file = files[idx];
+                file.Update();
+                currentCount++;
+                var percent = currentCount * 100 / files.Count;
+                worker.ReportProgress(percent, file);
+            });
             args.Result = args.Argument;
         }
 
