@@ -1,10 +1,10 @@
-﻿using DataSource.Model.Product;
+﻿using DataSource.Models.Product;
 using DataSource;
 using RevitJournal.Tasks.Options;
 using System;
 using System.Collections.ObjectModel;
 using Utilities.UI;
-using DataSource.Model.FileSystem;
+using DataSource.Models.FileSystem;
 using System.Windows;
 using System.Drawing;
 using Utilities.System;

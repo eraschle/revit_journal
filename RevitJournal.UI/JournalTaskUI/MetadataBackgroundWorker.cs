@@ -1,4 +1,4 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using RevitJournal.Revit.Filtering;
 using RevitJournalUI.JournalTaskUI.Models;
 using System.Collections.Generic;
@@ -36,7 +36,7 @@ namespace RevitJournalUI.JournalTaskUI
 
         private static void OnProgressChanged(object sender, ProgressChangedEventArgs args)
         {
-            if (args is null || !(args.UserState is RevitFamily family)) { return; }
+            if (args is null || !(args.UserState is RevitFamilyFile family)) { return; }
 
             RevitFilterManager.Instance.AddValue(family);
         }

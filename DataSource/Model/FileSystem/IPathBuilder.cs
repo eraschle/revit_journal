@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DataSource.Model.FileSystem
+namespace DataSource.Models.FileSystem
 {
     public interface IPathBuilder
     {

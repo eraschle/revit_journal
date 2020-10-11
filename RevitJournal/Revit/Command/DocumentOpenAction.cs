@@ -1,4 +1,4 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using RevitAction.Action;
 using RevitAction.Report;
 using System.Collections.Generic;
@@ -55,11 +55,11 @@ namespace RevitJournal.Revit.Command
             }
         }
 
-        public override void PreTask(RevitFamily family)
+        public override void PreTask(RevitFamilyFile family)
         {
             if (family is null) { return; }
 
-            RevitFile = family.RevitFile;
+            RevitFile = family;
         }
 
         public override void SetLibraryRoot(string libraryRoot) { }

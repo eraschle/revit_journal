@@ -6,7 +6,7 @@ using System.Linq;
 using Utilities.System;
 using Utilities.System.FileSystem;
 
-namespace DataSource.Model.FileSystem
+namespace DataSource.Models.FileSystem
 {
     public class PathFactory : IPathBuilder
     {

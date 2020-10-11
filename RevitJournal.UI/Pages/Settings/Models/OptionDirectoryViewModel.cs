@@ -1,5 +1,7 @@
 ﻿using RevitJournal.Tasks.Options.Parameter;
+using System.ComponentModel;
 using System.Windows.Input;
+using Utilities.System;
 using Utilities.UI;
 
 namespace RevitJournalUI.Pages.Settings.Models
@@ -10,10 +12,13 @@ namespace RevitJournalUI.Pages.Settings.Models
 
         private readonly TaskOption<string> otherOption;
 
-        public OptionDirectoryViewModel(string name, TaskOption<string> taskOption, bool showDefaultAtStart, TaskOption<string> other = null)
+        private readonly BackgroundWorker worker;
+
+        public OptionDirectoryViewModel(string name, TaskOption<string> taskOption, bool showDefaultAtStart, TaskOption<string> other = null, BackgroundWorker backgroundWorker = null)
             : base(name, taskOption, showDefaultAtStart)
         {
             otherOption = other;
+            worker = backgroundWorker;
             SelectCommand = new RelayCommand<object>(SelectAction, SelectPredicate);
         }
 
@@ -36,6 +41,10 @@ namespace RevitJournalUI.Pages.Settings.Models
                 value = otherOption.Value;
             }
             Value = PathDialog.ChooseDir(TitleChooseDir, value);
+            if(worker is object && StringUtils.Equals(Value, value) == false)
+            {
+                worker.RunWorkerAsync();
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using Utilities.System;
 
-namespace DataSource.Model.FileSystem
+namespace DataSource.Models.FileSystem
 {
     public abstract class AFileNode : APathNode
     {

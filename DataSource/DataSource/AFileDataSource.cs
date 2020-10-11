@@ -1,9 +1,9 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using System;
 
 namespace DataSource.DataSource
 {
-    public abstract class AFileDataSource<TModel, TFile> where TModel : class where TFile : AFileNode
+    public abstract class AFileDataSource<TModel, TFile> : IFileDataSource<TModel, TFile> where TModel : class where TFile : AFileNode
     {
         public TFile FileNode { get; private set; }
 

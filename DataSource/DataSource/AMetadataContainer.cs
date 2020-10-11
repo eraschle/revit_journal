@@ -1,48 +1,37 @@
-﻿using DataSource.DataSource.Json;
-using DataSource.Metadata;
-using DataSource.Model;
-using DataSource.Model.Family;
-using DataSource.Model.FileSystem;
-using DataSource.Xml;
+﻿using DataSource.Metadata;
+using DataSource.Models;
+using DataSource.Models.FileSystem;
 using System;
+using DataSource.Model.Metadata;
 
 namespace DataSource.DataSource
 {
-    public delegate void MetadataUpdated();
-
-    public abstract class AMetadataContainer
+    public abstract class AMetadataContainer<TModel, TFile> : IMetadataContainer<TModel> where TModel : class, new() where TFile : AFileNode
     {
-        public event EventHandler<EventArgs> MetadataUpdated;
+      
+        protected IMetadataDataSource<TModel, TFile> DataSource { get; set; }
 
-        protected virtual void OnMetadataUpdated()
+        public MetadataStatus Status { get; private set; }
+
+        public TModel Metadata { get; private set; }
+
+        public bool AreMetadataValid
         {
-            MetadataUpdated?.Invoke(this, EventArgs.Empty);
-        }
-
-        protected IMetadataDataSource DataSource { get; set; }
-
-        public MetadataStatus MetadataStatus { get; private set; }
-
-        public Family Metadata { get; private set; }
-
-        public bool HasValidMetadata
-        {
-            get { return MetadataStatus == MetadataStatus.Valid; }
+            get { return Status == MetadataStatus.Valid; }
         }
 
         public bool AreMetadataRepairable
         {
-            get { return MetadataStatus == MetadataStatus.Repairable; }
+            get { return Status == MetadataStatus.Repairable; }
         }
 
         public void Update()
         {
-            MetadataStatus = DataSource.UpdateStatus();
-            Metadata = new Family();
-            if (MetadataStatus == MetadataStatus.Valid)
+            Status = DataSource.UpdateStatus();
+            Metadata = new TModel();
+            if (Status == MetadataStatus.Valid)
             {
                 Metadata = DataSource.Read();
-                OnMetadataUpdated();
             }
         }
 
@@ -51,53 +40,20 @@ namespace DataSource.DataSource
             Update();
         }
 
-        public void Write(Family model)
+        public void Write(TModel model)
         {
             DataSource.Write(model);
         }
 
-        public void SetRevitDataSource()
-        {
-            SetDataSource(new FamilyXmlDataSource());
-        }
+        public abstract void SetApplicationDataSource();
 
-        public void SetExternalDataSource()
-        {
-            SetDataSource(new FamilyJsonDataSource());
-        }
+        public abstract void SetExternalDataSource();
 
-        public void SetExternalEditDataSource()
-        {
-            SetDataSource(new FamilyEditJsonDataSource());
-        }
+        public abstract void SetExternalEditDataSource();
 
-        private void SetDataSource(IMetadataDataSource dataSource)
-        {
-            dataSource.SetFamilyFile(GetFamilyFile());
-            DataSource = dataSource;
-        }
+        public abstract bool HasFileMetadata { get; }
 
-        public bool HasFileMetadata
-        {
-            get { return GetJsonFile().Exists(); }
-        }
-
-        public bool HasEditMetadata
-        {
-            get
-            {
-                var jsonFile = GetJsonFile();
-                jsonFile.AddSuffixes(FamilyEditJsonDataSource.Suffix);
-                return jsonFile.Exists();
-            }
-        }
-
-        private JsonFile GetJsonFile()
-        {
-            return GetFamilyFile().ChangeExtension<JsonFile>();
-        }
-
-        protected abstract RevitFamilyFile GetFamilyFile();
+        public abstract bool HasEditMetadata { get; }
     }
 
     public class MetadataEventArgs : EventArgs

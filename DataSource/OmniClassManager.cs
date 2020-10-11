@@ -1,6 +1,6 @@
-﻿using DataSource.Model.Catalog;
-using DataSource.Model.FileSystem;
-using DataSource.Model.Product;
+﻿using DataSource.Models.Catalog;
+using DataSource.Models.FileSystem;
+using DataSource.Models.Product;
 using System;
 using System.Collections.Generic;
 using System.IO;

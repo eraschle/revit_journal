@@ -1,4 +1,4 @@
-﻿using DataSource.Model.Family;
+﻿using DataSource.Model.Metadata;
 using RevitJournal.Duplicate.Comparer.FamilyTypeComparer;
 using System;
 using System.Collections.Generic;

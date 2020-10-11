@@ -1,17 +1,12 @@
-﻿using DataSource.Model;
-using DataSource.Model.Family;
-using DataSource.Model.FileSystem;
+﻿using DataSource.DataSource;
+using DataSource.Models;
+using DataSource.Models.FileSystem;
 
 namespace DataSource.Metadata
 {
-    public interface IMetadataDataSource
+    public interface IMetadataDataSource<TModel, TFile> : IFileDataSource<TModel, TFile> 
+        where TModel : class where TFile : AFileNode
     {
-        Family Read();
-
-        void Write(Family model);
-
         MetadataStatus UpdateStatus();
-
-        void SetFamilyFile(RevitFamilyFile fileNode);
     }
 }

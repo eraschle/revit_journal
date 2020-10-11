@@ -1,5 +1,5 @@
-﻿using DataSource.Model.Catalog;
-using DataSource.Model.Family;
+﻿using DataSource.Model.Metadata;
+using DataSource.Models.Catalog;
 using System.Collections.Generic;
 
 namespace DataSource.Comparer

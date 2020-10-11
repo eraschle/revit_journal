@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using Utilities.System;
 
-namespace DataSource.Model.FileSystem
+namespace DataSource.Models.FileSystem
 {
     public abstract class APathNode : IEquatable<APathNode>
     {

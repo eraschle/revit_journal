@@ -1,4 +1,4 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using RevitJournal.Library.Filtering;
 
 namespace RevitJournalUI.JournalTaskUI.FamilyFilter
@@ -10,7 +10,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
             get { return Rule.Name; }
         }
 
-        public IFilterRule<RevitFamily> Rule { get; private set; }
+        public IFilterRule<RevitFamilyFile> Rule { get; private set; }
 
         public string Filter
         {
@@ -19,7 +19,7 @@ namespace RevitJournalUI.JournalTaskUI.FamilyFilter
 
         public FilterValue Value { get; private set; }
 
-        public FilterViewModel(IFilterRule<RevitFamily> rule, FilterValue value)
+        public FilterViewModel(IFilterRule<RevitFamilyFile> rule, FilterValue value)
         {
             Rule = rule;
             Value = value;

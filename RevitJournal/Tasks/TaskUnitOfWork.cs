@@ -1,4 +1,4 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using RevitAction;
 using RevitAction.Action;
 using RevitAction.Report;
@@ -164,7 +164,7 @@ namespace RevitJournal.Tasks
                 var argument = new RevitArguments
                 {
                     Timeout = Options.GetProcessTimeout(),
-                    RevitApp = Options.GetApplication(Task.Family.Metadata.Product)
+                    RevitApp = Options.GetApplication(Task.SourceFile.Metadata.Product)
                 };
                 Process = new RevitProcess(argument);
                 Process.ProcessFinished += Process_ProcessFinished;

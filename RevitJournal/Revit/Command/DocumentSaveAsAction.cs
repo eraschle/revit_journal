@@ -1,4 +1,4 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using RevitAction.Action;
 using RevitAction.Report;
 using RevitJournal.Helper;
@@ -66,11 +66,11 @@ namespace RevitJournal.Revit.Command
             return pathCreator.CreateSymbolic();
         }
 
-        public override void PreTask(RevitFamily family)
+        public override void PreTask(RevitFamilyFile family)
         {
             if (family is null) { return; }
 
-            saveAsPath = pathCreator.CreatePath(family.RevitFile);
+            saveAsPath = pathCreator.CreatePath(family);
             saveAsPath?.Delete();
         }
 

@@ -1,4 +1,4 @@
-﻿using DataSource.Model;
+﻿using DataSource.Models;
 using RevitJournal.Revit.Filtering;
 using RevitJournal.Revit.Filtering.Rules;
 using System.Collections.ObjectModel;

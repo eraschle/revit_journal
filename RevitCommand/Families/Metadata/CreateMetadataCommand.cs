@@ -2,13 +2,13 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using DataSource.DataSource.Json;
-using DataSource.Model.FileSystem;
+using DataSource.Models.FileSystem;
 using RevitAction.Revit;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using DS = DataSource.Model;
+using DS = DataSource.Models;
 
 namespace RevitCommand.Families.Metadata
 {
@@ -23,9 +23,9 @@ namespace RevitCommand.Families.Metadata
             PathFactory.Instance.CreateRoot(Action.Library.Value);
             var revitFile = PathFactory.Instance.Create<RevitFamilyFile>(Document.PathName);
             var jsonFile = revitFile.ChangeExtension<JsonFile>();
-            var metaFamily = new DS.Family.Family();
+            var metaFamily = new DataSource.Model.Metadata.Family();
             var dataSource = new FamilyJsonDataSource();
-            dataSource.SetFamilyFile(revitFile);
+            dataSource.SetFile(revitFile);
             if (jsonFile.Exists())
             {
                 metaFamily = dataSource.Read();

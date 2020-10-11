@@ -1,4 +1,4 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using RevitAction;
 using RevitAction.Action;
 using System;
@@ -19,7 +19,7 @@ namespace RevitCommand.RevitData
             Parameters.Add(ExportDirectory);
         }
 
-        public override void PreTask(RevitFamily family) { }
+        public override void PreTask(RevitFamilyFile family) { }
 
         public override void SetLibraryRoot(string libraryRoot) { }
     }

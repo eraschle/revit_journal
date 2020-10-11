@@ -1,8 +1,8 @@
 ﻿using DataSource.DataSource.Json;
-using DataSource.Model.Catalog;
-using DataSource.Model.FileSystem;
-using DataSource.Model.Product;
-using DataSource.Model.ProductData;
+using DataSource.Models.Catalog;
+using DataSource.Models.FileSystem;
+using DataSource.Models.Product;
+using DataSource.Models.ProductData;
 using System;
 using System.Collections.Generic;
 

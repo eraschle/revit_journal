@@ -1,4 +1,4 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,13 +43,12 @@ namespace RevitJournal.Library
             UpdateFileCounts();
         }
 
-        public static IEnumerable<RevitFamily> GetRevitFamilies(DirectoryNode directory)
+        public static IEnumerable<RevitFamilyFile> GetRevitFamilies(DirectoryNode directory)
         {
             if (directory is null) { throw new ArgumentNullException(nameof(directory)); }
 
             var families = directory.GetFiles<RevitFamilyFile>(false)
-                .Where(famFile => famFile.IsBackup() == false)
-                .Select(famFile => new RevitFamily(famFile));
+                .Where(famFile => famFile.IsBackup() == false);
             return families;
         }
 
@@ -145,7 +144,7 @@ namespace RevitJournal.Library
             SetChecked(state, false, true);
         }
 
-        public IEnumerable<RevitFamily> CheckedFiles()
+        public IEnumerable<RevitFamilyFile> CheckedFiles()
         {
             foreach (var handler in RecusiveFiles)
             {

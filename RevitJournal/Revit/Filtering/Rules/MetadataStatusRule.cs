@@ -1,10 +1,10 @@
-﻿using DataSource.Model;
-using DataSource.Model.FileSystem;
+﻿using DataSource.Models;
+using DataSource.Models.FileSystem;
 using RevitJournal.Library.Filtering;
 
 namespace RevitJournal.Revit.Filtering.Rules
 {
-    public class MetadataStatusRule : ARevitModelFilterRule<RevitFamily>
+    public class MetadataStatusRule : ARevitModelFilterRule<RevitFamilyFile>
     {
         public const string RuleKey = "RevitMetadataStatusRule";
 
@@ -23,11 +23,11 @@ namespace RevitJournal.Revit.Filtering.Rules
         //    return source is object || value is null || source.MetadataStatus == value.Status;
         //}
 
-        protected override FilterValue GetValue(RevitFamily family)
+        protected override FilterValue GetValue(RevitFamilyFile family)
         {
             if (family is null) { return null; }
 
-            return GetFilterValue(family.MetadataStatus);
+            return GetFilterValue(family.Status);
         }
 
         private FilterValue GetFilterValue(MetadataStatus status)

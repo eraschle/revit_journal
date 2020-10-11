@@ -1,14 +1,61 @@
-﻿using System.Collections.Generic;
+﻿using DataSource.DataSource;
+using DataSource.Model.Metadata;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Utilities.System;
 
-namespace DataSource.Model.FileSystem
+namespace DataSource.Models.FileSystem
 {
-    public class RevitFamilyFile : AFileNode
+    public class RevitFamilyFile : AFileNode, IMetadataContainer<Family>
     {
+        public event EventHandler<EventArgs> MetadataUpdated;
+        
         public const string FamilyExtension = "rfa";
 
+        private readonly FamiliyMetadataContainer container; 
+
+        private void OnMetadataUpdated()
+        {
+            MetadataUpdated?.Invoke(this, EventArgs.Empty);
+        }
+
+        public RevitFamilyFile()
+        {
+            container = new FamiliyMetadataContainer(this);
+        }
+
         public override string FileExtension { get; } = FamilyExtension;
+
+        public Family Metadata
+        {
+            get { return container.Metadata; }
+        }
+
+        public MetadataStatus Status
+        {
+            get { return container.Status; }
+        }
+
+        public bool AreMetadataValid
+        {
+            get { return container.AreMetadataValid; }
+        }
+
+        public bool AreMetadataRepairable
+        {
+            get { return container.AreMetadataRepairable; }
+        }
+
+        public bool HasFileMetadata
+        {
+            get { return container.HasFileMetadata; }
+        }
+
+        public bool HasEditMetadata
+        {
+            get { return container.HasEditMetadata; }
+        }
 
         public bool IsBackup()
         {
@@ -34,6 +81,36 @@ namespace DataSource.Model.FileSystem
             {
                 file.Delete();
             }
+        }
+
+        public void Update()
+        {
+            var status = Status;
+            container.Update();
+            if(status != Status)
+            {
+                OnMetadataUpdated();
+            }
+        }
+
+        public void Write(Family model)
+        {
+            container.Write(model);
+        }
+
+        public void SetApplicationDataSource()
+        {
+            container.SetApplicationDataSource();
+        }
+
+        public void SetExternalDataSource()
+        {
+            container.SetExternalDataSource();
+        }
+
+        public void SetExternalEditDataSource()
+        {
+            container.SetExternalEditDataSource();
         }
     }
 }

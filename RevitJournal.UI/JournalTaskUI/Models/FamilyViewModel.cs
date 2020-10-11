@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using RevitJournal.Library;
 using System;
-using DataSource.Model;
+using DataSource.Models;
 using Utilities.System;
 using Utilities.UI;
 
@@ -32,12 +32,12 @@ namespace RevitJournalUI.JournalTaskUI.Models
 
         public MetadataStatus MetadataStatus
         {
-            get { return Handler.File.MetadataStatus; }
+            get { return Handler.File.Status; }
         }
 
         public string RevitFileName
         {
-            get { return Handler.File.RevitFile.NameWithoutExtension; }
+            get { return Handler.File.NameWithoutExtension; }
         }
 
         private bool enabled = true;

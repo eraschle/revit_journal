@@ -1,4 +1,4 @@
-﻿namespace DataSource.Model
+﻿namespace DataSource.Models
 {
     public interface IModel
     {

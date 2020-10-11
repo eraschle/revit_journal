@@ -1,11 +1,12 @@
-﻿using DataSource.Model.Catalog;
-using DataSource.Model.Product;
+﻿using DataSource.Models;
+using DataSource.Models.Catalog;
+using DataSource.Models.Product;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DataSource.Model.Family
+namespace DataSource.Model.Metadata
 {
     public enum Source { Invalid, File, Revit }
 
@@ -193,8 +194,8 @@ namespace DataSource.Model.Family
                 && Name == other.Name
                 && LibraryPath == other.LibraryPath
                 && UniqueId == other.UniqueId
-                && Enumerable.SequenceEqual(FamilyTypes, other.FamilyTypes)
-                && Enumerable.SequenceEqual(Parameters, other.Parameters);
+                && FamilyTypes.SequenceEqual(other.FamilyTypes)
+                && Parameters.SequenceEqual(other.Parameters);
         }
 
         public override int GetHashCode()

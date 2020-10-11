@@ -1,8 +1,8 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using System.Globalization;
 using Utilities.System;
 
-namespace DataSource.Model.Product
+namespace DataSource.Models.Product
 {
     public class RevitAppFile : AFileNode
     {

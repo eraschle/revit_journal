@@ -1,11 +1,11 @@
 ﻿using DataSource.Helper;
-using DataSource.Model.Catalog;
-using DataSource.Model.Family;
-using DataSource.Model.Product;
+using DataSource.Models.Catalog;
+using DataSource.Models.Product;
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using Utilities.System;
+using DataSource.Model.Metadata;
 
 namespace DataSource.Xml
 {

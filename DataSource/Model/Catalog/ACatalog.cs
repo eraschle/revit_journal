@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DataSource.Model.Catalog
+namespace DataSource.Models.Catalog
 {
     public class ACatalog : IModel, IEquatable<ACatalog>
     {

@@ -1,19 +1,19 @@
-﻿using DataSource.Model.Family;
-using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using RevitJournal.Library.Filtering;
 using System.Collections.Generic;
 using System.Linq;
 using Utilities.System;
+using DataSource.Model.Metadata;
 
 namespace RevitJournal.Revit.Filtering.Rules
 {
-    public class ParameterRule : ARevitListFilterRule<RevitFamily>
+    public class ParameterRule : ARevitListFilterRule<RevitFamilyFile>
     {
         public const string RuleKey = "RevitParameter";
 
         public ParameterRule(string name) : base(name) { }
 
-        protected override IEnumerable<FilterValue> GetValue(RevitFamily family)
+        protected override IEnumerable<FilterValue> GetValue(RevitFamilyFile family)
         {
             if (family is null || family.Metadata is null) { return null; }
 

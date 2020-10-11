@@ -1,15 +1,15 @@
 ﻿using DataSource.Metadata;
-using DataSource.Model;
-using DataSource.Model.Family;
-using DataSource.Model.FileSystem;
+using DataSource.Models;
+using DataSource.Models.FileSystem;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using DataSource.Model.Metadata;
 
 namespace DataSource.DataSource.Json
 {
-    public class FamilyJsonDataSource : JsonDataSource<Family>, IMetadataDataSource
+    public class FamilyJsonDataSource : JsonDataSource<Family>, IMetadataDataSource<Family, RevitFamilyFile>
     {
-        private JsonDataSource<Family> dataSource = new JsonDataSource<Family>();
+        private readonly JsonDataSource<Family> dataSource = new JsonDataSource<Family>();
 
         public override Family Read()
         {
@@ -42,9 +42,9 @@ namespace DataSource.DataSource.Json
             dataSource.Write(model);
         }
 
-        public virtual void SetFamilyFile(RevitFamilyFile fileNode)
+        public virtual void SetFile(RevitFamilyFile fileNode)
         {
-            if(fileNode is null) { throw new ArgumentNullException(nameof(fileNode)); }
+            if (fileNode is null) { throw new ArgumentNullException(nameof(fileNode)); }
 
             var jsonFile = fileNode.ChangeExtension<JsonFile>();
             dataSource.SetFile(jsonFile);

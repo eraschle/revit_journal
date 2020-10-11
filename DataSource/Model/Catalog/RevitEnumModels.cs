@@ -1,4 +1,4 @@
-﻿namespace DataSource.Model.Catalog
+﻿namespace DataSource.Models.Catalog
 {
     public class RevitPlacement : RevitEnum { }
 

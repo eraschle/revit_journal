@@ -1,4 +1,4 @@
-﻿using DataSource.Model.Product;
+﻿using DataSource.Models.Product;
 using System;
 
 namespace RevitJournal.Revit

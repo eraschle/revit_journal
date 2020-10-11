@@ -1,14 +1,11 @@
-﻿using DataSource.Metadata;
-using DataSource.Model;
-using DataSource.Model.Family;
+﻿using DataSource.Models;
+using System;
 
 namespace DataSource.DataSource
 {
-    public interface IMetadataContainer
+    public interface IMetadataContainer<TModel>
     {
-        void SetDataSource(IMetadataDataSource dataSource);
-
-        Family Metadata { get; }
+        TModel Metadata { get; }
 
         MetadataStatus Status { get; }
 
@@ -16,8 +13,18 @@ namespace DataSource.DataSource
 
         bool AreMetadataRepairable { get; }
 
+        bool HasFileMetadata { get; }
+
+        bool HasEditMetadata { get; }
+        
         void Update();
 
-        void Write(Family model);
+        void Write(TModel model);
+
+        void SetApplicationDataSource();
+
+        void SetExternalDataSource();
+        
+        void SetExternalEditDataSource();
     }
 }

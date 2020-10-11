@@ -1,6 +1,6 @@
-﻿using Fam = DataSource.Model.Family;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Utilities.System;
+using DataSource.Model.Metadata;
 
 namespace RevitJournalUI.MetadataUI.Models
 {
@@ -95,7 +95,7 @@ namespace RevitJournalUI.MetadataUI.Models
             {
                 return Parameter.IsReadOnly
                     || Parameter.HasFormula()
-                    || Fam.Parameter.NotSupportValueTypes.Contains(ValueType);
+                    || Parameter.NotSupportValueTypes.Contains(ValueType);
             }
         }
     }

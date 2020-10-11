@@ -1,4 +1,4 @@
-﻿using DataSource.Model.Family;
+﻿using DataSource.Model.Metadata;
 using System.Collections.ObjectModel;
 using Utilities.System;
 using Utilities.UI;

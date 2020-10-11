@@ -1,4 +1,4 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 
 namespace RevitJournal.Library
 {
@@ -21,7 +21,7 @@ namespace RevitJournal.Library
 
         private void ValidCountAction(LibraryFile handler)
         {
-            if (handler is null || handler.File.HasValidMetadata == false) { return; }
+            if (handler is null || handler.File.AreMetadataValid == false) { return; }
 
             ValidMetadataCount += 1;
         }

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Utilities.System;
 
-namespace DataSource.Model.Catalog
+namespace DataSource.Models.Catalog
 {
     public class OmniClass : ACatalog, IEquatable<OmniClass>
     {

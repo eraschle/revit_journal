@@ -1,4 +1,4 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using RevitAction;
 using RevitAction.Action;
 using System;
@@ -14,7 +14,7 @@ namespace RevitCommand.Families.ImageExport
 
         public ITaskInfo TaskInfo { get; }
 
-        public override void PreTask(RevitFamily family) { }
+        public override void PreTask(RevitFamilyFile family) { }
 
         public override void SetLibraryRoot(string libraryRoot) { }
     }

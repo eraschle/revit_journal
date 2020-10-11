@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace DataSource.Model.SharedParameters
+namespace DataSource.Models.SharedParameters
 {
     public static class SharedParameterReader
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace DataSource.Model.FileSystem
+namespace DataSource.Models.FileSystem
 {
     public class DirectoryRootNode : DirectoryNode
     {

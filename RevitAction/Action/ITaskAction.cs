@@ -1,4 +1,4 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using System;
 using System.Collections.Generic;
 
@@ -16,7 +16,7 @@ namespace RevitAction.Action
 
         void SetLibraryRoot(string libraryRoot);
 
-        void PreTask(RevitFamily family);
+        void PreTask(RevitFamilyFile family);
 
         ICollection<DialogHandler> DialogHandlers { get; }
     }

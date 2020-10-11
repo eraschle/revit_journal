@@ -1,4 +1,4 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 
 namespace DataSource.DataSource.Json
 {
@@ -6,9 +6,9 @@ namespace DataSource.DataSource.Json
     {
         public const string Suffix = "edited";
 
-        public override void SetFamilyFile(RevitFamilyFile fileNode)
+        public override void SetFile(RevitFamilyFile fileNode)
         {
-            base.SetFamilyFile(fileNode);
+            base.SetFile(fileNode);
             FileNode.AddSuffixes(Suffix);
         }
     }

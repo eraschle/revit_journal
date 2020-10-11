@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DataSource.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DataSource.Model.Family
+namespace DataSource.Model.Metadata
 {
     public class FamilyType : IComparable<FamilyType>, IModel, IEquatable<FamilyType>
     {
@@ -44,9 +45,9 @@ namespace DataSource.Model.Family
 
         public bool Equals(FamilyType other)
         {
-            return other != null 
-                && Name == other.Name 
-                && Enumerable.SequenceEqual(Parameters, other.Parameters);
+            return other != null
+                && Name == other.Name
+                && Parameters.SequenceEqual(other.Parameters);
         }
 
         public override int GetHashCode()

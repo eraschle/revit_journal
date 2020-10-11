@@ -1,4 +1,4 @@
-﻿namespace DataSource.Model
+﻿namespace DataSource.Models
 {
     public enum MetadataStatus { Initial, Valid, Repairable, Error }
 

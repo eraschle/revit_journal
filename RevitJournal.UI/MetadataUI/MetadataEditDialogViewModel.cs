@@ -1,26 +1,26 @@
 ﻿using DataSource;
-using DataSource.Model.Catalog;
-using DataSource.Model.Family;
-using DataSource.Model.FileSystem;
-using DataSource.Model.ProductData;
+using DataSource.Models.Catalog;
+using DataSource.Models.FileSystem;
+using DataSource.Models.ProductData;
 using RevitJournalUI.MetadataUI.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Utilities.System;
 using Utilities.UI;
+using DataSource.Model.Metadata;
 
 namespace RevitJournalUI.MetadataUI
 {
     public class MetadataEditDialogViewModel : ANotifyPropertyChangedModel
     {
-        private IList<RevitFamily> RevitFamilies = new List<RevitFamily>();
+        private IList<RevitFamilyFile> RevitFamilies = new List<RevitFamilyFile>();
 
         private ProductDataManager ProductDataManager = ProductDataManager.Get();
         private RevitProductData ProductData;
 
-        public RevitFamily GetRevitFamily(Family family)
+        public RevitFamilyFile GetRevitFamily(Family family)
         {
-            RevitFamily reloaded = null;
+            RevitFamilyFile reloaded = null;
             if (family != null)
             {
                 foreach (var rvtFamily in RevitFamilies)
@@ -43,7 +43,7 @@ namespace RevitJournalUI.MetadataUI
 
         public ObservableCollection<Family> Families { get; } = new ObservableCollection<Family>();
 
-        public void Update(IList<RevitFamily> families)
+        public void Update(IList<RevitFamilyFile> families)
         {
             if (families is null) { return; }
 

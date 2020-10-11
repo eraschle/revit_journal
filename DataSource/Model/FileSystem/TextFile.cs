@@ -1,4 +1,4 @@
-﻿namespace DataSource.Model.FileSystem
+﻿namespace DataSource.Models.FileSystem
 {
     public class TextFile : AFileNode
     {

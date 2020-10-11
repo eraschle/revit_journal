@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DataSource.Model.SharedParameters
+namespace DataSource.Models.SharedParameters
 {
     public class SharedParameter : IEquatable<SharedParameter>
     {

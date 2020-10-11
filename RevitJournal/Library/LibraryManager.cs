@@ -1,6 +1,6 @@
 ﻿using System;
 using RevitJournal.Tasks.Options;
-using DataSource.Model.FileSystem;
+using DataSource.Models.FileSystem;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
@@ -28,21 +28,21 @@ namespace RevitJournal.Library
             return rootHandler is object;
         }
 
-        public IList<RevitFamily> CheckedValidFiles()
+        public IList<RevitFamilyFile> CheckedValidFiles()
         {
             return Root.CheckedFiles()
-                       .Where(file => file.HasValidMetadata)
+                       .Where(file => file.AreMetadataValid)
                        .ToList();
         }
 
-        public IList<RevitFamily> EditableFiles()
+        public IList<RevitFamilyFile> EditableFiles()
         {
             return Root.CheckedFiles()
                        .Where(file => file.HasFileMetadata)
                        .ToList();
         }
 
-        public IList<RevitFamily> GetCheckedFiles()
+        public IList<RevitFamilyFile> GetCheckedFiles()
         {
             return Root.CheckedFiles().ToList();
         }

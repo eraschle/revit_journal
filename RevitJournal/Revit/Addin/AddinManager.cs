@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Autodesk.RevitAddIns;
-using DataSource.Model.FileSystem;
+using DataSource.Models.FileSystem;
 using RevitAction;
 
 namespace RevitJournal.Revit.Addin

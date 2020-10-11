@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using RevitJournal.Revit.Addin;
 using RevitJournal.Tasks.Options;
 using RevitJournal.Tasks.Actions;
-using DataSource.Model.FileSystem;
-using DataSource.Model.Product;
+using DataSource.Models.FileSystem;
+using DataSource.Models.Product;
 using RevitAction;
 using RevitJournal.Report.Network;
 using RevitAction.Report;
@@ -36,17 +36,17 @@ namespace RevitJournal.Tasks
             get { return UnitOfWorks.Count > 0; }
         }
 
-        public static bool IsExecutable(RevitFamily family, TaskOptions options)
+        public static bool IsExecutable(RevitFamilyFile family, TaskOptions options)
         {
             if (family is null) { throw new ArgumentNullException(nameof(family)); }
             if (options is null) { throw new ArgumentNullException(nameof(options)); }
 
             var useMetadata = options.Applications.Value.UseMetadata;
             return (useMetadata && IsRevitInstalled(family, out _))
-                || ((family.AreMetadataRepairable || family.HasValidMetadata) && useMetadata == false);
+                || ((family.AreMetadataRepairable || family.AreMetadataValid) && useMetadata == false);
         }
 
-        public static bool IsRevitInstalled(RevitFamily family, out RevitApp revit)
+        public static bool IsRevitInstalled(RevitFamilyFile family, out RevitApp revit)
         {
             return family is null
                 ? throw new ArgumentNullException(nameof(family))

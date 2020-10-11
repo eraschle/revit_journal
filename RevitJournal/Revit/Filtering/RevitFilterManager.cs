@@ -1,10 +1,10 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using RevitJournal.Library.Filtering;
 using RevitJournal.Revit.Filtering.Rules;
 
 namespace RevitJournal.Revit.Filtering
 {
-    public class RevitFilterManager : FilterManager<RevitFamily>
+    public class RevitFilterManager : FilterManager<RevitFamilyFile>
     {
         private static RevitFilterManager instance;
         public static RevitFilterManager Instance

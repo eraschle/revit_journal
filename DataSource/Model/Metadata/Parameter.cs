@@ -1,7 +1,8 @@
-﻿using System;
+﻿using DataSource.Models;
+using System;
 using System.Collections.Generic;
 
-namespace DataSource.Model.Family
+namespace DataSource.Model.Metadata
 {
     public class Parameter : IModel, IComparable<Parameter>, IEquatable<Parameter>
     {
@@ -15,7 +16,7 @@ namespace DataSource.Model.Family
         public const string LastklassifizierungValueType = "Lastklassifizierung";
 
         public static IList<string> NotSupportValueTypes { get; }
-            = new List<string> 
+            = new List<string>
             {
                 null, string.Empty,
                 MaterialValueType,
@@ -83,7 +84,7 @@ namespace DataSource.Model.Family
             }
             if (ParameterType != other.ParameterType)
             {
-                if (IsSytsemParameterType() || (IsSharedType() && other.IsSytsemParameterType() == false))
+                if (IsSytsemParameterType() || IsSharedType() && other.IsSytsemParameterType() == false)
                 {
                     return -1;
                 }

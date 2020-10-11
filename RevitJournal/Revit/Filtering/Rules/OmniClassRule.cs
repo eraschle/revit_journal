@@ -1,10 +1,10 @@
-﻿using DataSource.Model.Catalog;
-using DataSource.Model.FileSystem;
+﻿using DataSource.Models.Catalog;
+using DataSource.Models.FileSystem;
 using RevitJournal.Library.Filtering;
 
 namespace RevitJournal.Revit.Filtering.Rules
 {
-    public class OmniClassRule : ARevitModelFilterRule<RevitFamily>
+    public class OmniClassRule : ARevitModelFilterRule<RevitFamilyFile>
     {
         public const string RuleKey = "RevitOmniClass";
 
@@ -12,14 +12,14 @@ namespace RevitJournal.Revit.Filtering.Rules
 
         public OmniClassRule(string name, string defaultValue) : base(name, defaultValue) { }
 
-        protected override FilterValue GetValue(RevitFamily family)
+        protected override FilterValue GetValue(RevitFamilyFile family)
         {
             return HasOmniClass(family, out var omniClass)
                 ? new FilterValue(omniClass)
                 : new FilterValue(NoValue);
         }
 
-        private bool HasOmniClass(RevitFamily family, out OmniClass omniClass)
+        private bool HasOmniClass(RevitFamilyFile family, out OmniClass omniClass)
         {
             omniClass = null;
             if (family is object && family.Metadata is object)

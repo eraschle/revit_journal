@@ -1,4 +1,4 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace RevitAction.Action
 
         public ICollection<DialogHandler> DialogHandlers { get; } = new List<DialogHandler>();
 
-        public abstract void PreTask(RevitFamily family);
+        public abstract void PreTask(RevitFamilyFile family);
 
         public abstract void SetLibraryRoot(string libraryRoot);
 

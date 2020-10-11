@@ -1,6 +1,6 @@
 ﻿using DataSource;
-using DataSource.Model.FileSystem;
-using DataSource.Model.Product;
+using DataSource.Models.FileSystem;
+using DataSource.Models.Product;
 using RevitAction.Action;
 using RevitJournal.Revit;
 using RevitJournal.Revit.Journal;
@@ -28,12 +28,7 @@ namespace RevitJournal.Tasks
         private static readonly RecordJournalNullFile nullRecorde = new RecordJournalNullFile();
         private static readonly TaskJournalNullFile nullTask = new TaskJournalNullFile();
 
-        public RevitFamily Family { get; private set; }
-
-        public RevitFamilyFile SourceFile
-        {
-            get { return Family.RevitFile; }
-        }
+        public RevitFamilyFile SourceFile { get; private set; }
 
         public RevitFamilyFile ResultFile { get; set; } = null;
 
@@ -55,16 +50,16 @@ namespace RevitJournal.Tasks
 
         public List<ITaskAction> Actions { get; } = new List<ITaskAction>();
 
-        public RevitTask(RevitFamily family)
+        public RevitTask(RevitFamilyFile family)
         {
             if (family is null) { throw new ArgumentNullException(nameof(family)); }
 
-            Family = family;
+            SourceFile = family;
         }
 
         public string Name
         {
-            get { return Family.RevitFile.NameWithoutExtension; }
+            get { return SourceFile.NameWithoutExtension; }
         }
 
         public void ClearActions()
@@ -119,7 +114,7 @@ namespace RevitJournal.Tasks
 
             foreach (var command in Actions)
             {
-                command.PreTask(Family);
+                command.PreTask(SourceFile);
             }
         }
 
@@ -207,12 +202,12 @@ namespace RevitJournal.Tasks
         public bool Equals(RevitTask other)
         {
             return other != null &&
-                   EqualityComparer<RevitFamily>.Default.Equals(Family, other.Family);
+                   EqualityComparer<RevitFamilyFile>.Default.Equals(SourceFile, other.SourceFile);
         }
 
         public override int GetHashCode()
         {
-            return 548286385 + EqualityComparer<RevitFamily>.Default.GetHashCode(Family);
+            return 548286385 + EqualityComparer<RevitFamilyFile>.Default.GetHashCode(SourceFile);
         }
 
         public static bool operator ==(RevitTask left, RevitTask right)

@@ -1,10 +1,10 @@
 ﻿using DataSource.Comparer;
-using DataSource.Model.Family;
-using DataSource.Model.FileSystem;
+using DataSource.Models.FileSystem;
 using RevitJournalUI.Helper;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using DataSource.Model.Metadata;
 
 namespace RevitJournalUI.MetadataUI
 {
@@ -16,7 +16,7 @@ namespace RevitJournalUI.MetadataUI
         private MetadataEditDialogViewModel ViewModel { get { return DataContext as MetadataEditDialogViewModel; } }
         private readonly FamilyEditedComparer EditedComparer = new FamilyEditedComparer();
 
-        public MetadataEditDialogView(IList<RevitFamily> families)
+        public MetadataEditDialogView(IList<RevitFamilyFile> families)
         {
             InitializeComponent();
             ViewModel.Update(families);

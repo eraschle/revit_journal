@@ -1,9 +1,9 @@
-﻿using DataSource.Model.Catalog;
-using DataSource.Model.Product;
+﻿using DataSource.Models.Catalog;
+using DataSource.Models.Product;
 using System.Collections.Generic;
 using Utilities.System;
 
-namespace DataSource.Model.ProductData
+namespace DataSource.Models.ProductData
 {
     public class RevitProductData
     {

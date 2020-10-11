@@ -1,7 +1,7 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using DataSource.Model.FileSystem;
+using DataSource.Models.FileSystem;
 using RevitAction.Revit;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -23,15 +23,14 @@ namespace RevitCommand.Families.Metadata
 #endif
             var rootDirectory = PathFactory.Instance.CreateRoot(Action.Library.Value);
             var revitFile = PathFactory.Instance.Create<RevitFamilyFile>(Document.PathName);
-            var revitFamily = new RevitFamily(revitFile);
-            if(revitFamily.HasEditMetadata == false)
+            if(revitFile.HasEditMetadata == false)
             {
                 message = "No Edited metadata file exists";
                 return Result.Failed;
             }
-            revitFamily.SetExternalEditDataSource();
-            revitFamily.Read();
-            var metaFamily = revitFamily.Metadata;
+            revitFile.SetExternalEditDataSource();
+            revitFile.Update();
+            var metaFamily = revitFile.Metadata;
             var manager = new RevitMetadataManager(Document);
 
             var updater = new RevitFamilyParameterUpdater(Document);

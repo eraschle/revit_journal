@@ -1,19 +1,18 @@
 ﻿using Autodesk.Revit.DB;
 using Rvt = Autodesk.Revit.DB;
 using System.Collections.Generic;
-using Cat = DataSource.Model.Catalog;
+using Cat = DataSource.Models.Catalog;
 using System;
 using DataSource.Helper;
 using System.IO;
-using Fam = DataSource.Model.Family;
 using DataSource;
 using System.Linq;
 using System.Diagnostics;
-using DataSource.Model.Product;
-using DataSource.Model.Family;
-using DataSource.Model.Catalog;
+using DataSource.Models.Product;
+using DataSource.Models.Catalog;
 using Utilities.System;
 using System.Diagnostics.CodeAnalysis;
+using DataSource.Model.Metadata;
 
 namespace RevitCommand.Families.Metadata
 {
@@ -33,9 +32,9 @@ namespace RevitCommand.Families.Metadata
             Creator = new RevitEnumCreator();
         }
 
-        public Fam.Family CreateFamily()
+        public DataSource.Model.Metadata.Family CreateFamily()
         {
-            var family = MergeInformation(new Fam.Family());
+            var family = MergeInformation(new DataSource.Model.Metadata.Family());
             family.Category = GetCategory();
             family.OmniClass = GetOmniClass();
             family.AddCatalog(GetPlacement());
@@ -44,7 +43,7 @@ namespace RevitCommand.Families.Metadata
             return family;
         }
 
-        public Fam.Family MergeFamily(Fam.Family family)
+        public DataSource.Model.Metadata.Family MergeFamily(DataSource.Model.Metadata.Family family)
         {
             family = MergeInformation(family);
             family.Category = GetCategory();
@@ -55,7 +54,7 @@ namespace RevitCommand.Families.Metadata
             return family;
         }
 
-        public Fam.Family MergeInformation(Fam.Family metadata)
+        public DataSource.Model.Metadata.Family MergeInformation(DataSource.Model.Metadata.Family metadata)
         {
             metadata.Source = Source.Revit;
             metadata.SourceUpdated = DateTime.Now;
@@ -96,14 +95,14 @@ namespace RevitCommand.Families.Metadata
             return metadata;
         }
 
-        public Fam.Family MergeFamilyParameters(Fam.Family metaFamily)
+        public DataSource.Model.Metadata.Family MergeFamilyParameters(DataSource.Model.Metadata.Family metaFamily)
         {
             foreach (Rvt.Parameter parameter in Family.Parameters)
             {
                 var definition = parameter.Definition;
                 if (IsOmniClassOrCategory(definition)) { continue; }
 
-                if (metaFamily.HasByName(definition.Name, out Fam.Parameter metaParameter))
+                if (metaFamily.HasByName(definition.Name, out DataSource.Model.Metadata.Parameter metaParameter))
                 {
                     CreateRevitParameter(parameter, metaParameter);
                 }
@@ -116,9 +115,9 @@ namespace RevitCommand.Families.Metadata
             return metaFamily;
         }
 
-        public ICollection<Fam.FamilyType> CreateFamilyTypes()
+        public ICollection<DataSource.Model.Metadata.FamilyType> CreateFamilyTypes()
         {
-            var familyTypes = new List<Fam.FamilyType>();
+            var familyTypes = new List<DataSource.Model.Metadata.FamilyType>();
             foreach (Rvt.FamilyType familyType in Manager.Types)
             {
                 SetCurrentType(familyType);
@@ -128,9 +127,9 @@ namespace RevitCommand.Families.Metadata
             return familyTypes;
         }
 
-        public Fam.FamilyType CreateFamilyType()
+        public DataSource.Model.Metadata.FamilyType CreateFamilyType()
         {
-            var familyType = new Fam.FamilyType
+            var familyType = new DataSource.Model.Metadata.FamilyType
             {
                 Name = Manager.CurrentType.Name
             };
@@ -142,7 +141,7 @@ namespace RevitCommand.Families.Metadata
         }
 
         [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-        public Fam.Family MergeFamilyTypes(Fam.Family metaFamily)
+        public DataSource.Model.Metadata.Family MergeFamilyTypes(DataSource.Model.Metadata.Family metaFamily)
         {
             if (Manager.Types.Size <= 1)
             {
@@ -177,11 +176,11 @@ namespace RevitCommand.Families.Metadata
             Manager.CurrentType = familyType;
         }
 
-        public Fam.Family MergeFamilyType(Fam.Family metaFamily)
+        public DataSource.Model.Metadata.Family MergeFamilyType(DataSource.Model.Metadata.Family metaFamily)
         {
             var manager = Document.FamilyManager;
             var revitType = manager.CurrentType;
-            if (metaFamily.HasByName(revitType.Name, out Fam.FamilyType metaType) == false)
+            if (metaFamily.HasByName(revitType.Name, out DataSource.Model.Metadata.FamilyType metaType) == false)
             {
                 metaType = CreateFamilyType();
                 metaFamily.AddFamilyType(metaType);
@@ -201,10 +200,10 @@ namespace RevitCommand.Families.Metadata
             return metaFamily;
         }
 
-        public IEnumerable<Fam.Parameter> CreateFamilyTypeParmeters()
+        public IEnumerable<DataSource.Model.Metadata.Parameter> CreateFamilyTypeParmeters()
         {
             var manager = Document.FamilyManager;
-            var parameters = new List<Fam.Parameter>();
+            var parameters = new List<DataSource.Model.Metadata.Parameter>();
             foreach (FamilyParameter revit in manager.Parameters)
             {
                 var metadata = CreateRevitParameter(revit);
@@ -213,9 +212,9 @@ namespace RevitCommand.Families.Metadata
             return parameters;
         }
 
-        public ICollection<Fam.Parameter> CreateFamilyParmeters()
+        public ICollection<DataSource.Model.Metadata.Parameter> CreateFamilyParmeters()
         {
-            var parameters = new List<Fam.Parameter>();
+            var parameters = new List<DataSource.Model.Metadata.Parameter>();
             foreach (Rvt.Parameter revit in Family.Parameters)
             {
                 if (IsOmniClassOrCategory(revit.Definition)) { continue; }
@@ -226,11 +225,11 @@ namespace RevitCommand.Families.Metadata
             return parameters;
         }
 
-        public Fam.Parameter CreateRevitParameter(Rvt.Parameter revit, Fam.Parameter metadata = null)
+        public DataSource.Model.Metadata.Parameter CreateRevitParameter(Rvt.Parameter revit, DataSource.Model.Metadata.Parameter metadata = null)
         {
             if (metadata is null)
             {
-                metadata = new Fam.Parameter();
+                metadata = new DataSource.Model.Metadata.Parameter();
             }
             metadata = SetupRevitParameterValues(metadata, revit.Definition);
             metadata.Id = GetParameterId(revit);
@@ -267,11 +266,11 @@ namespace RevitCommand.Families.Metadata
             return value;
         }
 
-        public Fam.Parameter CreateRevitParameter(FamilyParameter revit, Fam.Parameter metadata = null)
+        public DataSource.Model.Metadata.Parameter CreateRevitParameter(FamilyParameter revit, DataSource.Model.Metadata.Parameter metadata = null)
         {
             if (metadata is null)
             {
-                metadata = new Fam.Parameter();
+                metadata = new DataSource.Model.Metadata.Parameter();
             }
             metadata = SetupRevitParameterValues(metadata, revit.Definition);
             metadata.Id = GetParameterId(revit);
@@ -321,7 +320,7 @@ namespace RevitCommand.Families.Metadata
             return $"{symbol.Name} [{elementId}]";
         }
 
-        private Fam.Parameter SetupRevitParameterValues(Fam.Parameter metadata, Definition definition)
+        private DataSource.Model.Metadata.Parameter SetupRevitParameterValues(DataSource.Model.Metadata.Parameter metadata, Definition definition)
         {
             metadata.Name = definition.Name;
             metadata.ValueType = GetValueType(definition);
@@ -333,7 +332,7 @@ namespace RevitCommand.Families.Metadata
         {
             var parameterType = definition.ParameterType;
             if (parameterType == ParameterType.Invalid) { return null; }
-            if (parameterType == ParameterType.FamilyType) { return Fam.Parameter.FamilyTypeValueType; }
+            if (parameterType == ParameterType.FamilyType) { return DataSource.Model.Metadata.Parameter.FamilyTypeValueType; }
 
             return LabelUtils.GetLabelFor(parameterType);
         }
@@ -492,26 +491,26 @@ namespace RevitCommand.Families.Metadata
         {
             if (parameter.IsShared)
             {
-                return Fam.Parameter.SharedParameterType;
+                return DataSource.Model.Metadata.Parameter.SharedParameterType;
             }
             if (IsRevitParameter(parameter.Definition))
             {
-                return Fam.Parameter.SystemParameterType;
+                return DataSource.Model.Metadata.Parameter.SystemParameterType;
             }
-            return Fam.Parameter.CostumParameterType;
+            return DataSource.Model.Metadata.Parameter.CostumParameterType;
         }
 
         private static string GetParameterType(Rvt.Parameter parameter)
         {
             if (parameter.IsShared)
             {
-                return Fam.Parameter.SharedParameterType;
+                return DataSource.Model.Metadata.Parameter.SharedParameterType;
             }
             if (IsRevitParameter(parameter.Definition))
             {
-                return Fam.Parameter.SystemParameterType;
+                return DataSource.Model.Metadata.Parameter.SystemParameterType;
             }
-            return Fam.Parameter.CostumParameterType;
+            return DataSource.Model.Metadata.Parameter.CostumParameterType;
         }
 
         private static bool IsRevitParameter(Definition definition)

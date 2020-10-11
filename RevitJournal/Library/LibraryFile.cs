@@ -1,4 +1,4 @@
-﻿using DataSource.Model.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using RevitJournal.Revit.Filtering;
 using System;
 
@@ -6,9 +6,9 @@ namespace RevitJournal.Library
 {
     public class LibraryFile : ALibraryNode
     {
-        public RevitFamily File { get; private set; }
+        public RevitFamilyFile File { get; private set; }
 
-        public LibraryFile(RevitFamily revitFamily, LibraryFolder folder) : base(folder)
+        public LibraryFile(RevitFamilyFile revitFamily, LibraryFolder folder) : base(folder)
         {
             File = revitFamily ?? throw new ArgumentNullException(nameof(revitFamily));
         }

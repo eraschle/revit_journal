@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Utilities.System;
 
-namespace DataSource.Model.Product
+namespace DataSource.Models.Product
 {
     public class RevitApp : IModel, IEquatable<RevitApp>
     {

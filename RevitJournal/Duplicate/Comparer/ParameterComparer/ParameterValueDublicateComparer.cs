@@ -1,4 +1,4 @@
-﻿using DataSource.Model.Family;
+﻿using DataSource.Model.Metadata;
 
 namespace RevitJournal.Duplicate.Comparer.ParameterComparer
 {

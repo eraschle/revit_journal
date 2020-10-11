@@ -1,12 +1,12 @@
 ﻿using DataSource.DataSource;
 using DataSource.Metadata;
-using DataSource.Model;
-using DataSource.Model.Family;
-using DataSource.Model.FileSystem;
+using DataSource.Models;
+using DataSource.Models.FileSystem;
+using DataSource.Model.Metadata;
 
 namespace DataSource.Xml
 {
-    public class FamilyXmlDataSource : AFileDataSource<Family, RevitFamilyFile>, IMetadataDataSource
+    public class FamilyXmlDataSource : AFileDataSource<Family, RevitFamilyFile>, IMetadataDataSource<Family, RevitFamilyFile>
     {
         internal FamilyBuilder Builder { get; set; }
 

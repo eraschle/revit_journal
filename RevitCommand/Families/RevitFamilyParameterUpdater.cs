@@ -1,10 +1,11 @@
-﻿using Autodesk.Revit.DB;
-using Fam = DataSource.Model.Family;
-using Cat = DataSource.Model.Catalog;
+﻿using Revit = Autodesk.Revit.DB;
+using Model = DataSource.Model.Metadata;
+using Cat = DataSource.Models.Catalog;
 using System;
 using System.Collections.Generic;
 using RevitCommand.Families.Metadata;
 using System.Diagnostics.CodeAnalysis;
+using DataSource.Model.Metadata;
 
 namespace RevitCommand.Families
 {
@@ -12,14 +13,14 @@ namespace RevitCommand.Families
     {
 
 
-        private readonly Document Document;
-        private readonly Family Family;
-        private readonly FamilyManager Manager;
+        private readonly Revit.Document Document;
+        private readonly Revit.Family Family;
+        private readonly Revit.FamilyManager Manager;
 
         private readonly MetadataFamilyComparer FamilyComparer;
         private readonly MetadataParameterComparer ParameterComparer;
 
-        public RevitFamilyParameterUpdater(Document document)
+        public RevitFamilyParameterUpdater(Revit.Document document)
         {
             Document = document;
             Family = document.OwnerFamily;
@@ -29,7 +30,7 @@ namespace RevitCommand.Families
         }
 
         [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-        public void UpdateMetadata(Fam.Family original, Fam.Family other)
+        public void UpdateMetadata(Family original, Family other)
         {
             UpdateFamilyParameters(original, other);
             UpdateFamilyTypeParameters(original, other);
@@ -40,7 +41,7 @@ namespace RevitCommand.Families
             {
                 var transactionName = $"Set Category: {metaCategory.Name}";
 
-                using (var transaction = new Transaction(Document, transactionName))
+                using (var transaction = new Revit.Transaction(Document, transactionName))
                 {
                     transaction.Start();
                     try
@@ -58,17 +59,17 @@ namespace RevitCommand.Families
             if (FamilyComparer.HasChangedOmniClass(original, other, out var omniClass))
             {
                 var transactionName = $"Set OmniClass: {omniClass.NumberAndName}";
-                var bip = BuiltInParameter.OMNICLASS_CODE;
+                var bip = Revit.BuiltInParameter.OMNICLASS_CODE;
                 var parameter = Family.get_Parameter(bip);
                 SetParameter(parameter, omniClass.Id, transactionName);
             }
         }
 
-        private bool HasCategory(Cat.Category metaCategory, out Category category)
+        private bool HasCategory(Cat.Category metaCategory, out Revit.Category category)
         {
             category = null;
             var categoryName = metaCategory.Name;
-            foreach (Category rvtCategory in Document.Settings.Categories)
+            foreach (Revit.Category rvtCategory in Document.Settings.Categories)
             {
                 if (rvtCategory.Name.Equals(categoryName, StringComparison.CurrentCulture) == false) { continue; }
 
@@ -78,19 +79,19 @@ namespace RevitCommand.Families
             return category != null;
         }
 
-        private void UpdateFamilyParameters(Fam.Family original, Fam.Family other)
+        private void UpdateFamilyParameters(Family original, Family other)
         {
             var changedParams = ChangedParameters(original.Parameters, other.Parameters);
             UpdateFamilyParameters(changedParams);
         }
 
-        private void UpdateFamilyTypeParameters(Fam.Family original, Fam.Family other)
+        private void UpdateFamilyTypeParameters(Family original, Family other)
         {
-            foreach (FamilyType familyType in Manager.Types)
+            foreach (Revit.FamilyType familyType in Manager.Types)
             {
                 var typeName = familyType.Name;
-                if (original.HasByName(typeName, out Fam.FamilyType metaType) == false
-                    || other.HasByName(typeName, out Fam.FamilyType otherType) == false)
+                if (original.HasByName(typeName, out FamilyType metaType) == false
+                    || other.HasByName(typeName, out FamilyType otherType) == false)
                 {
                     continue;
                 }
@@ -102,9 +103,9 @@ namespace RevitCommand.Families
         }
 
         [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
-        private void SetCurrentType(FamilyType familyType)
+        private void SetCurrentType(Revit.FamilyType familyType)
         {
-            using (var transaction = new Transaction(Document, "Cahnge Family Type"))
+            using (var transaction = new Revit.Transaction(Document, "Cahnge Family Type"))
             {
                 transaction.Start();
                 try
@@ -120,7 +121,7 @@ namespace RevitCommand.Families
             }
         }
 
-        private void UpdateFamilyParameters(ICollection<Fam.Parameter> metaParameters)
+        private void UpdateFamilyParameters(ICollection<Parameter> metaParameters)
         {
             if (metaParameters.Count == 0) { return; }
 
@@ -133,7 +134,7 @@ namespace RevitCommand.Families
         }
 
 
-        private void UpdateFamilyTypeParameters(ICollection<Fam.Parameter> metaParameters)
+        private void UpdateFamilyTypeParameters(ICollection<Parameter> metaParameters)
         {
             if (metaParameters.Count == 0) { return; }
 
@@ -145,7 +146,7 @@ namespace RevitCommand.Families
             }
         }
 
-        private void SetParameter<TParameter>(TParameter revitParameter, Fam.Parameter metaParameter) where TParameter : class
+        private void SetParameter<TParameter>(TParameter revitParameter, Parameter metaParameter) where TParameter : class
         {
             var parameterValue = metaParameter.Value;
             if (revitParameter is null || metaParameter is null
@@ -158,18 +159,18 @@ namespace RevitCommand.Families
         [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         private void SetParameter<TParameter>(TParameter revitParameter, string parameterValue, string transactionName)
         {
-            using (var transaction = new Transaction(Document, transactionName))
+            using (var transaction = new Revit.Transaction(Document, transactionName))
             {
                 transaction.Start();
                 try
                 {
-                    if (revitParameter is FamilyParameter familyParameter)
+                    if (revitParameter is Revit.FamilyParameter familyParameter)
                     {
-                        if (familyParameter.StorageType == StorageType.String)
+                        if (familyParameter.StorageType == Revit.StorageType.String)
                         {
                             Manager.Set(familyParameter, parameterValue);
                         }
-                        else if (familyParameter.Definition.ParameterType == ParameterType.YesNo)
+                        else if (familyParameter.Definition.ParameterType == Revit.ParameterType.YesNo)
                         {
                             var boolValue = GetBooleanIntValue(parameterValue);
                             Manager.Set(familyParameter, boolValue);
@@ -179,13 +180,13 @@ namespace RevitCommand.Families
                             Manager.SetValueString(familyParameter, parameterValue);
                         }
                     }
-                    else if (revitParameter is Parameter parameter)
+                    else if (revitParameter is Revit.Parameter parameter)
                     {
-                        if (parameter.StorageType == StorageType.String)
+                        if (parameter.StorageType == Revit.StorageType.String)
                         {
                             parameter.Set(parameterValue);
                         }
-                        else if (parameter.Definition.ParameterType == ParameterType.YesNo)
+                        else if (parameter.Definition.ParameterType == Revit.ParameterType.YesNo)
                         {
                             var boolValue = GetBooleanIntValue(parameterValue);
                             parameter.Set(parameterValue);
@@ -213,9 +214,9 @@ namespace RevitCommand.Families
             return -1;
         }
 
-        private ICollection<Fam.Parameter> ChangedParameters(IList<Fam.Parameter> original, IList<Fam.Parameter> other)
+        private ICollection<Parameter> ChangedParameters(IList<Parameter> original, IList<Parameter> other)
         {
-            var changed = new List<Fam.Parameter>();
+            var changed = new List<Parameter>();
             foreach (var parameter in original)
             {
                 if (other.Contains(parameter) == false)
