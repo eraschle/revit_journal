@@ -221,7 +221,7 @@
     <Compile Include="Pages\Settings\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Settings\Worker\MetadataWorker.cs" />
+    <Compile Include="Pages\Files\Worker\MetadataWorker.cs" />
     <Compile Include="MainWindowModel.cs" />
     <Compile Include="Status\StatusBarViewModel.cs" />
     <Compile Include="Tasks\Actions\OpenActionViewModel.cs" />
