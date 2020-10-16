@@ -8,23 +8,28 @@ using DataSource.Models.FileSystem;
 
 namespace RevitJournalUI.Pages.Files.Models
 {
-    public class FileModel : PathModel<RevitFamilyFile>
+    public class FileModel : PathModel
     {
-        public FileModel(RevitFamilyFile fileNode, FolderModel parent) : base(fileNode, parent)
+        private RevitFamilyFile File
+        {
+            get { return PathNode as RevitFamilyFile; }
+        }
+
+        public FileModel(RevitFamilyFile fileNode) : base(fileNode)
         {
             ViewMetadataCommand = new RelayCommand<object>(ViewMetadataCommandAction);
         }
 
         public MetadataStatus MetadataStatus
         {
-            get { return PathNode.Status; }
+            get { return File.Status; }
         }
 
         public string LastUpdate
         {
             get
             {
-                var metadata = PathNode.Metadata;
+                var metadata = File.Metadata;
                 return metadata is object
                     ? DateUtils.AsString(metadata.Updated)
                     : string.Empty;
@@ -35,7 +40,7 @@ namespace RevitJournalUI.Pages.Files.Models
 
         private void ViewMetadataCommandAction(object parameter)
         {
-            var dialog = new MetadataDialogView(PathNode.Metadata);
+            var dialog = new MetadataDialogView(File.Metadata);
             dialog.ShowDialog();
         }
     }

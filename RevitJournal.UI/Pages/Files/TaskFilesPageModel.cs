@@ -5,28 +5,67 @@ using RevitJournal.Tasks.Actions;
 using RevitJournal.Tasks.Options;
 using RevitJournalUI.JournalTaskUI.FamilyFilter;
 using RevitJournalUI.Pages.Files.Models;
+using RevitJournalUI.Pages.Settings;
 using RevitJournalUI.Tasks.Actions;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Windows.Input;
 using Utilities.UI;
 
 namespace RevitJournalUI.Pages.Files
 {
-    public class TaskFilesPageModel : ANotifyPropertyChangedModel
+    public class TaskFilesPageModel : APageModel
     {
-        public TaskOptions Options { get; set; } = new TaskOptions(PathFactory.Instance);
+        private TaskOptions options = null;
 
         public TaskFilesPageModel()
         {
             FilterCommand = new RelayCommand<object>(FilterCommandAction);
             ActionsCommand = new RelayCommand<object>(ActionsCommandAction, ActionsCommandPredicate);
         }
+        public override object ModelData
+        {
+            get
+            {
+                return PathModels.OfType<PathModel>()
+                                 .Where(model => model.IsChecked == true);
+            }
+        }
 
-        public ObservableCollection<PathModel<APathNode>> PathModels { get; }
-            = new ObservableCollection<PathModel<APathNode>>();
+        public override void SetModelData(object data)
+        {
+            if (data is null || !(data is SettingsPageModel model)) { return; }
 
-        public ObservableCollection<FilterViewModel> Filters { get; } 
+            options = model.Options;
+            PathModels.Clear();
+            var rootNode = model.FamilyDirectory.Option.GetRootNode<RevitFamilyFile>();
+            var rootModel = GetModel(rootNode);
+            rootModel.Parent = null;
+            PathModels.Add(rootModel);
+        }
+
+        private FolderModel GetModel(DirectoryNode directory)
+        {
+            var model = new FolderModel(directory);
+            foreach (var child in directory.GetDirectories<RevitFamilyFile>(true))
+            {
+                var childModel = GetModel(child);
+                childModel.Parent = model;
+                model.Children.Add(childModel);
+            }
+            foreach (var file in directory.GetFiles<RevitFamilyFile>(false))
+            {
+                var fileModel = new FileModel(file) { Parent = model };
+                model.Children.Add(fileModel);
+            }
+            return model;
+        }
+
+        public ObservableCollection<PathModel> PathModels { get; }
+            = new ObservableCollection<PathModel>();
+
+        public ObservableCollection<FilterViewModel> Filters { get; }
             = new ObservableCollection<FilterViewModel>();
 
         public ICommand FilterCommand { get; }
@@ -58,17 +97,19 @@ namespace RevitJournalUI.Pages.Files
 
         public ICommand ActionsCommand { get; }
 
+
         private bool ActionsCommandPredicate(object parameter)
         {
-            return string.IsNullOrEmpty(Options.ActionDirectory.Value) == false
-                && Directory.Exists(Options.ActionDirectory.Value);
+            return options is object
+                && string.IsNullOrEmpty(options.ActionDirectory.Value) == false
+                && Directory.Exists(options.ActionDirectory.Value);
         }
 
         private void ActionsCommandAction(object parameter)
         {
-            var actionDirectory = PathFactory.Instance.CreateRoot(Options.ActionDirectory.Value);
+            var actionDirectory = PathFactory.Instance.CreateRoot(options.ActionDirectory.Value);
             var actions = ExternalAction.GetTaskActions(actionDirectory);
-            var dialog = new TaskActionsView(actions, Options);
+            var dialog = new TaskActionsView(actions, options);
             if (Actions.Count > 0)
             {
                 dialog.UpdateCheckedActions(Actions);

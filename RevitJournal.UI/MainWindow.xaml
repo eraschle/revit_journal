@@ -15,7 +15,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Frame Name="MainFrame">
+        <Frame Name="MainFrame" NavigationUIVisibility="Hidden">
         </Frame>
 
         <WrapPanel Grid.Row="1" HorizontalAlignment="Right">
@@ -63,17 +63,16 @@
             <Separator Grid.Column="5" 
                        Visibility="{Binding ProgressVisibility}"/>
             <StatusBarItem Grid.Column="6">
-                <Button x:Name="BtnBack" 
-                        Content="Back"
+                <Button x:Name="BtnBack" Content="Back"
+                        Click="BtnBack_Click"
                         IsEnabled="{Binding NavigationEnabled}"
                         Style="{StaticResource UIButton}"/>
             </StatusBarItem>
             <StatusBarItem Grid.Column="7">
-                <Button x:Name="BtnNext"
-                        Content="Next"
+                <Button x:Name="BtnNext" Content="Next"
+                        Click="BtnNext_Click"
                         IsEnabled="{Binding NavigationEnabled}"
-                        Style="{StaticResource UIButton}"
-                        Click="BtnNext_Click"/>
+                        Style="{StaticResource UIButton}"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>

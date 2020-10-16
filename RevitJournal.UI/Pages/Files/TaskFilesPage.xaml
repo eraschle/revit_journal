@@ -130,9 +130,7 @@
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type model:FolderModel}"
                                           ItemsSource="{Binding Children}">
-                    <Grid Width="{Binding RelativeSource={RelativeSource 
-                                          AncestorType={x:Type TreeViewItem}},
-                                          Path=ActualWidth, Mode=OneTime}">
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="20"/>
                             <ColumnDefinition Width="*"/>
@@ -154,10 +152,7 @@
                     <CheckBox IsChecked="{Binding IsChecked}"
                               VerticalContentAlignment="Center">
                         <CheckBox.Content>
-                            <Grid HorizontalAlignment="{Binding HorizontalAlignment,
-                                                                RelativeSource={RelativeSource FindAncestor, 
-                                                                AncestorType={x:Type ContentPresenter}},
-                                                                Mode=OneWayToSource}">
+                            <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="150"/>
@@ -177,6 +172,11 @@
                     </CheckBox>
                 </DataTemplate>
             </TreeView.Resources>
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="TreeViewItem.IsExpanded" Value="True"/>
+                </Style>
+            </TreeView.ItemContainerStyle>
         </TreeView>
     </Grid>
 </Page>

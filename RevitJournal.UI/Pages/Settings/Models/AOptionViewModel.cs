@@ -10,7 +10,7 @@ namespace RevitJournalUI.Pages.Settings.Models
     public abstract class AOptionViewModel<TOption, TValue> : ANotifyPropertyChangedModel
         where TOption : ITaskOption<TValue>
     {
-        protected TOption Option { get; }
+        public TOption Option { get; }
 
         protected AOptionViewModel(string name, TOption taskOption, bool showDefaultAtStart)
         {

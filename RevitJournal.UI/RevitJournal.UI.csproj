@@ -127,10 +127,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\TasksPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Tasks\Actions\TaskActionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -187,6 +183,8 @@
     <Compile Include="JournalTaskUI\FamilyFilter\FilterViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\PathViewModel.cs" />
     <Compile Include="Converters\TimespanMinutesConverter .cs" />
+    <Compile Include="Pages\IPageView.cs" />
+    <Compile Include="Pages\APageModel.cs" />
     <Compile Include="Pages\Files\Models\FolderModel.cs" />
     <Compile Include="Pages\Files\Models\FileModel.cs" />
     <Compile Include="Pages\Files\Models\PathModel.cs" />
@@ -224,9 +222,6 @@
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Settings\Worker\MetadataWorker.cs" />
-    <Compile Include="Pages\TasksPage.xaml.cs">
-      <DependentUpon>TasksPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainWindowModel.cs" />
     <Compile Include="Status\StatusBarViewModel.cs" />
     <Compile Include="Tasks\Actions\OpenActionViewModel.cs" />

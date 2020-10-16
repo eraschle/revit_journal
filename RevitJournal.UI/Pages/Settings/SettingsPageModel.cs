@@ -10,9 +10,9 @@ using RevitJournalUI.Pages.Settings.Worker;
 
 namespace RevitJournalUI.Pages.Settings
 {
-    public class SettingsPageModel : ANotifyPropertyChangedModel
+    public class SettingsPageModel : APageModel
     {
-        public TaskOptions Options { get; set; } = new TaskOptions(PathFactory.Instance);
+        internal TaskOptions Options { get; set; } = new TaskOptions(PathFactory.Instance);
 
         public SettingsPageModel()
         {
@@ -52,6 +52,18 @@ namespace RevitJournalUI.Pages.Settings
             FamilyDirectory.Value = @"C:\develop\workspace\revit_journal_test_data\families";
             JournalDirectory.Value = @"C:\develop\workspace\Content\journal";
 #endif
+        }
+
+        public override object ModelData
+        {
+            get { return Options; }
+        }
+
+        public override void SetModelData(object data)
+        {
+            if(data is null ||!(data is TaskOptions taskOptions)) { return; }
+
+            Options = taskOptions;
         }
 
         public OptionDirectoryViewModel FamilyDirectory { get; }
@@ -149,6 +161,7 @@ namespace RevitJournalUI.Pages.Settings
         public OptionBoolViewModel AddBackupAtEnd { get; }
 
         public OptionStringViewModel FileSuffix { get; }
+
 
         #endregion
     }
