@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RevitJournalUI.Pages.Settings.Worker
+namespace RevitJournalUI.Pages.Files.Worker
 {
     public static class MetadataWorker
     {

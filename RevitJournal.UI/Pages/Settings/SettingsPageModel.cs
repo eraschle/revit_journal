@@ -4,7 +4,7 @@ using System.Windows;
 using Utilities.System;
 using System.ComponentModel;
 using RevitJournalUI.Pages.Settings.Models;
-using RevitJournalUI.Pages.Settings.Worker;
+using RevitJournalUI.Pages.Files.Worker;
 
 namespace RevitJournalUI.Pages.Settings
 {
