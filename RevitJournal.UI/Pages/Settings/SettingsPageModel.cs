@@ -14,7 +14,7 @@ namespace RevitJournalUI.Pages.Settings
 
         public SettingsPageModel()
         {
-            FamilyDirectory = new OptionDirectoryViewModel("Family Directory", options.RootDirectory, true, backgroundWorker: MetadataWorker.Create());
+            FamilyDirectory = new OptionDirectoryViewModel("Family Directory", options.RootDirectory, true);
             JournalDirectory = new OptionDirectoryViewModel("Journal Directory", options.JournalDirectory, true);
             ActionDirectory = new OptionDirectoryViewModel("Action Directory", options.ActionDirectory, true);
 

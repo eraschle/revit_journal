@@ -12,13 +12,10 @@ namespace RevitJournalUI.Pages.Settings.Models
 
         private readonly ITaskOption<string> otherOption;
 
-        private readonly BackgroundWorker worker;
-
-        public OptionDirectoryViewModel(string name, ITaskOptionDirectory taskOption, bool showDefaultAtStart, ITaskOptionDirectory other = null, BackgroundWorker backgroundWorker = null)
+        public OptionDirectoryViewModel(string name, ITaskOptionDirectory taskOption, bool showDefaultAtStart, ITaskOptionDirectory other = null)
             : base(name, taskOption, showDefaultAtStart)
         {
             otherOption = other;
-            worker = backgroundWorker;
             SelectCommand = new RelayCommand<object>(SelectAction, SelectPredicate);
         }
 
@@ -31,10 +28,6 @@ namespace RevitJournalUI.Pages.Settings.Models
 
         private void SelectAction(object parameter)
         {
-            if (worker is object && worker.IsBusy)
-            {
-                worker.CancelAsync();
-            }
             var value = Option.Value;
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -45,10 +38,6 @@ namespace RevitJournalUI.Pages.Settings.Models
                 value = otherOption.Value;
             }
             Value = PathDialog.ChooseDir(TitleChooseDir, value);
-            if (worker is object && StringUtils.Equals(Value, value) == false)
-            {
-                worker.RunWorkerAsync(Option);
-            }
         }
     }
 }
