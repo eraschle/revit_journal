@@ -1,7 +1,5 @@
 ﻿using DataSource.Models.Product;
 using RevitJournal.Tasks.Options;
-using Utilities.UI;
-using DataSource.Models.FileSystem;
 using System.Windows;
 using Utilities.System;
 using System.ComponentModel;
@@ -12,59 +10,45 @@ namespace RevitJournalUI.Pages.Settings
 {
     public class SettingsPageModel : APageModel
     {
-        internal TaskOptions Options { get; set; } = new TaskOptions(PathFactory.Instance);
+        private readonly TaskOptions options = TaskOptions.Instance;
 
         public SettingsPageModel()
         {
-            FamilyDirectory = new OptionDirectoryViewModel("Family Directory", Options.RootDirectory, true, backgroundWorker: MetadataWorker.Create());
-            JournalDirectory = new OptionDirectoryViewModel("Journal Directory", Options.JournalDirectory, true);
-            ActionDirectory = new OptionDirectoryViewModel("Action Directory", Options.ActionDirectory, true);
+            FamilyDirectory = new OptionDirectoryViewModel("Family Directory", options.RootDirectory, true, backgroundWorker: MetadataWorker.Create());
+            JournalDirectory = new OptionDirectoryViewModel("Journal Directory", options.JournalDirectory, true);
+            ActionDirectory = new OptionDirectoryViewModel("Action Directory", options.ActionDirectory, true);
 
-            DeleteAppBackups = new OptionBoolViewModel("Delete App Backups", Options.DeleteRevitBackup, true);
-            SourceBackup = new OptionBoolViewModel("Make Backups", Options.CreateSourceBackup, true);
+            DeleteAppBackups = new OptionBoolViewModel("Delete App Backups", options.DeleteRevitBackup, true);
+            SourceBackup = new OptionBoolViewModel("Make Backups", options.CreateSourceBackup, true);
             SourceBackup.PropertyChanged += SourceBackup_PropertyChanged;
 
-            SymbolicPath = new OptionInformationViewModel("Backup path", Options.SymbolicPath, false);
-            NewRootPath = new OptionDirectoryViewModel("New Root Directory", Options.NewRootPath, false, Options.RootDirectory);
+            SymbolicPath = new OptionInformationViewModel("Backup path", options.SymbolicPath, false);
+            NewRootPath = new OptionDirectoryViewModel("New Root Directory", options.NewRootPath, false, options.RootDirectory);
             NewRootPath.PropertyChanged += PathOptions_PropertyChanged;
-            BackupFolder = new OptionStringViewModel("Backup Folder", Options.BackupFolder, false);
+            BackupFolder = new OptionStringViewModel("Backup Folder", options.BackupFolder, false);
             BackupFolder.PropertyChanged += PathOptions_PropertyChanged;
             BackupFolder.PropertyChanged += BackupFolder_PropertyChanged;
-            AddBackupAtEnd = new OptionBoolViewModel("Add folder at the end", Options.AddBackupAtEnd, true);
+            AddBackupAtEnd = new OptionBoolViewModel("Add folder at the end", options.AddBackupAtEnd, true);
             AddBackupAtEnd.PropertyChanged += PathOptions_PropertyChanged;
-            FileSuffix = new OptionStringViewModel("File Suffix", Options.FileSuffix, false);
+            FileSuffix = new OptionStringViewModel("File Suffix", options.FileSuffix, false);
             FileSuffix.PropertyChanged += PathOptions_PropertyChanged;
             SetBackupOptionVisibility(SourceBackup.Value);
             SetAddFolderAtEndEnabled();
 
-            Applications = new OptionSelectViewModel<RevitApp>("Application", Options.Applications, true);
-            UseNewerApplication = new OptionBoolViewModel("Use newer app", Options.UseNewerApp, true);
+            Applications = new OptionSelectViewModel<RevitApp>("Application", options.Applications, true);
+            UseNewerApplication = new OptionBoolViewModel("Use newer app", options.UseNewerApp, true);
 
-            LogResult = new OptionBoolViewModel("Log Results", Options.LogResults, true);
+            LogResult = new OptionBoolViewModel("Log Results", options.LogResults, true);
             LogResult.PropertyChanged += LogResult_PropertyChanged;
-            LogSuccess = new OptionBoolViewModel("Log succes", Options.LogSuccess, true);
-            LogError = new OptionBoolViewModel("Log error", Options.LogError, true);
+            LogSuccess = new OptionBoolViewModel("Log succes", options.LogSuccess, true);
+            LogError = new OptionBoolViewModel("Log error", options.LogError, true);
             SetOptionLogEnabled(LogResult.Value);
 
-            ParallelProcess = new OptionSliderViewModel("Processes", Options.Processes, true, "CPU");
-            ProcessTimeout = new OptionSliderViewModel("Timeout", Options.ProcessTime, true, "min");
-#if DEBUG
-            FamilyDirectory.Value = @"C:\develop\workspace\revit_journal_test_data\families";
-            JournalDirectory.Value = @"C:\develop\workspace\Content\journal";
-#endif
+            ParallelProcess = new OptionSliderViewModel("Processes", options.Processes, true, "CPU");
+            ProcessTimeout = new OptionSliderViewModel("Timeout", options.ProcessTime, true, "min");
         }
 
-        public override object ModelData
-        {
-            get { return Options; }
-        }
-
-        public override void SetModelData(object data)
-        {
-            if(data is null ||!(data is TaskOptions taskOptions)) { return; }
-
-            Options = taskOptions;
-        }
+        public override void SetModelData(object data) { }
 
         public OptionDirectoryViewModel FamilyDirectory { get; }
 

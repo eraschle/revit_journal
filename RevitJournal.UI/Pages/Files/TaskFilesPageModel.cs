@@ -17,27 +17,18 @@ namespace RevitJournalUI.Pages.Files
 {
     public class TaskFilesPageModel : APageModel
     {
-        private TaskOptions options = null;
+        private TaskOptions options = TaskOptions.Instance;
 
         public TaskFilesPageModel()
         {
             FilterCommand = new RelayCommand<object>(FilterCommandAction);
             ActionsCommand = new RelayCommand<object>(ActionsCommandAction, ActionsCommandPredicate);
         }
-        public override object ModelData
-        {
-            get
-            {
-                return PathModels.OfType<PathModel>()
-                                 .Where(model => model.IsChecked == true);
-            }
-        }
 
         public override void SetModelData(object data)
         {
             if (data is null || !(data is SettingsPageModel model)) { return; }
 
-            options = model.Options;
             PathModels.Clear();
             var rootNode = model.FamilyDirectory.Option.GetRootNode<RevitFamilyFile>();
             var rootModel = GetModel(rootNode);

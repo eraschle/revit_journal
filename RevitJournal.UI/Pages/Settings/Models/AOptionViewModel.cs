@@ -2,7 +2,6 @@
 using Utilities.UI;
 using RevitJournal.Tasks.Options.Parameter;
 using Utilities.System;
-using System;
 using System.Windows;
 
 namespace RevitJournalUI.Pages.Settings.Models
@@ -17,7 +16,7 @@ namespace RevitJournalUI.Pages.Settings.Models
             labelName = name;
             Option = taskOption;
             DefaultCommand = new RelayCommand<object>(DefaultAction, DefaultPredicate);
-            if (showDefaultAtStart)
+            if (showDefaultAtStart && Option.HasValue(out _) == false)
             {
                 Value = Option.DefaultValue;
             }

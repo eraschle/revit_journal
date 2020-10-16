@@ -33,7 +33,7 @@ namespace RevitJournal.Helper
             }
         }
 
-        private string rootPath = string.Empty;
+        private string rootPath;
         public string RootPath
         {
             get { return rootPath; }

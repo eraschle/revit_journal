@@ -23,6 +23,20 @@ namespace RevitJournal.Tasks.Options
             DateUtils.Minute
         };
 
+        private static TaskOptions instance;
+
+        public static TaskOptions Instance
+        {
+            get
+            {
+                if (instance is null)
+                {
+                    instance = new TaskOptions(PathFactory.Instance);
+                }
+                return instance;
+            }
+        }
+
         private readonly IPathBuilder pathBuilder;
 
         private readonly PathCreator pathCreator;
@@ -68,13 +82,18 @@ namespace RevitJournal.Tasks.Options
 
         public ITaskOption<bool> CreateSourceBackup { get; } = new TaskOption<bool>(false);
 
-        public TaskOptions(IPathBuilder builder)
+        private TaskOptions(IPathBuilder builder)
         {
             pathBuilder = builder ?? throw new ArgumentNullException(nameof(builder));
             pathCreator = new PathCreator(builder);
             RootDirectory = new TaskOptionPropertyDirectory(DirUtils.MyDocuments, pathCreator, nameof(pathCreator.RootPath), pathBuilder);
             ActionDirectory = new TaskOptionDirectory(DirUtils.MyDocuments, pathBuilder);
             JournalDirectory = new TaskOptionDirectory(DirUtils.MyDocuments, pathBuilder);
+#if DEBUG
+            RootDirectory = new TaskOptionPropertyDirectory(@"C:\develop\workspace\revit_journal_test_data\families", pathCreator, nameof(pathCreator.RootPath), pathBuilder);
+            ActionDirectory = new TaskOptionDirectory(DirUtils.MyDocuments, pathBuilder);
+            JournalDirectory = new TaskOptionDirectory(@"C:\develop\workspace\Content\journal", pathBuilder);
+#endif
             Applications = new TaskOptionSelect<RevitApp>(ProductManager.UseMetadata, ProductManager.GetApplications(true));
             SymbolicPath = new TaskOptionProperty<string>(string.Empty, pathCreator, nameof(pathCreator.SymbolicPath));
             NewRootPath = new TaskOptionPropertyDirectory(string.Empty, pathCreator, nameof(pathCreator.NewRootPath), pathBuilder);
