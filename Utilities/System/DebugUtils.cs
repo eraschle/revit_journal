@@ -6,6 +6,25 @@ namespace Utilities.System
 {
     public static class DebugUtils
     {
+
+        private static DateTime watch;
+        private static string[] formatWatch = new string[] { DateUtils.Minute, DateUtils.Seconds, DateUtils.Milliseconds };
+
+        public static void StartWatch<TSource>([CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0)
+            where TSource : class
+        {
+            watch = DateTime.Now;
+            Line<TSource>("Time watch started", memberName, lineNumber);
+        }
+
+        public static void StopWatch<TSource>([CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0)
+            where TSource : class
+        {
+            var time = DateTime.Now - watch;
+            var message = $"Total time: {DateUtils.AsString(time, Constant.Point, formatWatch)}";
+            Line<TSource>(message, memberName, lineNumber);
+        }
+
         public static void Line<TSource>(string message, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0)
             where TSource : class
         {

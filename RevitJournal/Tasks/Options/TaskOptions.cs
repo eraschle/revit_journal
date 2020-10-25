@@ -60,19 +60,19 @@ namespace RevitJournal.Tasks.Options
 
         public ITaskOptionRange ProcessTime { get; } = new TaskOptionRange(2, 1, 20);
 
-        public ITaskOptionDirectory RootDirectory { get; }
+        public ITaskOption<string> RootDirectory { get; }
 
-        public ITaskOptionDirectory JournalDirectory { get; }
+        public ITaskOption<string> JournalDirectory { get; }
 
         public DateTime TimeDirectory { get; set; }
 
-        public ITaskOptionDirectory ActionDirectory { get; }
+        public ITaskOption<string> ActionDirectory { get; }
 
-        public TaskOptionBool DeleteRevitBackup { get; } = new TaskOptionBool(true);
+        public ITaskOption<bool> DeleteRevitBackup { get; } = new TaskOptionBool(true);
 
         public ITaskOption<string> SymbolicPath { get; }
 
-        public ITaskOptionDirectory NewRootPath { get; }
+        public ITaskOption<string> NewRootPath { get; }
 
         public ITaskOption<string> FileSuffix { get; }
 
@@ -86,17 +86,17 @@ namespace RevitJournal.Tasks.Options
         {
             pathBuilder = builder ?? throw new ArgumentNullException(nameof(builder));
             pathCreator = new PathCreator(builder);
-            RootDirectory = new TaskOptionPropertyDirectory(DirUtils.MyDocuments, pathCreator, nameof(pathCreator.RootPath), pathBuilder);
-            ActionDirectory = new TaskOptionDirectory(DirUtils.MyDocuments, pathBuilder);
-            JournalDirectory = new TaskOptionDirectory(DirUtils.MyDocuments, pathBuilder);
+            RootDirectory = new TaskOptionProperty<string>(DirUtils.MyDocuments, pathCreator, nameof(pathCreator.RootPath));
+            ActionDirectory = new TaskOption<string>(DirUtils.MyDocuments);
+            JournalDirectory = new TaskOption<string>(DirUtils.MyDocuments);
 #if DEBUG
-            RootDirectory = new TaskOptionPropertyDirectory(@"C:\develop\workspace\revit_journal_test_data\families", pathCreator, nameof(pathCreator.RootPath), pathBuilder);
-            ActionDirectory = new TaskOptionDirectory(DirUtils.MyDocuments, pathBuilder);
-            JournalDirectory = new TaskOptionDirectory(@"C:\develop\workspace\Content\journal", pathBuilder);
+            RootDirectory = new TaskOptionProperty<string>(@"C:\develop\workspace\revit_journal_test_data\families", pathCreator, nameof(pathCreator.RootPath));
+            ActionDirectory = new TaskOption<string>(DirUtils.MyDocuments);
+            JournalDirectory = new TaskOption<string>(@"C:\develop\workspace\Content\journal");
 #endif
             Applications = new TaskOptionSelect<RevitApp>(ProductManager.UseMetadata, ProductManager.GetApplications(true));
             SymbolicPath = new TaskOptionProperty<string>(string.Empty, pathCreator, nameof(pathCreator.SymbolicPath));
-            NewRootPath = new TaskOptionPropertyDirectory(string.Empty, pathCreator, nameof(pathCreator.NewRootPath), pathBuilder);
+            NewRootPath = new TaskOptionProperty<string>(string.Empty, pathCreator, nameof(pathCreator.NewRootPath));
             BackupFolder = new TaskOptionProperty<string>(DateUtils.GetPathDate(), pathCreator, nameof(pathCreator.NewFolder));
             FileSuffix = new TaskOptionProperty<string>(DateUtils.GetPathDate(), pathCreator, nameof(pathCreator.FileSuffix));
             AddBackupAtEnd = new TaskOptionProperty<bool>(pathCreator.AddBackupAtEnd, pathCreator, nameof(pathCreator.AddBackupAtEnd));
@@ -109,7 +109,7 @@ namespace RevitJournal.Tasks.Options
 
         public DirectoryNode GetJournalWorking()
         {
-            var directory = JournalDirectory.GetRootNode<TaskJournalFile>();
+            var directory = pathBuilder.CreateRoot(JournalDirectory.Value);
             var timeFolderName = DateUtils.GetPathDate(TimeDirectory, format: formats);
             var timeFolder = pathBuilder.AddFolder(directory, timeFolderName);
             if (timeFolder.Exists() == false)
@@ -117,6 +117,11 @@ namespace RevitJournal.Tasks.Options
                 timeFolder.Create();
             }
             return timeFolder;
+        }
+
+        public DirectoryRootNode GetFamilyRoot()
+        {
+            return pathBuilder.CreateRoot(RootDirectory.Value);
         }
 
         public TimeSpan GetProcessTimeout()

@@ -4,6 +4,7 @@ using System.Windows;
 using Utilities.System;
 using System.ComponentModel;
 using RevitJournalUI.Pages.Settings.Models;
+using RevitJournalUI.Pages.Settings.Worker;
 
 namespace RevitJournalUI.Pages.Settings
 {
@@ -13,7 +14,7 @@ namespace RevitJournalUI.Pages.Settings
 
         public SettingsPageModel()
         {
-            FamilyDirectory = new OptionDirectoryViewModel("Family Directory", options.RootDirectory, true);
+            FamilyDirectory = new OptionDirectoryViewModel("Family Directory", options.RootDirectory, true, backgroundWorker: FileCreationWorker.Create(options));
             JournalDirectory = new OptionDirectoryViewModel("Journal Directory", options.JournalDirectory, true);
             ActionDirectory = new OptionDirectoryViewModel("Action Directory", options.ActionDirectory, true);
 

@@ -5,19 +5,20 @@ using RevitJournal.Tasks.Actions;
 using RevitJournal.Tasks.Options;
 using RevitJournalUI.JournalTaskUI.FamilyFilter;
 using RevitJournalUI.Pages.Files.Models;
-using RevitJournalUI.Pages.Settings;
+using RevitJournalUI.Pages.Files.Worker;
 using RevitJournalUI.Tasks.Actions;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Windows.Input;
+using Utilities.System;
 using Utilities.UI;
 
 namespace RevitJournalUI.Pages.Files
 {
     public class TaskFilesPageModel : APageModel
     {
-        private TaskOptions options = TaskOptions.Instance;
+        private readonly TaskOptions options = TaskOptions.Instance;
 
         public TaskFilesPageModel()
         {
@@ -27,13 +28,13 @@ namespace RevitJournalUI.Pages.Files
 
         public override void SetModelData(object data)
         {
-            if (data is null || !(data is SettingsPageModel model)) { return; }
-
             PathModels.Clear();
-            var rootNode = model.FamilyDirectory.Option.GetRootNode<RevitFamilyFile>();
+            DebugUtils.StartWatch<TaskFilesPageModel>();
+            var rootNode = options.GetFamilyRoot();
             var rootModel = GetModel(rootNode);
             rootModel.Parent = null;
             PathModels.Add(rootModel);
+            DebugUtils.StopWatch<TaskFilesPageModel>();
         }
 
         private FolderModel GetModel(DirectoryNode directory)
@@ -48,6 +49,7 @@ namespace RevitJournalUI.Pages.Files
             foreach (var file in directory.GetFiles<RevitFamilyFile>(false))
             {
                 var fileModel = new FileModel(file) { Parent = model };
+                fileModel.AddMetadataEvent();
                 model.Children.Add(fileModel);
             }
             return model;

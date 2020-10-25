@@ -48,7 +48,7 @@ namespace DataSource.Xml
             catch (Exception exp)
             {
                 //status = MetaDataStatus.Error;
-                throw new FamilyXmlReadException(ExceptionStatus.Unkown, "Could not read file", exp);
+                throw new FamilyXmlReadException(ExceptionStatus.Unkown, $"Could not read file {RevitFile.FullPath}", exp);
             }
 
             var fileContent = Encoding.UTF8.GetString(fileContentArray);

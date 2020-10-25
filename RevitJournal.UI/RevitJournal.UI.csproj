@@ -223,6 +223,7 @@
     </Compile>
     <Compile Include="Pages\Files\Worker\MetadataWorker.cs" />
     <Compile Include="MainWindowModel.cs" />
+    <Compile Include="Pages\Settings\Worker\FileCreationWorker.cs" />
     <Compile Include="Status\StatusBarViewModel.cs" />
     <Compile Include="Tasks\Actions\OpenActionViewModel.cs" />
     <Compile Include="Tasks\Converter\TaskResultVisibleConverter.cs" />

@@ -10,8 +10,6 @@ namespace DataSource.Models.FileSystem
 
         TFileNode ChangeRoot<TFileNode>(TFileNode fileNode, string newRootPath) where TFileNode : AFileNode, new();
 
-        IEnumerable<TFile> CreateFiles<TFile>(DirectoryRootNode rootNode, string pattern = null) where TFile : AFileNode, new();
-
         string GetParentPath(string path);
 
         string GetLastNodeName(string path);

@@ -9,7 +9,7 @@
       xmlns:model="clr-namespace:RevitJournalUI.Pages.Files.Models"
       mc:Ignorable="d" 
       d:DesignHeight="800" d:DesignWidth="1000"
-      Title="Task Files Selection">
+      Title="Task Files Selection" Loaded="Page_Loaded">
     <Page.Resources>
         <CollectionViewSource x:Key="FilterListBox" Source="{Binding Filters}">
             <CollectionViewSource.GroupDescriptions>
@@ -44,6 +44,7 @@
         <CollectionViewSource x:Key="Models" 
                               Filter="DirectoryFilter" 
                               Source="{Binding PathModels}"/>
+             
     </Page.Resources>
     <Page.DataContext>
         <local:TaskFilesPageModel/>
@@ -126,7 +127,9 @@
                      DisplayMemberPath="Name"/>
         </Grid>
         <TreeView ItemsSource="{Binding Source={StaticResource Models}}"
-                  Grid.Row="2" Grid.Column="0">
+                  ItemContainerStyle="{Binding Source={StaticResource PathTreeViewItemStyle}}"
+                  HorizontalContentAlignment="Stretch"
+                  Grid.Row="2" Grid.Column="0" >
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type model:FolderModel}"
                                           ItemsSource="{Binding Children}">
@@ -172,11 +175,6 @@
                     </CheckBox>
                 </DataTemplate>
             </TreeView.Resources>
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="TreeViewItem">
-                    <Setter Property="TreeViewItem.IsExpanded" Value="True"/>
-                </Style>
-            </TreeView.ItemContainerStyle>
         </TreeView>
     </Grid>
 </Page>

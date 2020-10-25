@@ -20,6 +20,23 @@ namespace RevitJournalUI.Pages.Files.Models
             ViewMetadataCommand = new RelayCommand<object>(ViewMetadataCommandAction);
         }
 
+        public void AddMetadataEvent()
+        {
+            File.MetadataUpdated += File_MetadataUpdated;
+        }
+
+        private void File_MetadataUpdated(object sender, EventArgs args)
+        {
+            File.MetadataUpdated -= File_MetadataUpdated;
+            UpdateMetadata();
+        }
+
+        private void UpdateMetadata()
+        {
+            NotifyPropertyChanged(nameof(MetadataStatus));
+            NotifyPropertyChanged(nameof(LastUpdate));
+        }
+
         public MetadataStatus MetadataStatus
         {
             get { return File.Status; }

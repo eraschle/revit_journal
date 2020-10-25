@@ -1,9 +1,7 @@
-﻿using DataSource.Helper;
-using DataSource.Models.FileSystem;
+﻿using DataSource.Models.FileSystem;
 using DataSource.Models.Product;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace DataSource
@@ -22,10 +20,10 @@ namespace DataSource
 
             var factory = PathFactory.Instance;
             var root = factory.CreateRoot(rootDirectory);
-            var appFiles = factory.CreateFiles<RevitAppFile>(root, $"{RevitAppFile.RevitFileName}");
-            foreach (var file in appFiles)
+            foreach (var filePath in root.GetFilePaths<RevitAppFile>(RevitAppFile.RevitFileName))
             {
-                AddInstalled(file);
+                var fileNode = root.CreateFile<RevitAppFile>(filePath);
+                AddInstalled(fileNode);
             }
         }
 

@@ -108,27 +108,6 @@ namespace DataSource.Models.FileSystem
 
         #region FileNode
 
-        public IEnumerable<TFile> CreateFiles<TFile>(DirectoryRootNode rootNode, string pattern = null) where TFile : AFileNode, new()
-        {
-            if (rootNode is null) { throw new ArgumentNullException(nameof(rootNode)); }
-
-            return CreateFiles<TFile>(rootNode as DirectoryNode, pattern);
-        }
-
-        public IEnumerable<TFile> CreateFiles<TFile>(DirectoryNode directory, string pattern = null) where TFile : AFileNode, new()
-        {
-            if (directory is null) { throw new ArgumentNullException(nameof(directory)); }
-
-            var search = new TFile().GetSearchPattern(pattern);
-            var option = SearchOption.AllDirectories;
-            var files = new List<TFile>();
-            foreach (var file in Directory.GetFiles(directory.FullPath, search, option))
-            {
-                files.Add(Create<TFile>(file));
-            }
-            return files;
-        }
-
         public TFile Create<TFile>(string path) where TFile : AFileNode, new()
         {
             var parent = CreateParent(path);

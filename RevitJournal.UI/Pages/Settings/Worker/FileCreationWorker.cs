@@ -1,18 +1,20 @@
 ﻿using DataSource.Models.FileSystem;
 using RevitJournal.Revit.Filtering;
 using RevitJournal.Tasks.Options;
-using RevitJournal.Tasks.Options.Parameter;
 using System;
 using System.ComponentModel;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace RevitJournalUI.Pages.Files.Worker
+namespace RevitJournalUI.Pages.Settings.Worker
 {
-    public static class MetadataWorker
+    public static class FileCreationWorker
     {
-        public static BackgroundWorker Create()
+        private static TaskOptions options;
+
+
+        public static BackgroundWorker Create(TaskOptions taskOptions)
         {
+            options = taskOptions ?? throw new ArgumentNullException(nameof(taskOptions));
             var worker = new BackgroundWorker
             {
                 WorkerSupportsCancellation = true,
@@ -26,15 +28,15 @@ namespace RevitJournalUI.Pages.Files.Worker
 
         public static void OnDoWork(object sender, DoWorkEventArgs args)
         {
-            if (args is null || !(args.Argument is TaskOptions options)) { return; }
+            if(args is null) { throw new ArgumentNullException(nameof(args)); }
             if (!(sender is BackgroundWorker worker)) { return; }
             if (worker.CancellationPending) { return; }
 
-            StatusBarViewModel.Instance.SetPercentage("Loading Metadata");
-            var rootNode = options.GetFamilyRoot();
-            var files = rootNode.GetFiles<RevitFamilyFile>(true);
+            StatusBarViewModel.Instance.SetPercentage("Create files");
+            var root = options.GetFamilyRoot();
+            var files = root.GetFilePaths<RevitFamilyFile>();
             var currentCount = 0;
-            Parallel.For(0, files.Count, (idx) =>
+            for (int idx = 0; idx < files.Count; idx++)
             {
                 if (worker.CancellationPending)
                 {
@@ -42,12 +44,11 @@ namespace RevitJournalUI.Pages.Files.Worker
                     return;
                 }
 
-                var file = files[idx];
-                file.Update();
+                var fileNode = root.CreateFile<RevitFamilyFile>(files[idx]);
                 currentCount++;
                 var percent = currentCount * 100 / files.Count;
-                worker.ReportProgress(percent, file);
-            });
+                worker.ReportProgress(percent, fileNode);
+            }
             args.Result = args.Argument;
         }
 
@@ -55,7 +56,6 @@ namespace RevitJournalUI.Pages.Files.Worker
         {
             if (args is null || !(args.UserState is RevitFamilyFile family)) { return; }
 
-            RevitFilterManager.Instance.AddValue(family);
             StatusBarViewModel.Instance.ProgressText = family.NameWithoutExtension;
             StatusBarViewModel.Instance.ProgressValue = args.ProgressPercentage;
         }

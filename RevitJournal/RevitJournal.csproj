@@ -137,9 +137,6 @@
     <Compile Include="Tasks\Actions\ExternalActionFile.cs" />
     <Compile Include="Tasks\Options\Parameter\ITaskOptionRange.cs" />
     <Compile Include="Tasks\Options\Parameter\ITaskOption.cs" />
-    <Compile Include="Tasks\Options\Parameter\ITaskOptionDirectory.cs" />
-    <Compile Include="Tasks\Options\Parameter\TaskOptionDirectory.cs" />
-    <Compile Include="Tasks\Options\Parameter\TaskOptionPropertyDirectory.cs" />
     <Compile Include="Tasks\Options\Parameter\TaskOptionSelect.cs" />
     <Compile Include="Tasks\Options\Parameter\TaskOptionRange.cs" />
     <Compile Include="Tasks\Options\Parameter\TaskOptionBool.cs" />
