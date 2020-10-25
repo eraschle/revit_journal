@@ -183,6 +183,7 @@
     <Compile Include="JournalTaskUI\FamilyFilter\FilterViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\PathViewModel.cs" />
     <Compile Include="Converters\TimespanMinutesConverter .cs" />
+    <Compile Include="Pages\Files\Models\MetadataViewModel.cs" />
     <Compile Include="Pages\IPageView.cs" />
     <Compile Include="Pages\APageModel.cs" />
     <Compile Include="Pages\Files\Models\FolderModel.cs" />

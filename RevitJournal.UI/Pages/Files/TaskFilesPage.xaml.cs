@@ -44,5 +44,12 @@ namespace RevitJournalUI.Pages.Files
                 worker.RunWorkerAsync(TaskOptions.Instance);
             }
         }
+
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> args)
+        {
+            if (!(ViewModel is TaskFilesPageModel pageModel)) { return; }
+
+            pageModel.SetSelectedModel(args.NewValue as PathModel);
+        }
     }
 }

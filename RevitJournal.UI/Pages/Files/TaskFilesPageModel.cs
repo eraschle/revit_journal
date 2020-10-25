@@ -10,6 +10,7 @@ using RevitJournalUI.Tasks.Actions;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows;
 using System.Windows.Input;
 using Utilities.System;
 using Utilities.UI;
@@ -117,5 +118,17 @@ namespace RevitJournalUI.Pages.Files
                 }
             }
         }
+
+        public void SetSelectedModel(PathModel model)
+        {
+            if (!(model is FileModel file))
+            {
+                Metadata.Clear();
+                return;
+            }
+            Metadata.UpdateFamily(file.GetMetadata());
+        }
+
+        public MetadataViewModel Metadata { get; set; } = new MetadataViewModel();
     }
 }

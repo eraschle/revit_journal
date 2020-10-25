@@ -9,12 +9,12 @@ namespace DataSource.Model.Metadata
     {
         public string Name { get; set; }
 
-        private readonly List<Parameter> _Parameters = new List<Parameter>();
-        public IList<Parameter> Parameters { get { return _Parameters; } }
+        private readonly List<Parameter> parameters = new List<Parameter>();
+        public IList<Parameter> Parameters { get { return parameters; } }
 
         public Parameter ByName(string name)
         {
-            return _Parameters.FirstOrDefault(par => par.IsParameterName(name));
+            return parameters.FirstOrDefault(par => par.IsParameterName(name));
         }
 
         public bool HasByName(string name, out Parameter parameter)
@@ -25,10 +25,10 @@ namespace DataSource.Model.Metadata
 
         public void AddParameter(Parameter parameter)
         {
-            if (_Parameters.Contains(parameter)) { return; }
+            if (parameters.Contains(parameter)) { return; }
 
-            _Parameters.Add(parameter);
-            _Parameters.Sort();
+            parameters.Add(parameter);
+            parameters.Sort();
         }
 
         public int CompareTo(FamilyType other)

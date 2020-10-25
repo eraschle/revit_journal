@@ -1,64 +1,39 @@
-﻿using RevitJournalUI.MetadataUI;
-using System.Windows.Input;
-using System;
+﻿using System;
 using DataSource.Models;
-using Utilities.System;
-using Utilities.UI;
 using DataSource.Models.FileSystem;
+using DataSource.Model.Metadata;
 
 namespace RevitJournalUI.Pages.Files.Models
 {
     public class FileModel : PathModel
     {
-        private RevitFamilyFile File
+        private RevitFamilyFile FileNode
         {
             get { return PathNode as RevitFamilyFile; }
         }
 
-        public FileModel(RevitFamilyFile fileNode) : base(fileNode)
-        {
-            ViewMetadataCommand = new RelayCommand<object>(ViewMetadataCommandAction);
-        }
+        public FileModel(RevitFamilyFile fileNode) : base(fileNode) { }
 
         public void AddMetadataEvent()
         {
-            File.MetadataUpdated += File_MetadataUpdated;
+            FileNode.MetadataUpdated += File_MetadataUpdated;
         }
 
         private void File_MetadataUpdated(object sender, EventArgs args)
         {
-            File.MetadataUpdated -= File_MetadataUpdated;
-            UpdateMetadata();
-        }
-
-        private void UpdateMetadata()
-        {
-            NotifyPropertyChanged(nameof(MetadataStatus));
-            NotifyPropertyChanged(nameof(LastUpdate));
+            FileNode.MetadataUpdated -= File_MetadataUpdated;
+            MetadataStatus = FileNode.Status;
         }
 
         public MetadataStatus MetadataStatus
         {
-            get { return File.Status; }
+            get { return FileNode.Status; }
+            set { NotifyPropertyChanged(); }
         }
 
-        public string LastUpdate
+        public Family GetMetadata()
         {
-            get
-            {
-                var metadata = File.Metadata;
-                return metadata is object
-                    ? DateUtils.AsString(metadata.Updated)
-                    : string.Empty;
-            }
-        }
-
-        public ICommand ViewMetadataCommand { get; }
-
-        private void ViewMetadataCommandAction(object parameter)
-        {
-            var dialog = new MetadataDialogView(File.Metadata);
-            dialog.ShowDialog();
+            return FileNode?.Metadata;
         }
     }
 }
