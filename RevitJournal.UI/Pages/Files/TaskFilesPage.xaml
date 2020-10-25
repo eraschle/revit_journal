@@ -21,8 +21,8 @@
         
         <converter:FamilyStatusColorMetadataConverter x:Key="MetaColor"/>
         <converter:FamilyStatusToolTipMetadataConverter x:Key="MetaToolTip"/>
-        <Style x:Key="MetaEllipseStyle" TargetType="{x:Type Ellipse}">
-            <Setter Property="Margin" Value="{StaticResource TwoThick}"/>
+        <Style x:Key="MetaEllipseStyle" TargetType="{x:Type Ellipse}" 
+               BasedOn="{StaticResource UIElement}">
             <Setter Property="Fill">
                 <Setter.Value>
                     <MultiBinding Converter="{StaticResource MetaColor}">
@@ -58,11 +58,10 @@
                 <CheckBox IsChecked="{Binding IsChecked}" Grid.Column="0"
                           Style="{StaticResource UICheckBox}"/>
                 <TextBlock Text="{Binding Name}" Grid.Column="1"
-                          Style="{StaticResource UITextBlock}"/>
+                           Style="{StaticResource UITextBlock}"/>
                 <Label Content="{Binding FilesCountValue}" Grid.Column="2"
                        Style="{StaticResource UILabel}"
-                       HorizontalContentAlignment="Right"
-                       VerticalAlignment="Center"/>
+                       HorizontalContentAlignment="Right"/>
             </Grid>
         </HierarchicalDataTemplate>
         <DataTemplate DataType="{x:Type model:FileModel}">
@@ -219,8 +218,7 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate>
-                                        <Expander Header="{Binding Name}"
-                                                    IsExpanded="False">
+                                        <Expander Header="{Binding Name}" IsExpanded="False">
                                             <ItemsPresenter/>
                                         </Expander>
                                     </ControlTemplate>
@@ -339,7 +337,7 @@
                     <GroupBox.Header>
                         <DockPanel LastChildFill="True">
                             <TextBlock Text="Family Type" DockPanel.Dock="Left"
-                                        Style="{StaticResource UITextBlock}"/>
+                                       Style="{StaticResource UITextBlock}"/>
                             <ComboBox ItemsSource="{Binding FamilyTypes}"
                                       SelectedItem="{Binding SelectedFamilyType}"
                                       Style="{StaticResource UIComboBox}"
@@ -348,7 +346,7 @@
                     </GroupBox.Header>
                     <GroupBox.Content>
                         <ListView ItemsSource="{Binding FamilyTypeParameters}"
-                                    Style="{StaticResource UIListBox}">
+                                  Style="{StaticResource UIListBox}">
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
