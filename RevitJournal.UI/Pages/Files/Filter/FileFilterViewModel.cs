@@ -4,13 +4,13 @@ using RevitJournal.Revit.Filtering.Rules;
 using System.Collections.ObjectModel;
 using Utilities.UI;
 
-namespace RevitJournalUI.JournalTaskUI.FamilyFilter
+namespace RevitJournalUI.Pages.Files.Filter
 {
-    public class RevitFamilyFilterViewModel : ANotifyPropertyChangedModel
+    public class FileFilterViewModel : ANotifyPropertyChangedModel
     {
         private readonly RevitFilterManager manager = RevitFilterManager.Instance;
 
-        public RevitFamilyFilterViewModel()
+        public FileFilterViewModel()
         {
             UpdateMetadataStatus();
             UpdateRevitApps();

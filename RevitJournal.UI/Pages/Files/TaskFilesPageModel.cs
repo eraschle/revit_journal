@@ -3,14 +3,11 @@ using RevitAction.Action;
 using RevitJournal.Revit.Filtering;
 using RevitJournal.Tasks.Actions;
 using RevitJournal.Tasks.Options;
-using RevitJournalUI.JournalTaskUI.FamilyFilter;
+using RevitJournalUI.Pages.Files.Filter;
 using RevitJournalUI.Pages.Files.Models;
-using RevitJournalUI.Pages.Files.Worker;
 using RevitJournalUI.Tasks.Actions;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Windows;
 using System.Windows.Input;
 using Utilities.System;
 using Utilities.UI;
@@ -67,7 +64,7 @@ namespace RevitJournalUI.Pages.Files
 
         private void FilterCommandAction(object parameter)
         {
-            var dialog = new RevitFamilyFilterView();
+            var dialog = new FileFilterView();
             if (dialog.ShowDialog() == true)
             {
                 UpdateCheckedFilters();

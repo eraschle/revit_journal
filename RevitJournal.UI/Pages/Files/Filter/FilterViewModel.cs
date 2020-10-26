@@ -1,7 +1,7 @@
 ﻿using DataSource.Models.FileSystem;
 using RevitJournal.Library.Filtering;
 
-namespace RevitJournalUI.JournalTaskUI.FamilyFilter
+namespace RevitJournalUI.Pages.Files.Filter
 {
     public class FilterViewModel
     {

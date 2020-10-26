@@ -87,7 +87,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="JournalTaskUI\FamilyFilter\RevitFamilyFilterView.xaml">
+    <Page Include="Pages\Files\Filter\FileFilterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -151,10 +151,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <None Include="JournalTaskUI\Options\TaskOptionView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </None>
     <Page Include="MetadataUI\MetadataDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -174,8 +170,8 @@
     <Compile Include="JournalTaskUI\Converter\DirectoryVisibilityConverter.cs" />
     <Compile Include="JournalTaskUI\Converter\FamilyStatusVisibilityMetadataConverter.cs" />
     <Compile Include="JournalTaskUI\Converter\FamilyIsEnabledMetadataConverter.cs" />
-    <Compile Include="JournalTaskUI\FamilyFilter\CheckedFilterViewModel.cs" />
-    <Compile Include="JournalTaskUI\FamilyFilter\FilterViewModel.cs" />
+    <Compile Include="Pages\Files\Filter\CheckedFilterViewModel.cs" />
+    <Compile Include="Pages\Files\Filter\FilterViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\PathViewModel.cs" />
     <Compile Include="Converters\TimespanMinutesConverter .cs" />
     <Compile Include="Pages\Files\Converter\MetadataColorConverter.cs" />
@@ -260,10 +256,10 @@
     <Compile Include="MetadataUI\Models\ParameterFileMetadataViewModel.cs" />
     <Compile Include="Models\CheckedDisplayViewModel.cs" />
     <Compile Include="Models\ACheckedViewModel.cs" />
-    <Compile Include="JournalTaskUI\FamilyFilter\RevitFamilyFilterView.xaml.cs">
-      <DependentUpon>RevitFamilyFilterView.xaml</DependentUpon>
+    <Compile Include="Pages\Files\Filter\FileFilterView.xaml.cs">
+      <DependentUpon>FileFilterView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="JournalTaskUI\FamilyFilter\RevitFamilyFilterViewModel.cs" />
+    <Compile Include="Pages\Files\Filter\FileFilterViewModel.cs" />
     <Compile Include="MetadataUI\Converter\ConverterColors.cs" />
     <Compile Include="MetadataUI\Converter\OriginalFamilyColorConverter.cs" />
     <Compile Include="MetadataUI\Converter\SourceFamilyColorConverter.cs" />
@@ -298,10 +294,6 @@
     <Compile Include="Tasks\TaskView.xaml.cs">
       <DependentUpon>TaskView.xaml</DependentUpon>
     </Compile>
-    <None Include="JournalTaskUI\Options\TaskOptionView.xaml.cs">
-      <DependentUpon>TaskOptionView.xaml</DependentUpon>
-    </None>
-    <None Include="JournalTaskUI\Options\TaskOptionViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\FamilyViewModel.cs" />
     <Compile Include="MetadataUI\MetadataDialogView.xaml.cs">
       <DependentUpon>MetadataDialogView.xaml</DependentUpon>

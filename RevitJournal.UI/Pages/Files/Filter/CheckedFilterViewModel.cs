@@ -1,7 +1,7 @@
 ﻿using RevitJournal.Library.Filtering;
 using Utilities.UI;
 
-namespace RevitJournalUI.JournalTaskUI.FamilyFilter
+namespace RevitJournalUI.Pages.Files.Filter
 {
     public class CheckedFilterViewModel : ANotifyPropertyChangedModel
     {

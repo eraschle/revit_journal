@@ -1,15 +1,15 @@
 ﻿using System.Windows;
 
-namespace RevitJournalUI.JournalTaskUI.FamilyFilter
+namespace RevitJournalUI.Pages.Files.Filter
 {
     /// <summary>
     /// Interaction logic for RevitFamilyFilterOptionView.xaml
     /// </summary>
-    public partial class RevitFamilyFilterView : Window
+    public partial class FileFilterView : Window
     {
-        internal RevitFamilyFilterViewModel ViewModel { get { return DataContext as RevitFamilyFilterViewModel; } }
+        internal FileFilterViewModel ViewModel { get { return DataContext as FileFilterViewModel; } }
 
-        public RevitFamilyFilterView()
+        public FileFilterView()
         {
             InitializeComponent();
         }
