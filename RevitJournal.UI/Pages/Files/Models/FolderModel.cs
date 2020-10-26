@@ -1,6 +1,5 @@
 ﻿using DataSource.Models.FileSystem;
 using System.Collections.ObjectModel;
-using Utilities.System;
 
 namespace RevitJournalUI.Pages.Files.Models
 {
@@ -13,7 +12,11 @@ namespace RevitJournalUI.Pages.Files.Models
 
         internal override void SetChecked(bool? value, bool updateChildren, bool updateParent)
         {
-            if (value == isChecked) { return; }
+            if (value == isChecked)
+            {
+                SetFileCount();
+                return;
+            }
 
             isChecked = value;
             if (updateChildren && isChecked.HasValue)
@@ -27,20 +30,8 @@ namespace RevitJournalUI.Pages.Files.Models
             {
                 Parent.UpdateParent();
             }
+            SetFileCount();
             UpdateChecked();
-        }
-
-        private string filesCountValue = "10/40";
-        public string FilesCountValue
-        {
-            get { return filesCountValue; }
-            set
-            {
-                if (StringUtils.Equals(filesCountValue, value)) { return; }
-
-                filesCountValue = value;
-                NotifyPropertyChanged();
-            }
         }
 
         public void UpdateParent()

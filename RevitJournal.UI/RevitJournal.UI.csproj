@@ -147,10 +147,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="JournalTaskUI\FamilyOverviewView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Tasks\TaskView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -173,16 +169,16 @@
     </Compile>
     <Compile Include="Converters\VisibilityBooleanConverter.cs" />
     <Compile Include="Helper\ListViewHelper.cs" />
+    <Compile Include="Pages\Files\Converter\MetadataToolTipConverter.cs" />
     <Compile Include="JournalTaskUI\Converter\TimespanMinutesConverter .cs" />
     <Compile Include="JournalTaskUI\Converter\DirectoryVisibilityConverter.cs" />
     <Compile Include="JournalTaskUI\Converter\FamilyStatusVisibilityMetadataConverter.cs" />
-    <Compile Include="JournalTaskUI\Converter\FamilyStatusToolTipMetadataConverter.cs" />
-    <Compile Include="JournalTaskUI\Converter\FamilyStatusColorMetadataConverter.cs" />
     <Compile Include="JournalTaskUI\Converter\FamilyIsEnabledMetadataConverter.cs" />
     <Compile Include="JournalTaskUI\FamilyFilter\CheckedFilterViewModel.cs" />
     <Compile Include="JournalTaskUI\FamilyFilter\FilterViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\PathViewModel.cs" />
     <Compile Include="Converters\TimespanMinutesConverter .cs" />
+    <Compile Include="Pages\Files\Converter\MetadataColorConverter.cs" />
     <Compile Include="Pages\Files\Models\MetadataViewModel.cs" />
     <Compile Include="Pages\IPageView.cs" />
     <Compile Include="Pages\APageModel.cs" />
@@ -296,10 +292,6 @@
     <Compile Include="JournalTaskUI\TaskOverviewViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\ParameterViewModel.cs" />
     <Compile Include="JournalTaskUI\Models\DirectoryViewModel.cs" />
-    <Compile Include="JournalTaskUI\FamilyOverviewView.xaml.cs">
-      <DependentUpon>FamilyOverviewView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="JournalTaskUI\FamilyOverviewViewModel.cs" />
     <Compile Include="Tasks\Actions\Parameter\IParameterViewModel.cs" />
     <Compile Include="Tasks\Actions\Parameter\ParameterVmBuilder.cs" />
     <Compile Include="Tasks\Actions\Parameter\ParameterViewModel.cs" />

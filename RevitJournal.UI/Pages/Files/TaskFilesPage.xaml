@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:filter="clr-namespace:RevitJournalUI.JournalTaskUI.FamilyFilter"
       xmlns:local="clr-namespace:RevitJournalUI.Pages.Files"
-      xmlns:converter="clr-namespace:RevitJournalUI.JournalTaskUI.Converter"
+      xmlns:converter="clr-namespace:RevitJournalUI.Pages.Files.Converter"
       xmlns:model="clr-namespace:RevitJournalUI.Pages.Files.Models"
       mc:Ignorable="d" 
       d:DesignHeight="800" d:DesignWidth="1000"
@@ -18,9 +18,9 @@
         </CollectionViewSource>
         <CollectionViewSource x:Key="ActionListBox" Source="{Binding Actions}">
         </CollectionViewSource>
-        
-        <converter:FamilyStatusColorMetadataConverter x:Key="MetaColor"/>
-        <converter:FamilyStatusToolTipMetadataConverter x:Key="MetaToolTip"/>
+
+        <converter:MetadataColorConverter x:Key="MetaColor"/>
+        <converter:MetadataToolTipConverter x:Key="MetaToolTip"/>
         <Style x:Key="MetaEllipseStyle" TargetType="{x:Type Ellipse}" 
                BasedOn="{StaticResource UIElement}">
             <Setter Property="Fill">
@@ -133,6 +133,7 @@
             <Setter Property="Padding" Value="1,0,0,0"/>
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
             <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TreeViewItem}">
@@ -148,7 +149,7 @@
                             </Grid.RowDefinitions>
                             <ToggleButton x:Name="Expander" 
                                           Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Release"
-                                          IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                          IsChecked="{Binding IsExpanded}"/>
                             <Border x:Name="Bd" SnapsToDevicePixels="true" Grid.Column="1" Grid.ColumnSpan="2" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
                                 <ContentPresenter x:Name="PART_Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ContentSource="Header"/>
                             </Border>
@@ -273,6 +274,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <GroupBox Header="Family Informations" Grid.Row="0"
+                          Visibility="{Binding MetadataVisibility}"
                           Style="{StaticResource UIControl}">
                     <GroupBox.Content>
                         <Grid>
@@ -316,6 +318,7 @@
                     </GroupBox.Content>
                 </GroupBox>
                 <GroupBox Header="Family Parameter" Grid.Row="1"
+                          Visibility="{Binding MetadataVisibility}"
                           Style="{StaticResource UIControl}"
                           VerticalAlignment="Stretch">
                     <GroupBox.Content>
@@ -333,6 +336,7 @@
                     </GroupBox.Content>
                 </GroupBox>
                 <GroupBox Grid.Row="2" Style="{StaticResource UIControl}"
+                          Visibility="{Binding MetadataVisibility}"
                           VerticalAlignment="Stretch">
                     <GroupBox.Header>
                         <DockPanel LastChildFill="True">

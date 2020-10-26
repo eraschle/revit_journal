@@ -1,5 +1,6 @@
 ﻿using DataSource.Model.Metadata;
 using System.Collections.ObjectModel;
+using System.Windows;
 using Utilities.System;
 using Utilities.UI;
 
@@ -11,10 +12,11 @@ namespace RevitJournalUI.Pages.Files.Models
         {
             if (family is null)
             {
-                Clear();
+                HideMetadata();
                 return;
             }
 
+            MetadataVisibility = Visibility.Visible;
             Name = family.Name;
             DisplayName = family.DisplayName;
             LibraryPath = family.LibraryPath;
@@ -49,20 +51,10 @@ namespace RevitJournalUI.Pages.Files.Models
             SelectedFamilyType = FamilyTypes[0];
         }
 
-        public void Clear()
+        public void HideMetadata()
         {
-            Name = string.Empty;
-            DisplayName = string.Empty;
-            LibraryPath = string.Empty;
-            Category = string.Empty;
-            OmniClass = string.Empty;
-            Product = string.Empty;
-            Updated = string.Empty;
-
-            FamilyParameters.Clear();
-            FamilyTypes.Clear();
+            MetadataVisibility = Visibility.Hidden;
         }
-
 
         private string name = string.Empty;
         public string Name
@@ -186,5 +178,18 @@ namespace RevitJournalUI.Pages.Files.Models
         public ObservableCollection<FamilyType> FamilyTypes { get; } = new ObservableCollection<FamilyType>();
 
         public ObservableCollection<Parameter> FamilyTypeParameters { get; } = new ObservableCollection<Parameter>();
+
+        private Visibility metadataVisibility = Visibility.Hidden;
+        public Visibility MetadataVisibility
+        {
+            get { return metadataVisibility; }
+            set
+            {
+                if(metadataVisibility == value) { return; }
+
+                metadataVisibility = value;
+                NotifyPropertyChanged();
+            }
+        }
     }
 }

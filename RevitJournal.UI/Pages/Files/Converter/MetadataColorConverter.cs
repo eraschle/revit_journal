@@ -1,15 +1,16 @@
 ﻿using DataSource.Models;
 using System;
 using System.Globalization;
+using System.Windows.Data;
 using System.Windows.Media;
 
-namespace RevitJournalUI.JournalTaskUI.Converter
+namespace RevitJournalUI.Pages.Files.Converter
 {
-    public class FamilyStatusColorMetadataConverter : AMetadataConverter
+    public class MetadataColorConverter : IMultiValueConverter
     {
-        public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if(values is null || values.Length < 1 || !(values[0] is MetadataStatus status)) { return false; }
+            if (values is null || values.Length < 1 || !(values[0] is MetadataStatus status)) { return false; }
 
             switch (status)
             {
@@ -24,7 +25,7 @@ namespace RevitJournalUI.JournalTaskUI.Converter
             }
         }
 
-        public override object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

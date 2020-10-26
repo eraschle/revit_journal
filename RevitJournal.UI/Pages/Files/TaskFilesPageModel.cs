@@ -34,6 +34,7 @@ namespace RevitJournalUI.Pages.Files
             var rootNode = options.GetFamilyRoot();
             var rootModel = GetModel(rootNode);
             rootModel.Parent = null;
+            rootModel.IsChecked = true;
             PathModels.Add(rootModel);
             DebugUtils.StopWatch<TaskFilesPageModel>();
         }
@@ -123,7 +124,7 @@ namespace RevitJournalUI.Pages.Files
         {
             if (!(model is FileModel file))
             {
-                Metadata.Clear();
+                Metadata.HideMetadata();
                 return;
             }
             Metadata.UpdateFamily(file.GetMetadata());
