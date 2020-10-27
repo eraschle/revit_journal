@@ -135,7 +135,7 @@ namespace DataSource.Models.FileSystem
             if (string.IsNullOrWhiteSpace(newRootPath)) { throw new ArgumentNullException(nameof(newRootPath)); }
 
             var newRoot = CreateRoot(newRootPath);
-            var directories = fileNode.GetRootParentNodes(included: true);
+            var directories = fileNode.GetParentNodes(included: true);
             directories.RemoveAt(0);
             directories.Insert(0, newRoot);
             directories = UpdatePathNode(directories);
@@ -165,7 +165,7 @@ namespace DataSource.Models.FileSystem
             if (fileNode is null) { throw new ArgumentNullException(nameof(fileNode)); }
             if (string.IsNullOrWhiteSpace(folder)) { throw new ArgumentNullException(nameof(folder)); }
 
-            var directories = fileNode.GetRootParentNodes(included: true);
+            var directories = fileNode.GetParentNodes(included: true);
             directories.Insert(index, CreateNode<DirectoryNode>(folder));
             UpdatePathNode(directories);
             return Create<TFileNode>(fileNode.Name, directories.Last());
@@ -176,7 +176,7 @@ namespace DataSource.Models.FileSystem
             if (fileNode is null) { throw new ArgumentNullException(nameof(fileNode)); }
             if (string.IsNullOrWhiteSpace(folder)) { throw new ArgumentNullException(nameof(folder)); }
 
-            var directories = fileNode.GetRootParentNodes(included: true);
+            var directories = fileNode.GetParentNodes(included: true);
             directories.Add(CreateNode<DirectoryNode>(folder));
             directories = UpdatePathNode(directories);
             return Create<TFileNode>(fileNode.Name, directories.Last());
@@ -187,7 +187,7 @@ namespace DataSource.Models.FileSystem
             if (directory is null) { throw new ArgumentNullException(nameof(directory)); }
             if (string.IsNullOrWhiteSpace(folder)) { throw new ArgumentNullException(nameof(folder)); }
 
-            var directories = directory.GetRootParentNodes(included: true);
+            var directories = directory.GetParentNodes(included: true);
             directories.Add(CreateNode<DirectoryNode>(folder));
             return UpdatePathNode(directories).Last();
         }

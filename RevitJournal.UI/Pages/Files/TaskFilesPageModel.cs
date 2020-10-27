@@ -17,6 +17,7 @@ namespace RevitJournalUI.Pages.Files
     public class TaskFilesPageModel : APageModel
     {
         private readonly TaskOptions options = TaskOptions.Instance;
+        internal FolderModel RootModel { get; set; }
 
         public TaskFilesPageModel()
         {
@@ -29,10 +30,11 @@ namespace RevitJournalUI.Pages.Files
             PathModels.Clear();
             DebugUtils.StartWatch<TaskFilesPageModel>();
             var rootNode = options.GetFamilyRoot();
-            var rootModel = GetModel(rootNode);
-            rootModel.Parent = null;
-            rootModel.IsChecked = true;
-            PathModels.Add(rootModel);
+            RootModel = GetModel(rootNode);
+            RootModel.Parent = null;
+            RootModel.IsChecked = true;
+            RootModel.IsExpanded = true;
+            PathModels.Add(RootModel);
             DebugUtils.StopWatch<TaskFilesPageModel>();
         }
 
@@ -42,14 +44,13 @@ namespace RevitJournalUI.Pages.Files
             foreach (var child in directory.GetDirectories<RevitFamilyFile>(true))
             {
                 var childModel = GetModel(child);
-                childModel.Parent = model;
-                model.Children.Add(childModel);
+                model.AddChild(childModel);
             }
             foreach (var file in directory.GetFiles<RevitFamilyFile>(false))
             {
-                var fileModel = new FileModel(file) { Parent = model };
+                var fileModel = new FileModel(file);
                 fileModel.AddMetadataEvent();
-                model.Children.Add(fileModel);
+                model.AddChild(fileModel);
             }
             return model;
         }
@@ -119,12 +120,9 @@ namespace RevitJournalUI.Pages.Files
 
         public void SetSelectedModel(PathModel model)
         {
-            if (!(model is FileModel file))
-            {
-                Metadata.HideMetadata();
-                return;
-            }
-            Metadata.UpdateFamily(file.GetMetadata());
+            if (model is null) { return; }
+
+            Metadata.Update(model);
         }
 
         public MetadataViewModel Metadata { get; set; } = new MetadataViewModel();

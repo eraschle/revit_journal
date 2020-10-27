@@ -1,25 +1,41 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Utilities.System;
 
 namespace DataSource.Models.FileSystem
 {
     public abstract class APathNode : IEquatable<APathNode>
     {
-        protected DirectoryNode Parent { get; set; }
+        protected DirectoryNode Parent { get; private set; }
 
-        public abstract void SetParent(DirectoryNode parent);
+        public void SetParent(DirectoryNode parent)
+        {
+            if (parent is null) { return; }
 
-        public abstract void RemoveParent();
+            RemoveParent();
+            Parent = parent;
+            Parent.AddChild(this);
+        }
+
+        public void RemoveParent()
+        {
+            if(Parent is null) { return; }
+
+            Parent.RemoveChild(this);
+            Parent = null;
+        }
 
         public bool HasParent(out DirectoryNode parent)
         {
             parent = Parent;
-            return parent is object;
+            return HasParent();
+        }
+
+        public bool HasParent()
+        {
+            return Parent is object;
         }
 
         public string Name
@@ -42,7 +58,7 @@ namespace DataSource.Models.FileSystem
             get
             {
                 var rootIncluded = false;
-                var parents = GetRootParentNodes(rootIncluded);
+                var parents = GetParentNodes(rootIncluded);
                 var names = parents.Select(node => node.Name)
                                    .Append(Name);
                 return Path.Combine(names.ToArray());
@@ -55,49 +71,44 @@ namespace DataSource.Models.FileSystem
 
         public abstract void Delete();
 
-        public IList<DirectoryNode> GetRootParentNodes(bool included)
+        public IList<DirectoryNode> GetParentNodes(bool included)
         {
-            if( HasParent(out var parent))
+            if (HasParent(out var parent))
             {
                 return GetParentNodes(parent, included);
             }
-            else if(included && this is DirectoryRootNode rootNode)
-            {
-                return new List<DirectoryNode> { rootNode };
-            }
-            else
-            {
-                return new List<DirectoryNode>();
-            }
-                
+            return GetRootParentNodes(included);
+
+        }
+
+        private IList<DirectoryNode> GetRootParentNodes(bool included)
+        {
+            return included && this is DirectoryRootNode rootNode 
+                ? new List<DirectoryNode> { rootNode } 
+                : new List<DirectoryNode>();
         }
 
         private IList<DirectoryNode> GetParentNodes(DirectoryNode directory, bool included)
         {
+            if(directory is null) { throw new ArgumentNullException(nameof(directory)); }
+
             if (directory.HasParent(out var parent))
             {
                 var nodes = GetParentNodes(parent, included);
                 nodes.Add(directory);
                 return nodes;
             }
-            else if (directory is DirectoryRootNode rootNode)
+            if (directory is DirectoryRootNode)
             {
-                var nodes = new List<DirectoryNode>();
-                if (included)
-                {
-                    nodes.Add(rootNode);
-                }
-                return nodes;
+                return GetRootParentNodes(included);
             }
-            else
-            {
-                var parentMsg = parent is object ? parent.ToString() : "No Parent";
-                var message = new StringBuilder();
-                message.AppendLine("Node has no parent and is not a root node");
-                message.AppendLine($"Path  : {directory.FullPath}");
-                message.AppendLine($"Parent: {parentMsg}");
-                throw new ArgumentException(message.ToString());
-            }
+
+            var parentMsg = parent is object ? parent.ToString() : "No Parent";
+            var message = new StringBuilder();
+            message.AppendLine("Node has no parent and is not a root node");
+            message.AppendLine($"Path  : {directory.FullPath}");
+            message.AppendLine($"Parent: {parentMsg}");
+            throw new ArgumentException(message.ToString());
         }
 
         public override string ToString()

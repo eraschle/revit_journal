@@ -1,10 +1,12 @@
 ﻿using DataSource.Models.FileSystem;
 using System;
+using System.Diagnostics;
 using Utilities.System;
 using Utilities.UI;
 
 namespace RevitJournalUI.Pages.Files.Models
 {
+    [DebuggerDisplay("Name: {Name} Checked: {IsChecked}")]
     public abstract class PathModel : ANotifyPropertyChangedModel
     {
         public APathNode PathNode { get; private set; }
@@ -28,73 +30,88 @@ namespace RevitJournalUI.Pages.Files.Models
             set { SetChecked(value, true, true); }
         }
 
-        internal virtual void SetChecked(bool? value, bool updateChildren, bool updateParent)
+        internal void SetChecked(bool? value, bool updateChildren, bool updateParent)
         {
             if (value == isChecked) { return; }
 
             isChecked = value;
-            if (updateParent && Parent != null)
+            if (updateChildren && isChecked.HasValue)
             {
-                Parent.UpdateParent();
+                UpdateChildren();
+                CalculateFilesCount();
             }
-            SetFileCount();
-            UpdateChecked();
+            if (updateParent)
+            {
+                UpdateParent();
+            }
+            NotifyPropertyChanged(nameof(IsChecked));
         }
 
-        protected void SetFileCount()
+        internal void UpdateParent()
         {
-            var checkedCount = GetCheckedFilesCount(this);
-            IsExpanded = IsExpanded && checkedCount > 0;
-            FilesCountValue = $"{checkedCount} / {GetFilesCount(this)}";
+            if(Parent is null) { return; }
+
+            Parent.UpdateParent();
+            Parent.CalculateFilesCount();
         }
 
-        private int GetFilesCount(PathModel model)
-        {
-            if (!(model is FolderModel folderModel)) { return 0; }
+        protected abstract void UpdateChildren();
 
-            var count = 0;
+        internal void CalculateFilesCount()
+        {
+            if (!(this is FolderModel folderModel)) { return; }
+
+            var filesCount = 0;
+            var validCount = 0;
+            var checkedCount = 0;
+
             foreach (var child in folderModel.Children)
             {
                 if (child is FolderModel folder)
                 {
-                    count += GetFilesCount(folder);
+                    folder.CalculateFilesCount();
+                    filesCount += folder.FileCount;
+                    validCount += folder.ValidFileCount;
+                    checkedCount += folder.CheckedFileCount;
                 }
-                else
+                else if (child is FileModel file)
                 {
-                    count += 1;
+                    filesCount += file.FileCount;
+                    checkedCount += file.CheckedFileCount;
+                    validCount += file.ValidFileCount;
                 }
             }
-            return count;
+            FileCount = filesCount;
+            ValidFileCount = validCount;
+            CheckedFileCount = checkedCount;
+            FilesCountValue = $"{CheckedFileCount} / {FileCount}";
         }
 
-        private int GetCheckedFilesCount(PathModel model)
-        {
-            if (!(model is FolderModel folderModel)) { return 0; }
+        internal virtual int FileCount { get; set; }
 
-            var count = 0;
-            foreach (var child in folderModel.Children)
-            {
-                if (child is FolderModel folder)
-                {
-                    count += GetCheckedFilesCount(folder);
-                }
-                else if (child.IsChecked == true)
-                {
-                    count += 1;
-                }
-            }
-            return count;
-        }
-
-        private bool isExpanded = false;
-        public bool IsExpanded
+        private int validFilesCount = 0;
+        internal virtual int ValidFileCount
         {
-            get { return isExpanded; }
+            get { return validFilesCount; }
             set
             {
-                if (isExpanded == value) { return; }
+                if (validFilesCount == value) { return; }
 
-                isExpanded = value;
+                validFilesCount = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+
+        private int checkedFilesCount = 0;
+        internal virtual int CheckedFileCount
+        {
+            get { return checkedFilesCount; }
+            set
+            {
+                if (checkedFilesCount == value) { return; }
+
+                checkedFilesCount = value;
                 NotifyPropertyChanged();
             }
         }
@@ -112,9 +129,17 @@ namespace RevitJournalUI.Pages.Files.Models
             }
         }
 
-        protected void UpdateChecked()
+        private bool isExpanded = false;
+        public bool IsExpanded
         {
-            NotifyPropertyChanged(nameof(IsChecked));
+            get { return isExpanded; }
+            set
+            {
+                if (isExpanded == value) { return; }
+
+                isExpanded = value;
+                NotifyPropertyChanged();
+            }
         }
     }
 }

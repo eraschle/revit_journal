@@ -1,5 +1,8 @@
 ﻿using DataSource.Model.Metadata;
+using DataSource.Models;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
 using System.Windows;
 using Utilities.System;
 using Utilities.UI;
@@ -8,52 +11,153 @@ namespace RevitJournalUI.Pages.Files.Models
 {
     public class MetadataViewModel : ANotifyPropertyChangedModel
     {
-        public void UpdateFamily(Family family)
+        private const string Empty = "";
+
+        private PathModel current;
+
+        public void Update(PathModel pathModel)
         {
-            if (family is null)
+            if (pathModel is null) { return; }
+
+            pathModel.PropertyChanged += Current_PropertyChanged;
+            UpdateFolderData(pathModel);
+            UpdateFileData(pathModel);
+            if (current is object)
             {
-                HideMetadata();
+                current.PropertyChanged -= Current_PropertyChanged;
+            }
+            current = pathModel;
+        }
+
+        private void UpdateFolderData(PathModel pathModel)
+        {
+            if (!(pathModel is FolderModel folder)) { return; }
+
+            ShowFolderMetadata();
+            FolderName = folder.Name;
+            FilesCount = folder.FileCount.ToString(CultureInfo.CurrentCulture);
+            ValidFilesCount = folder.ValidFileCount.ToString(CultureInfo.CurrentCulture);
+            CheckedFilesCount = folder.CheckedFileCount.ToString(CultureInfo.CurrentCulture);
+        }
+
+        private void UpdateFileData(PathModel pathModel)
+        {
+            if (!(pathModel is FileModel file)) { return; }
+
+            ShowFileMetadata();
+            var metadata = file.GetMetadata();
+            if (file.MetadataStatus != MetadataStatus.Valid
+                || metadata is null)
+            {
+                ClearMetadata($"No DATA: Status >> {file.MetadataStatus}");
                 return;
             }
 
-            MetadataVisibility = Visibility.Visible;
-            Name = family.Name;
-            DisplayName = family.DisplayName;
-            LibraryPath = family.LibraryPath;
-            if (family.HasCategory(out var category))
+            Name = metadata.Name;
+            DisplayName = metadata.DisplayName;
+            LibraryPath = metadata.LibraryPath;
+            Updated = DateUtils.AsString(metadata.Updated);
+            if (metadata.HasCategory(out var category))
             {
                 Category = category.Name;
             }
-            if (family.HasOmniClass(out var omniClass))
+            else
+            {
+                Category = Empty;
+            }
+            if (metadata.HasOmniClass(out var omniClass))
             {
                 OmniClass = omniClass.NumberAndName;
             }
-            if (family.HasProduct(out var product))
+            else
+            {
+                OmniClass = Empty;
+            }
+            if (metadata.HasProduct(out var product))
             {
                 Product = product.ProductName;
             }
-            Updated = DateUtils.AsString(family.Updated);
+            else
+            {
+                Product = Empty;
+            }
 
             FamilyParameters.Clear();
-            foreach (var parameter in family.Parameters)
+            foreach (var parameter in metadata.Parameters)
             {
                 FamilyParameters.Add(parameter);
             }
+
             FamilyTypes.Clear();
+            if (metadata.FamilyTypes.Count == 0)
+            {
+                SelectedFamilyType = null;
+                return;
+            }
 
-            if (family.FamilyTypes.Count == 0) { return; }
-
-            foreach (var familyType in family.FamilyTypes)
+            foreach (var familyType in metadata.FamilyTypes)
             {
                 FamilyTypes.Add(familyType);
             }
-
             SelectedFamilyType = FamilyTypes[0];
         }
 
-        public void HideMetadata()
+        private void Current_PropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            MetadataVisibility = Visibility.Hidden;
+            var propName = args.PropertyName;
+            if (sender is FolderModel folder
+                && (StringUtils.Equals(propName, nameof(folder.FilesCountValue))
+                    || StringUtils.Equals(propName, nameof(folder.ValidFileCount))
+                    )
+                )
+            {
+                UpdateFolderData(folder);
+            }
+            if (sender is FileModel file
+                && StringUtils.Equals(propName, nameof(file.MetadataStatus)))
+            {
+                UpdateFileData(file);
+            }
+        }
+
+        public void ClearMetadata(string emptyValue = Empty)
+        {
+            Name = emptyValue;
+            DisplayName = emptyValue;
+            LibraryPath = emptyValue;
+            Category = emptyValue;
+            OmniClass = emptyValue;
+            Product = emptyValue;
+            Updated = emptyValue;
+            FamilyParameters.Clear();
+            FamilyTypes.Clear();
+            SelectedFamilyType = null;
+
+            FolderName = emptyValue;
+            FilesCount = emptyValue;
+            ValidFilesCount = emptyValue;
+            CheckedFilesCount = emptyValue;
+        }
+
+        #region File metadata
+
+        public void ShowFileMetadata()
+        {
+            FolderMetadataVisibility = Visibility.Collapsed;
+            FileMetadataVisibility = Visibility.Visible;
+        }
+
+        private Visibility fileMetadataVisibility = Visibility.Collapsed;
+        public Visibility FileMetadataVisibility
+        {
+            get { return fileMetadataVisibility; }
+            set
+            {
+                if (fileMetadataVisibility == value) { return; }
+
+                fileMetadataVisibility = value;
+                NotifyPropertyChanged();
+            }
         }
 
         private string name = string.Empty;
@@ -62,7 +166,7 @@ namespace RevitJournalUI.Pages.Files.Models
             get { return name; }
             set
             {
-                if (name != null && StringUtils.Equals(name, value)) { return; }
+                if (StringUtils.Equals(name, value)) { return; }
 
                 name = value;
                 NotifyPropertyChanged();
@@ -75,7 +179,7 @@ namespace RevitJournalUI.Pages.Files.Models
             get { return displayName; }
             set
             {
-                if (displayName != null && StringUtils.Equals(displayName, value)) { return; }
+                if (StringUtils.Equals(displayName, value)) { return; }
 
                 displayName = value;
                 NotifyPropertyChanged();
@@ -88,7 +192,7 @@ namespace RevitJournalUI.Pages.Files.Models
             get { return libraryPath; }
             set
             {
-                if (libraryPath != null && StringUtils.Equals(libraryPath, value)) { return; }
+                if (StringUtils.Equals(libraryPath, value)) { return; }
 
                 libraryPath = value;
                 NotifyPropertyChanged();
@@ -101,7 +205,7 @@ namespace RevitJournalUI.Pages.Files.Models
             get { return category; }
             set
             {
-                if (category != null && StringUtils.Equals(category, value)) { return; }
+                if (StringUtils.Equals(category, value)) { return; }
 
                 category = value;
                 NotifyPropertyChanged();
@@ -115,7 +219,7 @@ namespace RevitJournalUI.Pages.Files.Models
             get { return omniClass; }
             set
             {
-                if (omniClass != null && StringUtils.Equals(omniClass, value)) { return; }
+                if (StringUtils.Equals(omniClass, value)) { return; }
 
                 omniClass = value;
                 NotifyPropertyChanged();
@@ -128,7 +232,7 @@ namespace RevitJournalUI.Pages.Files.Models
             get { return updated; }
             set
             {
-                if (updated != null && StringUtils.Equals(updated, value)) { return; }
+                if (StringUtils.Equals(updated, value)) { return; }
 
                 updated = value;
                 NotifyPropertyChanged();
@@ -141,7 +245,7 @@ namespace RevitJournalUI.Pages.Files.Models
             get { return product; }
             set
             {
-                if (product != null && StringUtils.Equals(product, value)) { return; }
+                if (StringUtils.Equals(product, value)) { return; }
 
                 product = value;
                 NotifyPropertyChanged();
@@ -165,7 +269,7 @@ namespace RevitJournalUI.Pages.Files.Models
         private void UpdateFamilyTypeParameters()
         {
             FamilyTypeParameters.Clear();
-            if(SelectedFamilyType is null) { return; }
+            if (SelectedFamilyType is null) { return; }
 
             foreach (var parameter in SelectedFamilyType.Parameters)
             {
@@ -179,17 +283,81 @@ namespace RevitJournalUI.Pages.Files.Models
 
         public ObservableCollection<Parameter> FamilyTypeParameters { get; } = new ObservableCollection<Parameter>();
 
-        private Visibility metadataVisibility = Visibility.Hidden;
-        public Visibility MetadataVisibility
+        #endregion
+
+        #region Folder metadata
+
+        public void ShowFolderMetadata()
         {
-            get { return metadataVisibility; }
+            FileMetadataVisibility = Visibility.Collapsed;
+            FolderMetadataVisibility = Visibility.Visible;
+        }
+
+        private Visibility folderMetadataVisibility = Visibility.Collapsed;
+        public Visibility FolderMetadataVisibility
+        {
+            get { return folderMetadataVisibility; }
             set
             {
-                if(metadataVisibility == value) { return; }
+                if (folderMetadataVisibility == value) { return; }
 
-                metadataVisibility = value;
+                folderMetadataVisibility = value;
                 NotifyPropertyChanged();
             }
         }
+
+        private string folderName = string.Empty;
+        public string FolderName
+        {
+            get { return folderName; }
+            set
+            {
+                if (StringUtils.Equals(folderName, value)) { return; }
+
+                folderName = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string filesCount = string.Empty;
+        public string FilesCount
+        {
+            get { return filesCount; }
+            set
+            {
+                if (StringUtils.Equals(filesCount, value)) { return; }
+
+                filesCount = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string validFilesCount = string.Empty;
+        public string ValidFilesCount
+        {
+            get { return validFilesCount; }
+            set
+            {
+                if (StringUtils.Equals(validFilesCount, value)) { return; }
+
+                validFilesCount = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string checkedFilesCount = string.Empty;
+        public string CheckedFilesCount
+        {
+            get { return checkedFilesCount; }
+            set
+            {
+                if (StringUtils.Equals(checkedFilesCount, value)) { return; }
+
+                checkedFilesCount = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        #endregion
     }
 }

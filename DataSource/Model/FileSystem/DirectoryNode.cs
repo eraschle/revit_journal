@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace DataSource.Models.FileSystem
 {
@@ -11,77 +9,54 @@ namespace DataSource.Models.FileSystem
         protected string DirectoryName { get; set; }
 
         private readonly List<DirectoryNode> directoryNodes = new List<DirectoryNode>();
-        public IList<DirectoryNode> DirectoryNodes
-        {
-            get { return directoryNodes; }
-        }
 
         private readonly List<AFileNode> fileNodes = new List<AFileNode>();
-        public IList<AFileNode> FileNodes
+
+        public void AddChild(APathNode childNode)
         {
-            get { return fileNodes; }
+            if (childNode is null) { return; }
+
+            if (childNode is DirectoryNode directoryNode
+                && directoryNodes.Contains(directoryNode) == false)
+            {
+                directoryNodes.Add(directoryNode);
+            }
+            else if (childNode is AFileNode fileNode
+                && fileNodes.Contains(fileNode) == false)
+            {
+                fileNodes.Add(fileNode);
+            }
         }
 
-
-        public override void SetParent(DirectoryNode parent)
+        public void RemoveChild(APathNode childNode)
         {
-            if (parent is null) { return; }
+            if (childNode is null) { return; }
 
-            RemoveParent();
-            Parent = parent;
-            parent.AddFolder(this);
-        }
-
-        public override void RemoveParent()
-        {
-            if (HasParent(out var parent) == false) { return; }
-
-            parent.RemoveFolder(this);
-            Parent = null;
-        }
-
-        public void AddFolder(DirectoryNode folder)
-        {
-            if (folder is null || DirectoryNodes.Contains(folder)) { return; }
-
-            DirectoryNodes.Add(folder);
-        }
-
-        public void RemoveFolder(DirectoryNode folder)
-        {
-            if (folder is null || DirectoryNodes.Contains(folder) == false) { return; }
-
-            DirectoryNodes.Remove(folder);
-        }
-
-        public void AddFile(AFileNode file)
-        {
-            if (file is null || FileNodes.Contains(file)) { return; }
-
-            FileNodes.Add(file);
-        }
-
-        public void RemoveFile(AFileNode file)
-        {
-            if (file is null || FileNodes.Contains(file) == false) { return; }
-
-            FileNodes.Remove(file);
+            if (childNode is DirectoryNode directoryNode
+                && directoryNodes.Contains(directoryNode))
+            {
+                directoryNodes.Remove(directoryNode);
+            }
+            else if (childNode is AFileNode fileNode
+                && fileNodes.Contains(fileNode))
+            {
+                fileNodes.Remove(fileNode);
+            }
         }
 
         public IList<DirectoryNode> GetDirectories<TFile>(bool recursive, FileSearch<TFile> search = null) where TFile : AFileNode, new()
         {
-            return DirectoryNodes.Where(dir => dir.HasFiles(recursive, search)).ToList();
+            return directoryNodes.Where(dir => dir.HasFiles(recursive, search)).ToList();
         }
 
         public bool HasFiles<TFile>(bool recursive, FileSearch<TFile> search = null) where TFile : AFileNode, new()
         {
-            var files = GetFiles(recursive, search);
-            return files.Any();
+            return GetFiles(recursive, search).Any();
         }
 
         private IList<TFile> GetFiles<TFile>(FileSearch<TFile> search) where TFile : AFileNode, new()
         {
-            var files = FileNodes.OfType<TFile>().ToList();
+            var files = fileNodes.OfType<TFile>().ToList();
             return search is null ? files : files.Where(file => search.IsFile(file)).ToList();
         }
 
@@ -99,7 +74,7 @@ namespace DataSource.Models.FileSystem
         private void AddRecursiveFiles<TFile>(ref List<TFile> fileNodes, DirectoryNode node, FileSearch<TFile> search = null) where TFile : AFileNode, new()
         {
             fileNodes.AddRange(node.GetFiles(search));
-            foreach (var folder in node.DirectoryNodes)
+            foreach (var folder in node.directoryNodes)
             {
                 AddRecursiveFiles(ref fileNodes, folder, search);
             }

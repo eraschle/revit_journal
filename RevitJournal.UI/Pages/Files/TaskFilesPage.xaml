@@ -44,9 +44,9 @@
             <Setter Property="Height" Value="15"/>
         </Style>
         <CollectionViewSource x:Key="Models" Filter="DirectoryFilter" Source="{Binding PathModels}"/>
-        
+
         <!--TreeView-->
-        
+
         <HierarchicalDataTemplate DataType="{x:Type model:FolderModel}"
                                   ItemsSource="{Binding Children}">
             <Grid>
@@ -79,7 +79,7 @@
                          Grid.Column="2"/>
             </Grid>
         </DataTemplate>
-        
+
         <Style x:Key="TreeViewItemFocusVisual">
             <Setter Property="Control.Template">
                 <Setter.Value>
@@ -148,10 +148,21 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
                             <ToggleButton x:Name="Expander" 
-                                          Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Release"
-                                          IsChecked="{Binding IsExpanded}"/>
-                            <Border x:Name="Bd" SnapsToDevicePixels="true" Grid.Column="1" Grid.ColumnSpan="2" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-                                <ContentPresenter x:Name="PART_Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ContentSource="Header"/>
+                                          Style="{StaticResource ExpandCollapseToggleStyle}" 
+                                          ClickMode="Release"
+                                          IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                          Checked="Expander_Checked"/>
+                            <Border x:Name="Bd" 
+                                    SnapsToDevicePixels="true" 
+                                    Grid.Column="1" Grid.ColumnSpan="2" 
+                                    Background="{TemplateBinding Background}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter x:Name="PART_Header" 
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                                  ContentSource="Header"/>
                             </Border>
                             <ItemsPresenter x:Name="ItemsHost" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"/>
                         </Grid>
@@ -271,20 +282,21 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <GroupBox Header="Family Informations" Grid.Row="0"
-                          Visibility="{Binding MetadataVisibility}"
+                          Visibility="{Binding FileMetadataVisibility}"
                           Style="{StaticResource UIControl}">
                     <GroupBox.Content>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
                                 <RowDefinition/>
                                 <RowDefinition/>
                                 <RowDefinition/>
@@ -292,7 +304,7 @@
                             </Grid.RowDefinitions>
                             <Label Content="Daisplay Name" Grid.Column="0" Grid.Row="0"
                                    Style="{StaticResource UILabel}"/>
-                            <TextBlock Text="{Binding DisplayName}" Grid.Column="1" Grid.Row="0"
+                            <TextBlock Text="{Binding DisplayName}" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="0"
                                        Style="{StaticResource UITextBlock}"/>
                             <Label Content="Category" Grid.Column="0" Grid.Row="1"
                                    Style="{StaticResource UILabel}"/>
@@ -302,23 +314,23 @@
                                    Style="{StaticResource UILabel}"/>
                             <TextBlock Text="{Binding OmniClass}" Grid.Column="1" Grid.Row="2"
                                        Style="{StaticResource UITextBlock}"/>
-                            <Label Content="Updated" Grid.Column="0" Grid.Row="3"
+                            <Label Content="Updated" Grid.Column="2" Grid.Row="1"
                                    Style="{StaticResource UILabel}"/>
-                            <TextBlock Text="{Binding Updated}" Grid.Column="1" Grid.Row="3" 
+                            <TextBlock Text="{Binding Updated}" Grid.Column="3" Grid.Row="1" 
                                        Style="{StaticResource UITextBlock}"/>
-                            <Label Content="Product" Grid.Column="0" Grid.Row="4"
+                            <Label Content="Product" Grid.Column="2" Grid.Row="2"
                                    Style="{StaticResource UILabel}"/>
-                            <TextBlock Text="{Binding Product}" Grid.Column="1" Grid.Row="4" 
+                            <TextBlock Text="{Binding Product}" Grid.Column="3" Grid.Row="2" 
                                        Style="{StaticResource UITextBlock}"/>
-                            <Label Content="Library Path" Grid.Column="0" Grid.Row="5"
+                            <Label Content="Library Path" Grid.Column="0" Grid.Row="3"
                                    Style="{StaticResource UILabel}"/>
-                            <TextBlock Text="{Binding LibraryPath}" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="5" 
+                            <TextBlock Text="{Binding LibraryPath}" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3" 
                                        Style="{StaticResource UITextBlock}"/>
                         </Grid>
                     </GroupBox.Content>
                 </GroupBox>
                 <GroupBox Header="Family Parameter" Grid.Row="1"
-                          Visibility="{Binding MetadataVisibility}"
+                          Visibility="{Binding FileMetadataVisibility}"
                           Style="{StaticResource UIControl}"
                           VerticalAlignment="Stretch">
                     <GroupBox.Content>
@@ -336,7 +348,7 @@
                     </GroupBox.Content>
                 </GroupBox>
                 <GroupBox Grid.Row="2" Style="{StaticResource UIControl}"
-                          Visibility="{Binding MetadataVisibility}"
+                          Visibility="{Binding FileMetadataVisibility}"
                           VerticalAlignment="Stretch">
                     <GroupBox.Header>
                         <DockPanel LastChildFill="True">
@@ -361,8 +373,42 @@
                         </ListView>
                     </GroupBox.Content>
                 </GroupBox>
+                <GroupBox Header="Folder Informations" Grid.Row="3"
+                          Visibility="{Binding FolderMetadataVisibility}"
+                          Style="{StaticResource UIControl}">
+                    <GroupBox.Content>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Label Content="Name" Grid.Column="0" Grid.Row="0"
+                                   Style="{StaticResource UILabel}"/>
+                            <TextBlock Text="{Binding FolderName}" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="0"
+                                       Style="{StaticResource UITextBlock}"/>
+                            <Label Content="Files" Grid.Column="0" Grid.Row="1"
+                                   Style="{StaticResource UILabel}"/>
+                            <TextBlock Text="{Binding FilesCount}" Grid.Column="1" Grid.Row="1"
+                                       Style="{StaticResource UITextBlock}"/>
+                            <Label Content="Vaild Files" Grid.Column="0" Grid.Row="2"
+                                   Style="{StaticResource UILabel}"/>
+                            <TextBlock Text="{Binding ValidFilesCount, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="2"
+                                       Style="{StaticResource UITextBlock}"/>
+                            <Label Content="Checked Files" Grid.Column="0" Grid.Row="3"
+                                   Style="{StaticResource UILabel}"/>
+                            <TextBlock Text="{Binding CheckedFilesCount}" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3" 
+                                       Style="{StaticResource UITextBlock}"/>
+                        </Grid>
+                    </GroupBox.Content>
+                </GroupBox>
             </Grid>
         </ScrollViewer>
-        
+
     </Grid>
 </Page>

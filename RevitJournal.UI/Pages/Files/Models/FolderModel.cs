@@ -1,5 +1,7 @@
 ﻿using DataSource.Models.FileSystem;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace RevitJournalUI.Pages.Files.Models
 {
@@ -10,31 +12,28 @@ namespace RevitJournalUI.Pages.Files.Models
         public ObservableCollection<PathModel> Children { get; }
             = new ObservableCollection<PathModel>();
 
-        internal override void SetChecked(bool? value, bool updateChildren, bool updateParent)
+        public IEnumerable<FolderModel> ChildFolders
         {
-            if (value == isChecked)
-            {
-                SetFileCount();
-                return;
-            }
-
-            isChecked = value;
-            if (updateChildren && isChecked.HasValue)
-            {
-                foreach (var node in Children)
-                {
-                    node.SetChecked(isChecked, true, false);
-                }
-            }
-            if (updateParent && Parent != null)
-            {
-                Parent.UpdateParent();
-            }
-            SetFileCount();
-            UpdateChecked();
+            get { return Children.OfType<FolderModel>(); }
         }
 
-        public void UpdateParent()
+        protected override void UpdateChildren()
+        {
+            foreach (var node in Children)
+            {
+                node.SetChecked(isChecked, true, false);
+            }
+        }
+
+        public void AddChild(PathModel pathModel)
+        {
+            if(pathModel is null || Children.Contains(pathModel)) { return; }
+
+            pathModel.Parent = this;
+            Children.Add(pathModel);
+        }
+
+        internal void UpdateParent()
         {
             bool? state = null;
             for (int i = 0; i < Children.Count; ++i)

@@ -11,6 +11,18 @@ namespace DataSource.Models.FileSystem
         [JsonIgnore]
         public string NameWithoutExtension { get; private set; }
 
+        protected override string GetNodeName()
+        {
+            var fileName = NameWithoutExtension;
+            if (NameSuffixes.Count > 0)
+            {
+                var names = new List<string> { fileName };
+                names.AddRange(NameSuffixes);
+                fileName = string.Join(Constant.Underline, names);
+            }
+            return string.Join(Constant.Point, fileName, FileExtension);
+        }
+
         protected override void SetNodeName(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) { return; }
@@ -49,18 +61,6 @@ namespace DataSource.Models.FileSystem
             return filename.Remove(removeIdx);
         }
 
-        protected override string GetNodeName()
-        {
-            var fileName = NameWithoutExtension;
-            if (NameSuffixes.Count > 0)
-            {
-                var names = new List<string> { NameWithoutExtension };
-                names.AddRange(NameSuffixes);
-                fileName = string.Join(Constant.Underline, names);
-            }
-            return string.Join(Constant.Point, fileName, FileExtension);
-        }
-
         [JsonIgnore]
         public abstract string FileExtension { get; }
 
@@ -71,23 +71,6 @@ namespace DataSource.Models.FileSystem
             if (suffixes is null || suffixes.Length == 0) { return; }
 
             NameSuffixes.AddRange(suffixes);
-        }
-
-        public override void SetParent(DirectoryNode parent)
-        {
-            if (parent is null) { return; }
-
-            RemoveParent();
-            Parent = parent;
-            parent.AddFile(this);
-        }
-
-        public override void RemoveParent()
-        {
-            if (HasParent(out var parent) == false) { return; }
-
-            parent.RemoveFile(this);
-            Parent = null;
         }
 
         public override bool Exists()

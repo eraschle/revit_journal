@@ -23,6 +23,7 @@ namespace RevitJournalUI.Pages.Files.Models
         {
             FileNode.MetadataUpdated -= File_MetadataUpdated;
             MetadataStatus = FileNode.Status;
+            CalculateFilesCount();
         }
 
         public MetadataStatus MetadataStatus
@@ -31,9 +32,29 @@ namespace RevitJournalUI.Pages.Files.Models
             set { NotifyPropertyChanged(); }
         }
 
+        internal override int FileCount
+        {
+            get { return FileNode is object ? 1 : 0; }
+            set { }
+        }
+
+        internal override int ValidFileCount
+        {
+            get { return FileNode is object && FileNode.Status == MetadataStatus.Valid ? 1 : 0; }
+            set { NotifyPropertyChanged(); }
+        }
+
+        internal override int CheckedFileCount
+        {
+            get { return IsChecked == true ? 1 : 0; }
+            set { NotifyPropertyChanged(); }
+        }
+
         public Family GetMetadata()
         {
             return FileNode?.Metadata;
         }
+
+        protected override void UpdateChildren() { }
     }
 }
